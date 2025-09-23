@@ -1,0 +1,58 @@
+@startuml system_uc
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Khách Hàng có TK" as KH
+actor "Khách Hàng chưa có TK" as KHK
+actor "Người Dùng" as ND
+actor "Quản Lý" as QL
+actor Admin as AD
+
+ND <|-- AD
+ND <|-- QL
+ND <|-- KH
+
+rectangle "Hệ Thống" {
+  ND --> (Đăng nhập)
+  ND --> (Đăng xuất)
+  ND --> (Thay đổi thông tin cá nhân)
+  (Đăng nhập) <.. (Thanh toán) : <<includes>>
+
+  KHK --> (Đăng ký)
+  KHK --> (Tìm kiếm sản phẩm)
+  
+  KH --> (Tìm kiếm sản phẩm)
+  KH --> (Đặt hàng)
+  KH --> (Quản lý giỏ hàng)
+  KH --> (Quản lý đơn hàng - User)
+
+  (Quản lý đơn hàng - User) <.. (Hủy đơn)  : <<extends>>
+  (Quản lý đơn hàng - User) <.. (Xem chi tiết) : <<extends>>
+  (Đặt hàng) <.. (Thanh toán) : <<includes>>
+  (Đặt hàng) <.. (Thêm vào giỏ hàng) : <<includes>>
+  (Đặt hàng) <.. (Đánh giá) : <<includes>>
+  (Quản lý giỏ hàng) <.. (Thêm sản phẩm vào giỏ) : <<extends>>
+  (Quản lý giỏ hàng) <.. (Xóa sản phẩm trong giỏ) : <<extends>>
+  (Quản lý giỏ hàng) <.. (Thay đổi số lượng) : <<extends>>
+
+  AD --> (Quản lý đơn hàng - Staff)
+  AD --> (Quản lý người dùng)
+  AD --> (Thống kê bán hàng)
+  AD --> (Quản lý sản phẩm)
+  AD --> (Quản lý sự kiện giảm giá)
+
+  (Quản lý người dùng) <.. (Xem chi tiết người dùng) : <<extends>>
+  (Quản lý người dùng) <.. (Xóa người dùng) : <<extends>>
+  (Quản lý sản phẩm) <.. (Thêm sản phẩm) : <<extends>>
+  (Quản lý sản phẩm) <.. (Chỉnh sửa sản phẩm) : <<extends>>
+  (Quản lý sản phẩm) <.. (Ẩn sản phẩm) : <<extends>>
+  (Quản lý sản phẩm) <.. (Xóa sản phẩm) : <<extends>>
+
+  QL --> (Quản lý đơn hàng - Staff)
+  (Quản lý đơn hàng - Staff) <.. (Xem chi tiết đơn hàng) : <<extends>>
+  (Quản lý đơn hàng - Staff) <.. (Hủy đơn hàng) : <<extends>>
+  (Quản lý đơn hàng - Staff) <.. (Thay đổi trạng thái đơn hàng) : <<extends>>
+  
+}
+
+@enduml

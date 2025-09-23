@@ -1,0 +1,4 @@
+@startuml test diagram
+Alice -> Bob: Hello
+Bob -> Alice: Hi
+@enduml
