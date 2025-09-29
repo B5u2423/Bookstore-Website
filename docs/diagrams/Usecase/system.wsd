@@ -6,17 +6,19 @@ actor "Khách Hàng có TK" as KH
 actor "Khách Hàng chưa có TK" as KHK
 actor "Người Dùng" as ND
 actor "Quản Lý" as QL
+actor "Nhân Viên" as NV
 actor Admin as AD
 
 ND <|-- AD
 ND <|-- QL
 ND <|-- KH
+ND <|-- NV
 
 rectangle "Hệ Thống" {
   ND --> (Đăng nhập)
   ND --> (Đăng xuất)
   ND --> (Thay đổi thông tin cá nhân)
-  (Đăng nhập) <.. (Thanh toán) : <<includes>>
+  (Thanh toán) ..> (Đăng nhập) : <<includes>>
 
   KHK --> (Đăng ký)
   KHK --> (Tìm kiếm sản phẩm)
@@ -25,10 +27,11 @@ rectangle "Hệ Thống" {
   KH --> (Đặt hàng)
   KH --> (Quản lý giỏ hàng)
   KH --> (Quản lý đơn hàng - User)
+  KH --> (Thanh toán)
 
   (Quản lý đơn hàng - User) <.. (Hủy đơn)  : <<extends>>
   (Quản lý đơn hàng - User) <.. (Xem chi tiết) : <<extends>>
-  (Đặt hàng) <.. (Thanh toán) : <<includes>>
+  (Thanh toán) ..> (Đặt hàng) : <<includes>>
   (Đặt hàng) <.. (Thêm vào giỏ hàng) : <<includes>>
   (Đặt hàng) <.. (Đánh giá) : <<includes>>
   (Quản lý giỏ hàng) <.. (Thêm sản phẩm vào giỏ) : <<extends>>
@@ -52,6 +55,7 @@ rectangle "Hệ Thống" {
   (Quản lý đơn hàng - Staff) <.. (Xem chi tiết đơn hàng) : <<extends>>
   (Quản lý đơn hàng - Staff) <.. (Hủy đơn hàng) : <<extends>>
   (Quản lý đơn hàng - Staff) <.. (Thay đổi trạng thái đơn hàng) : <<extends>>
+  
   
 }
 
