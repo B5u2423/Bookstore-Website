@@ -1,11 +1,12 @@
-<script setup></script>
+<script setup>
+</script>
 
 <template>
   <v-app>
-    <v-container>
-
-    </v-container>
+    <router-view/>
   </v-app>
 </template>
 
 <style scoped></style>
+  <NavBar />
+      
