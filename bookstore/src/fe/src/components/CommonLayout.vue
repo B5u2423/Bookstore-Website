@@ -9,6 +9,8 @@ const props = defineProps(['prop'])
 <template>
   <HeaderSection />
   <BreadCrumbs :prop="prop" v-if="prop?.items.length > 0"></BreadCrumbs>
-  <slot></slot>
+  <v-main height="90%">
+    <slot></slot>
+  </v-main>
   <FooterSection />
 </template>
