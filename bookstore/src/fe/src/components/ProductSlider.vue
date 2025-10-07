@@ -12,7 +12,7 @@ const props = defineProps(['title', 'subtitle', 'products'])
         v-for="(product, index) in products"
         :key="index"
       >
-        <v-card class="mx-2" width="200">
+        <v-card class="ma-2" width="200" hover>
           <v-img
             :src="product.image"
             height="250"
