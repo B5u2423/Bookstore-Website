@@ -4,10 +4,12 @@ const props = defineProps(['product'])
 
 <template>
   <v-card class="ma-2" width="200" hover>
+    <router-link
+      :to="{ name: 'product-detail', params: { id: product.id}}">
     <v-img
       :src="product.image"
       height="250"
-      cover
+      cove
     ></v-img>
     
     <v-card-title>{{ product.title }}</v-card-title>
@@ -15,5 +17,6 @@ const props = defineProps(['product'])
     <v-card-text>
       From: <strong>{{ product.price }}</strong>
     </v-card-text>
+    </router-link>
   </v-card>
 </template>
