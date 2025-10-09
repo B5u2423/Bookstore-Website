@@ -2,7 +2,8 @@
 left to right direction
 skinparam packageStyle rectangle
 
-actor "Khách Hàng" as KH
+actor "Khách Hàng Vãng Lai" as KHVL
+actor "Khách Hàng" as KH 
 actor "Người Dùng" as ND
 actor "Quản Lý" as QL
 actor "Nhân Viên" as NV
@@ -17,44 +18,27 @@ rectangle "Hệ Thống" {
   ND --> (Đăng nhập)
   ND --> (Thay đổi mật khẩu)
   (Đăng nhập) <.. (Đăng xuất) : <<extends>>
-  ND --> (Xem thông tin người dùng)
-  (Xem thông tin người dùng) <.. (Thay đổi thông tin) : <<extends>>
   (Thanh toán) ..> (Đăng nhập) : <<includes>>
 
-  KH --> (Đăng ký)
-  KH --> (Tìm kiếm sản phẩm)
+  KHVL --> (Đăng ký)
+  KHVL --> (Tìm kiếm sách)
+
+  KH --> (Tìm kiếm sách)
   KH --> (Quản lý giỏ hàng)
   KH --> (Quản lý đơn hàng - User)
   KH --> (Thanh toán)
 
-  (Quản lý đơn hàng - User) <.. (Hủy đơn)  : <<extends>>
-  (Quản lý đơn hàng - User) <.. (Xem chi tiết) : <<extends>>
   (Thanh toán) ..> (Đặt hàng) : <<includes>>
-  (Đặt hàng) <.. (Thêm vào giỏ hàng) : <<includes>>
-  (Đặt hàng) <.. (Đánh giá) : <<includes>>
-  (Quản lý giỏ hàng) <.. (Thêm sản phẩm vào giỏ) : <<extends>>
-  (Quản lý giỏ hàng) <.. (Xóa sản phẩm trong giỏ) : <<extends>>
-  (Quản lý giỏ hàng) <.. (Thay đổi số lượng) : <<extends>>
+  (Đăng nhập) <.. (Đánh giá) : <<includes>>
 
   AD --> (Quản lý đơn hàng - Staff)
   AD --> (Quản lý người dùng)
   AD --> (Thống kê bán hàng)
-  AD --> (Quản lý sản phẩm)
-  AD --> (Quản lý sự kiện giảm giá)
-
-  (Quản lý người dùng) <.. (Xem chi tiết người dùng) : <<extends>>
-  (Quản lý người dùng) <.. (Xóa người dùng) : <<extends>>
-  (Quản lý sản phẩm) <.. (Thêm sản phẩm) : <<extends>>
-  (Quản lý sản phẩm) <.. (Chỉnh sửa sản phẩm) : <<extends>>
-  (Quản lý sản phẩm) <.. (Ẩn sản phẩm) : <<extends>>
-  (Quản lý sản phẩm) <.. (Xóa sản phẩm) : <<extends>>
+  AD --> (Quản lý sách)
+  AD --> (Quản lý mã giảm giá)
+  AD --> (Quản lý danh mục sách)
 
   QL --> (Quản lý đơn hàng - Staff)
-  (Quản lý đơn hàng - Staff) <.. (Xem chi tiết đơn hàng) : <<extends>>
-  (Quản lý đơn hàng - Staff) <.. (Hủy đơn hàng) : <<extends>>
-  (Quản lý đơn hàng - Staff) <.. (Thay đổi trạng thái đơn hàng) : <<extends>>
-  
-  
 }
 
 @enduml

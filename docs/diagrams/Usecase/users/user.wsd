@@ -1,0 +1,10 @@
+@startuml user
+
+left to right direction
+
+"Người Dùng" as ND
+
+ND --> (Đăng nhập)
+ND --> (Thay đổi mật khẩu)
+
+@enduml
