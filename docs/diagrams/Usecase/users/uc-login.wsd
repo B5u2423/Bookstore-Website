@@ -1,0 +1,7 @@
+@startuml uc-login
+
+rectangle "Hệ thống" {
+
+}
+
+@enduml

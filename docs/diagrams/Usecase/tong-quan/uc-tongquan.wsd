@@ -1,4 +1,4 @@
-@startuml system_uc
+@startuml uc-tongquan
 left to right direction
 skinparam packageStyle rectangle
 
