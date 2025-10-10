@@ -1,0 +1,98 @@
+Table books {
+  isbn varchar(17) [pk]
+  title varchar(100)
+  description varchar
+  price int   
+  in_stock int
+}
+
+Table users {
+  user_id int [pk]
+  first_name varchar
+  last_name varchar
+  username varchar
+  email varchar
+  password_hash varchar
+  created_at datetime
+  updated_at datetime
+}
+
+Table categories {
+  category_id int [pk]
+  name varchar
+}
+
+Table authors {
+  author_id int [pk]
+  name varchar(100)
+}
+
+Table addresses {
+  address_id int [pk]
+  user_id int [ref: > users.user_id]
+  label varchar // home, office, ....
+  city varchar
+  ward varchar
+  street varchar
+}
+
+Table carts {
+  cart_id int [pk]
+  user_id int [ref: > users.user_id]
+}
+
+Table cart_items {
+  citem_id int [pk]
+  cart_id int [ref: > carts.cart_id]
+  isbn int [ref: > books.isbn]
+  amount int
+  price int
+}
+
+Table orders {
+  order_id int [pk]
+  user_id int [ref: > users.user_id]
+}
+
+Table order_items {
+  oitem_id int [pk]
+  order_id int [ref: > orders.order_id]
+  isbn int [ref: > books.isbn]
+  amount int
+  price int
+}
+
+Table coupons {
+  coupon_id int [pk]
+  code varchar
+  type enum
+  amount int
+  is_active boolean
+  start_date datetime
+  expiry_date datetime
+  created_at datetime
+  updated_at datetime
+}
+
+Table orders_coupons {
+  coupon_id int [ref: > coupons.coupon_id]
+  order_id int [ref: > orders.order_id]
+}
+
+// junction tables
+Table books_categories {
+  isbn varchar [ref: > books.isbn]
+  category_id int [ref: > categories.category_id]
+}
+
+Table books_authors {
+  isbn varchar [ref: > books.isbn] 
+  author_id int [ref: > authors.author_id]
+}
+
+// enums
+Enum discount_type {
+  percentage // 0 < amount < 100
+  fixed // amount > 0
+  free_shipping // amount = 0
+}
