@@ -1,13 +1,14 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
 const msg = ref('')
 
 onMounted(
   async () => {
-    const response = await fetch('/api/greetings/hello')
-    msg.value = await response.text()
-  }
+  const response = await axios.get('/api/greetings/hello')
+  msg.value = response.data
+}
 )
 </script>
 
