@@ -122,7 +122,7 @@
 				</executions>
 				<configuration>
 					<nodeVersion>${node.version}</nodeVersion>
-					<workingDirectory>src/frontend</workingDirectory>
+					<workingDirectory>src/fe</workingDirectory>
 				</configuration>
 
 			</plugin>
@@ -140,8 +140,8 @@
 							<outputDirectory>target/classes/static</outputDirectory>
 							<resources>
 								<resource>
-									<directory>src/frontend/dist</directory>
-									<filtering>true</filtering>
+									<directory>src/fe/dist</directory>
+									<!-- <filtering>true</filtering> -->
 								</resource>
 							</resources>
 						</configuration>

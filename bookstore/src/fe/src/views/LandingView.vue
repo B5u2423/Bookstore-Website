@@ -2,6 +2,9 @@
 import CommonLayout from '@/components/CommonLayout.vue';
 import ProductSlider from '@/components/products/ProductSlider.vue';
 import ProductGrid from '@/components/products/ProductGrid.vue';
+import Carousel from '@/components/common/Carousel.vue';
+// Testing Hello World
+// import HelloWorld from '@/components/HelloWorld.vue';
 
 const products = [
   { id: 1, title: 'The Giver', author: 'Lois Lowry', price: '$4.19', image: 'https://example.com/giver.jpg' },
@@ -25,6 +28,8 @@ const products = [
 
 <template>
   <CommonLayout>
+    <!-- <HelloWorld /> -->
+    <Carousel />
     <ProductSlider :products="products" title="Bestsellers" subtitle="Something"/>
     <ProductGrid :products="products" title="Showcase" subtitle="Show some books"/>
   </CommonLayout> 
