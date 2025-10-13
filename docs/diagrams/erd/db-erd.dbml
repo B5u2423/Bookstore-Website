@@ -1,5 +1,6 @@
 Table books {
-  isbn varchar(17) [pk]
+  book_id int [pk]
+  isbn varchar(20) 
   title varchar(100)
   description varchar
   price int   
@@ -44,7 +45,7 @@ Table carts {
 Table cart_items {
   citem_id int [pk]
   cart_id int [ref: > carts.cart_id]
-  isbn int [ref: > books.isbn]
+  book_id int [ref: > books.book_id]
   amount int
   price int
 }
@@ -57,7 +58,7 @@ Table orders {
 Table order_items {
   oitem_id int [pk]
   order_id int [ref: > orders.order_id]
-  isbn int [ref: > books.isbn]
+  book_id int [ref: > books.book_id]
   amount int
   price int
 }
@@ -81,12 +82,12 @@ Table orders_coupons {
 
 // junction tables
 Table books_categories {
-  isbn varchar [ref: > books.isbn]
+  book_id varchar [ref: > books.book_id]
   category_id int [ref: > categories.category_id]
 }
 
 Table books_authors {
-  isbn varchar [ref: > books.isbn] 
+  book_id varchar [ref: > books.book_id] 
   author_id int [ref: > authors.author_id]
 }
 
