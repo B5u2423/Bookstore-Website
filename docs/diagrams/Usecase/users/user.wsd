@@ -1,4 +1,4 @@
-@startuml user
+@startuml uc_user
 
 left to right direction
 

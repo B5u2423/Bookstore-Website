@@ -1,4 +1,4 @@
-@startuml customer_uc
+@startuml uc_customer
 
 left to right direction
 

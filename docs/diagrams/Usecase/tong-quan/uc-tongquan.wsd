@@ -1,18 +1,16 @@
-@startuml uc-tongquan
+@startuml uc_tongquan
 left to right direction
 skinparam packageStyle rectangle
 
 actor "Khách Hàng Vãng Lai" as KHVL
 actor "Khách Hàng" as KH 
 actor "Người Dùng" as ND
-actor "Quản Lý" as QL
 actor "Nhân Viên" as NV
 actor Admin as AD
 
 ND <|-- AD
-ND <|-- QL
-ND <|-- KH
 ND <|-- NV
+ND <|-- KH
 
 rectangle "Hệ Thống" {
   ND --> (Đăng nhập)
@@ -38,7 +36,7 @@ rectangle "Hệ Thống" {
   AD --> (Quản lý mã giảm giá)
   AD --> (Quản lý danh mục sách)
 
-  QL --> (Quản lý đơn hàng - Staff)
+  NV --> (Quản lý đơn hàng - Staff)
 }
 
 @enduml
