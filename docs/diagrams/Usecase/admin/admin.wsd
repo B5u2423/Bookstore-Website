@@ -19,7 +19,6 @@ AD --> (Quản lý sách)
 (Quản lý sách) ..> (Tìm kiếm sách) : <<includes>>
 (Quản lý sách) ..> (Xem danh sách sách) : <<includes>>
 (Xem danh sách sách) <.. (Xóa sách) : <<extends>>
-(Xem danh sách sách) <.. (Đặt lại mật khẩu cho sách) : <<extends>>
 (Xem danh sách sách) <.. (Xem chi tiết sách) : <<extends>>
 (Tìm kiếm sách) <.. (Xem chi tiết sách) : <<extends>>
 (Xem chi tiết sách) <.. (Cập nhật thông tin sách) : <<extends>>
@@ -39,7 +38,6 @@ AD --> (Quản lý mã giảm giá)
 (Quản lý mã giảm giá) ..> (Tìm kiếm mã giảm giá) : <<includes>>
 (Quản lý mã giảm giá) ..> (Xem danh sách mã giảm giá) : <<includes>>
 (Xem danh sách mã giảm giá) <.. (Xóa mã giảm giá) : <<extends>>
-(Xem danh sách mã giảm giá) <.. (Đặt lại mật khẩu cho mã giảm giá) : <<extends>>
 (Xem danh sách mã giảm giá) <.. (Xem chi tiết mã giảm giá) : <<extends>>
 (Tìm kiếm mã giảm giá) <.. (Xem chi tiết mã giảm giá) : <<extends>>
 (Xem chi tiết mã giảm giá) <.. (Cập nhật thông tin mã giảm giá) : <<extends>>
@@ -49,7 +47,6 @@ AD --> (Quản lý danh mục sách)
 (Quản lý danh mục sách) ..> (Tìm kiếm danh mục sách) : <<includes>>
 (Quản lý danh mục sách) ..> (Xem danh sách danh mục sách) : <<includes>>
 (Xem danh sách danh mục sách) <.. (Xóa danh mục sách) : <<extends>>
-(Xem danh sách danh mục sách) <.. (Đặt lại mật khẩu cho danh mục sách) : <<extends>>
 (Xem danh sách danh mục sách) <.. (Xem chi tiết danh mục sách) : <<extends>>
 (Tìm kiếm danh mục sách) <.. (Xem chi tiết danh mục sách) : <<extends>>
 (Xem chi tiết danh mục sách) <.. (Cập nhật thông tin danh mục sách) : <<extends>>
@@ -59,7 +56,6 @@ AD --> (Quản lý đơn hàng)
 (Quản lý đơn hàng) ..> (Tìm kiếm đơn hàng) : <<includes>>
 (Quản lý đơn hàng) ..> (Xem danh sách đơn hàng) : <<includes>>
 (Xem danh sách đơn hàng) <.. (Xóa đơn hàng) : <<extends>>
-(Xem danh sách đơn hàng) <.. (Đặt lại mật khẩu cho đơn hàng) : <<extends>>
 (Xem danh sách đơn hàng) <.. (Xem chi tiết đơn hàng) : <<extends>>
 (Tìm kiếm đơn hàng) <.. (Xem chi tiết đơn hàng) : <<extends>>
 (Xem chi tiết đơn hàng) <.. (Cập nhật thông tin đơn hàng) : <<extends>>
