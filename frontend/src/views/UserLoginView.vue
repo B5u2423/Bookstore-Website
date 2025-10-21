@@ -13,7 +13,7 @@ const prop = {
 const showPassword = ref(false)
 const user = reactive({
   email: '',
-  passwordd: ''
+  password: ''
 })
 const form = ref(false)
 
