@@ -1,4 +1,4 @@
-package dev.vubl.bookstore.books;
+package dev.vubl.bookstore.model;
 
 import java.math.BigDecimal;
 
