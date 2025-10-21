@@ -1,11 +1,10 @@
 package dev.vubl.bookstore.service;
 
 import dev.vubl.bookstore.model.BookDTO;
-import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class BookService {
