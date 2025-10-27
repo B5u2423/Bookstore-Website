@@ -1,6 +1,6 @@
-package dev.vubl.bookstore.service;
+package dev.vubl.bookstore.services;
 
-import dev.vubl.bookstore.model.BookDTO;
+import dev.vubl.bookstore.dto.BookDTO;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;

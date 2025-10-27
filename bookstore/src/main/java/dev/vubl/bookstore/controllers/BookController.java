@@ -1,7 +1,7 @@
-package dev.vubl.bookstore.controller;
+package dev.vubl.bookstore.controllers;
 
-import dev.vubl.bookstore.model.BookDTO;
-import dev.vubl.bookstore.service.BookService;
+import dev.vubl.bookstore.dto.BookDTO;
+import dev.vubl.bookstore.services.BookService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/books")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:5713")
 public class BookController {
   private final BookService bookService;
 
