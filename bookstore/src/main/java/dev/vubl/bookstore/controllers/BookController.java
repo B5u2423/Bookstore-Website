@@ -22,16 +22,16 @@ public class BookController {
 
   @GetMapping("/featured")
   public List<BookDTO> getFeaturedBooks() {
-    return bookService.list();
+    return bookService.getAllBooks();
   }
 
   @GetMapping("/best-sellers")
   public List<BookDTO> getBestSellerBooks() {
-    return bookService.list();
+    return bookService.getAllBooks();
   }
 
   @GetMapping("/new")
   public List<BookDTO> getNewArrivalBooks() {
-    return bookService.list();
+    return bookService.getAllBooks();
   }
 }

@@ -2,6 +2,7 @@ package dev.vubl.bookstore.repos;
 
 import dev.vubl.bookstore.model.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface BookRepo extends JpaRepository<Book, Integer> {
-}
+@Repository
+public interface BookRepo extends JpaRepository<Book, Integer> {}

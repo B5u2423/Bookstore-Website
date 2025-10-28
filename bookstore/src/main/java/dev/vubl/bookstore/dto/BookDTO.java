@@ -1,7 +1,9 @@
 package dev.vubl.bookstore.dto;
 
 import java.math.BigDecimal;
+import lombok.Builder;
 
+@Builder
 public record BookDTO(
     Long id,
     String isbn,

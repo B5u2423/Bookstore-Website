@@ -1,4 +1,6 @@
 package dev.vubl.bookstore.repos;
 
-public interface UserRepo {
-}
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface UserRepo {}
