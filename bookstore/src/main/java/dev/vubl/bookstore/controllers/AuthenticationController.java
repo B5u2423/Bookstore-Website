@@ -1,11 +1,11 @@
 package dev.vubl.bookstore.controllers;
 
-import dev.vubl.bookstore.dto.LoginRequestDTO;
-import dev.vubl.bookstore.dto.LoginResponseDTO;
-import dev.vubl.bookstore.dto.RegistrationRequestDTO;
-import dev.vubl.bookstore.dto.RegistrationResponseDTO;
+import dev.vubl.bookstore.dtos.LoginRequestDTO;
+import dev.vubl.bookstore.dtos.LoginResponseDTO;
+import dev.vubl.bookstore.dtos.RegistrationRequestDTO;
+import dev.vubl.bookstore.dtos.RegistrationResponseDTO;
 import dev.vubl.bookstore.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,14 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
+@RequiredArgsConstructor
 public class AuthenticationController {
   private final UserService userService;
-
-  @Autowired
-  public AuthenticationController(UserService userService) {
-    this.userService = userService;
-  }
 
   @PostMapping("/login")
   public ResponseEntity<LoginResponseDTO> userLogin(@RequestBody LoginRequestDTO request) {

@@ -1,4 +1,4 @@
-package dev.vubl.bookstore.dto;
+package dev.vubl.bookstore.dtos;
 
 import lombok.Builder;
 

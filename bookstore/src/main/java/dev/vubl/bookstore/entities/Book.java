@@ -1,15 +1,38 @@
-package dev.vubl.bookstore.model;
+package dev.vubl.bookstore.entities;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
-@Entity
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+@EqualsAndHashCode(callSuper = true)
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "books")
-public class Book {
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Integer bookId;
+@Entity
+public class Book extends BaseEntity {
+  @Column(name = "isbn", unique = true)
+  private String isbn;
 
+  @Column(name = "title")
   private String title;
+
+  @Column(name = "description")
+  private String description;
+
+  @ManyToMany
+  @JoinTable(
+          name = "book_author",
+          joinColumns = @JoinColumn(name = "book_id"),
+          inverseJoinColumns = @JoinColumn(name = "author_id")
+  )
+  private List<Author> authors = new ArrayList<>();
+
+  @Column(name = "price")
+  private BigDecimal price;
 }

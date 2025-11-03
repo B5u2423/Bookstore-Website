@@ -1,3 +1,3 @@
-package dev.vubl.bookstore.dto;
+package dev.vubl.bookstore.dtos;
 
 public record UserDTO(String email, String password, String jwt) {}
