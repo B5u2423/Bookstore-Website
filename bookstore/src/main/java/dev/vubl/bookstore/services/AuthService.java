@@ -5,6 +5,7 @@ import dev.vubl.bookstore.dtos.LoginResponse;
 import dev.vubl.bookstore.dtos.RegistrationRequest;
 import dev.vubl.bookstore.dtos.RegistrationResponse;
 import dev.vubl.bookstore.entities.ApplicationUser;
+import dev.vubl.bookstore.entities.UserType;
 import dev.vubl.bookstore.exceptions.InvalidCredentialException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -66,5 +67,17 @@ public class AuthService {
   public ApplicationUser readUserFromToken(String token) {
     String email = tokenService.extractUserEmailFromToken(token);
     return userService.readUserByEmail(email);
+  }
+
+  public void loadUsersForTesting() {
+    ApplicationUser admin =
+        userService.createOrUpdateUser(
+            ApplicationUser.builder()
+                .userType(UserType.ADMIN)
+                .firstName("admin")
+                .lastName("admin")
+                .email("admin@company.com")
+                .password(passwordEncoder.encode("pass"))
+                .build());
   }
 }

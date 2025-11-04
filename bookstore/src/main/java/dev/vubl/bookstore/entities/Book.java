@@ -23,7 +23,7 @@ public class Book extends BaseEntity {
   @Column(name = "description")
   private String description;
 
-  @ManyToMany
+  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinTable(
       name = "book_author",
       joinColumns = @JoinColumn(name = "book_id"),
@@ -32,4 +32,7 @@ public class Book extends BaseEntity {
 
   @Column(name = "price")
   private BigDecimal price;
+
+  @Column(name = "in_stock")
+  private int inStock;
 }

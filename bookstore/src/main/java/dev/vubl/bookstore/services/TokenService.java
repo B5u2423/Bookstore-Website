@@ -37,6 +37,12 @@ public class TokenService {
   }
 
   public RefreshToken generateRefreshToken(ApplicationUser user) {
+    Optional<RefreshToken> token = refreshTokenRepo.findByUser(user);
+    // user is already logged in
+    if (token.isPresent()) {
+      this.deleteRefreshTokenByUser(user);
+      refreshTokenRepo.flush();
+    }
     RefreshToken refreshToken =
         RefreshToken.builder()
             .refreshToken(UUID.randomUUID().toString())
@@ -55,9 +61,10 @@ public class TokenService {
       this.deleteRefreshTokenByUser(user);
       throw new RevalidateTokenException();
     }
+    // implementing non-rotating refresh token
+    // previous refresh token will be revoked
     this.deleteRefreshTokenByUser(user);
     refreshTokenRepo.flush();
-    // implementing non-rotating refresh token
     String jwtToken = this.generateJwt(user);
     RefreshToken newRefreshToken = this.generateRefreshToken(user);
     return LoginResponse.builder()

@@ -2,6 +2,7 @@ package dev.vubl.bookstore.controllers;
 
 import dev.vubl.bookstore.dtos.*;
 import dev.vubl.bookstore.exceptions.RevalidateTokenException;
+import dev.vubl.bookstore.exceptions.UnableToRegisterApplicationUserException;
 import dev.vubl.bookstore.services.ApplicationUserService;
 import dev.vubl.bookstore.services.AuthService;
 import dev.vubl.bookstore.services.TokenService;
@@ -49,5 +50,11 @@ public class AuthenticationController {
   public ResponseEntity<String> revalidateTokenExceptionHandler() {
     return ResponseEntity.status(HttpStatus.NOT_FOUND)
         .body("Refresh token does not exist or is expired! Please re-authenticate!");
+  }
+
+  @ExceptionHandler({UnableToRegisterApplicationUserException.class})
+  public ResponseEntity<String> unableToRegisterApplicationUserException() {
+    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+        .body("Unable to register new user! There is already existing account with this email!");
   }
 }

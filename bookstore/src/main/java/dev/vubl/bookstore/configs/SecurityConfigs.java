@@ -141,6 +141,8 @@ public class SecurityConfigs {
   }
 
   private static PathPatternRequestMatcher[] adminRoutes() {
-    return new PathPatternRequestMatcher[] {};
+    return new PathPatternRequestMatcher[] {
+      PathPatternRequestMatcher.withDefaults().matcher("/api/v1/admin/**"),
+    };
   }
 }
