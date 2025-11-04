@@ -1,10 +1,18 @@
 package dev.vubl.bookstore.services;
 
+import dev.vubl.bookstore.dtos.LoginRequest;
+import dev.vubl.bookstore.dtos.LoginResponse;
 import dev.vubl.bookstore.dtos.RegistrationRequest;
 import dev.vubl.bookstore.dtos.RegistrationResponse;
 import dev.vubl.bookstore.entities.ApplicationUser;
+import dev.vubl.bookstore.exceptions.InvalidCredentialException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +22,8 @@ import org.springframework.stereotype.Service;
 public class AuthService {
   private final ApplicationUserService userService;
   private final PasswordEncoder passwordEncoder;
+  private final AuthenticationManager authenticationManager;
+  private final TokenService tokenService;
 
   public RegistrationResponse registerUser(RegistrationRequest request) {
     ApplicationUser newUser =
@@ -28,7 +38,33 @@ public class AuthService {
     return RegistrationResponse.builder().createdUser(newUser).build();
   }
 
-  public void loginUser() {
-    return;
+  public LoginResponse logInUser(
+      LoginRequest payload, HttpServletRequest request, HttpServletResponse response) {
+    try {
+      UsernamePasswordAuthenticationToken authenticationToken =
+          UsernamePasswordAuthenticationToken.unauthenticated(payload.email(), payload.password());
+      Authentication auth = authenticationManager.authenticate(authenticationToken);
+
+      ApplicationUser user = userService.readUserByEmail(payload.email());
+      // generate access token
+      String jwtToken = tokenService.generateJwt(user);
+      // generate refresh token
+      String refreshToken = tokenService.generateRefreshToken(user).getRefreshToken();
+
+      return LoginResponse.builder().token(jwtToken).refresh(refreshToken).user(user).build();
+    } catch (Exception e) {
+      throw new InvalidCredentialException();
+    }
+  }
+
+  public void logOutUser(String jwt) {
+    String email = tokenService.extractUserEmailFromToken(jwt);
+    ApplicationUser user = userService.readUserByEmail(email);
+    tokenService.deleteRefreshTokenByUser(user);
+  }
+
+  public ApplicationUser readUserFromToken(String token) {
+    String email = tokenService.extractUserEmailFromToken(token);
+    return userService.readUserByEmail(email);
   }
 }

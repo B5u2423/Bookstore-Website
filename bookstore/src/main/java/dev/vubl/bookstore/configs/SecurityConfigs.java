@@ -6,6 +6,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import dev.vubl.bookstore.entities.UserType;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +26,8 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
@@ -83,6 +87,18 @@ public class SecurityConfigs {
   }
 
   @Bean
+  public JwtAuthenticationConverter jwtAuthenticationConverter() {
+    JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter =
+        new JwtGrantedAuthoritiesConverter();
+    jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
+    jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+
+    JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
+    jwtConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+    return jwtConverter;
+  }
+
+  @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
         .cors(AbstractHttpConfigurer::disable)
@@ -92,8 +108,15 @@ public class SecurityConfigs {
         .authorizeHttpRequests(
             auth -> {
               auth.requestMatchers(unprotectedRoute()).permitAll();
+              auth.requestMatchers(adminRoutes()).hasRole(UserType.ADMIN.name());
+              auth.requestMatchers(customerRoutes()).hasRole(UserType.CUSTOMER.name());
               auth.anyRequest().authenticated();
-            });
+            })
+        .oauth2ResourceServer(
+            oauth2 ->
+                oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
     return http.build();
   }
 
@@ -105,8 +128,19 @@ public class SecurityConfigs {
     return new PathPatternRequestMatcher[] {
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/auth/login"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/auth/register"),
+      PathPatternRequestMatcher.withDefaults().matcher("/api/v1/auth/refresh"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/books/**"),
       PathPatternRequestMatcher.withDefaults().matcher("/h2-console/**")
     };
+  }
+
+  private static PathPatternRequestMatcher[] customerRoutes() {
+    return new PathPatternRequestMatcher[] {
+      PathPatternRequestMatcher.withDefaults().matcher("/api/v1/customers/account"),
+    };
+  }
+
+  private static PathPatternRequestMatcher[] adminRoutes() {
+    return new PathPatternRequestMatcher[] {};
   }
 }

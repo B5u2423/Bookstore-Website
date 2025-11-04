@@ -1,12 +1,14 @@
 package dev.vubl.bookstore.controllers;
 
-import dev.vubl.bookstore.dtos.LoginRequestDTO;
-import dev.vubl.bookstore.dtos.LoginResponseDTO;
-import dev.vubl.bookstore.dtos.RegistrationRequest;
-import dev.vubl.bookstore.dtos.RegistrationResponse;
+import dev.vubl.bookstore.dtos.*;
+import dev.vubl.bookstore.exceptions.RevalidateTokenException;
 import dev.vubl.bookstore.services.ApplicationUserService;
 import dev.vubl.bookstore.services.AuthService;
+import dev.vubl.bookstore.services.TokenService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,16 +19,35 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
   private final ApplicationUserService userService;
   private final AuthService authService;
+  private final TokenService tokenService;
 
   @PostMapping("/login")
-  public ResponseEntity<LoginResponseDTO> userLogin(@RequestBody LoginRequestDTO request) {
-    LoginResponseDTO resp = new LoginResponseDTO("this will be your token");
-    return new ResponseEntity<>(resp, HttpStatus.OK);
+  public ResponseEntity<LoginResponse> userLogin(
+      @RequestBody LoginRequest body, HttpServletResponse response, HttpServletRequest request) {
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(authService.logInUser(body, request, response));
   }
 
   @PostMapping("/register")
   public ResponseEntity<RegistrationResponse> userRegister(
       @RequestBody RegistrationRequest request) {
     return ResponseEntity.status(HttpStatus.CREATED).body(authService.registerUser(request));
+  }
+
+  @GetMapping("/refresh")
+  public ResponseEntity<LoginResponse> refreshJwtAccessToken(@RequestBody RefreshRequest body) {
+    return ResponseEntity.status(HttpStatus.OK).body(tokenService.refreshJwt(body.refreshToken()));
+  }
+
+  @DeleteMapping("/logout")
+  public ResponseEntity<String> logOutUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+    authService.logOutUser(token);
+    return ResponseEntity.status(HttpStatus.OK).body("User logged out");
+  }
+
+  @ExceptionHandler({RevalidateTokenException.class})
+  public ResponseEntity<String> revalidateTokenExceptionHandler() {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        .body("Refresh token does not exist or is expired! Please re-authenticate!");
   }
 }

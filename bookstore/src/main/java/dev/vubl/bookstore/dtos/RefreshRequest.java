@@ -3,4 +3,4 @@ package dev.vubl.bookstore.dtos;
 import lombok.Builder;
 
 @Builder
-public record LoginRequestDTO(String email, String password) {}
+public record RefreshRequest(String refreshToken) {}

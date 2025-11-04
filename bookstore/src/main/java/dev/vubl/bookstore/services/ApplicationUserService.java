@@ -45,6 +45,10 @@ public class ApplicationUserService implements UserDetailsService {
     return userRepo.findAll();
   }
 
+  public ApplicationUser readUserByEmail(String email) {
+    return readUserByEmailOrThrowException(email);
+  }
+
   public void deleteUser(String email) {
     ApplicationUser user = readUserByEmailOrThrowException(email);
     userRepo.delete(user);
