@@ -13,7 +13,7 @@ const isHovered = ref(false)
     @mouseleave="isHovered = false"
     hover>
     <router-link
-      :to="{ name: 'product-detail', params: { id: product.id}}">
+      :to="{ name: 'product-detail', params: { title: product.title} }">
       <v-img
         :src="product.image"
         height="250"
