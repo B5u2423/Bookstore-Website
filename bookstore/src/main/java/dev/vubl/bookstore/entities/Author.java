@@ -4,10 +4,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import lombok.*;
-
 import java.util.ArrayList;
 import java.util.List;
+import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -16,7 +15,7 @@ import java.util.List;
 @Entity
 @Builder
 @Table(name = "authors")
-public class Author extends BaseEntity{
+public class Author extends BaseEntity {
   @Column(name = "author_name")
   private String authorName;
 

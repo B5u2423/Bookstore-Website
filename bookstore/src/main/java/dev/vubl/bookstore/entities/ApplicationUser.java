@@ -2,7 +2,6 @@ package dev.vubl.bookstore.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
@@ -12,7 +11,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends BaseEntity {
+public class ApplicationUser extends BaseEntity {
   @Enumerated(EnumType.STRING)
   @Column(name = "user_type")
   private UserType userType;
@@ -26,6 +25,5 @@ public class User extends BaseEntity {
   @Column(name = "last_name")
   private String lastName;
 
-  @JsonIgnore
-  private String password;
+  @JsonIgnore private String password;
 }

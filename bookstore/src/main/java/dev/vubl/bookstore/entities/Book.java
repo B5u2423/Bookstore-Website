@@ -1,12 +1,10 @@
 package dev.vubl.bookstore.entities;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -27,10 +25,9 @@ public class Book extends BaseEntity {
 
   @ManyToMany
   @JoinTable(
-          name = "book_author",
-          joinColumns = @JoinColumn(name = "book_id"),
-          inverseJoinColumns = @JoinColumn(name = "author_id")
-  )
+      name = "book_author",
+      joinColumns = @JoinColumn(name = "book_id"),
+      inverseJoinColumns = @JoinColumn(name = "author_id"))
   private List<Author> authors = new ArrayList<>();
 
   @Column(name = "price")

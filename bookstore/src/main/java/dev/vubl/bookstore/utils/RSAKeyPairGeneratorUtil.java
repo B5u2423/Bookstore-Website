@@ -5,7 +5,7 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 
 public class RSAKeyPairGeneratorUtil {
-  public static KeyPair generateRSAKeyPair () {
+  public static KeyPair generateRSAKeyPair() {
     KeyPair keyPair;
     try {
       KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");

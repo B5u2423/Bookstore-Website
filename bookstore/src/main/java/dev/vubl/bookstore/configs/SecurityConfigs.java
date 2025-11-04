@@ -6,7 +6,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import dev.vubl.bookstore.utils.RSAKeyPairGeneratorUtil;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,32 +30,34 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
-
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfigs {
   private final RSAKeyPairProperties rsaKeyPairProperties;
 
   @Bean
-  public PasswordEncoder bCryptPasswordEncoder () {
+  public PasswordEncoder bCryptPasswordEncoder() {
     return new BCryptPasswordEncoder();
   }
 
   @Bean
-  public JwtDecoder jwtDecoder () {
+  public JwtDecoder jwtDecoder() {
     return NimbusJwtDecoder.withPublicKey(rsaKeyPairProperties.getRsaPublicKey()).build();
   }
 
   @Bean
-  public JwtEncoder jwtEncoder () {
-    JWK jwk = new RSAKey.Builder(rsaKeyPairProperties.getRsaPublicKey()).privateKey(rsaKeyPairProperties.getRsaPrivateKey()).build();
+  public JwtEncoder jwtEncoder() {
+    JWK jwk =
+        new RSAKey.Builder(rsaKeyPairProperties.getRsaPublicKey())
+            .privateKey(rsaKeyPairProperties.getRsaPrivateKey())
+            .build();
     JWKSource<SecurityContext> jwkSource = new ImmutableJWKSet<>(new JWKSet(jwk));
     return new NimbusJwtEncoder(jwkSource);
   }
 
   /**
    * Handle cross-origin
+   *
    * @return CorsConfigurationSource object
    */
   @Bean
@@ -67,32 +69,31 @@ public class SecurityConfigs {
     corsConfiguration.setAllowedHeaders(List.of("*"));
 
     UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource =
-            new UrlBasedCorsConfigurationSource();
+        new UrlBasedCorsConfigurationSource();
     urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
     return urlBasedCorsConfigurationSource;
   }
 
   @Bean
   public AuthenticationManager authenticationManager(UserDetailsService userDetailsService) {
-    DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(userDetailsService);
+    DaoAuthenticationProvider daoAuthenticationProvider =
+        new DaoAuthenticationProvider(userDetailsService);
     daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder());
     return new ProviderManager(daoAuthenticationProvider);
   }
 
   @Bean
-  public SecurityFilterChain filterChain (HttpSecurity http) throws Exception {
-    http
-            .csrf(AbstractHttpConfigurer::disable)
-            .cors(AbstractHttpConfigurer::disable)
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
-            .requestCache(RequestCacheConfigurer::disable)
-            .authorizeHttpRequests(
-                    auth -> {
-                      auth.requestMatchers(unprotectedRoute()).permitAll();
-                      auth.anyRequest().authenticated();
-                    }
-            );
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.csrf(AbstractHttpConfigurer::disable)
+        .cors(AbstractHttpConfigurer::disable)
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+        .requestCache(RequestCacheConfigurer::disable)
+        .authorizeHttpRequests(
+            auth -> {
+              auth.requestMatchers(unprotectedRoute()).permitAll();
+              auth.anyRequest().authenticated();
+            });
     return http.build();
   }
 
@@ -100,12 +101,12 @@ public class SecurityConfigs {
    * Route settings
    */
 
-  private static PathPatternRequestMatcher[] unprotectedRoute () {
+  private static PathPatternRequestMatcher[] unprotectedRoute() {
     return new PathPatternRequestMatcher[] {
-            PathPatternRequestMatcher.withDefaults().matcher("/auth/login"),
-            PathPatternRequestMatcher.withDefaults().matcher("/auth/register"),
-            PathPatternRequestMatcher.withDefaults().matcher("/api/v1/books/**"),
-            PathPatternRequestMatcher.withDefaults().matcher("/h2-console/**")
+      PathPatternRequestMatcher.withDefaults().matcher("/api/v1/auth/login"),
+      PathPatternRequestMatcher.withDefaults().matcher("/api/v1/auth/register"),
+      PathPatternRequestMatcher.withDefaults().matcher("/api/v1/books/**"),
+      PathPatternRequestMatcher.withDefaults().matcher("/h2-console/**")
     };
   }
 }
