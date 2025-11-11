@@ -1,43 +1,52 @@
 export const nameRules = [
   (value) => {
-    if (value) return true
-    return 'Name is required.'
+    if (value && value.trim()) return true
+    return 'Tên là bắt buộc.'
   },
   value => {
-    if (value?.length <= 255) return true
-    return 'Name must be less than 255 characters.'
+    if (value?.length <= 50) return true
+    return 'Tên phải ít hơn 50 ký tự.'
   },
+  value => {
+    if (/^[a-zA-ZÀ-ỹ\s]+$/.test(value)) return true
+    return 'Tên chỉ được chứa chữ cái và khoảng trắng.'
+  }
 ]
+
 export const emailRules = [
   value => {
     if (value) return true
-    return 'E-mail is required.'
+    return 'Email là bắt buộc.'
   },
   value => {
-    if (/.+@.+\..+/.test(value)) return true
-
-    return 'E-mail must be valid.'
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (emailPattern.test(value)) return true
+    return 'Email không hợp lệ.'
   },
 ]
 
 export const phoneRules = [
   value => {
     if (value) return true
-    return 'Phone number is required'
+    return 'Số điện thoại là bắt buộc'
   },
   value => {
-    if (/\d{7,15}/.test(value)) return true
-    return 'Invalid phone number'
+    if (/^[0-9]{10,11}$/.test(value)) return true
+    return 'Số điện thoại phải có 10-11 chữ số'
   }
 ]
 
 export const passwordRules = [
   value => {
     if (value) return true
-    return 'Password is required'
+    return 'Mật khẩu là bắt buộc'
   },
   value => {
-    if (value?.length >= 8) return true
-    return 'Password should be at least 8 characters'
+    if (value?.length >= 6) return true
+    return 'Mật khẩu phải có ít nhất 6 ký tự'
+  },
+  value => {
+    if (value?.length <= 50) return true
+    return 'Mật khẩu không được quá 50 ký tự'
   }
 ]

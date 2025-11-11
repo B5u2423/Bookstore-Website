@@ -32,9 +32,9 @@ public class BookService {
 
       bookRepo.save(
           Book.builder()
-              .title("Title" + i)
+              .title("Title %d".formatted(i))
               .isbn(String.valueOf(Math.random()))
-              .description("Description" + i)
+              .description("Description %s".formatted(i))
               .authors(List.of(author))
               .price(BigDecimal.valueOf(Math.random()))
               .build());

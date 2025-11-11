@@ -29,6 +29,13 @@ public class AuthenticationController {
         .body(authService.logInUser(body, request, response));
   }
 
+  @PostMapping("/admin/login")
+  public ResponseEntity<LoginResponse> adminLogin(
+      @RequestBody LoginRequest body, HttpServletResponse response, HttpServletRequest request) {
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(authService.logInUser(body, request, response));
+  }
+
   @PostMapping("/register")
   public ResponseEntity<RegistrationResponse> userRegister(
       @RequestBody RegistrationRequest request) {

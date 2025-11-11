@@ -5,8 +5,6 @@ import ProductGrid from '@/components/products/ProductGrid.vue';
 import Carousel from '@/components/common/Carousel.vue';
 import { useBookStore } from '@/stores/book-store';
 import { onMounted } from 'vue';
-// Testing Hello World
-// import HelloWorld from '@/components/HelloWorld.vue';
 
 const bookStore = useBookStore()
 
