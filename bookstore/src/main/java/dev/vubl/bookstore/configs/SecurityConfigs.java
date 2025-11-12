@@ -11,6 +11,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -107,9 +108,9 @@ public class SecurityConfigs {
         .requestCache(RequestCacheConfigurer::disable)
         .authorizeHttpRequests(
             auth -> {
-              auth.requestMatchers(unprotectedRoute()).permitAll();
               auth.requestMatchers(adminRoutes()).hasRole(UserType.ADMIN.name());
               auth.requestMatchers(customerRoutes()).hasRole(UserType.CUSTOMER.name());
+              auth.requestMatchers(unprotectedRoute()).permitAll();
               auth.anyRequest().authenticated();
             })
         .oauth2ResourceServer(
@@ -130,7 +131,7 @@ public class SecurityConfigs {
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/auth/admin/login"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/auth/register"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/auth/refresh"),
-      PathPatternRequestMatcher.withDefaults().matcher("/api/v1/books/**"),
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/v1/books/**"),
       PathPatternRequestMatcher.withDefaults().matcher("/h2-console/**")
     };
   }
@@ -144,6 +145,7 @@ public class SecurityConfigs {
   private static PathPatternRequestMatcher[] adminRoutes() {
     return new PathPatternRequestMatcher[] {
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/admin/**"),
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, "/api/v1/books/add")
     };
   }
 }

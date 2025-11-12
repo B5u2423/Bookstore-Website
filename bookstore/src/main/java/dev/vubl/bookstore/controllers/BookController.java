@@ -1,13 +1,13 @@
 package dev.vubl.bookstore.controllers;
 
 import dev.vubl.bookstore.dtos.BookDTO;
+import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
 import dev.vubl.bookstore.services.BookService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/books")
@@ -29,5 +29,16 @@ public class BookController {
   @GetMapping("/new")
   public List<BookDTO> getNewArrivalBooks() {
     return bookService.getAllBooks();
+  }
+
+  @PostMapping("/add")
+  public ResponseEntity<BookDTO> addNewBook(@RequestBody BookDTO payload) {
+    return ResponseEntity.status(HttpStatus.OK).body(bookService.addOrUpdateBook(payload));
+  }
+
+  @ExceptionHandler({BookWithIsbnAlreadyExists.class})
+  public ResponseEntity<String> handleBookWithExistingIsbn() {
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body("Book with this ISBN already exists.");
   }
 }
