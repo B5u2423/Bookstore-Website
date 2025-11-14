@@ -181,8 +181,12 @@ function handleLogout() {
                 Thêm sách mới, cập nhật thông tin và quản lý kho
               </v-card-text>
               <v-card-actions class="justify-center">
-                <v-btn color="green" variant="elevated">
-                  Quản Lý
+                <v-btn 
+                  color="green" 
+                  variant="elevated"
+                  @click="router.push('/admin/books/add')"
+                >
+                  Thêm Sách Mới
                 </v-btn>
               </v-card-actions>
             </v-card>

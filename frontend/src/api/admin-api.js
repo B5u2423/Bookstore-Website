@@ -41,20 +41,12 @@ export function deleteUser(userId) {
 }
 
 /**
- * Get system statistics (admin only)
- * @returns {Promise} API response with statistics
- */
-export function getSystemStats() {
-  return api.get('/api/v1/admin/stats');
-}
-
-/**
- * Manage book inventory (admin only)
- * @param {Object} bookData - Book data to add/update
+ * Create a new book (admin only)
+ * @param {Object} bookData - Book data following BookDTO structure
  * @returns {Promise} API response
  */
-export function manageBook(bookData) {
-  return api.post('/api/v1/admin/books', bookData);
+export function createBook(bookData) {
+  return api.post('/api/v1/books/add', bookData);
 }
 
 /**

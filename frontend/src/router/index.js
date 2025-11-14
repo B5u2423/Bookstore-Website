@@ -6,7 +6,8 @@ const  routes = [
   { name: 'user-login', path: '/login', component: () => import('@/views/UserLoginView.vue') }, 
   { name: 'user-register', path: '/register', component: () => import('@/views/UserRegisterView.vue') }, 
   { path: '/admin/login', alias: '/admin', name: 'admin-login', component: () => import('@/views/AdminLoginView.vue') },
-  { path: '/admin/dashboard', name: 'admin-dashboard', component: () => import('@/views/AdminDashboardView.vue'), meta: { requiresAuth: true, requiresAdmin: true } }, 
+  { path: '/admin/dashboard', name: 'admin-dashboard', component: () => import('@/views/AdminDashboardView.vue'), meta: { requiresAuth: true, requiresAdmin: true } },
+  { path: '/admin/books/add', name: 'admin-add-book', component: () => import('@/views/AdminAddBookView.vue'), meta: { requiresAuth: true, requiresAdmin: true } },
  // TODO: convert title to kebab-case
   { name: 'product-detail', path: '/b/:title', component: () => import('@/views/ProductDetailView.vue') }, 
   { name: 'cart', path: '/cart', component: () => import('@/views/CartView.vue') }, 

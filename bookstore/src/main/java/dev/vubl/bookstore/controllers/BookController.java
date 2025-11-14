@@ -31,10 +31,17 @@ public class BookController {
     return bookService.getAllBooks();
   }
 
+  // ADMIN
   @PostMapping("/add")
   public ResponseEntity<BookDTO> addNewBook(@RequestBody BookDTO payload) {
     return ResponseEntity.status(HttpStatus.OK).body(bookService.addOrUpdateBook(payload));
   }
+
+  //  @PostMapping("/books")
+  //  public ResponseEntity<BookDTO> createBook(@Valid @RequestBody BookDTO bookDTO) {
+  //    BookDTO createdBook = bookService.addOrUpdateBook(bookDTO);
+  //    return ResponseEntity.status(HttpStatus.CREATED).body(createdBook);
+  //  }
 
   @ExceptionHandler({BookWithIsbnAlreadyExists.class})
   public ResponseEntity<String> handleBookWithExistingIsbn() {
