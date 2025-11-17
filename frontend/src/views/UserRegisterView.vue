@@ -188,3 +188,4 @@ async function handleRegister() {
     > </CommonLayout
   >
 </template>
+

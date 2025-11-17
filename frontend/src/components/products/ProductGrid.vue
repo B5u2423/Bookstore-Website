@@ -30,3 +30,4 @@ const props = defineProps(['title', 'subtitle', 'products'])
     > </v-container
   >
 </template>
+

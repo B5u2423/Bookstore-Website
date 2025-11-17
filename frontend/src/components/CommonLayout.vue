@@ -12,3 +12,4 @@ const props = defineProps(['prop'])
     > <v-main height="90%"> <slot></slot> </v-main> </v-container
   > <FooterSection />
 </template>
+

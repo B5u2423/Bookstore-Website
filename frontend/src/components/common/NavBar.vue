@@ -19,3 +19,4 @@ const buttons = [
   { name: 'Khuyến mãi', path: '/deals' },
 ]
 </script>
+

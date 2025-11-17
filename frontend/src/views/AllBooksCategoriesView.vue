@@ -9,3 +9,4 @@ import CommonLayout from '@/components/CommonLayout.vue'
      </CommonLayout
   >
 </template>
+

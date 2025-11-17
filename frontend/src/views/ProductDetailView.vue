@@ -60,7 +60,7 @@ const rating = ref(4)
         > <!-- Info --> <v-tabs-window-item value="info"
           >
           <p class="mt-4">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur, maxime harum numquam
+             Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur, maxime harum numquam
             eligendi voluptates illo delectus porro architecto iure recusandae cum saepe nam sunt
             alias dolorem assumenda similique ea minus?
           </p>
@@ -68,9 +68,9 @@ const rating = ref(4)
         > <!-- Reviews --> <v-tabs-window-item value="reviews"
           >
           <p class="mt-4">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat quibusdam eos, aperiam
-            quisquam expedita corrupti error vero quod ex facilis sed, dolorem saepe possimus minima
-            facere voluptatibus, aliquid vel commodi.
+             Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat quibusdam eos,
+            aperiam quisquam expedita corrupti error vero quod ex facilis sed, dolorem saepe
+            possimus minima facere voluptatibus, aliquid vel commodi.
           </p>
            </v-tabs-window-item
         > </v-tabs-window
@@ -84,3 +84,4 @@ const rating = ref(4)
   color: #666;
 }
 </style>
+

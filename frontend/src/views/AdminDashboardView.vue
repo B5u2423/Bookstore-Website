@@ -77,7 +77,7 @@ function handleLogout() {
             <h1 class="text-h4 font-weight-bold">Bảng Điều Khiển</h1>
 
             <p class="text-subtitle-1 text-grey-darken-1">
-              Chào mừng quay trở lại, {{ authStore.user?.firstName }}!
+               Chào mừng quay trở lại, {{ authStore.user?.firstName }}!
             </p>
              </v-col
           > </v-row
@@ -219,3 +219,4 @@ function handleLogout() {
     > </v-app
   >
 </template>
+
