@@ -18,7 +18,7 @@ const vuetify = createVuetify({
   directives,
   icons: {
     defaultSet: 'mdi',
-  }
+  },
 })
 
 const pinia = createPinia()

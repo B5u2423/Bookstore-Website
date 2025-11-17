@@ -1,4 +1,4 @@
-import api from './auth-api';
+import api from './auth-api'
 
 /**
  * Customer API functions - these require authentication with CUSTOMER role
@@ -9,7 +9,7 @@ import api from './auth-api';
  * @returns {Promise} API response with customer account data
  */
 export function getCustomerAccount() {
-  return api.get('/api/v1/customers/account');
+  return api.get('/api/v1/customers/account')
 }
 
 /**
@@ -18,7 +18,7 @@ export function getCustomerAccount() {
  * @returns {Promise} API response
  */
 export function updateCustomerProfile(profileData) {
-  return api.put('/api/v1/customers/profile', profileData);
+  return api.put('/api/v1/customers/profile', profileData)
 }
 
 /**
@@ -26,7 +26,7 @@ export function updateCustomerProfile(profileData) {
  * @returns {Promise} API response with order history
  */
 export function getCustomerOrders() {
-  return api.get('/api/v1/customers/orders');
+  return api.get('/api/v1/customers/orders')
 }
 
 /**
@@ -34,7 +34,7 @@ export function getCustomerOrders() {
  * @returns {Promise} API response with cart items
  */
 export function getCustomerCart() {
-  return api.get('/api/v1/customers/cart');
+  return api.get('/api/v1/customers/cart')
 }
 
 /**
@@ -43,7 +43,7 @@ export function getCustomerCart() {
  * @returns {Promise} API response
  */
 export function addToCart(cartItem) {
-  return api.post('/api/v1/customers/cart', cartItem);
+  return api.post('/api/v1/customers/cart', cartItem)
 }
 
 /**
@@ -52,5 +52,5 @@ export function addToCart(cartItem) {
  * @returns {Promise} API response
  */
 export function removeFromCart(itemId) {
-  return api.delete(`/api/v1/customers/cart/${itemId}`);
+  return api.delete(`/api/v1/customers/cart/${itemId}`)
 }

@@ -1,11 +1,11 @@
-import { defineStore } from "pinia";
-import { ref } from 'vue';
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
 import * as bookApi from '@/api/book-api'
 
-export const useBookStore = defineStore('bookstore', () =>{
+export const useBookStore = defineStore('bookstore', () => {
   const isLoading = ref(false)
   const error = ref('')
-  
+
   const featuredBooks = ref([])
   const bestSellersBooks = ref([])
   const newArrivalBooks = ref([])
@@ -24,9 +24,11 @@ export const useBookStore = defineStore('bookstore', () =>{
   }
 
   return {
-    featuredBooks, bestSellersBooks, newArrivalBooks,
+    featuredBooks,
+    bestSellersBooks,
+    newArrivalBooks,
     fetchFeaturedBooks,
     fetchBestSellersBooks,
-    fetchLandingPageBooks
+    fetchLandingPageBooks,
   }
 })

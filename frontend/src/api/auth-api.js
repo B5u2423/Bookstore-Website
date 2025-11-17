@@ -1,57 +1,57 @@
-import axios from 'axios';
+import axios from 'axios'
 
 const api = axios.create({
   baseURL: 'http://localhost:8080',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
-  }
-});
+  },
+})
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem('accessToken')
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers.Authorization = `Bearer ${token}`
     }
-    return config;
+    return config
   },
   (error) => {
-    return Promise.reject(error);
-  }
-);
+    return Promise.reject(error)
+  },
+)
 
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
-    
+    const originalRequest = error.config
+
     if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      
+      originalRequest._retry = true
+
       try {
-        const refreshToken = localStorage.getItem('refreshToken');
+        const refreshToken = localStorage.getItem('refreshToken')
         if (refreshToken) {
-          const response = await refreshJwtToken(refreshToken);
-          const { token, refresh } = response.data;
-          
-          localStorage.setItem('accessToken', token);
-          localStorage.setItem('refreshToken', refresh);
-          
-          originalRequest.headers.Authorization = `Bearer ${token}`;
-          return api(originalRequest);
+          const response = await refreshJwtToken(refreshToken)
+          const { token, refresh } = response.data
+
+          localStorage.setItem('accessToken', token)
+          localStorage.setItem('refreshToken', refresh)
+
+          originalRequest.headers.Authorization = `Bearer ${token}`
+          return api(originalRequest)
         }
       } catch (refreshError) {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('user');
-        window.location.href = '/login';
+        localStorage.removeItem('accessToken')
+        localStorage.removeItem('refreshToken')
+        localStorage.removeItem('user')
+        window.location.href = '/login'
       }
     }
-    
-    return Promise.reject(error);
-  }
-);
+
+    return Promise.reject(error)
+  },
+)
 
 /**
  * User login
@@ -63,8 +63,8 @@ api.interceptors.response.use(
 export function loginUser(loginData) {
   return api.post('/api/v1/auth/login', {
     email: loginData.email,
-    password: loginData.password
-  });
+    password: loginData.password,
+  })
 }
 
 /**
@@ -77,8 +77,8 @@ export function loginUser(loginData) {
 export function loginAdmin(loginData) {
   return api.post('/api/v1/auth/admin/login', {
     email: loginData.email,
-    password: loginData.password
-  });
+    password: loginData.password,
+  })
 }
 
 /**
@@ -96,9 +96,9 @@ export function registerUser(registrationData) {
   if (registrationData.userType === 'ADMIN') {
     return Promise.reject({
       response: {
-        data: 'Tài khoản ADMIN không thể đăng ký qua trang này. Vui lòng sử dụng trang đăng nhập dành cho quản trị viên.'
-      }
-    });
+        data: 'Tài khoản ADMIN không thể đăng ký qua trang này. Vui lòng sử dụng trang đăng nhập dành cho quản trị viên.',
+      },
+    })
   }
 
   return api.post('/api/v1/auth/register', {
@@ -106,8 +106,8 @@ export function registerUser(registrationData) {
     firstName: registrationData.firstName,
     lastName: registrationData.lastName,
     email: registrationData.email,
-    password: registrationData.password
-  });
+    password: registrationData.password,
+  })
 }
 
 /**
@@ -117,8 +117,8 @@ export function registerUser(registrationData) {
  */
 export function refreshJwtToken(refreshToken) {
   return api.get('/api/v1/auth/refresh', {
-    data: { refreshToken }
-  });
+    data: { refreshToken },
+  })
 }
 
 /**
@@ -126,12 +126,12 @@ export function refreshJwtToken(refreshToken) {
  * @returns {Promise} API response
  */
 export function logoutUser() {
-  const token = localStorage.getItem('accessToken');
+  const token = localStorage.getItem('accessToken')
   return api.delete('/api/v1/auth/logout', {
     headers: {
-      'Authorization': `Bearer ${token}`
-    }
-  });
+      Authorization: `Bearer ${token}`,
+    },
+  })
 }
 
 /**
@@ -139,7 +139,7 @@ export function logoutUser() {
  * @returns {Promise} API response with user data
  */
 export function getCurrentUser() {
-  return api.get('/api/v1/customers/account');
+  return api.get('/api/v1/customers/account')
 }
 
-export default api;
+export default api
