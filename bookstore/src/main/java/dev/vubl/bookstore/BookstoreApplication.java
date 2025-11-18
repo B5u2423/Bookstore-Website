@@ -1,7 +1,6 @@
 package dev.vubl.bookstore;
 
 import dev.vubl.bookstore.services.AuthService;
-import dev.vubl.bookstore.services.BookService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,10 +16,9 @@ public class BookstoreApplication {
 
   // TODO: Remove this later when finish setting up database and image bucket
   @Bean
-  CommandLineRunner initForTesting(AuthService authService, BookService bookService) {
+  CommandLineRunner initForTesting(AuthService authService) {
     return args -> {
-      //      bookService.loadBooksForTesting();
-      //      authService.loadUsersForTesting();
+      authService.loadAdminUser();
     };
   }
 }

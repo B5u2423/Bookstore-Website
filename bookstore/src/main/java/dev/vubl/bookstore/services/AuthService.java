@@ -69,7 +69,7 @@ public class AuthService {
     return userService.readUserByEmail(email);
   }
 
-  public void loadUsersForTesting() {
+  public void loadAdminUser() {
     ApplicationUser admin =
         userService.createOrUpdateUser(
             ApplicationUser.builder()
