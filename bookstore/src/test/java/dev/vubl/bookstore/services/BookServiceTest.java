@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -129,75 +128,6 @@ class BookServiceTest {
     assertEquals("Second Book", secondBookDTO.title());
 
     verify(bookRepo, times(1)).findAll();
-  }
-
-  @Test
-  void loadBooksForTesting_ShouldCreateTwentyBooks() {
-    // Given
-    when(authorRepo.findByAuthorName(anyString())).thenReturn(Optional.empty());
-    when(authorRepo.save(any(Author.class))).thenReturn(testAuthor);
-    when(bookRepo.save(any(Book.class))).thenReturn(testBook);
-
-    // When
-    bookService.loadBooksForTesting();
-
-    // Then
-    // Verify that authors are created/found (3 unique authors for 20 books)
-    verify(authorRepo, times(20)).findByAuthorName(anyString());
-    // All authors will be new, so all 20 will be saved (since we return empty Optional)
-    verify(authorRepo, times(20)).save(any(Author.class));
-    // Verify that 20 books are saved
-    verify(bookRepo, times(20)).save(any(Book.class));
-  }
-
-  @Test
-  void loadBooksForTesting_WithExistingAuthors_ShouldReuseAuthors() {
-    // Given
-    Author existingAuthor = Author.builder().authorName("Author0").build();
-    when(authorRepo.findByAuthorName("Author0")).thenReturn(Optional.of(existingAuthor));
-    when(authorRepo.findByAuthorName("Author1")).thenReturn(Optional.empty());
-    when(authorRepo.findByAuthorName("Author2")).thenReturn(Optional.empty());
-    when(authorRepo.save(any(Author.class))).thenReturn(testAuthor);
-    when(bookRepo.save(any(Book.class))).thenReturn(testBook);
-
-    // When
-    bookService.loadBooksForTesting();
-
-    // Then
-    verify(authorRepo, times(20)).findByAuthorName(anyString());
-    // Only new authors should be saved (approximately 13-14 times for Author1 and Author2)
-    verify(authorRepo, atLeast(10)).save(any(Author.class));
-    verify(authorRepo, atMost(20)).save(any(Author.class));
-    verify(bookRepo, times(20)).save(any(Book.class));
-  }
-
-  @Test
-  void loadBooksForTesting_ShouldCreateBooksWithCorrectPattern() {
-    // Given
-    when(authorRepo.findByAuthorName(anyString())).thenReturn(Optional.empty());
-    when(authorRepo.save(any(Author.class))).thenReturn(testAuthor);
-
-    // Capture the saved books to verify their properties
-    when(bookRepo.save(any(Book.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-    // When
-    bookService.loadBooksForTesting();
-
-    // Then
-    verify(bookRepo, times(20))
-        .save(
-            argThat(
-                book -> {
-                  // Verify book has expected structure
-                  return book.getTitle() != null
-                      && book.getTitle().startsWith("Title")
-                      && book.getIsbn() != null
-                      && book.getDescription() != null
-                      && book.getDescription().startsWith("Description")
-                      && book.getPrice() != null
-                      && book.getAuthors() != null
-                      && book.getAuthors().size() == 1;
-                }));
   }
 
   @Test

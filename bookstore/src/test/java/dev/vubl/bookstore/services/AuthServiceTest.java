@@ -281,14 +281,14 @@ class AuthServiceTest {
   }
 
   @Test
-  void loadUsersForTesting_ShouldCreateAdminUser() {
+  void loadAdminUser_ShouldCreateAdminUser() {
     // Given
     String encodedPassword = "encodedAdminPassword";
     when(passwordEncoder.encode("pass")).thenReturn(encodedPassword);
     when(userService.createOrUpdateUser(any(ApplicationUser.class))).thenReturn(testAdmin);
 
     // When
-    authService.loadUsersForTesting();
+    authService.loadAdminUser();
 
     // Then
     verify(passwordEncoder, times(1)).encode("pass");
