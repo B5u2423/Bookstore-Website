@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 public class BookstoreApplication {
 
   public static void main(String[] args) {
+    System.setProperty("user.timezone", "Asia/Ho_Chi_Minh");
     SpringApplication.run(BookstoreApplication.class, args);
   }
 
@@ -18,8 +19,8 @@ public class BookstoreApplication {
   @Bean
   CommandLineRunner initForTesting(AuthService authService, BookService bookService) {
     return args -> {
-      bookService.loadBooksForTesting();
-      authService.loadUsersForTesting();
+      //      bookService.loadBooksForTesting();
+      //      authService.loadUsersForTesting();
     };
   }
 }
