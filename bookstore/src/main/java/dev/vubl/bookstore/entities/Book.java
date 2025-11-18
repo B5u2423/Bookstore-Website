@@ -2,7 +2,6 @@ package dev.vubl.bookstore.entities;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.*;
 
@@ -28,7 +27,7 @@ public class Book extends BaseEntity {
       name = "book_author",
       joinColumns = @JoinColumn(name = "book_id"),
       inverseJoinColumns = @JoinColumn(name = "author_id"))
-  private List<Author> authors = new ArrayList<>();
+  private List<Author> authors;
 
   @Column(name = "price")
   private BigDecimal price;
@@ -41,7 +40,7 @@ public class Book extends BaseEntity {
       name = "book_genre",
       joinColumns = @JoinColumn(name = "book_id"),
       inverseJoinColumns = @JoinColumn(name = "genre_id"))
-  private List<Genre> genres = new ArrayList<>();
+  private List<Genre> genres;
 
   // display on Front-end
 

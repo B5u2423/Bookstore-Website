@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.*;
 
@@ -20,5 +19,5 @@ public class Author extends BaseEntity {
   private String authorName;
 
   @ManyToMany(mappedBy = "authors")
-  private List<Book> books = new ArrayList<>();
+  private List<Book> books;
 }

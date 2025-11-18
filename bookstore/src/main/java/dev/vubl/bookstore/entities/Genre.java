@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.*;
 
@@ -20,5 +19,5 @@ public class Genre extends BaseEntity {
   private String genreName;
 
   @ManyToMany(mappedBy = "genres")
-  private List<Book> books = new ArrayList<>();
+  private List<Book> books;
 }
