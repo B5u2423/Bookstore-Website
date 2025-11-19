@@ -1,8 +1,8 @@
 package dev.vubl.bookstore.repos;
 
-import dev.vubl.bookstore.entities.Genre;
+import dev.vubl.bookstore.entities.Collection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface GenreRepo extends JpaRepository<Genre, Integer> {}
+public interface CollectionRepo extends JpaRepository<Collection, Integer> {}

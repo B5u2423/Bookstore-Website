@@ -9,15 +9,15 @@ import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "genres")
+@Table(name = "collections")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Genre extends BaseEntity {
-  @Column(name = "genre_name")
+public class Collection extends BaseEntity {
+  @Column(name = "collection_name")
   private String genreName;
 
-  @ManyToMany(mappedBy = "genres")
+  @ManyToMany(mappedBy = "collections")
   private List<Book> books;
 }

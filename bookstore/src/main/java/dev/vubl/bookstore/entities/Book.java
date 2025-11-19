@@ -39,8 +39,10 @@ public class Book extends BaseEntity {
   @JoinTable(
       name = "book_genre",
       joinColumns = @JoinColumn(name = "book_id"),
-      inverseJoinColumns = @JoinColumn(name = "genre_id"))
-  private List<Genre> genres;
+      inverseJoinColumns = @JoinColumn(name = "collection_id"))
+  private List<Collection> collections;
+
+  // TODO: Add categories
 
   // display on Front-end
 
