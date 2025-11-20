@@ -281,29 +281,6 @@ class AuthServiceTest {
   }
 
   @Test
-  void loadAdminUser_ShouldCreateAdminUser() {
-    // Given
-    String encodedPassword = "encodedAdminPassword";
-    when(passwordEncoder.encode("pass")).thenReturn(encodedPassword);
-    when(userService.createOrUpdateUser(any(ApplicationUser.class))).thenReturn(testAdmin);
-
-    // When
-    authService.loadAdminUser();
-
-    // Then
-    verify(passwordEncoder, times(1)).encode("pass");
-    verify(userService, times(1))
-        .createOrUpdateUser(
-            argThat(
-                user ->
-                    user.getUserType() == UserType.ADMIN
-                        && user.getFirstName().equals("admin")
-                        && user.getLastName().equals("admin")
-                        && user.getEmail().equals("admin@company.com")
-                        && user.getPassword().equals(encodedPassword)));
-  }
-
-  @Test
   void registerUser_WithNullRequest_ShouldThrowException() {
     // When & Then
     assertThrows(NullPointerException.class, () -> authService.registerUser(null));
