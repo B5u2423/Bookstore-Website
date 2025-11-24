@@ -1,5 +1,6 @@
 package dev.vubl.bookstore.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,9 +12,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartItem extends BaseEntity {
-  private int quantity;
+  private Integer quantity;
 
-  @ManyToOne private Cart cart;
+  @ManyToOne @JsonBackReference private Cart cart;
 
   @ManyToOne private Book book;
 }
