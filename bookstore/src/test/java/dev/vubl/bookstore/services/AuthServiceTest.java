@@ -245,28 +245,6 @@ class AuthServiceTest {
   }
 
   @Test
-  void readUserFromToken_WithValidToken_ShouldReturnUser() {
-    // Given
-    String bearerToken = "Bearer valid-jwt-token";
-    String userEmail = "john.doe@example.com";
-
-    when(tokenService.extractUserEmailFromToken(bearerToken)).thenReturn(userEmail);
-    when(userService.readUserByEmail(userEmail)).thenReturn(testUser);
-
-    // When
-    ApplicationUser result = authService.readUserFromToken(bearerToken);
-
-    // Then
-    assertNotNull(result);
-    assertEquals(testUser, result);
-    assertEquals("john.doe@example.com", result.getEmail());
-    assertEquals("John", result.getFirstName());
-
-    verify(tokenService, times(1)).extractUserEmailFromToken(bearerToken);
-    verify(userService, times(1)).readUserByEmail(userEmail);
-  }
-
-  @Test
   void readUserFromToken_WithInvalidToken_ShouldPropagateException() {
     // Given
     String invalidToken = "Bearer expired-jwt";

@@ -1,10 +1,9 @@
 package dev.vubl.bookstore.services;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import dev.vubl.bookstore.dtos.BookDTO;
+import dev.vubl.bookstore.dtos.BookResponseDTO;
 import dev.vubl.bookstore.entities.Author;
 import dev.vubl.bookstore.entities.Book;
 import dev.vubl.bookstore.repos.AuthorRepo;
@@ -31,7 +30,7 @@ class BookServiceTest {
 
   private Book testBook;
   private Author testAuthor;
-  private BookDTO expectedBookDTO;
+  private BookResponseDTO expectedBookResponseDTO;
 
   @BeforeEach
   void setUp() {
@@ -47,8 +46,8 @@ class BookServiceTest {
             .authors(List.of(testAuthor))
             .build();
 
-    expectedBookDTO =
-        BookDTO.builder()
+    expectedBookResponseDTO =
+        BookResponseDTO.builder()
             .isbn("978-1234567890")
             .title("Test Book Title")
             .description("Test Book Description")
@@ -64,17 +63,17 @@ class BookServiceTest {
     when(bookRepo.findAll()).thenReturn(books);
 
     // When
-    List<BookDTO> result = bookService.getAllBooks();
+    List<BookResponseDTO> result = bookService.getAllBooks();
 
     // Then
     assertNotNull(result);
     assertEquals(1, result.size());
-    BookDTO actualBookDTO = result.getFirst();
-    assertEquals(expectedBookDTO.isbn(), actualBookDTO.isbn());
-    assertEquals(expectedBookDTO.title(), actualBookDTO.title());
-    assertEquals(expectedBookDTO.description(), actualBookDTO.description());
-    assertEquals(expectedBookDTO.price(), actualBookDTO.price());
-    assertEquals(expectedBookDTO.inStock(), actualBookDTO.inStock());
+    BookResponseDTO actualBookResponseDTO = result.getFirst();
+    assertEquals(expectedBookResponseDTO.isbn(), actualBookResponseDTO.isbn());
+    assertEquals(expectedBookResponseDTO.title(), actualBookResponseDTO.title());
+    assertEquals(expectedBookResponseDTO.description(), actualBookResponseDTO.description());
+    assertEquals(expectedBookResponseDTO.price(), actualBookResponseDTO.price());
+    assertEquals(expectedBookResponseDTO.inStock(), actualBookResponseDTO.inStock());
 
     verify(bookRepo, times(1)).findAll();
   }
@@ -85,7 +84,7 @@ class BookServiceTest {
     when(bookRepo.findAll()).thenReturn(List.of());
 
     // When
-    List<BookDTO> result = bookService.getAllBooks();
+    List<BookResponseDTO> result = bookService.getAllBooks();
 
     // Then
     assertNotNull(result);
@@ -111,32 +110,32 @@ class BookServiceTest {
     when(bookRepo.findAll()).thenReturn(books);
 
     // When
-    List<BookDTO> result = bookService.getAllBooks();
+    List<BookResponseDTO> result = bookService.getAllBooks();
 
     // Then
     assertNotNull(result);
     assertEquals(2, result.size());
 
     // Verify first book
-    BookDTO firstBookDTO = result.getFirst();
-    assertEquals(expectedBookDTO.isbn(), firstBookDTO.isbn());
-    assertEquals(expectedBookDTO.title(), firstBookDTO.title());
+    BookResponseDTO firstBookResponseDTO = result.getFirst();
+    assertEquals(expectedBookResponseDTO.isbn(), firstBookResponseDTO.isbn());
+    assertEquals(expectedBookResponseDTO.title(), firstBookResponseDTO.title());
 
     // Verify second book
-    BookDTO secondBookDTO = result.get(1);
-    assertEquals("978-0987654321", secondBookDTO.isbn());
-    assertEquals("Second Book", secondBookDTO.title());
+    BookResponseDTO secondBookResponseDTO = result.get(1);
+    assertEquals("978-0987654321", secondBookResponseDTO.isbn());
+    assertEquals("Second Book", secondBookResponseDTO.title());
 
     verify(bookRepo, times(1)).findAll();
   }
 
   @Test
-  void mapToBookDTO_ShouldCorrectlyMapBookToBookDTO() {
+  void mapToBookDTO_ShouldCorrectlyMapBookToBookResponseDTO() {
     // This test uses reflection to access the private method
     // Given - using the setup from @BeforeEach
 
     // When
-    List<BookDTO> result;
+    List<BookResponseDTO> result;
     when(bookRepo.findAll()).thenReturn(List.of(testBook));
 
     // Invoke the service to trigger mapping
@@ -145,7 +144,7 @@ class BookServiceTest {
     // Then
     assertNotNull(result);
     assertEquals(1, result.size());
-    BookDTO mappedDTO = result.getFirst();
+    BookResponseDTO mappedDTO = result.getFirst();
 
     assertEquals(testBook.getIsbn(), mappedDTO.isbn());
     assertEquals(testBook.getTitle(), mappedDTO.title());
@@ -155,7 +154,7 @@ class BookServiceTest {
   }
 
   @Test
-  void mapToBookDTO_WithNullValues_ShouldHandleGracefully() {
+  void mapToBookResponseDTO_WithNullValues_ShouldHandleGracefully() {
     // Given
     Book bookWithNulls =
         Book.builder()
@@ -170,12 +169,12 @@ class BookServiceTest {
     when(bookRepo.findAll()).thenReturn(List.of(bookWithNulls));
 
     // When
-    List<BookDTO> result = bookService.getAllBooks();
+    List<BookResponseDTO> result = bookService.getAllBooks();
 
     // Then
     assertNotNull(result);
     assertEquals(1, result.size());
-    BookDTO mappedDTO = result.getFirst();
+    BookResponseDTO mappedDTO = result.getFirst();
 
     assertNull(mappedDTO.isbn());
     assertNull(mappedDTO.title());
