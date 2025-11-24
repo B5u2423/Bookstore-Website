@@ -59,9 +59,9 @@ async function handleLogout() {
           > </v-menu
         > </template
       > <template v-else
-        > <!-- Guest user buttons --> <v-btn text size="small" :to="{ name: 'user-register' }"
+        > <!-- Guest user buttons --> <v-btn text size="small" :to="{ name: 'register' }"
           > REGISTER </v-btn
-        > | <v-btn text size="small" :to="{ name: 'user-login' }"> LOGIN </v-btn> </template
+        > | <v-btn text size="small" :to="{ name: 'login' }"> LOGIN </v-btn> </template
       > </v-container
     > </v-toolbar
   >
