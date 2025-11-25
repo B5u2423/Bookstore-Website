@@ -95,27 +95,27 @@ async function handleLogin() {
 
       </div>
 
-
       <div class="text-center">
 
-      <p class="text-black"> Hoặc đăng nhập bằng </p>
-      <v-btn
-        color="blue"
-        class="ma-2 pa-2"
-        prepend-icon="mdi-facebook"
-      >
-         Facebook
-      </v-btn>
+        <p class="text-black"> Hoặc đăng nhập bằng </p>
 
-      <v-btn
-        color="red"
-        class="ma-2 pa-2"
-        prepend-icon="mdi-google"
-      >
-         Google
-      </v-btn>
+        <v-btn
+          color="blue"
+          class="ma-2 pa-2"
+          prepend-icon="mdi-facebook"
+        >
+           Facebook
+        </v-btn>
+
+        <v-btn
+          color="red"
+          class="ma-2 pa-2"
+          prepend-icon="mdi-google"
+        >
+           Google
+        </v-btn>
+
       </div>
-
 
     </div>
 

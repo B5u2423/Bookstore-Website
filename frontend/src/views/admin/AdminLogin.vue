@@ -50,7 +50,7 @@ function handleLogin() {
 
             <v-form>
 
-              <!-- Username Input -->
+              <!-- username/email -->
 
               <v-text-field
                 v-model="username"
@@ -60,7 +60,7 @@ function handleLogin() {
                 :rules="[(v) => !!v || 'Tên đăng nhập không được bỏ trống']"
               />
 
-              <!-- Password Input -->
+              <!-- password -->
 
               <v-text-field
                 v-model="password"
@@ -77,10 +77,11 @@ function handleLogin() {
 
           <v-card-actions>
 
-            <!-- Login Button -->
+            <!-- login button -->
 
             <v-btn
               color="primary"
+              variant="outlined"
               block
               @click="handleLogin"
             >

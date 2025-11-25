@@ -27,7 +27,7 @@ const rules = {
       <div class="my-2">
 
         <v-text-field
-        class="my-3"
+          class="my-3"
           density="compact"
           min-width="400"
           label="Họ"
@@ -35,14 +35,14 @@ const rules = {
         ></v-text-field>
 
         <v-text-field
-        class="my-3"
+          class="my-3"
           density="compact"
           label="Tên"
           variant="outlined"
         ></v-text-field>
 
         <v-text-field
-        class="my-3"
+          class="my-3"
           density="compact"
           label="Email"
           variant="outlined"
@@ -50,7 +50,7 @@ const rules = {
         ></v-text-field>
 
         <v-text-field
-        class="my-3"
+          class="my-3"
           density="compact"
           label="Mật khẩu"
           variant="outlined"
@@ -82,25 +82,26 @@ const rules = {
 
       <div class="text-center">
 
-      <p class="text-black"> Hoặc đăng nhập bằng</p>
+        <p class="text-black"> Hoặc đăng nhập bằng</p>
 
-      <v-btn
-        color="blue"
-        class="ma-2 pa-2"
-        prepend-icon="mdi-facebook"
-      >
-         Facebook
-      </v-btn>
+        <v-btn
+          color="blue"
+          class="ma-2 pa-2"
+          prepend-icon="mdi-facebook"
+        >
+           Facebook
+        </v-btn>
 
-      <v-btn
-        color="red"
-        class="ma-2 pa-2"
-        prepend-icon="mdi-google"
-      >
-         Google
-      </v-btn>
+        <v-btn
+          color="red"
+          class="ma-2 pa-2"
+          prepend-icon="mdi-google"
+        >
+           Google
+        </v-btn>
 
       </div>
+
     </div>
 
   </v-sheet>
