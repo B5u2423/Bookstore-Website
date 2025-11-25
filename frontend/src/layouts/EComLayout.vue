@@ -1,8 +1,11 @@
 <script setup>
-import HeaderSection from '@/components/common/HeaderSection.vue'
+import NavBar from '@/components/ecom/NavBar.vue'
+import FooterSection from '@/components/ecom/Footer.vue'
 </script>
 
 <template>
-   <HeaderSection /> <v-main> <router-view></router-view> </v-main>
+  <NavBar />  
+  <v-main> <router-view></router-view> </v-main>
+  <FooterSection />
 </template>
 
