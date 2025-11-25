@@ -29,7 +29,7 @@ async function handleLogout() {
 
 <template>
    <v-app-bar density="default" class="px-16"
-    > <v-app-bar-title class="display-inline cursor-pointer"
+    > <v-app-bar-title class="display-inline"
       > <v-responsive max-width="333" max-height="39"
         > <v-img
           src="https://theme.hstatic.net/200000845405/1001223012/14/logo.png?v=471"
@@ -44,7 +44,6 @@ async function handleLogout() {
       variant="outlined"
       rounded
       density="comfortable"
-      color="deep-purple accent-4"
       class="custom-search"
       clearable
       prepend-inner-icon="mdi-magnify"
