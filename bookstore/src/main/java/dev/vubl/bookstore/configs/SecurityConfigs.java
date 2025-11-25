@@ -138,6 +138,8 @@ public class SecurityConfigs {
   private static PathPatternRequestMatcher[] customerRoutes() {
     return new PathPatternRequestMatcher[] {
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/customers/account"),
+      PathPatternRequestMatcher.withDefaults().matcher("/api/v1/carts/**"),
+      PathPatternRequestMatcher.withDefaults().matcher("/api/v1/orders/**"),
     };
   }
 

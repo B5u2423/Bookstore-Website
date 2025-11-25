@@ -33,11 +33,11 @@ public class Book extends BaseEntity {
   private BigDecimal price;
 
   @Column(name = "in_stock")
-  private int inStock;
+  private Integer inStock;
 
   @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinTable(
-      name = "book_genre",
+      name = "book_collection",
       joinColumns = @JoinColumn(name = "book_id"),
       inverseJoinColumns = @JoinColumn(name = "collection_id"))
   private List<Collection> collections;

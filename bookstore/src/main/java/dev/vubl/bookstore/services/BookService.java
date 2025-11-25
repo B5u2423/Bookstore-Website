@@ -1,6 +1,6 @@
 package dev.vubl.bookstore.services;
 
-import dev.vubl.bookstore.dtos.BookDTO;
+import dev.vubl.bookstore.dtos.BookResponseDTO;
 import dev.vubl.bookstore.entities.Book;
 import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
 import dev.vubl.bookstore.repos.AuthorRepo;
@@ -20,46 +20,58 @@ public class BookService {
   private final BookRepo bookRepo;
   private final AuthorRepo authorRepo;
 
-  public List<BookDTO> getAllBooks() {
-    return bookRepo.findAll().stream().map(this::mapToBookDTO).toList();
+  public List<BookResponseDTO> getAllBooks() {
+    return bookRepo.findAll().stream().map(this::mapToBookResponseDTO).toList();
   }
 
-  public BookDTO addOrUpdateBook(BookDTO bookDTO) {
-    String isbn = bookDTO.isbn();
-    if (bookRepo.findByIsbn(isbn).isPresent()) {
-      throw new BookWithIsbnAlreadyExists("Book with isbn :: %s already exists!".formatted(isbn));
+  public BookResponseDTO addOrUpdateBook(BookResponseDTO bookResponseDTO) {
+    String isbn = bookResponseDTO.isbn();
+    // some book will not have isbn
+    if (isbn != null) {
+      if (bookRepo.findByIsbn(isbn).isPresent()) {
+        throw new BookWithIsbnAlreadyExists("Book with isbn :: %s already exists!".formatted(isbn));
+      }
     }
     try {
       log.info("[{}] Adding new book", this.getClass().getName());
-      return mapToBookDTO(bookRepo.save(mapToBookEntity(bookDTO)));
+      return mapToBookResponseDTO(bookRepo.save(mapToBookEntity(bookResponseDTO)));
     } catch (DataIntegrityViolationException e) {
       throw new DataIntegrityViolationException("Error adding or updating new book!", e);
     }
   }
 
-  public void deleteBook(BookDTO bookDTO) {
-    bookRepo.delete(mapToBookEntity(bookDTO));
+  public void deleteBook(BookResponseDTO bookResponseDTO) {
+    bookRepo.delete(mapToBookEntity(bookResponseDTO));
     log.info("[{}] Book deleted", this.getClass().getName());
   }
 
-  private BookDTO mapToBookDTO(Book book) {
-    return BookDTO.builder()
+  private BookResponseDTO mapToBookResponseDTO(Book book) {
+    return BookResponseDTO.builder()
+        .id(book.getId())
         .isbn(book.getIsbn())
         .title(book.getTitle())
         .description(book.getDescription())
         .price(book.getPrice())
         .inStock(book.getInStock())
+        .productCode(book.getProductCode())
+        .publishYear(book.getPublishYear())
+        .language(book.getLanguage())
+        .weightGrams(book.getWeightGrams())
+        .dimensions(book.getDimensions())
+        .pageCount(book.getPageCount())
+        .format(book.getFormat())
+        .imageUrl(book.getImageUrl())
         .build();
   }
 
-  private Book mapToBookEntity(BookDTO bookDTO) {
+  private Book mapToBookEntity(BookResponseDTO bookResponseDTO) {
     return Book.builder()
-        .title(bookDTO.title())
-        .authors(bookDTO.authors())
-        .price(bookDTO.price())
-        .description(bookDTO.description())
-        .isbn(bookDTO.isbn())
-        .inStock(bookDTO.inStock())
+        .title(bookResponseDTO.title())
+        .authors(bookResponseDTO.authors())
+        .price(bookResponseDTO.price())
+        .description(bookResponseDTO.description())
+        .isbn(bookResponseDTO.isbn())
+        .inStock(bookResponseDTO.inStock())
         .build();
   }
 }

@@ -1,6 +1,6 @@
 package dev.vubl.bookstore.controllers;
 
-import dev.vubl.bookstore.dtos.BookDTO;
+import dev.vubl.bookstore.dtos.BookResponseDTO;
 import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
 import dev.vubl.bookstore.services.BookService;
 import java.util.List;
@@ -16,32 +16,31 @@ import org.springframework.web.bind.annotation.*;
 public class BookController {
   private final BookService bookService;
 
+  @GetMapping
+  public ResponseEntity<List<BookResponseDTO>> getAllBooks() {
+    return null;
+  }
+
   @GetMapping("/featured")
-  public List<BookDTO> getFeaturedBooks() {
+  public List<BookResponseDTO> getFeaturedBooks() {
     return bookService.getAllBooks();
   }
 
   @GetMapping("/best-sellers")
-  public List<BookDTO> getBestSellerBooks() {
+  public List<BookResponseDTO> getBestSellerBooks() {
     return bookService.getAllBooks();
   }
 
   @GetMapping("/new")
-  public List<BookDTO> getNewArrivalBooks() {
+  public List<BookResponseDTO> getNewArrivalBooks() {
     return bookService.getAllBooks();
   }
 
   // ADMIN
   @PostMapping("/add")
-  public ResponseEntity<BookDTO> addNewBook(@RequestBody BookDTO payload) {
+  public ResponseEntity<BookResponseDTO> addNewBook(@RequestBody BookResponseDTO payload) {
     return ResponseEntity.status(HttpStatus.OK).body(bookService.addOrUpdateBook(payload));
   }
-
-  //  @PostMapping("/books")
-  //  public ResponseEntity<BookDTO> createBook(@Valid @RequestBody BookDTO bookDTO) {
-  //    BookDTO createdBook = bookService.addOrUpdateBook(bookDTO);
-  //    return ResponseEntity.status(HttpStatus.CREATED).body(createdBook);
-  //  }
 
   @ExceptionHandler({BookWithIsbnAlreadyExists.class})
   public ResponseEntity<String> handleBookWithExistingIsbn() {

@@ -1,5 +1,6 @@
 package dev.vubl.bookstore.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
@@ -16,12 +17,12 @@ import lombok.*;
 @AllArgsConstructor
 public class OrderItem extends BaseEntity {
   @Column(name = "quantity")
-  private int quantity;
+  private Integer quantity;
 
   @Column(name = "price")
   private BigDecimal price; // price at the time of ordering
 
-  @ManyToOne private Order order;
+  @ManyToOne @JsonBackReference private Order order;
 
   @ManyToOne private Book book;
 }

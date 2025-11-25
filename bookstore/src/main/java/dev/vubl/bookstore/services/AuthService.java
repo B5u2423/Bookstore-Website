@@ -1,22 +1,20 @@
 package dev.vubl.bookstore.services;
 
-import dev.vubl.bookstore.dtos.LoginRequest;
-import dev.vubl.bookstore.dtos.LoginResponse;
-import dev.vubl.bookstore.dtos.RegistrationRequest;
-import dev.vubl.bookstore.dtos.RegistrationResponse;
+import dev.vubl.bookstore.dtos.*;
 import dev.vubl.bookstore.entities.ApplicationUser;
-import dev.vubl.bookstore.entities.UserType;
 import dev.vubl.bookstore.exceptions.InvalidCredentialException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -67,17 +65,5 @@ public class AuthService {
   public ApplicationUser readUserFromToken(String token) {
     String email = tokenService.extractUserEmailFromToken(token);
     return userService.readUserByEmail(email);
-  }
-
-  public void loadAdminUser() {
-    ApplicationUser admin =
-        userService.createOrUpdateUser(
-            ApplicationUser.builder()
-                .userType(UserType.ADMIN)
-                .firstName("admin")
-                .lastName("admin")
-                .email("admin@company.com")
-                .password(passwordEncoder.encode("pass"))
-                .build());
   }
 }
