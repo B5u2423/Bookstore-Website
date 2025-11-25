@@ -4,8 +4,6 @@ import FooterSection from '@/components/ecom/Footer.vue'
 </script>
 
 <template>
-  <NavBar />  
-  <v-main> <router-view></router-view> </v-main>
-  <FooterSection />
+   <NavBar /> <v-main> <router-view></router-view> </v-main> <FooterSection />
 </template>
 
