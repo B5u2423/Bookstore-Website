@@ -21,7 +21,7 @@ const accounts = [
 </script>
 
 <template>
-   <v-container fluid
+   <v-container fluid class="pa-0"
     > <v-row class="bg-red align-center justify-center py-5 px-16"
       > <v-card
         title="Đăng ký nhận thông tin"
