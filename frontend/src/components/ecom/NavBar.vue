@@ -5,37 +5,36 @@ import { useAuthStore } from '@/stores/auth-store'
 const router = useRouter()
 const authStore = useAuthStore()
 
-const goToHomePage = () => {
-  router.push({ name: 'landing' })
+const goToLogin = () => {
+  router.push({ name: 'login' })
+}
+
+const goToRegister = () => {
+  router.push({ name: 'register' })
 }
 
 const goToCart = () => {
   router.push({ name: 'cart' })
 }
 
+const goToHomePage = () => {
+  router.push('/')
+}
+
 async function handleLogout() {
   await authStore.logout()
   router.push('/')
 }
-
-const buttons = [
-  { name: 'Tất cả danh mục', path: '/' },
-  { name: 'Tất cả sách', path: '/books' },
-  { name: 'Khuyến mãi', path: '/deals' },
-]
 </script>
 
 <template>
-  <v-app-bar density="compact" class="px-16">
-      <v-img
-        class="cursor-pointer"
-        @click="goToHomePage"
-        src="https://cdn.vuetifyjs.com/docs/images/brand-kit/v-logo-circle.svg"
-        alt="HomePage"
-        max-width="120"
-      ></v-img>
-      <v-spacer></v-spacer>
+  <v-app-bar density="default" class="px-16">
+    <v-toolbar-title @click="goToHomePage">Bookshop</v-toolbar-title>
       <v-toolbar-items>
+        <v-btn @click="goToRegister">Đăng ký</v-btn>
+        <v-btn @click="goToLogin">Đăng nhập</v-btn>
+        <v-btn @click="goToCart" icon="mdi-cart"></v-btn>
+        <v-btn icon="mdi-bell"></v-btn>
       </v-toolbar-items>
   </v-app-bar>
 </template>
