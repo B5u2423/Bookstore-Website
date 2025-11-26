@@ -50,7 +50,7 @@ public class AuthService {
       // generate refresh token
       String refreshToken = tokenService.generateRefreshToken(user).getRefreshToken();
 
-      return LoginResponse.builder().token(jwtToken).refresh(refreshToken).user(user).build();
+      return LoginResponse.builder().token(jwtToken).refresh(refreshToken).build();
     } catch (Exception e) {
       throw new InvalidCredentialException();
     }

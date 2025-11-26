@@ -168,7 +168,6 @@ class AuthServiceTest {
     assertNotNull(result);
     assertEquals(jwtToken, result.token());
     assertEquals("test-refresh-token", result.refresh());
-    assertEquals(testUser, result.user());
 
     verify(authenticationManager, times(1))
         .authenticate(any(UsernamePasswordAuthenticationToken.class));
