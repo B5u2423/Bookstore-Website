@@ -2,6 +2,7 @@ package dev.vubl.bookstore.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
@@ -26,4 +27,10 @@ public class ApplicationUser extends BaseEntity {
   private String lastName;
 
   @JsonIgnore private String password;
+
+  @Column(name = "phone_number")
+  private String phoneNumber;
+
+  @OneToMany(mappedBy = "customer")
+  private List<CustomerAddressInfo> addressList;
 }
