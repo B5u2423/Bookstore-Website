@@ -19,8 +19,17 @@ public class OrderItem extends BaseEntity {
   @Column(name = "quantity")
   private Integer quantity;
 
-  @Column(name = "price")
-  private BigDecimal price; // price at the time of ordering
+  @Column(name = "price_at_purchase")
+  private BigDecimal priceAtPurchase; // price at the time of ordering
+
+  @Column(name = "title_at_purchase")
+  private String titleAtPurchase;
+
+  @Column(name = "isbn")
+  private String isbn;
+
+  @Column(name = "product_code")
+  private String productCode;
 
   @ManyToOne @JsonBackReference private Order order;
 
