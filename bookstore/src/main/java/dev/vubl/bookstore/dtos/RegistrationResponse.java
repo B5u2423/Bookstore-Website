@@ -1,7 +1,6 @@
 package dev.vubl.bookstore.dtos;
 
-import dev.vubl.bookstore.entities.ApplicationUser;
 import lombok.Builder;
 
 @Builder
-public record RegistrationResponse(ApplicationUser createdUser) {}
+public record RegistrationResponse(String email, String firstName, String lastName) {}

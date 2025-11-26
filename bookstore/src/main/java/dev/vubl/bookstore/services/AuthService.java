@@ -34,7 +34,11 @@ public class AuthService {
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
                 .build());
-    return RegistrationResponse.builder().createdUser(newUser).build();
+    return RegistrationResponse.builder()
+        .email(newUser.getEmail())
+        .firstName(newUser.getFirstName())
+        .lastName(newUser.getLastName())
+        .build();
   }
 
   public LoginResponse logInUser(
