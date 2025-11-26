@@ -1,5 +1,6 @@
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import EComLayout from '@/layouts/EComLayout.vue'
+import SideBar from '@/components/ecom/SideBar.vue'
 import { resolveDirective } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -8,11 +9,41 @@ const routes = [
     path: '/',
     component: EComLayout,
     children: [
-      { path: '', component: () => import('@/views/ecom/Landing.vue') },
-      { path: 'shop', name: 'shop', component: () => import('@/views/ecom/Shop.vue') },
-      { path: 'cart', name: 'cart', component: () => import('@/views/ecom/Cart.vue') },
-      { path: 'register', name: 'register', component: () => import('@/views/ecom/Register.vue') },
-      { path: 'login', name: 'login', component: () => import('@/views/ecom/CustomerLogin.vue') },
+      {
+        path: '',
+        components: {
+          sidebar: SideBar,
+          default: () => import('@/views/ecom/Landing.vue'),
+        },
+      },
+      {
+        path: 'shop',
+        name: 'shop',
+        components: {
+          default: () => import('@/views/ecom/Shop.vue'),
+        },
+      },
+      {
+        path: 'cart',
+        name: 'cart',
+        components: {
+          default: () => import('@/views/ecom/Cart.vue'),
+        },
+      },
+      {
+        path: 'register',
+        name: 'register',
+        components: {
+          default: () => import('@/views/ecom/Register.vue'),
+        },
+      },
+      {
+        path: 'login',
+        name: 'login',
+        components: {
+          default: () => import('@/views/ecom/CustomerLogin.vue'),
+        },
+      },
     ],
   },
   {
