@@ -1,19 +1,19 @@
 <script setup>
-const homepage = [{ title: 'Thống kê', icon: 'mdi-chart-bar', link: '/' }]
+const homepage = [{ title: 'Thống kê', icon: 'mdi-chart-bar', nameRoute: 'admin-dashboard' }]
 const inventory = [
-  { title: 'Danh mục', icon: 'mdi-shape', link: '/' },
-  { title: 'Bộ sưu tập', icon: 'mdi-view-dashboard', link: '/' },
-  { title: 'Thông tin sách', icon: 'mdi-book', link: '/' },
-  { title: 'Tác giả', icon: 'mdi-account', link: '/' },
-  { title: 'Nhà phát hành', icon: 'mdi-package', link: '/' },
+  { title: 'Danh mục', icon: 'mdi-shape', nameRoute: 'i-categories' },
+  { title: 'Bộ sưu tập', icon: 'mdi-view-dashboard', nameRoute: 'i-collections' },
+  { title: 'Thông tin sách', icon: 'mdi-book', nameRoute: 'i-books' },
+  { title: 'Tác giả', icon: 'mdi-account', nameRoute: 'i-authors' },
+  { title: 'Nhà phát hành', icon: 'mdi-package', nameRoute: 'i-publishers' },
 ]
 
 const accounts = [
-  { title: 'Khách hàng', icon: 'mdi-account-multiple', link: '/' },
-  { title: 'Nhân viên', icon: 'mdi-account-group', link: '/' },
+  { title: 'Khách hàng', icon: 'mdi-account-multiple', nameRoute: 'man-customers' },
+  { title: 'Nhân viên', icon: 'mdi-account-group', nameRoute: 'man-staffs' },
 ]
 
-const orders = [{ title: 'Đơn trực tuyến', icon: 'mdi-truck', link: '/' }]
+const orders = [{ title: 'Đơn trực tuyến', icon: 'mdi-truck', nameRoute: 'i-orders' }]
 </script>
 
 <template>
@@ -36,7 +36,7 @@ const orders = [{ title: 'Đơn trực tuyến', icon: 'mdi-truck', link: '/' }]
         :key="i"
         :title="item.title"
         link
-        :href="item.link"
+        :to="{ name: item.nameRoute }"
         :prepend-icon="item.icon"
         density="compact"
       ></v-list-item>
@@ -58,7 +58,7 @@ const orders = [{ title: 'Đơn trực tuyến', icon: 'mdi-truck', link: '/' }]
         :key="i"
         :title="item.title"
         link
-        :href="item.link"
+        :to="{ name: item.nameRoute }"
         :prepend-icon="item.icon"
         density="compact"
       ></v-list-item>
@@ -80,7 +80,7 @@ const orders = [{ title: 'Đơn trực tuyến', icon: 'mdi-truck', link: '/' }]
         :key="i"
         :title="item.title"
         link
-        :href="item.link"
+        :to="{ name: item.nameRoute }"
         :prepend-icon="item.icon"
         density="compact"
       ></v-list-item>
@@ -102,7 +102,7 @@ const orders = [{ title: 'Đơn trực tuyến', icon: 'mdi-truck', link: '/' }]
         :key="i"
         :title="item.title"
         link
-        :href="item.link"
+        :to="{ name: item.nameRoute }"
         :prepend-icon="item.icon"
         density="compact"
       ></v-list-item>

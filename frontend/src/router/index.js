@@ -67,6 +67,60 @@ const routes = [
         name: 'admin-dashboard',
         component: () => import('@/views/admin/AdminDashboard.vue'),
       },
+      {
+        path: 'inventory',
+        name: 'inventory-root',
+        redirect: { name: 'admin-dashboard' },
+        children: [
+          {
+            path: 'books',
+            name: 'i-books',
+            component: () => import('@/views/admin/Book.vue'),
+          },
+          {
+            path: 'authors',
+            name: 'i-authors',
+            component: () => import('@/views/admin/Author.vue'),
+          },
+          {
+            path: 'collections',
+            name: 'i-collections',
+            component: () => import('@/views/admin/Collection.vue'),
+          },
+          {
+            path: 'categories',
+            name: 'i-categories',
+            component: () => import('@/views/admin/Category.vue'),
+          },
+          {
+            path: 'orders',
+            name: 'i-orders',
+            component: () => import('@/views/admin/Order.vue'),
+          },
+          {
+            path: 'publishers',
+            name: 'i-publishers',
+            component: () => import('@/views/admin/Publisher.vue'),
+          },
+        ],
+      },
+      {
+        path: 'manage',
+        name: 'manage-root',
+        redirect: { name: 'admin-dashboard' },
+        children: [
+          {
+            path: 'customers',
+            name: 'man-customers',
+            component: () => import('@/views/admin/Book.vue'),
+          },
+          {
+            path: 'staffs',
+            name: 'man-staffs',
+            component: () => import('@/views/admin/Book.vue'),
+          },
+        ],
+      },
     ],
   },
 ]
