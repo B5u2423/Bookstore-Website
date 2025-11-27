@@ -60,7 +60,7 @@ const routes = [
         path: 'dashboard',
         name: 'admin-dashboard',
         component: DashboardLayout,
-        children: [{ path: '', component: () => import('@/views/admin/AdminDashboard.vue') }],
+        children: [{ path: '', name: 'admin-db-root', component: () => import('@/views/admin/AdminDashboard.vue') }],
       },
     ],
   },
