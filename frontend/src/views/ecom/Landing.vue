@@ -1,13 +1,15 @@
 <script setup>
-import BookSlideGroup from '@/components/books/BookSlideGroup.vue';
-import Carousel from '@/components/books/Carousel.vue';
+import BookSlideGroup from '@/components/books/BookSlideGroup.vue'
+import Carousel from '@/components/books/Carousel.vue'
 </script>
 
 <template>
+
   <v-sheet>
 
-  <Carousel />
-  <BookSlideGroup />
+    <Carousel />
+
+    <BookSlideGroup />
 
   </v-sheet>
 
