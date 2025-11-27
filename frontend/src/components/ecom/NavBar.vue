@@ -1,9 +1,11 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth-store'
+import { useCartStore } from '@/stores/cart-store'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const cartStore = useCartStore()
 
 const goToHomePage = () => {
   router.push('/')
@@ -57,10 +59,21 @@ async function handleLogout() {
 
       <v-btn :to="{ name: 'login' }">Đăng nhập</v-btn>
 
-      <v-btn
-        :to="{ name: 'cart' }"
-        icon="mdi-cart"
-      ></v-btn>
+      <v-badge
+        class="mt-n1"
+        :offset-x="6"
+        :offset-y="6"
+        location="top right"
+        color="warning"
+        :content="cartStore.cartItemsCount"
+      >
+
+        <v-btn
+          :to="{ name: 'cart' }"
+          icon="mdi-cart"
+        ></v-btn>
+
+      </v-badge>
 
       <v-btn icon="mdi-bell"></v-btn>
 
