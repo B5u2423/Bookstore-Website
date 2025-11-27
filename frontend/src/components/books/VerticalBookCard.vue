@@ -2,7 +2,7 @@
 // =====================================
 // Display item grid on the Landing page
 // =====================================
-import ProductItem from './ProductItem.vue'
+import ProductItem from './HorizontalBookCard.vue'
 
 const props = defineProps(['title', 'subtitle', 'products'])
 </script>
