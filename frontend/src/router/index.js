@@ -1,7 +1,7 @@
-import AdminLayout from '@/layouts/AdminLayout.vue'
+import StandardLayout from '@/layouts/StandardLayout.vue'
 import EComLayout from '@/layouts/EComLayout.vue'
 import SideBar from '@/components/ecom/SideBar.vue'
-import { resolveDirective } from 'vue'
+import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
@@ -48,7 +48,7 @@ const routes = [
   },
   {
     path: '/admin',
-    component: AdminLayout,
+    component: StandardLayout,
     children: [
       { path: '', redirect: { name: 'admin-login' } },
       {
@@ -59,7 +59,8 @@ const routes = [
       {
         path: 'dashboard',
         name: 'admin-dashboard',
-        component: () => import('@/views/admin/AdminDashboard.vue'),
+        component: DashboardLayout,
+        children: [{ path: '', component: () => import('@/views/admin/AdminDashboard.vue') }],
       },
     ],
   },
