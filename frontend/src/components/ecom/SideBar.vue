@@ -18,6 +18,7 @@ const categories = [
 
       <v-list-item
         v-for="(category, i) in categories"
+        link
         :key="i"
         :title="category.title"
       >
