@@ -1,10 +1,19 @@
 <script setup>
-const buttons = [
-  { title: 'Dashboard', icon: 'mdi-view-dashboard', link: '/' },
-  { title: 'Dashboard', icon: 'mdi-view-dashboard', link: '/' },
-  { title: 'Dashboard', icon: 'mdi-view-dashboard', link: '/' },
-  { title: 'Dashboard', icon: 'mdi-view-dashboard', link: '/' },
+const homepage = [{ title: 'Thống kê', icon: 'mdi-chart-bar', link: '/' }]
+const inventory = [
+  { title: 'Danh mục', icon: 'mdi-shape', link: '/' },
+  { title: 'Bộ sưu tập', icon: 'mdi-view-dashboard', link: '/' },
+  { title: 'Thông tin sách', icon: 'mdi-book', link: '/' },
+  { title: 'Tác giả', icon: 'mdi-account', link: '/' },
+  { title: 'Nhà phát hành', icon: 'mdi-package', link: '/' },
 ]
+
+const accounts = [
+  { title: 'Khách hàng', icon: 'mdi-account-multiple', link: '/' },
+  { title: 'Nhân viên', icon: 'mdi-account-group', link: '/' },
+]
+
+const orders = [{ title: 'Đơn trực tuyến', icon: 'mdi-truck', link: '/' }]
 </script>
 
 <template>
@@ -16,14 +25,14 @@ const buttons = [
 
     <div>
 
-      <h4>First section</h4>
+      <h4>Trang chủ</h4>
 
     </div>
 
     <v-list>
 
       <v-list-item
-        v-for="(item, i) in buttons"
+        v-for="(item, i) in homepage"
         :key="i"
         :title="item.title"
         link
@@ -38,30 +47,67 @@ const buttons = [
 
     <div>
 
-      <h3>Something</h3>
+      <h4>Quản lý kho</h4>
 
     </div>
 
-    <v-list-item
-      link
-      href="/"
-      prepend-icon="mdi-view-dashboard"
-      title="Dashboard"
-    ></v-list-item>
+    <v-list>
 
-    <v-list-item
-      link
-      href="/"
-      prepend-icon="mdi-account-box"
-      title="Account"
-    ></v-list-item>
+      <v-list-item
+        v-for="(item, i) in inventory"
+        :key="i"
+        :title="item.title"
+        link
+        :href="item.link"
+        :prepend-icon="item.icon"
+        density="compact"
+      ></v-list-item>
 
-    <v-list-item
-      link
-      href="/"
-      prepend-icon="mdi-gavel"
-      title="Admin"
-    ></v-list-item>
+    </v-list>
+
+    <v-divider></v-divider>
+
+    <div>
+
+      <h4>Quản lý tài khoản</h4>
+
+    </div>
+
+    <v-list>
+
+      <v-list-item
+        v-for="(item, i) in accounts"
+        :key="i"
+        :title="item.title"
+        link
+        :href="item.link"
+        :prepend-icon="item.icon"
+        density="compact"
+      ></v-list-item>
+
+    </v-list>
+
+    <v-divider></v-divider>
+
+    <div>
+
+      <h4>Quản lý đơn hàng</h4>
+
+    </div>
+
+    <v-list>
+
+      <v-list-item
+        v-for="(item, i) in orders"
+        :key="i"
+        :title="item.title"
+        link
+        :href="item.link"
+        :prepend-icon="item.icon"
+        density="compact"
+      ></v-list-item>
+
+    </v-list>
 
   </v-navigation-drawer>
 

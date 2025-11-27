@@ -47,26 +47,25 @@ const routes = [
     ],
   },
   {
-    path: '/admin',
+    path: '/admin-login',
     component: StandardLayout,
     children: [
-      { path: '', redirect: { name: 'admin-login' } },
       {
-        path: 'login',
+        path: '',
         name: 'admin-login',
         component: () => import('@/views/admin/AdminLogin.vue'),
       },
+    ],
+  },
+  {
+    path: '/admin',
+    component: DashboardLayout,
+    children: [
+      { path: 'login', redirect: { name: 'admin-login' } },
       {
         path: 'dashboard',
         name: 'admin-dashboard',
-        component: DashboardLayout,
-        children: [
-          {
-            path: '',
-            name: 'admin-db-root',
-            component: () => import('@/views/admin/AdminDashboard.vue'),
-          },
-        ],
+        component: () => import('@/views/admin/AdminDashboard.vue'),
       },
     ],
   },

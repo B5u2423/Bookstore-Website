@@ -1,4 +1,6 @@
-<script setup></script>
+<script setup>
 
-<template>Dashboard</template>
+</script>
+
+<template> Dashboard </template>
 
