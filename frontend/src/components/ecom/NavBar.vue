@@ -5,18 +5,6 @@ import { useAuthStore } from '@/stores/auth-store'
 const router = useRouter()
 const authStore = useAuthStore()
 
-const goToLogin = () => {
-  router.push({ name: 'login' })
-}
-
-const goToRegister = () => {
-  router.push({ name: 'register' })
-}
-
-const goToCart = () => {
-  router.push({ name: 'cart' })
-}
-
 const goToHomePage = () => {
   router.push('/')
 }
@@ -65,18 +53,50 @@ async function handleLogout() {
 
     <template v-slot:append>
 
-      <v-btn @click="goToRegister">Đăng ký</v-btn>
+      <v-btn :to="{ name: 'register' }">Đăng ký</v-btn>
 
-      <v-btn @click="goToLogin">Đăng nhập</v-btn>
+      <v-btn :to="{ name: 'login' }">Đăng nhập</v-btn>
 
       <v-btn
-        @click="goToCart"
+        :to="{ name: 'cart' }"
         icon="mdi-cart"
       ></v-btn>
 
       <v-btn icon="mdi-bell"></v-btn>
 
     </template>
+
+  </v-app-bar>
+
+  <v-app-bar
+    class="bg-blue px-16"
+    scroll-behavior="fully-hide"
+    scroll-threshold="30"
+    height="50"
+  >
+
+    <div class="ml-16">
+
+      <v-btn>Sách </v-btn>
+
+      <v-btn>Nổi bật</v-btn>
+
+      <v-btn>Khuyến mãi</v-btn>
+
+    </div>
+
+    <v-spacer></v-spacer>
+
+    <div class="mr-16 d-inline-flex align-center justify-center">
+
+      <v-icon
+        class="mx-1"
+        icon="mdi-phone"
+      ></v-icon>
+
+      <h3>Hotline: 0923550726</h3>
+
+    </div>
 
   </v-app-bar>
 
