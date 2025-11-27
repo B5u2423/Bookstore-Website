@@ -45,7 +45,7 @@ async function handleLogout() {
       variant="outlined"
       rounded
       density="comfortable"
-      class="custom-search"
+      class="custom-search mr-10"
       clearable
       prepend-inner-icon="mdi-magnify"
       hide-details
