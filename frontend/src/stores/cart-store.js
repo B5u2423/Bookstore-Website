@@ -21,7 +21,7 @@ export const useCartStore = defineStore('cart', () => {
   }
 }, {
   persist: {
-    storage: localStorage,
+    storage: sessionStorage,
     paths: ['activeCart']
   }
 })
