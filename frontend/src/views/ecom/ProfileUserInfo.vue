@@ -1,5 +1,5 @@
 <script setup>
-import { useUserProfileStore } from '@/stores/user-profile-store';
+import { useUserProfileStore } from '@/stores/user-profile-store'
 import { ref, watch } from 'vue'
 
 const userProfileStore = useUserProfileStore()
@@ -14,9 +14,13 @@ const currentUserProfileSnapshot = ref({
   phone: userProfileStore.userInfo.phone,
 })
 
-watch(currentUserProfileSnapshot, () =>{
-  isUpdated.value = true
-}, {deep: true})
+watch(
+  currentUserProfileSnapshot,
+  () => {
+    isUpdated.value = true
+  },
+  { deep: true },
+)
 
 function enableFieldsForUpdate() {
   isFieldsEnabled.value = true
@@ -40,7 +44,6 @@ function updateChanges() {
   isUpdated.value = false
   isFieldsEnabled.value = false
 }
-
 </script>
 
 <template>
@@ -132,7 +135,7 @@ function updateChanges() {
               :disabled="isFieldsEnabled"
               @click="enableFieldsForUpdate()"
             >
-            Thay đổi thông tin
+               Thay đổi thông tin
             </v-btn>
 
           </v-col>
@@ -141,11 +144,26 @@ function updateChanges() {
 
             <div v-show="isFieldsEnabled">
 
-            <v-btn :disabled="!isUpdated" class="mr-3" color="success" @click="updateChanges()">Lưu</v-btn>
-            <v-btn color="warning" @click="discardChanges()">Hủy</v-btn>
+              <v-btn
+                :disabled="!isUpdated"
+                class="mr-3"
+                color="success"
+                @click="updateChanges()"
+              >
+                Lưu
+              </v-btn>
+
+              <v-btn
+                color="warning"
+                @click="discardChanges()"
+              >
+                Hủy
+              </v-btn>
+
             </div>
 
           </v-col>
+
         </v-row>
 
       </v-container>
@@ -166,7 +184,7 @@ function updateChanges() {
           prepend-icon="mdi-plus"
           color="primary"
         >
-          Thêm địa chỉ
+           Thêm địa chỉ
         </v-btn>
 
       </v-card-title>

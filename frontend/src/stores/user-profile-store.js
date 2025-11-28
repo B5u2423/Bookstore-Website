@@ -1,4 +1,3 @@
-
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
 
@@ -9,12 +8,10 @@ export const useUserProfileStore = defineStore(
       firstName: '',
       lastName: '',
       phone: '',
-      email: ''
+      email: '',
     })
 
-    function updateUserInfo({
-      firstName, lastName, phone, email
-    }) {
+    function updateUserInfo({ firstName, lastName, phone, email }) {
       userInfo.value.firstName = firstName
       userInfo.value.lastName = lastName
       userInfo.value.phone = phone
@@ -22,13 +19,14 @@ export const useUserProfileStore = defineStore(
     }
 
     return {
-      userInfo, updateUserInfo
+      userInfo,
+      updateUserInfo,
     }
-  }, 
+  },
   {
     persist: {
-    storage: localStorage,
-    paths: ['userInfo']
-    }
-  }
+      storage: localStorage,
+      paths: ['userInfo'],
+    },
+  },
 )
