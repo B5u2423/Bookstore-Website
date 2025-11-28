@@ -5,20 +5,8 @@ export const useCartStore = defineStore('cart', () => {
   // states
   const activeCart = ref([])
 
-  // temp cart on local storage
-  const saved = localStorage.getItem('cart')
-  if (saved) activeCart.value = JSON.parse(saved)
-
   // computed
   const cartItemsCount = computed(() => activeCart.value.length)
-
-  watch(
-    activeCart,
-    () => {
-      localStorage.setItem('cart', JSON.stringify(activeCart.value))
-    },
-    { deep: true },
-  )
 
   // actions
   function addToCart() {
@@ -30,5 +18,10 @@ export const useCartStore = defineStore('cart', () => {
     cartItemsCount,
     activeCart,
     addToCart,
+  }
+}, {
+  persist: {
+    storage: localStorage,
+    paths: ['activeCart']
   }
 })
