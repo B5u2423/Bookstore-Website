@@ -23,13 +23,13 @@ const items = [
         :key="i"
         :text="t.tab"
         :value="t"
-        :to="{name: t.nameRoute}"
+        :to="{ name: t.nameRoute }"
       ></v-tab>
 
     </v-tabs>
 
-
     <router-view></router-view>
+
     <!-- <v-tabs-window v-model="tab">
 
       <v-tabs-window-item
@@ -57,3 +57,4 @@ const items = [
   </v-sheet>
 
 </template>
+
