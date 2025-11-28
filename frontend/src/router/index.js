@@ -49,11 +49,23 @@ const routes = [
         name: 'profile',
         component: () => import('@/views/ecom/Profile.vue'),
         children: [
-          {path: '', name:'profile-root', redirect: {name: 'user-info'} },
-          {path: 'info', name: 'user-info', component: () => import('@/views/ecom/ProfileUserInfo.vue')},
-          {path: 'vouchers', name: 'vouchers', component: () => import('@/views/ecom/ProfileVouchers.vue')},
-          {path: 'order-history', name: 'history', component: () => import('@/views/ecom/ProfileOrderHistory.vue')},
-        ]
+          { path: '', name: 'profile-root', redirect: { name: 'user-info' } },
+          {
+            path: 'info',
+            name: 'user-info',
+            component: () => import('@/views/ecom/ProfileUserInfo.vue'),
+          },
+          {
+            path: 'vouchers',
+            name: 'vouchers',
+            component: () => import('@/views/ecom/ProfileVouchers.vue'),
+          },
+          {
+            path: 'order-history',
+            name: 'history',
+            component: () => import('@/views/ecom/ProfileOrderHistory.vue'),
+          },
+        ],
       },
     ],
   },
