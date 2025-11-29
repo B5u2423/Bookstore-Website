@@ -1,48 +1,24 @@
 <script setup>
-// =====================================
-// Display item grid on the Landing page
-// =====================================
-import ProductItem from './HorizontalBookCard.vue'
-
-const props = defineProps(['title', 'subtitle', 'products'])
+const props = defineProps({
+  book: Object,
+})
 </script>
 
 <template>
+    <v-card variant="outlined" elevation="4" class="pb-3">
+    <!-- `cover` prop to crop the image to fill the parent size -->
+    <v-img cover :src="book.image" height="200px"> </v-img>
+    <v-card-title>{{ book.title }}</v-card-title>
+    <v-card-subtitle>
+      <div>
 
-  <v-container>
+      {{ book.author }}
+      </div>
+      <div> 
 
-    <v-item-group class="justify-center">
-
-      <h2>Hello </h2>
-
-      <p>Subtitle</p>
-
-      <v-row>
-
-        <v-col
-          class="ma-4 pa-0"
-          v-for="product in products.slice(0, 10)"
-          :key="product"
-          lg="2"
-          md="3"
-          sm="4"
-          xs="5"
-          cols="12"
-        >
-
-          <v-item>
-
-            <ProductItem :product="product" />
-
-          </v-item>
-
-        </v-col>
-
-      </v-row>
-
-    </v-item-group>
-
-  </v-container>
-
+      {{ book.price }}
+      </div>
+    </v-card-subtitle>
+  </v-card>
 </template>
 

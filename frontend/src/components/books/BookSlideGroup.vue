@@ -1,20 +1,25 @@
 <script setup>
+import VerticalBookCard from './VerticalBookCard.vue';
+const books = [
+  {
+    itemId: 1,
+    image: 'https://raw.githubusercontent.com/gwenf/vuetify-responsive/master/public/img/products/product-1.jpg',
+    title: 'Nintendo Switch',
+    author: 'Author A',
+    price: 299.99
+  },
 
+]
 </script>
 
 <template>
+  <router-link class="text-h5">Something here</router-link>
 
-  <v-slide-group>
+  <v-slide-group class="pa-4">
 
-    <v-slide-group-item>
+    <v-slide-group-item v-for="book in books" class="ma-3">
 
-      <v-card v-for="n in 14">
-
-        <v-card-title> Hello</v-card-title>
-
-        <v-card-text>Thisis item</v-card-text>
-
-      </v-card>
+      <VerticalBookCard :book="book" class="ma-3"/>
 
     </v-slide-group-item>
 
