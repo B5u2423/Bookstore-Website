@@ -5,95 +5,13 @@ import Carousel from '@/components/books/Carousel.vue'
 
 <template>
 
-  <v-sheet>
+  <v-sheet class="px-5">
 
     <Carousel />
 
     <BookSlideGroup />
+    <BookSlideGroup />
 
   </v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
-  <v-sheet>Hello</v-sheet>
-
 </template>
 

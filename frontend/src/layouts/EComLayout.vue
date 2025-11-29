@@ -10,7 +10,7 @@ import SideBar from '@/components/ecom/SideBar.vue'
 
   <v-main class="bg-light-green-lighten-5 mt-3">
 
-    <v-container class="bg-transparent">
+    <v-container class="mb-8 bg-transparent" min-width="1400">
 
       <v-row>
 
@@ -24,8 +24,6 @@ import SideBar from '@/components/ecom/SideBar.vue'
         </v-col>
 
         <v-col
-          cols="12"
-          md="9"
         >
 
           <router-view></router-view>
