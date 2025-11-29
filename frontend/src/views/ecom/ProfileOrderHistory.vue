@@ -1,13 +1,12 @@
 <script setup>
 const headers = [
-  {title: 'Tiêu đề', key: 'voucherTitle'},
-  {title: 'Mã', key: 'voucherCode'},
-  {title: 'Loại', key: 'voucherType'},
-  {title: 'Giá trị', key: 'value'},
-  {title: 'Thời gian hết hạn', key: 'expiration'}
+  { title: 'Tiêu đề', key: 'voucherTitle' },
+  { title: 'Mã', key: 'voucherCode' },
+  { title: 'Loại', key: 'voucherType' },
+  { title: 'Giá trị', key: 'value' },
+  { title: 'Thời gian hết hạn', key: 'expiration' },
 ]
-const items = [
-]
+const items = []
 </script>
 
 <template>
@@ -15,8 +14,8 @@ const items = [
   <v-sheet class="pa-3 justify-center align-center">
 
     <v-data-table
-    class="custom-header-color"
-    :headers="headers"
+      class="custom-header-color"
+      :headers="headers"
       :items="items"
     ></v-data-table>
 
@@ -38,3 +37,4 @@ const items = [
   font-weight: bolder;
 }
 </style>
+

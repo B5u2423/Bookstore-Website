@@ -5,37 +5,37 @@ const items = [
     voucherCode: 'Loxodonta africana',
     voucherType: 'B',
     value: 'Savanna, Forests',
-    expiration: 'Savanna, Forests'
+    expiration: 'Savanna, Forests',
   },
   {
     voucherTitle: 'African Elephant',
     voucherCode: 'Loxodonta africana',
     voucherType: 'A',
     value: 'Savanna, Forests',
-    expiration: 'Savanna, Forests'
+    expiration: 'Savanna, Forests',
   },
   {
     voucherTitle: 'African Elephant',
     voucherCode: 'Loxodonta africana',
     voucherType: 'C',
     value: 'Savanna, Forests',
-    expiration: 'Savanna, Forests'
+    expiration: 'Savanna, Forests',
   },
   {
     voucherTitle: 'African Elephant',
     voucherCode: 'Loxodonta africana',
     voucherType: 'D',
     value: 'Savanna, Forests',
-    expiration: 'Savanna, Forests'
+    expiration: 'Savanna, Forests',
   },
 ]
 
 const headers = [
-  {title: 'Tiêu đề', key: 'voucherTitle'},
-  {title: 'Mã', key: 'voucherCode'},
-  {title: 'Loại', key: 'voucherType'},
-  {title: 'Giá trị', key: 'value'},
-  {title: 'Thời gian hết hạn', key: 'expiration'}
+  { title: 'Tiêu đề', key: 'voucherTitle' },
+  { title: 'Mã', key: 'voucherCode' },
+  { title: 'Loại', key: 'voucherType' },
+  { title: 'Giá trị', key: 'value' },
+  { title: 'Thời gian hết hạn', key: 'expiration' },
 ]
 </script>
 
@@ -44,14 +44,14 @@ const headers = [
   <v-sheet class="pa-3 justify-center align-center">
 
     <v-data-table
-    class="custom-header-color"
-    hide-default-footer=""
-    :headers="headers"
-    :items="items"
-    item-key="voucherTitle"
+      class="custom-header-color"
+      hide-default-footer=""
+      :headers="headers"
+      :items="items"
+      item-key="voucherTitle"
     >
-  
-  </v-data-table>
+
+    </v-data-table>
 
   </v-sheet>
 
@@ -71,3 +71,4 @@ const headers = [
   font-weight: bolder;
 }
 </style>
+

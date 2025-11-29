@@ -10,8 +10,10 @@ import Carousel from '@/components/books/Carousel.vue'
     <Carousel />
 
     <BookSlideGroup />
+
     <BookSlideGroup />
 
   </v-sheet>
+
 </template>
 

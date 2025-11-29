@@ -150,14 +150,14 @@ function updateChanges() {
                 color="success"
                 @click="updateChanges()"
               >
-                Lưu
+                 Lưu
               </v-btn>
 
               <v-btn
                 color="warning"
                 @click="discardChanges()"
               >
-                Hủy
+                 Hủy
               </v-btn>
 
             </div>

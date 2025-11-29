@@ -7,13 +7,13 @@ const categories = [
 ]
 
 function capitalizeFirstword(sentence) {
-  const words = sentence.split(" ")
+  const words = sentence.split(' ')
 
-  return words.map(
-    (word) => {
+  return words
+    .map((word) => {
       return word[0].toUpperCase() + word.substring(1)
-    }
-  ).join(" ")
+    })
+    .join(' ')
 }
 </script>
 
@@ -23,46 +23,67 @@ function capitalizeFirstword(sentence) {
     elevation="4"
     class="pa-0 align-center justify-center text-center mx-auto mb-6"
   >
-  <v-card-title>
 
-     Danh mục
-  </v-card-title>
-  <v-card-text class="pa-0">
+    <v-card-title> Danh mục </v-card-title>
 
-    <v-list>
+    <v-card-text class="pa-0">
 
-      <v-list-item
-      density="compact"
-      class="text-left"
-        v-for="(category, i) in categories"
-        link
-        :key="i"
-      >
+      <v-list>
 
-      <v-list-item-title>{{ capitalizeFirstword(category.title) }}</v-list-item-title>
+        <v-list-item
+          density="compact"
+          class="text-left"
+          v-for="(category, i) in categories"
+          link
+          :key="i"
+        >
 
-        <template v-slot:append> <v-icon icon="mdi-menu-right" size="small" ></v-icon> </template>
+          <v-list-item-title>{{ capitalizeFirstword(category.title) }}</v-list-item-title>
 
-        <v-menu :offset="[6, 0]" activator="parent" open-on-click open-on-hover submenu>
-          <v-list>
-            <v-list-item link v-for="value in 3">
-              Something
-        <template v-slot:append>
-          <v-icon
-            icon="mdi-menu-right"
-            size="small"
-          ></v-icon>
-        </template>
-            </v-list-item>
-          </v-list>
+          <template v-slot:append>
 
-        </v-menu>
+            <v-icon
+              icon="mdi-menu-right"
+              size="small"
+            ></v-icon>
 
-      </v-list-item>
+          </template>
 
-    </v-list>
+          <v-menu
+            :offset="[6, 0]"
+            activator="parent"
+            open-on-click
+            open-on-hover
+            submenu
+          >
 
-    <!-- <v-menu location="end" open-on-hover scroll-strategy="close"
+            <v-list>
+
+              <v-list-item
+                link
+                v-for="value in 3"
+              >
+                 Something
+                <template v-slot:append>
+
+                  <v-icon
+                    icon="mdi-menu-right"
+                    size="small"
+                  ></v-icon>
+
+                </template>
+
+              </v-list-item>
+
+            </v-list>
+
+          </v-menu>
+
+        </v-list-item>
+
+      </v-list>
+
+      <!-- <v-menu location="end" open-on-hover scroll-strategy="close"
               > <template v-slot:activator="{ props }"
                 > <v-btn variant="plain" width="100%" color="primary" v-bind="props"> Dropdown </v-btn> 
                 </template
@@ -73,7 +94,8 @@ function capitalizeFirstword(sentence) {
                 > </v-list
               > </v-menu> -->
 
-  </v-card-text>
+    </v-card-text>
+
   </v-card>
 
 </template>
