@@ -4,6 +4,8 @@ import EComNoSidebar from '@/layouts/EComNoSidebar.vue'
 import SideBar from '@/components/ecom/SideBar.vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/auth-store'
+import { useAdminAuthStore } from '@/stores/admin-auth-store'
 
 const routes = [
   {
@@ -49,8 +51,13 @@ const routes = [
       {
         path: 'profile',
         component: () => import('@/views/ecom/Profile.vue'),
+        meta: { requiresAuth: true },
         children: [
-          { path: '', name: 'profile-root', redirect: { name: 'user-info' } },
+          {
+            path: '',
+            name: 'profile-root',
+            redirect: { name: 'user-info' },
+          },
           {
             path: 'info',
             name: 'user-info',
@@ -84,6 +91,7 @@ const routes = [
   {
     path: '/admin',
     component: DashboardLayout,
+    meta: { requiresAdminAuth: true },
     children: [
       { path: 'login', redirect: { name: 'admin-login' } },
       {
@@ -159,11 +167,30 @@ const routes = [
       },
     ],
   },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/',
+  },
 ]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
+})
+
+router.beforeEach((to) => {
+  const auth = useAuthStore()
+  const adminAuth = useAdminAuthStore()
+
+  if (to.meta.requiresAuth && !auth.isLoggedIn) {
+    return { path: 'login' }
+  }
+
+  if (to.meta.requiresAdminAuth && !adminAuth.isLoggedIn) {
+    return { path: 'admin-login' }
+  }
+
+  return true
 })
 
 export default router

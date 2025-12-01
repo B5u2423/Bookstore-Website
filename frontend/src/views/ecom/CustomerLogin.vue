@@ -39,7 +39,7 @@ async function handleLogin() {
       color: 'success',
     }
     setTimeout(() => {
-      router.push({name: 'profile-root'})
+      router.push({ name: 'profile-root' })
       isLoading.value = false
     }, 1500)
   } else {
@@ -135,6 +135,7 @@ async function handleLogin() {
       </div>
 
     </div>
+
     <v-snackbar
       v-model="snackbar.show"
       :color="snackbar.color"
