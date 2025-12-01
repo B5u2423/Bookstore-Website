@@ -48,7 +48,6 @@ const routes = [
       },
       {
         path: 'profile',
-        name: 'profile',
         component: () => import('@/views/ecom/Profile.vue'),
         children: [
           { path: '', name: 'profile-root', redirect: { name: 'user-info' } },

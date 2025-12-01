@@ -18,7 +18,7 @@ const formData = ref({
 const snackbar = ref({
   show: false,
   message: '',
-  color: 'success', // 'success' or 'error'
+  color: 'success',
 })
 
 const rules = {

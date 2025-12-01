@@ -13,7 +13,6 @@ export const useCartStore = defineStore(
     // actions
     function addToCart() {
       activeCart.value.push({ name: 'Hello', title: 'World' })
-      console.log(activeCart.value)
     }
 
     return {

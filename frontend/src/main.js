@@ -10,7 +10,6 @@ import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
 import App from './App.vue'
 import router from './router'
-import { useAuthStore } from './stores/auth-store'
 
 const app = createApp(App)
 
@@ -28,8 +27,5 @@ pinia.use(piniaPluginPersistedstate)
 app.use(pinia)
 app.use(router)
 app.use(vuetify)
-
-const authStore = useAuthStore()
-authStore.initializeAuth()
 
 app.mount('#app')
