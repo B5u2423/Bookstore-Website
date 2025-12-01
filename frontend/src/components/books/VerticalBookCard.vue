@@ -9,7 +9,10 @@ const props = defineProps({
   <v-card
     variant="outlined"
     elevation="4"
-    class="pb-3"
+    class="pb-3 custom"
+    hover
+    to="/profile"
+    :ripple="false"
   >
 
     <!-- `cover` prop to crop the image to fill the parent size -->
@@ -36,3 +39,8 @@ const props = defineProps({
 
 </template>
 
+<style>
+.v-card.custom:hover {
+  text-decoration: underline;
+}
+</style>
