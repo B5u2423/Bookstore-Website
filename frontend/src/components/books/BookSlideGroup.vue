@@ -2,7 +2,8 @@
 import VerticalBookCard from './VerticalBookCard.vue'
 const books = [
   {
-    itemId: 1,
+    id: 1,
+    slug: 'title-in-kebab',
     image:
       'https://raw.githubusercontent.com/gwenf/vuetify-responsive/master/public/img/products/product-1.jpg',
     title: 'Nintendo Switch',

@@ -1,5 +1,6 @@
 import StandardLayout from '@/layouts/StandardLayout.vue'
 import EComLayout from '@/layouts/EComLayout.vue'
+import EComNoSidebar from '@/layouts/EComNoSidebar.vue'
 import SideBar from '@/components/ecom/SideBar.vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import { createRouter, createWebHistory } from 'vue-router'
@@ -11,6 +12,7 @@ const routes = [
     children: [
       {
         path: '',
+        name: 'landing',
         components: {
           sidebar: SideBar,
           default: () => import('@/views/ecom/Landing.vue'),
@@ -144,6 +146,14 @@ const routes = [
           },
         ],
       },
+    ],
+  },
+  {
+    path: '/books',
+    component: EComNoSidebar,
+    children: [
+      { path: '', name: 'book-root', redirect: { name: 'landing' } },
+      { path: ':slug/pid/:id', name: 'book-detail', component: () => import('@/views/ecom/BookDetail.vue') },
     ],
   },
 ]

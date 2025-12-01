@@ -11,7 +11,7 @@ const props = defineProps({
     elevation="4"
     class="pb-3 custom"
     hover
-    to="/profile"
+    :to="{ name: 'book-detail', params: { id: book.id, slug: book.slug } }"
     :ripple="false"
   >
 
@@ -44,3 +44,4 @@ const props = defineProps({
   text-decoration: underline;
 }
 </style>
+
