@@ -8,10 +8,12 @@ import dev.vubl.bookstore.services.AuthService;
 import dev.vubl.bookstore.services.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -38,7 +40,7 @@ public class AuthenticationController {
 
   @PostMapping("/register")
   public ResponseEntity<RegistrationResponse> userRegister(
-      @RequestBody RegistrationRequest request) {
+      @RequestBody @Valid RegistrationRequest request) {
     return ResponseEntity.status(HttpStatus.CREATED).body(authService.registerUser(request));
   }
 
@@ -61,7 +63,12 @@ public class AuthenticationController {
 
   @ExceptionHandler({UnableToRegisterApplicationUserException.class})
   public ResponseEntity<String> unableToRegisterApplicationUserException() {
-    return ResponseEntity.status(HttpStatus.FORBIDDEN)
-        .body("Unable to register new user! There is already existing account with this email!");
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Tài khoản đã tồn tại với email");
+  }
+
+  @ExceptionHandler({MethodArgumentNotValidException.class})
+  public ResponseEntity<String> methodArgumentNotValidException() {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .body("Các trường dữ liệu không được bỏ trống");
   }
 }
