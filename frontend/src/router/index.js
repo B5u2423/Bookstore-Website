@@ -153,7 +153,11 @@ const routes = [
     component: EComNoSidebar,
     children: [
       { path: '', name: 'book-root', redirect: { name: 'landing' } },
-      { path: ':slug/pid/:id', name: 'book-detail', component: () => import('@/views/ecom/BookDetail.vue') },
+      {
+        path: ':slug/pid/:id',
+        name: 'book-detail',
+        component: () => import('@/views/ecom/BookDetail.vue'),
+      },
     ],
   },
 ]

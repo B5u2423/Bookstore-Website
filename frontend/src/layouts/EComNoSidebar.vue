@@ -16,3 +16,4 @@ import FooterSection from '@/components/ecom/Footer.vue'
   <FooterSection />
 
 </template>
+

@@ -21,7 +21,10 @@
 
           <v-col md="5">
 
-            <v-card variant="flat" class="bg-transparent">
+            <v-card
+              variant="flat"
+              class="bg-transparent"
+            >
 
               <v-card-title> Book title </v-card-title>
 
@@ -35,7 +38,10 @@
 
               <v-card-text>
 
-                <v-card variant="flat" class="bg-transparent">
+                <v-card
+                  variant="flat"
+                  class="bg-transparent"
+                >
 
                   <v-card-title class="bg-red">PRICE: 300.000VND</v-card-title>
 
@@ -51,7 +57,10 @@
 
           <v-col md="5">
 
-            <v-card variant="flat" class="bg-transparent">
+            <v-card
+              variant="flat"
+              class="bg-transparent"
+            >
 
               <v-card-actions>
 
@@ -69,9 +78,7 @@
 
     </v-row>
 
-    <v-row>
-      Mô tả something here
-    </v-row>
+    <v-row> Mô tả something here </v-row>
 
   </v-container>
 
