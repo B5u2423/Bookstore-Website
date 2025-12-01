@@ -1,18 +1,161 @@
-import LandingView from '@/views/LandingView.vue'
+import StandardLayout from '@/layouts/StandardLayout.vue'
+import EComLayout from '@/layouts/EComLayout.vue'
+import EComNoSidebar from '@/layouts/EComNoSidebar.vue'
+import SideBar from '@/components/ecom/SideBar.vue'
+import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
-const  routes = [
-  { name: 'landing', path: '/', component: LandingView }, 
-  { name: 'user-login', path: '/login', component: () => import('@/views/UserLoginView.vue') }, 
-  { name: 'user-register', path: '/register', component: () => import('@/views/UserRegisterView.vue') }, 
-  { name: 'admin-login', path: '/admin/login', alias: '/admin',  component: () => import('@/views/AdminLoginView.vue') },
-  { name: 'admin-dashboard', path: '/admin/dashboard', component: () => import('@/views/AdminDashboardView.vue'), meta: { requiresAuth: true, requiresAdmin: true } },
-  { name: 'admin-add-book', path: '/admin/books/add',  component: () => import('@/views/AdminAddBookView.vue'), meta: { requiresAuth: true, requiresAdmin: true } },
- // TODO: convert title to kebab-case
-  { name: 'product-detail', path: '/b/:title', component: () => import('@/views/ProductDetailView.vue') }, 
-  { name: 'cart', path: '/cart', component: () => import('@/views/CartView.vue') }, 
-  { name: 'deals', path: '/deals', component: () => import('@/views/DealsView.vue') }, 
-  { name: 'category', path: '/books', component: () => import('@/views/CategoryVue.vue') }
+const routes = [
+  {
+    path: '/',
+    component: EComLayout,
+    children: [
+      {
+        path: '',
+        name: 'landing',
+        components: {
+          sidebar: SideBar,
+          default: () => import('@/views/ecom/Landing.vue'),
+        },
+      },
+      {
+        path: 'shop',
+        name: 'shop',
+        components: {
+          default: () => import('@/views/ecom/Shop.vue'),
+        },
+      },
+      {
+        path: 'cart',
+        name: 'cart',
+        components: {
+          default: () => import('@/views/ecom/Cart.vue'),
+        },
+      },
+      {
+        path: 'register',
+        name: 'register',
+        components: {
+          default: () => import('@/views/ecom/Register.vue'),
+        },
+      },
+      {
+        path: 'login',
+        name: 'login',
+        components: {
+          default: () => import('@/views/ecom/CustomerLogin.vue'),
+        },
+      },
+      {
+        path: 'profile',
+        name: 'profile',
+        component: () => import('@/views/ecom/Profile.vue'),
+        children: [
+          { path: '', name: 'profile-root', redirect: { name: 'user-info' } },
+          {
+            path: 'info',
+            name: 'user-info',
+            component: () => import('@/views/ecom/ProfileUserInfo.vue'),
+          },
+          {
+            path: 'vouchers',
+            name: 'vouchers',
+            component: () => import('@/views/ecom/ProfileVouchers.vue'),
+          },
+          {
+            path: 'order-history',
+            name: 'history',
+            component: () => import('@/views/ecom/ProfileOrderHistory.vue'),
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: '/admin-login',
+    component: StandardLayout,
+    children: [
+      {
+        path: '',
+        name: 'admin-login',
+        component: () => import('@/views/admin/AdminLogin.vue'),
+      },
+    ],
+  },
+  {
+    path: '/admin',
+    component: DashboardLayout,
+    children: [
+      { path: 'login', redirect: { name: 'admin-login' } },
+      {
+        path: 'dashboard',
+        name: 'admin-dashboard',
+        component: () => import('@/views/admin/AdminDashboard.vue'),
+      },
+      {
+        path: 'inventory',
+        name: 'inventory-root',
+        redirect: { name: 'admin-dashboard' },
+        children: [
+          {
+            path: 'books',
+            name: 'i-books',
+            component: () => import('@/views/admin/Book.vue'),
+          },
+          {
+            path: 'authors',
+            name: 'i-authors',
+            component: () => import('@/views/admin/Author.vue'),
+          },
+          {
+            path: 'collections',
+            name: 'i-collections',
+            component: () => import('@/views/admin/Collection.vue'),
+          },
+          {
+            path: 'categories',
+            name: 'i-categories',
+            component: () => import('@/views/admin/Category.vue'),
+          },
+          {
+            path: 'orders',
+            name: 'i-orders',
+            component: () => import('@/views/admin/Order.vue'),
+          },
+          {
+            path: 'publishers',
+            name: 'i-publishers',
+            component: () => import('@/views/admin/Publisher.vue'),
+          },
+        ],
+      },
+      {
+        path: 'manage',
+        name: 'manage-root',
+        redirect: { name: 'admin-dashboard' },
+        children: [
+          {
+            path: 'customers',
+            name: 'man-customers',
+            component: () => import('@/views/admin/Book.vue'),
+          },
+          {
+            path: 'staffs',
+            name: 'man-staffs',
+            component: () => import('@/views/admin/Book.vue'),
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: '/books',
+    component: EComNoSidebar,
+    children: [
+      { path: '', name: 'book-root', redirect: { name: 'landing' } },
+      { path: ':slug/pid/:id', name: 'book-detail', component: () => import('@/views/ecom/BookDetail.vue') },
+    ],
+  },
 ]
 
 const router = createRouter({

@@ -74,25 +74,53 @@ async function handleLogin() {
 </script>
 
 <template>
-   <CommonLayout :prop="prop"
-    > <v-form class="my-5" ref="form" v-model="isFormValid" @submit.prevent="handleLogin"
-      > <v-container class="d-flex justify-center" fluid
-        > <v-col cols="12" sm="8" md="6" lg="4"
-          > <!-- Alert --> <v-alert
+
+  <CommonLayout :prop="prop">
+
+    <v-form
+      class="my-5"
+      ref="form"
+      v-model="isFormValid"
+      @submit.prevent="handleLogin"
+    >
+
+      <v-container
+        class="d-flex justify-center"
+        fluid
+      >
+
+        <v-col
+          cols="12"
+          sm="8"
+          md="6"
+          lg="4"
+        >
+
+          <!-- Alert -->
+
+          <v-alert
             v-if="showAlert"
             :type="alertType"
             :text="alertMessage"
             class="mb-4"
             closable
             @click:close="showAlert = false"
-          /> <!-- Email --> <v-text-field
+          />
+
+          <!-- Email -->
+
+          <v-text-field
             v-model="user.email"
             :rules="emailRules"
             label="Email*"
             required
             density="compact"
             :disabled="authStore.isLoading"
-          /> <!-- Password --> <v-text-field
+          />
+
+          <!-- Password -->
+
+          <v-text-field
             v-model="user.password"
             :rules="passwordRules"
             :type="showPassword ? 'text' : 'password'"
@@ -102,26 +130,43 @@ async function handleLogin() {
             density="compact"
             :disabled="authStore.isLoading"
             @click:append-inner="showPassword = !showPassword"
-          /> <!-- Login button --> <v-btn
+          />
+
+          <!-- Login button -->
+
+          <v-btn
             color="success"
             class="px-12 mt-3 mx-auto d-block"
             :disabled="!isFormValid || authStore.isLoading"
             :loading="authStore.isLoading"
             type="submit"
-            > {{ authStore.isLoading ? 'Đang đăng nhập...' : 'Đăng nhập' }} </v-btn
-          > <!-- Register link -->
+          >
+             {{ authStore.isLoading ? 'Đang đăng nhập...' : 'Đăng nhập' }}
+          </v-btn>
+
+          <!-- Register link -->
+
           <div class="mt-3 text-center">
-             <span class="text-body-2">Chưa có tài khoản? </span> <router-link
+
+            <span class="text-body-2">Chưa có tài khoản? </span>
+
+            <router-link
               to="/register"
               class="text-decoration-none"
               :class="authStore.isLoading ? 'text-grey' : 'text-primary'"
-              > Đăng ký ngay </router-link
             >
+               Đăng ký ngay
+            </router-link>
+
           </div>
-           </v-col
-        > </v-container
-      > </v-form
-    > </CommonLayout
-  >
+
+        </v-col>
+
+      </v-container>
+
+    </v-form>
+
+  </CommonLayout>
+
 </template>
 
