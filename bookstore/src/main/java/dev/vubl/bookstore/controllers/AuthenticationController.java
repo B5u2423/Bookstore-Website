@@ -1,8 +1,10 @@
 package dev.vubl.bookstore.controllers;
 
 import dev.vubl.bookstore.dtos.*;
+import dev.vubl.bookstore.exceptions.InvalidCredentialException;
 import dev.vubl.bookstore.exceptions.RevalidateTokenException;
 import dev.vubl.bookstore.exceptions.UnableToRegisterApplicationUserException;
+import dev.vubl.bookstore.exceptions.UserDoesNotExistException;
 import dev.vubl.bookstore.services.ApplicationUserService;
 import dev.vubl.bookstore.services.AuthService;
 import dev.vubl.bookstore.services.TokenService;
@@ -70,5 +72,10 @@ public class AuthenticationController {
   public ResponseEntity<String> methodArgumentNotValidException() {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
         .body("Các trường dữ liệu không được bỏ trống");
+  }
+
+  @ExceptionHandler({InvalidCredentialException.class, UserDoesNotExistException.class})
+  public ResponseEntity<String> invalidCredentialException() {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mật khẩu hoặc tài khoản không đúng");
   }
 }
