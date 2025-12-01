@@ -34,7 +34,11 @@ public class AuthService {
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
                 .build());
-    return RegistrationResponse.builder().createdUser(newUser).build();
+    return RegistrationResponse.builder()
+        .email(newUser.getEmail())
+        .firstName(newUser.getFirstName())
+        .lastName(newUser.getLastName())
+        .build();
   }
 
   public LoginResponse logInUser(
@@ -50,7 +54,7 @@ public class AuthService {
       // generate refresh token
       String refreshToken = tokenService.generateRefreshToken(user).getRefreshToken();
 
-      return LoginResponse.builder().token(jwtToken).refresh(refreshToken).user(user).build();
+      return LoginResponse.builder().token(jwtToken).refresh(refreshToken).build();
     } catch (Exception e) {
       throw new InvalidCredentialException();
     }

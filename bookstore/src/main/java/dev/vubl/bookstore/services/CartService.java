@@ -24,17 +24,9 @@ public class CartService {
   private final AuthService authService;
 
   public void addToCart(AddToCartRequest payload, String token) {
-    String userEmail = tokenService.extractUserEmailFromToken(token);
-    ApplicationUser user = userService.readUserByEmail(userEmail);
 
     // find user's active cart or create new one
-    Cart cart =
-        cartRepo
-            .findCartByUser(user)
-            .orElseGet(
-                () ->
-                    cartRepo.save(Cart.builder().cartStatus(CartStatus.ACTIVE).user(user).build()));
-
+    Cart cart = getActiveCartByUser(token);
     Book book = bookRepo.findById(payload.bookId()).orElseThrow(BookDoesNotExistException::new);
 
     Optional<CartItem> ci = cartItemRepo.findByBookAndCart(book, cart);

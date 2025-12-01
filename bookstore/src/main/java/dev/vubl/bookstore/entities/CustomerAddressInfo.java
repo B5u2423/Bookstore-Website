@@ -1,26 +1,17 @@
 package dev.vubl.bookstore.entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import java.util.List;
 import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "orders")
+@Table(name = "customer_addresses")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Order extends BaseEntity {
-  @ManyToOne private ApplicationUser customer;
-
-  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-  @JsonManagedReference
-  private List<OrderItem> items;
-
-  // TODO: Payment method
-
+public class CustomerAddressInfo extends BaseEntity {
+  // new VN address structure
   @Column(name = "city")
   private String city; // tỉnh/thành
 
@@ -29,4 +20,8 @@ public class Order extends BaseEntity {
 
   @Column(name = "street")
   private String street;
+
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private ApplicationUser customer;
 }

@@ -186,7 +186,6 @@ class TokenServiceTest {
 
     // Then
     assertNotNull(result);
-    assertEquals(testUser, result.user());
     assertEquals(newJwtToken, result.token());
     assertEquals(newRefreshTokenValue, result.refresh());
 

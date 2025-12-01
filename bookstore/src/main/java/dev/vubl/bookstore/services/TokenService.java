@@ -68,7 +68,6 @@ public class TokenService {
     String jwtToken = this.generateJwt(user);
     RefreshToken newRefreshToken = this.generateRefreshToken(user);
     return LoginResponse.builder()
-        .user(user)
         .token(jwtToken)
         .refresh(newRefreshToken.getRefreshToken())
         .build();

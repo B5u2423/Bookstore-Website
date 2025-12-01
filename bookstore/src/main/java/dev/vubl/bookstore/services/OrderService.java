@@ -30,13 +30,19 @@ public class OrderService {
     order.setItems(new ArrayList<>());
 
     for (CartItem ci : cart.getItems()) {
+      Book ciBook = ci.getBook();
       OrderItem oi =
           OrderItem.builder()
               .order(order)
-              .book(ci.getBook())
+              .book(ciBook)
+              .titleAtPurchase(ciBook.getTitle())
+              .isbn(ciBook.getIsbn())
+              .productCode(ciBook.getProductCode())
               .quantity(ci.getQuantity())
-              .price(ci.getBook().getPrice())
+              .priceAtPurchase(ciBook.getPrice())
               .build();
+
+      // get book to update
       Optional<Book> b = bookRepo.findById(ci.getBook().getId());
       if (b.isEmpty()) {
         throw new BookDoesNotExistException();

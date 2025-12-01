@@ -102,7 +102,9 @@ class AuthServiceTest {
 
     // Then
     assertNotNull(result);
-    assertEquals(testUser, result.createdUser());
+    assertEquals(testUser.getEmail(), result.email());
+    assertEquals(testUser.getFirstName(), result.firstName());
+    assertEquals(testUser.getLastName(), result.lastName());
 
     verify(passwordEncoder, times(1)).encode("plainPassword");
     verify(userService, times(1))
@@ -137,7 +139,9 @@ class AuthServiceTest {
 
     // Then
     assertNotNull(result);
-    assertEquals(testAdmin, result.createdUser());
+    assertEquals(testAdmin.getEmail(), result.email());
+    assertEquals(testAdmin.getFirstName(), result.firstName());
+    assertEquals(testAdmin.getLastName(), result.lastName());
 
     verify(passwordEncoder, times(1)).encode("adminPass");
     verify(userService, times(1))
@@ -168,7 +172,6 @@ class AuthServiceTest {
     assertNotNull(result);
     assertEquals(jwtToken, result.token());
     assertEquals("test-refresh-token", result.refresh());
-    assertEquals(testUser, result.user());
 
     verify(authenticationManager, times(1))
         .authenticate(any(UsernamePasswordAuthenticationToken.class));
@@ -337,7 +340,9 @@ class AuthServiceTest {
 
     // Then
     assertNotNull(result);
-    assertEquals(staffUser, result.createdUser());
+    assertEquals(staffUser.getEmail(), result.email());
+    assertEquals(staffUser.getFirstName(), result.firstName());
+    assertEquals(staffUser.getLastName(), result.lastName());
     verify(userService, times(1))
         .createOrUpdateUser(argThat(user -> user.getUserType() == UserType.STAFF));
   }
