@@ -182,11 +182,11 @@ router.beforeEach((to) => {
   const auth = useAuthStore()
   const adminAuth = useAdminAuthStore()
 
-  if (to.meta.requiresAuth && !auth.isLoggedIn) {
+  if (to.meta.requiresAuth && !auth.isAuthenticated) {
     return { path: 'login' }
   }
 
-  if (to.meta.requiresAdminAuth && !adminAuth.isLoggedIn) {
+  if (to.meta.requiresAdminAuth && !adminAuth.isAuthenticated) {
     return { path: 'admin-login' }
   }
 

@@ -1,6 +1,7 @@
 <script setup>
 import { useAuthStore } from '@/stores/auth-store'
 import { ref } from 'vue'
+import SnackBar from '@/components/common/SnackBar.vue'
 
 const authStore = useAuthStore()
 
@@ -27,7 +28,6 @@ const rules = {
 }
 
 async function handleRegister() {
-  console.log(formData.value)
   const res = await authStore.register(formData.value)
 
   if (res.success) {
@@ -145,14 +145,7 @@ async function handleRegister() {
 
     </div>
 
-    <v-snackbar
-      v-model="snackbar.show"
-      :color="snackbar.color"
-      timeout="3000"
-      location="top"
-    >
-       {{ snackbar.message }}
-    </v-snackbar>
+    <SnackBar :snackbar="snackbar"/>
 
   </v-sheet>
 

@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth-store'
 import { useRouter } from 'vue-router'
+import SnackBar from '@/components/common/SnackBar.vue'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -136,14 +137,7 @@ async function handleLogin() {
 
     </div>
 
-    <v-snackbar
-      v-model="snackbar.show"
-      :color="snackbar.color"
-      timeout="3000"
-      location="top"
-    >
-       {{ snackbar.message }}
-    </v-snackbar>
+    <SnackBar :snackbar="snackbar"/>
 
   </v-sheet>
 
