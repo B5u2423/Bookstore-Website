@@ -2,10 +2,12 @@
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth-store'
 import { useCartStore } from '@/stores/cart-store'
+import { useUserProfileStore } from '@/stores/user-profile-store'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const cartStore = useCartStore()
+const userProfileStore = useUserProfileStore()
 
 const goToHomePage = () => {
   router.push('/')
@@ -69,7 +71,7 @@ async function handleLogout() {
 
         <template v-slot:activator="{ props }">
 
-          <h3>Xin chào ...</h3>
+          <h4>Xin chào {{ userProfileStore.userInfo.firstName }} {{ userProfileStore.userInfo.lastName }}</h4>
 
           <v-btn
             color="primary"

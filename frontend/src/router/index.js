@@ -40,6 +40,7 @@ const routes = [
         components: {
           default: () => import('@/views/ecom/Register.vue'),
         },
+        meta: {entrypoint: true}
       },
       {
         path: 'login',
@@ -47,6 +48,7 @@ const routes = [
         components: {
           default: () => import('@/views/ecom/CustomerLogin.vue'),
         },
+        meta: {entrypoint: true}
       },
       {
         path: 'profile',
@@ -184,6 +186,11 @@ router.beforeEach((to) => {
 
   if (to.meta.requiresAuth && !auth.isAuthenticated) {
     return { path: 'login' }
+  }
+
+  // if already logged in, no route to register or login page
+  if (auth.isAuthenticated && to.meta.entrypoint) {
+    return {path: 'user-info'}
   }
 
   if (to.meta.requiresAdminAuth && !adminAuth.isAuthenticated) {
