@@ -1,5 +1,6 @@
 package dev.vubl.bookstore.services;
 
+import dev.vubl.bookstore.dtos.UpdateProfileRequest;
 import dev.vubl.bookstore.entities.ApplicationUser;
 import dev.vubl.bookstore.exceptions.UnableToRegisterApplicationUserException;
 import dev.vubl.bookstore.exceptions.UserDoesNotExistException;
@@ -52,6 +53,16 @@ public class ApplicationUserService implements UserDetailsService {
   public void deleteUser(String email) {
     ApplicationUser user = readUserByEmailOrThrowException(email);
     userRepo.delete(user);
+  }
+
+  public String updateUserProfileInfo(ApplicationUser user, UpdateProfileRequest payload) {
+    user.setFirstName(payload.firstName());
+    user.setLastName(payload.lastName());
+    user.setPhoneNumber(payload.phoneNumber());
+    user.setEmail(payload.email());
+
+    this.createOrUpdateUser(user);
+    return "Update profile successfully";
   }
 
   private ApplicationUser readUserByEmailOrThrowException(String email) {
