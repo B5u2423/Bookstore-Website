@@ -71,14 +71,12 @@ async function handleLogout() {
 
         <template v-slot:activator="{ props }">
 
-          <h4>Xin chào {{ userProfileStore.userInfo.firstName }} {{ userProfileStore.userInfo.lastName }}</h4>
-
           <v-btn
             color="primary"
             v-bind="props"
-            icon="mdi-account"
+            prepend-icon="mdi-account"
           >
-
+            {{ userProfileStore.userInfo.firstName }} {{ userProfileStore.userInfo.lastName }}
           </v-btn>
 
         </template>
