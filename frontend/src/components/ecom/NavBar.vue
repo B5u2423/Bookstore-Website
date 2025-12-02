@@ -55,9 +55,63 @@ async function handleLogout() {
 
     <template v-slot:append>
 
-      <v-btn :to="{ name: 'register' }">Đăng ký</v-btn>
+      <template v-if="!authStore.isAuthenticated">
 
-      <v-btn :to="{ name: 'login' }">Đăng nhập</v-btn>
+        <v-btn :to="{ name: 'register' }">Đăng ký</v-btn>
+
+        <v-btn :to="{ name: 'login' }">Đăng nhập</v-btn>
+
+      </template>
+
+      <!-- IF LOGGED IN: AVATAR + MENU -->
+
+      <v-menu location="bottom" v-else>
+
+        <template v-slot:activator="{ props }">
+
+          <h3>Xin chào ...</h3>
+
+          <v-btn
+            color="primary"
+            v-bind="props"
+            icon="mdi-account"
+          >
+
+          </v-btn>
+
+        </template>
+
+        <v-list>
+
+          <v-list-item :to="{name: 'user-info'}">
+
+            <v-list-item-title>
+
+              <v-icon
+                class="mx-2"
+                icon="mdi-account"
+              ></v-icon>
+               Thông tin cá nhân
+            </v-list-item-title>
+
+          </v-list-item>
+
+          <v-list-item @click="handleLogout">
+
+            <v-list-item-title>
+
+              <v-icon
+                class="mx-2"
+                icon="mdi-logout"
+              ></v-icon>
+               Đăng xuất
+            </v-list-item-title>
+
+          </v-list-item>
+
+        </v-list>
+
+      </v-menu>
 
       <v-badge
         class="mt-n1"

@@ -11,6 +11,13 @@ export const useAuthStore = defineStore(
     const error = ref(null)
     const isAuthenticated = computed(() => !!accessToken.value)
 
+    function $reset() {
+      accessToken.value = ''
+      refreshToken.value = ''
+      isLoading.value = false
+      error.value = null
+    }
+
     async function login(credentials) {
       isLoading.value = true
       error.value = null
@@ -56,13 +63,7 @@ export const useAuthStore = defineStore(
       } catch (err) {
         console.warn('Logout failed on server:', err)
       } finally {
-        user.value = null
-        accessToken.value = null
-        refreshToken.value = null
-        localStorage.removeItem('accessToken')
-        localStorage.removeItem('refreshToken')
-
-        isLoading.value = false
+        $reset()
       }
     }
 

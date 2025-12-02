@@ -137,7 +137,7 @@ async function handleLogin() {
 
     </div>
 
-    <SnackBar :snackbar="snackbar"/>
+    <SnackBar :snackbar="snackbar" />
 
   </v-sheet>
 

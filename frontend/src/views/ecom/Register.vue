@@ -145,7 +145,7 @@ async function handleRegister() {
 
     </div>
 
-    <SnackBar :snackbar="snackbar"/>
+    <SnackBar :snackbar="snackbar" />
 
   </v-sheet>
 
