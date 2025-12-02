@@ -14,5 +14,6 @@ public record BookResponseDTO(
     Integer inStock,
     Integer publishYear,
     String publisher,
+    String urlSlug,
     Integer pageCount,
     String imageUrl) {}

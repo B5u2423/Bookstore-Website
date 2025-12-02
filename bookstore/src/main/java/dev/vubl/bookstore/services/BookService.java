@@ -55,6 +55,8 @@ public class BookService {
         .publishYear(book.getPublishYear())
         .pageCount(book.getPageCount())
         .imageUrl(book.getImageUrl())
+        .urlSlug(book.getUrlSlug())
+        .author(book.getAuthor())
         .build();
   }
 
