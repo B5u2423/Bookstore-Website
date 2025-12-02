@@ -6,6 +6,7 @@ import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth-store'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
+import { compile } from 'vue'
 
 const routes = [
   {
@@ -25,13 +26,6 @@ const routes = [
         name: 'shop',
         components: {
           default: () => import('@/views/ecom/Shop.vue'),
-        },
-      },
-      {
-        path: 'cart',
-        name: 'cart',
-        components: {
-          default: () => import('@/views/ecom/Cart.vue'),
         },
       },
       {
@@ -168,6 +162,14 @@ const routes = [
         component: () => import('@/views/ecom/BookDetail.vue'),
       },
     ],
+  },
+  {
+        path: '/cart',
+        name: 'cart',
+        component: EComNoSidebar,
+        children: [
+          {path: '', component: () => import('@/views/ecom/Cart.vue')}
+        ]
   },
   {
     path: '/:pathMatch(.*)*',
