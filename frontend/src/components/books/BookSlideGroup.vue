@@ -1,21 +1,15 @@
 <script setup>
 import VerticalBookCard from './VerticalBookCard.vue'
-const books = [
-  {
-    id: 1,
-    slug: 'title-in-kebab',
-    image:
-      'https://raw.githubusercontent.com/gwenf/vuetify-responsive/master/public/img/products/product-1.jpg',
-    title: 'Nintendo Switch',
-    author: 'Author A',
-    price: 299.99,
-  },
-]
+
+const props = defineProps({
+  groupHeader: String,
+  books: Array
+})
 </script>
 
 <template>
 
-  <router-link class="text-h5">Something here</router-link>
+  <router-link class="text-h5 custom-link">{{ groupHeader }}</router-link>
 
   <v-slide-group class="pa-4">
 
@@ -35,3 +29,13 @@ const books = [
 
 </template>
 
+<style>
+.custom-link {
+  text-decoration: none;
+  color: inherit; /* or any specific color */
+}
+
+.custom-link:hover {
+  text-decoration: underline;
+}
+</style>
