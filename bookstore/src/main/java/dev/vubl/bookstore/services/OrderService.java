@@ -37,7 +37,6 @@ public class OrderService {
               .book(ciBook)
               .titleAtPurchase(ciBook.getTitle())
               .isbn(ciBook.getIsbn())
-              .productCode(ciBook.getProductCode())
               .quantity(ci.getQuantity())
               .priceAtPurchase(ciBook.getPrice())
               .build();

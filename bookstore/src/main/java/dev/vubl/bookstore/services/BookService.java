@@ -3,7 +3,6 @@ package dev.vubl.bookstore.services;
 import dev.vubl.bookstore.dtos.BookResponseDTO;
 import dev.vubl.bookstore.entities.Book;
 import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
-import dev.vubl.bookstore.repos.AuthorRepo;
 import dev.vubl.bookstore.repos.BookRepo;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class BookService {
   private final BookRepo bookRepo;
-  private final AuthorRepo authorRepo;
 
   public List<BookResponseDTO> getAllBooks() {
     return bookRepo.findAll().stream().map(this::mapToBookResponseDTO).toList();
@@ -53,13 +51,9 @@ public class BookService {
         .description(book.getDescription())
         .price(book.getPrice())
         .inStock(book.getInStock())
-        .productCode(book.getProductCode())
+        .publisher(book.getPublisher())
         .publishYear(book.getPublishYear())
-        .language(book.getLanguage())
-        .weightGrams(book.getWeightGrams())
-        .dimensions(book.getDimensions())
         .pageCount(book.getPageCount())
-        .format(book.getFormat())
         .imageUrl(book.getImageUrl())
         .build();
   }
@@ -67,7 +61,7 @@ public class BookService {
   private Book mapToBookEntity(BookResponseDTO bookResponseDTO) {
     return Book.builder()
         .title(bookResponseDTO.title())
-        .authors(bookResponseDTO.authors())
+        .publisher(bookResponseDTO.publisher())
         .price(bookResponseDTO.price())
         .description(bookResponseDTO.description())
         .isbn(bookResponseDTO.isbn())
