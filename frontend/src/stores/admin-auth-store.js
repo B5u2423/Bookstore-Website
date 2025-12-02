@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { loginUser } from '@/api/auth-api'
+import { loginUser, logoutUser } from '@/api/auth-api'
 
 export const useAdminAuthStore = defineStore(
   'admin-auth',
@@ -10,6 +10,25 @@ export const useAdminAuthStore = defineStore(
     const error = ref(null)
     const isLoading = ref(false)
     const isAuthenticated = computed(() => !!accessToken.value)
+
+    function $reset() {
+      accessToken.value = ''
+      refreshToken.value = ''
+      isLoading.value = false
+      error.value = null
+    }
+
+    async function adminLogout() {
+      isLoading.value = true
+
+      try {
+        await logoutUser()
+      } catch (err) {
+        console.warn('Logout failed on server:', err)
+      } finally {
+        $reset()
+      }
+    }
 
     async function adminLogin(credentials) {
       isLoading.value = true
@@ -38,6 +57,7 @@ export const useAdminAuthStore = defineStore(
       error,
       isAuthenticated,
       adminLogin,
+      adminLogout
     }
   },
   {
