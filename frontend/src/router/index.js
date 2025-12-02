@@ -34,7 +34,7 @@ const routes = [
         components: {
           default: () => import('@/views/ecom/Register.vue'),
         },
-        meta: {entrypoint: true}
+        meta: { entrypoint: true },
       },
       {
         path: 'login',
@@ -42,7 +42,7 @@ const routes = [
         components: {
           default: () => import('@/views/ecom/CustomerLogin.vue'),
         },
-        meta: {entrypoint: true}
+        meta: { entrypoint: true },
       },
       {
         path: 'profile',
@@ -164,12 +164,9 @@ const routes = [
     ],
   },
   {
-        path: '/cart',
-        name: 'cart',
-        component: EComNoSidebar,
-        children: [
-          {path: '', component: () => import('@/views/ecom/Cart.vue')}
-        ]
+    path: '/cart',
+    component: EComNoSidebar,
+    children: [{ path: '', name: 'cart', component: () => import('@/views/ecom/Cart.vue') }],
   },
   {
     path: '/:pathMatch(.*)*',
@@ -192,7 +189,7 @@ router.beforeEach((to) => {
 
   // if already logged in, no route to register or login page
   if (auth.isAuthenticated && to.meta.entrypoint) {
-    return {path: 'user-info'}
+    return { path: 'user-info' }
   }
 
   if (to.meta.requiresAdminAuth && !adminAuth.isAuthenticated) {

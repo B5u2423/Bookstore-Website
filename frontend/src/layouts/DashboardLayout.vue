@@ -14,10 +14,9 @@ const formattedDate = new Intl.DateTimeFormat('vi', {
   year: 'numeric',
 }).format(today)
 
-
 async function handleLogout() {
   await adminAuthStore.adminLogout()
-  router.push({name: 'admin-login'})
+  router.push({ name: 'admin-login' })
 }
 </script>
 
@@ -26,8 +25,18 @@ async function handleLogout() {
   <AdminNavDrawer />
 
   <v-app-bar>
+
     <v-app-bar-title class="ml-10">{{ formattedDate }}</v-app-bar-title>
-    <v-btn class="mr-16" variant="elevated" color="primary" @click="handleLogout">Đăng xuất</v-btn>
+
+    <v-btn
+      class="mr-16"
+      variant="elevated"
+      color="primary"
+      @click="handleLogout"
+    >
+       Đăng xuất
+    </v-btn>
+
   </v-app-bar>
 
   <v-main>

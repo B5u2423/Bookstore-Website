@@ -57,7 +57,7 @@ export const useAdminAuthStore = defineStore(
       error,
       isAuthenticated,
       adminLogin,
-      adminLogout
+      adminLogout,
     }
   },
   {

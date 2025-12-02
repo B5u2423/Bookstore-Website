@@ -67,7 +67,10 @@ async function handleLogout() {
 
       <!-- IF LOGGED IN: AVATAR + MENU -->
 
-      <v-menu location="bottom" v-else>
+      <v-menu
+        location="bottom"
+        v-else
+      >
 
         <template v-slot:activator="{ props }">
 
@@ -76,14 +79,14 @@ async function handleLogout() {
             v-bind="props"
             prepend-icon="mdi-account"
           >
-            {{ userProfileStore.userInfo.firstName }} {{ userProfileStore.userInfo.lastName }}
+             {{ userProfileStore.userInfo.firstName }} {{ userProfileStore.userInfo.lastName }}
           </v-btn>
 
         </template>
 
         <v-list>
 
-          <v-list-item :to="{name: 'user-info'}">
+          <v-list-item :to="{ name: 'user-info' }">
 
             <v-list-item-title>
 

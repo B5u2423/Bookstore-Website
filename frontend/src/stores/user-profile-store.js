@@ -13,7 +13,7 @@ export const useUserProfileStore = defineStore(
       email: '',
     })
 
-    async function getUserInfo () {
+    async function getUserInfo() {
       const authStore = useAuthStore()
       const res = await getCustomerAccount(authStore.accessToken)
 
@@ -21,7 +21,6 @@ export const useUserProfileStore = defineStore(
       userInfo.value.lastName = res.data.lastName
       userInfo.value.email = res.data.email
       userInfo.value.phone = res.data.phoneNumber
-
     }
 
     function updateUserInfo({ firstName, lastName, phone, email }) {
