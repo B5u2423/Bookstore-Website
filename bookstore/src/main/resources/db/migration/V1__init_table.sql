@@ -5,7 +5,7 @@ CREATE TABLE books
     update_ts    TIMESTAMP WITHOUT TIME ZONE,
     isbn         VARCHAR(255),
     title        VARCHAR(255),
-    description  VARCHAR(255),
+    description  TEXT,
     author       VARCHAR(255),
     price        DECIMAL,
     in_stock     INTEGER,
