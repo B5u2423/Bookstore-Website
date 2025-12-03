@@ -5,7 +5,7 @@ import { ref, onMounted } from 'vue'
 import { fetchBestSellersBooks, fetchNewArrivalBooks } from '@/api/book-api'
 
 const bestsellers = ref([])
-const newbooks = ref([]) 
+const newbooks = ref([])
 const loading = ref(false)
 const error = ref(null)
 
@@ -14,9 +14,9 @@ const fetchBooks = async () => {
   try {
     const [bestSellersResponse, newArrivalsResponse] = await Promise.all([
       fetchBestSellersBooks(),
-      fetchNewArrivalBooks()
+      fetchNewArrivalBooks(),
     ])
-    
+
     bestsellers.value = bestSellersResponse.data
     console.log(bestsellers.value)
     newbooks.value = newArrivalsResponse.data
@@ -32,7 +32,6 @@ const fetchBooks = async () => {
 onMounted(() => {
   fetchBooks()
 })
-
 </script>
 
 <template>
@@ -43,11 +42,18 @@ onMounted(() => {
 
     <div class="ma-4">
 
-    <BookSlideGroup group-header="Bán chạy" :books="bestsellers.slice(0, 10)"/>
+      <BookSlideGroup
+        group-header="Bán chạy"
+        :books="bestsellers.slice(0, 10)"
+      />
 
-    <BookSlideGroup group-header="Sách mới về" :books="newbooks.slice(0, 10)"/>
+      <BookSlideGroup
+        group-header="Sách mới về"
+        :books="newbooks.slice(0, 10)"
+      />
 
     </div>
+
   </v-sheet>
 
 </template>

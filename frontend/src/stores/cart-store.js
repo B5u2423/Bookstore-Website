@@ -41,11 +41,23 @@ export const useCartStore = defineStore(
       activeCart.value = activeCart.value.filter((item) => item.id !== id)
     }
 
+    function addItemToCart(item) { 
+      if (!item.quantity || item.quantity <= 0) return
+      const addedItem = activeCart.value.find(i => i.id === item.id)
+      console.log(addedItem)
+      if (addedItem) {
+        addedItem.quantity += item.quantity
+      } else {
+        activeCart.value.push(item)
+      }
+    }
+
     return {
       cartItemsCount,
       activeCart,
       totalAmount,
       removeItemFromCart,
+      addItemToCart,
     }
   },
   {
