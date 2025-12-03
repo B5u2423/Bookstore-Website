@@ -26,4 +26,11 @@ public class CartController {
     cartService.addToCart(payload, token);
     return ResponseEntity.ok().body("Item added");
   }
+
+  @DeleteMapping("/remove-all")
+  public ResponseEntity<String> removeAllItemFromCart(
+      @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+    cartService.removeAllItems(token);
+    return ResponseEntity.ok().body("All item removed");
+  }
 }
