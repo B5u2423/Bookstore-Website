@@ -10,13 +10,16 @@ const props = defineProps({
 
 <template>
 
-  <router-link class="text-h5 custom-link" :to="{name: routeTo}">{{ groupHeader }}</router-link>
+  <router-link
+    class="text-h5 custom-link"
+    :to="{ name: routeTo }"
+  >
+    {{ groupHeader }}
+  </router-link>
 
   <v-slide-group class="pa-4">
 
-    <v-slide-group-item
-      v-for="book in books"
-    >
+    <v-slide-group-item v-for="book in books">
 
       <VerticalBookCard
         :book="book"

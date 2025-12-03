@@ -19,7 +19,7 @@ function continueShopping() {
 function checkout() {
   // if not logged in
   if (!authStore.isAuthenticated) {
-    router.push({name: 'login'})
+    router.push({ name: 'login' })
   }
 }
 </script>

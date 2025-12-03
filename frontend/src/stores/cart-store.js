@@ -21,7 +21,7 @@ export const useCartStore = defineStore(
       activeCart.value = activeCart.value.filter((item) => item.id !== id)
     }
 
-    function addItemToLocalCart(item) { 
+    function addItemToLocalCart(item) {
       if (!item.quantity || item.quantity <= 0) return
       const addedItem = activeCart.value.find((i) => i.id === item.id)
       if (addedItem) {
@@ -31,25 +31,25 @@ export const useCartStore = defineStore(
       }
     }
 
-
-    async function syncCartWithBackEnd({token: accessToken}) {
+    async function syncCartWithBackEnd({ token: accessToken }) {
       // if FE cart is not empty
       if (activeCart.value.length > 0) {
-        const res = activeCart.value.map((item) => addToCart(accessToken, {bookId: item.id, quantity: item.quantity}))
+        const res = activeCart.value.map((item) =>
+          addToCart(accessToken, { bookId: item.id, quantity: item.quantity }),
+        )
       }
       const response = await getUsersActiveCart(accessToken)
-      const {id, user, items, cartStatus} = response.data
+      const { id, user, items, cartStatus } = response.data
       // mapper
       items.map((item) => {
         addItemToLocalCart({
-
-    id: item.book.id,
-    title: item.book.title,
-    author: item.book.author,
-    price: item.book.price,
-    slug: item.book.urlSlug,
-    image: item.book.imageUrl,
-    quantity: item.quantity
+          id: item.book.id,
+          title: item.book.title,
+          author: item.book.author,
+          price: item.book.price,
+          slug: item.book.urlSlug,
+          image: item.book.imageUrl,
+          quantity: item.quantity,
         })
       })
     }

@@ -5,7 +5,7 @@ import { useUserProfileStore } from '@/stores/user-profile-store'
 import { onBeforeMount, onMounted, ref, watch } from 'vue'
 
 const userProfileStore = useUserProfileStore()
-const cartStore =  useCartStore()
+const cartStore = useCartStore()
 const authStore = useAuthStore()
 
 const isFieldsEnabled = ref(false)
@@ -51,7 +51,7 @@ function updateChanges() {
 
 // sync cart on load
 onMounted(() => {
-  cartStore.syncCartWithBackEnd({token: authStore.accessToken})
+  cartStore.syncCartWithBackEnd({ token: authStore.accessToken })
 })
 </script>
 

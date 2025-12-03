@@ -50,7 +50,7 @@ function handleAddToCart() {
     price: book.value.price,
     slug: book.value.urlSlug,
     image: book.value.imageUrl,
-    quantity: quantity.value
+    quantity: quantity.value,
   })
 }
 
@@ -107,7 +107,7 @@ const formatPrice = (price = 0) => {
                   class="bg-transparent"
                 >
 
-                  <v-card-title class="bg-red">{{ formatPrice( book.price )}} VND</v-card-title>
+                  <v-card-title class="bg-red">{{ formatPrice(book.price) }} VND</v-card-title>
 
                   <v-card-text class="mt-3">
 
@@ -178,7 +178,7 @@ const formatPrice = (price = 0) => {
                   class="bg-red"
                   @click="handleAddToCart"
                 >
-                  Thêm vào giỏ hàng
+                   Thêm vào giỏ hàng
                 </v-btn>
 
               </v-card-actions>

@@ -9,15 +9,17 @@ export function addToCart(token, body) {
 }
 
 export function getUsersActiveCart(token) {
-    return api.get('/api/v1/carts', { headers: {
+  return api.get('/api/v1/carts', {
+    headers: {
       Authorization: `Bearer ${token}`,
-    }
+    },
   })
 }
 
 export function removeAllItemsFromCart(token) {
-    return api.delete('/api/v1/carts/remove-all', { headers: {
+  return api.delete('/api/v1/carts/remove-all', {
+    headers: {
       Authorization: `Bearer ${token}`,
-    }
+    },
   })
 }
