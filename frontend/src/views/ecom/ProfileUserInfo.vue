@@ -1,8 +1,12 @@
 <script setup>
+import { useAuthStore } from '@/stores/auth-store'
+import { useCartStore } from '@/stores/cart-store'
 import { useUserProfileStore } from '@/stores/user-profile-store'
-import { ref, watch } from 'vue'
+import { onBeforeMount, ref, watch } from 'vue'
 
 const userProfileStore = useUserProfileStore()
+const cartStore =  useCartStore()
+const authStore = useAuthStore()
 
 const isFieldsEnabled = ref(false)
 const isUpdated = ref(false)
@@ -44,6 +48,11 @@ function updateChanges() {
   isUpdated.value = false
   isFieldsEnabled.value = false
 }
+
+// sync cart on load
+onBeforeMount(() => {
+  cartStore.syncCartWithBackEnd({token: authStore.accessToken})
+})
 </script>
 
 <template>

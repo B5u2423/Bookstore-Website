@@ -14,7 +14,12 @@ const goToHomePage = () => {
 }
 
 async function handleLogout() {
+  // reset the local cart
+  cartStore.reset()
+  
+  // do logout
   await authStore.logout()
+  // redirect to homepage
   router.push('/')
 }
 </script>

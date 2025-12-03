@@ -7,7 +7,7 @@ import { useRoute } from 'vue-router'
 const cartStore = useCartStore()
 
 const route = useRoute()
-const quantity = ref(0)
+const quantity = ref(1)
 const book = ref({
   author: '',
   description: '',
@@ -159,14 +159,14 @@ const formatPrice = (price = 0) => {
                     size="small"
                     variant="text"
                     icon="mdi-minus"
-                    @click="quantity >= 1 ? quantity-- : 0"
+                    @click="quantity > 1 ? quantity-- : 1"
                   ></v-btn>
 
                   <v-text-field
                     v-model="quantity"
                     type="number"
                     style="width: 60px"
-                    :min="0"
+                    :min="1"
                     density="compact"
                     hide-details
                     class="mx-2"
