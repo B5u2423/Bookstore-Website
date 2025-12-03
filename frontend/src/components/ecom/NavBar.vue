@@ -33,11 +33,18 @@ async function handleLogout() {
         max-height="39"
       >
 
-        <v-img
+        <h2
+          class="cursor-pointer"
+          @click="goToHomePage"
+        >
+           BookShelf
+        </h2>
+
+        <!-- <v-img
           src="https://theme.hstatic.net/200000845405/1001223012/14/logo.png?v=471"
           class="cursor-pointer"
           @click="goToHomePage"
-        ></v-img>
+        ></v-img> -->
 
       </v-responsive>
 
@@ -138,7 +145,7 @@ async function handleLogout() {
 
   </v-app-bar>
 
-  <v-app-bar
+  <!-- <v-app-bar
     class="bg-blue px-16"
     scroll-behavior="fully-hide"
     scroll-threshold="30"
@@ -168,7 +175,7 @@ async function handleLogout() {
 
     </div>
 
-  </v-app-bar>
+  </v-app-bar> -->
 
 </template>
 
