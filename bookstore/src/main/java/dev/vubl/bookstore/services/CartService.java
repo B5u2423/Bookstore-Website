@@ -10,8 +10,10 @@ import dev.vubl.bookstore.repos.CartRepo;
 import jakarta.transaction.Transactional;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -33,6 +35,7 @@ public class CartService {
     if (ci.isPresent()) {
       ci.get().setQuantity(ci.get().getQuantity() + payload.quantity());
     } else {
+      log.info("[{}] New item added to cart", this.getClass().getName());
       cartItemRepo.save(
           CartItem.builder().cart(cart).book(book).quantity(payload.quantity()).build());
     }
