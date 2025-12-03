@@ -59,7 +59,7 @@ export const useAuthStore = defineStore(
       isLoading.value = true
 
       try {
-        await logoutUser()
+        await logoutUser(accessToken.value)
       } catch (err) {
         console.warn('Logout failed on server:', err)
       } finally {

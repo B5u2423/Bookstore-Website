@@ -128,6 +128,7 @@ public class SecurityConfigs {
   private static PathPatternRequestMatcher[] unprotectedRoute() {
     return new PathPatternRequestMatcher[] {
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/auth/login"),
+      PathPatternRequestMatcher.withDefaults().matcher("/api/v1/auth/logout"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/auth/admin/login"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/auth/register"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/auth/refresh"),

@@ -117,8 +117,7 @@ export function refreshJwtToken(refreshToken) {
  * User logout
  * @returns {Promise} API response
  */
-export function logoutUser() {
-  const token = localStorage.getItem('accessToken')
+export function logoutUser(token) {
   return api.delete('/api/v1/auth/logout', {
     headers: {
       Authorization: `Bearer ${token}`,
