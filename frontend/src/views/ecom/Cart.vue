@@ -1,8 +1,10 @@
 <script setup>
+import { useAuthStore } from '@/stores/auth-store'
 import { useCartStore } from '@/stores/cart-store'
 import { useRouter } from 'vuetify/lib/composables/router'
 
 const cartStore = useCartStore()
+const authStore = useAuthStore()
 const router = useRouter()
 
 // Methods
@@ -15,7 +17,10 @@ function continueShopping() {
 }
 
 function checkout() {
-  console.log('checked out')
+  // if not logged in
+  if (!authStore.isAuthenticated) {
+    router.push({name: 'login'})
+  }
 }
 </script>
 
