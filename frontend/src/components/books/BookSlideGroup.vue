@@ -3,7 +3,7 @@ import VerticalBookCard from './VerticalBookCard.vue'
 
 const props = defineProps({
   groupHeader: String,
-  books: Array
+  books: Array,
 })
 </script>
 
@@ -39,3 +39,4 @@ const props = defineProps({
   text-decoration: underline;
 }
 </style>
+

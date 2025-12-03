@@ -30,17 +30,14 @@ const formatPrice = (price = 0) => {
 
     </v-img>
 
-
     <v-card-text>
-      <h3 class="mb-3">
 
-      {{ book.title }}
-
-      </h3>
+      <h3 class="mb-3"> {{ book.title }} </h3>
 
       <div> {{ book.author }} </div>
 
       <div>{{ formatPrice(book.price) }} ₫</div>
+
     </v-card-text>
 
   </v-card>

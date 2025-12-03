@@ -26,7 +26,10 @@ import SideBar from '@/components/ecom/SideBar.vue'
 
         </v-col>
 
-        <v-col cols="12" md="9">
+        <v-col
+          cols="12"
+          md="9"
+        >
 
           <router-view></router-view>
 
