@@ -2,6 +2,7 @@ package dev.vubl.bookstore.services;
 
 import dev.vubl.bookstore.dtos.BookResponseDTO;
 import dev.vubl.bookstore.entities.Book;
+import dev.vubl.bookstore.exceptions.BookDoesNotExistException;
 import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
 import dev.vubl.bookstore.repos.BookRepo;
 import jakarta.transaction.Transactional;
@@ -20,6 +21,11 @@ public class BookService {
 
   public List<BookResponseDTO> getAllBooks() {
     return bookRepo.findAll().stream().map(this::mapToBookResponseDTO).toList();
+  }
+
+  public BookResponseDTO getBookById(Integer id) {
+    Book b = bookRepo.findById(id).orElseThrow(BookDoesNotExistException::new);
+    return mapToBookResponseDTO(b);
   }
 
   public BookResponseDTO addOrUpdateBook(BookResponseDTO bookResponseDTO) {

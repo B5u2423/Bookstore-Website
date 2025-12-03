@@ -35,6 +35,11 @@ public class BookController {
     return bookService.getAllBooks();
   }
 
+  @GetMapping("/{id}")
+  public ResponseEntity<BookResponseDTO> getBookById(@PathVariable Integer id) {
+    return ResponseEntity.ok().body(bookService.getBookById(id));
+  }
+
   // ADMIN
   @PostMapping("/add")
   public ResponseEntity<BookResponseDTO> addNewBook(@RequestBody BookResponseDTO payload) {
