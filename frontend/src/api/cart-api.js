@@ -7,3 +7,10 @@ export function addToCart(token, body) {
     },
   })
 }
+
+export function getUsersActiveCart(token) {
+    return api.get('/api/v1/carts', { headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  })
+}
