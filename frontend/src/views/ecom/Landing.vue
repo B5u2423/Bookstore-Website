@@ -18,9 +18,7 @@ const fetchBooks = async () => {
     ])
 
     bestsellers.value = bestSellersResponse.data
-    console.log(bestsellers.value)
     newbooks.value = newArrivalsResponse.data
-    console.log(newbooks.value)
   } catch (err) {
     error.value = err.message
     console.error('Error fetching books:', err)
@@ -45,11 +43,14 @@ onMounted(() => {
       <BookSlideGroup
         group-header="Bán chạy"
         :books="bestsellers.slice(0, 10)"
+        route-to="login"
       />
+
 
       <BookSlideGroup
         group-header="Sách mới về"
         :books="newbooks.slice(0, 10)"
+        route-to="login"
       />
 
     </div>

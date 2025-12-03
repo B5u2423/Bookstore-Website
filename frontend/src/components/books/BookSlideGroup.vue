@@ -2,6 +2,7 @@
 import VerticalBookCard from './VerticalBookCard.vue'
 
 const props = defineProps({
+  routeTo: String,
   groupHeader: String,
   books: Array,
 })
@@ -9,13 +10,12 @@ const props = defineProps({
 
 <template>
 
-  <router-link class="text-h5 custom-link">{{ groupHeader }}</router-link>
+  <router-link class="text-h5 custom-link" :to="{name: routeTo}">{{ groupHeader }}</router-link>
 
   <v-slide-group class="pa-4">
 
     <v-slide-group-item
       v-for="book in books"
-      class="ma-3"
     >
 
       <VerticalBookCard

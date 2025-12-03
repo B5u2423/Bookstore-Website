@@ -13,7 +13,7 @@ const formatPrice = (price = 0) => {
   <v-card
     variant="outlined"
     elevation="4"
-    class="custom"
+    class="custom ma-2"
     hover
     :to="{ name: 'book-detail', params: { id: book.id, slug: book.urlSlug } }"
     :ripple="false"
