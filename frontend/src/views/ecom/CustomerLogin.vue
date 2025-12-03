@@ -3,8 +3,10 @@ import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth-store'
 import { useRouter } from 'vue-router'
 import SnackBar from '@/components/common/SnackBar.vue'
+import { useCartStore } from '@/stores/cart-store'
 
 const authStore = useAuthStore()
+const cartStore = useCartStore()
 const router = useRouter()
 
 const email = ref('')

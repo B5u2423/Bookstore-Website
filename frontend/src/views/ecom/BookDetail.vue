@@ -26,18 +26,7 @@ const book = ref({
 async function loadBookDetail() {
   try {
     const response = await fetchBookById(route.params.id)
-    book.value.author = response.data.author
-    book.value.description = response.data.description
-    book.value.id = response.data.id
-    book.value.imageUrl = response.data.imageUrl
-    book.value.inStock = response.data.inStock
-    book.value.isbn = response.data.isbn
-    book.value.pageCount = response.data.pageCount
-    book.value.price = response.data.price
-    book.value.publishYear = response.data.publishYear
-    book.value.publisher = response.data.publisher
-    book.value.title = response.data.title
-    book.value.urlSlug = response.data.urlSlug
+    book.value = response.data
     // or const response = await fetch(`/api/books/${route.params.id}/${route.params.slug}`)
 
     // Optional: Validate that the loaded book's slug matches the URL slug
@@ -54,7 +43,7 @@ onMounted(() => {
 })
 
 function handleAddToCart() {
-  cartStore.addItemToCart({
+  cartStore.addItemToLocalCart({
     id: book.value.id,
     title: book.value.title,
     author: book.value.author,

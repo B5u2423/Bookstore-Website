@@ -14,3 +14,10 @@ export function getUsersActiveCart(token) {
     }
   })
 }
+
+export function removeAllItemsFromCart(token) {
+    return api.delete('/api/v1/carts/remove-all', { headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  })
+}

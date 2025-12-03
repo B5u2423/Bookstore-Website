@@ -1,33 +1,13 @@
+import { addToCart, getUsersActiveCart, removeAllItemsFromCart } from '@/api/cart-api'
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
+import { useAuthStore } from './auth-store'
 
 export const useCartStore = defineStore(
   'cart',
   () => {
     // states
-    const activeCart = ref([
-      // {
-      //   id: 1,
-      //   slug: 'title-in-kebab',
-      //   image:
-      //     'https://raw.githubusercontent.com/gwenf/vuetify-responsive/master/public/img/products/product-1.jpg',
-      //   title: 'Nintendo Switch',
-      //   author: 'Author A',
-      //   price: 240000,
-      //   quantity: 1,
-      // },
-      // {
-      //   id: 2,
-      //   slug: 'title-in-kebab',
-      //   image:
-      //     'https://raw.githubusercontent.com/gwenf/vuetify-responsive/master/public/img/products/product-1.jpg',
-      //   title: 'Nintendo Switch',
-      //   author: 'Author A',
-      //   price: 300000,
-      //   quantity: 2,
-      // },
-    ])
-
+    const activeCart = ref([])
     // computed
     const cartItemsCount = computed(() => activeCart.value.length)
     const totalAmount = computed(() =>
@@ -41,10 +21,9 @@ export const useCartStore = defineStore(
       activeCart.value = activeCart.value.filter((item) => item.id !== id)
     }
 
-    function addItemToCart(item) { 
+    function addItemToLocalCart(item) { 
       if (!item.quantity || item.quantity <= 0) return
-      const addedItem = activeCart.value.find(i => i.id === item.id)
-      console.log(addedItem)
+      const addedItem = activeCart.value.find((i) => i.id === item.id)
       if (addedItem) {
         addedItem.quantity += item.quantity
       } else {
@@ -52,17 +31,47 @@ export const useCartStore = defineStore(
       }
     }
 
+
+    async function syncCartWithBackEnd({token: accessToken}) {
+      // if FE cart is not empty
+      if (activeCart.value.length > 0) {
+        const res = activeCart.value.map((item) => addToCart(accessToken, {bookId: item.id, quantity: item.quantity}))
+      }
+      const response = await getUsersActiveCart(accessToken)
+      const {id, user, items, cartStatus} = response.data
+      // mapper
+      items.map((item) => {
+        addItemToLocalCart({
+
+    id: item.book.id,
+    title: item.book.title,
+    author: item.book.author,
+    price: item.book.price,
+    slug: item.book.urlSlug,
+    image: item.book.imageUrl,
+    quantity: item.quantity
+        })
+      })
+    }
+
+    function reset() {
+      // remove all items from the local frontend cart
+      activeCart.value.length = 0
+    }
+
     return {
       cartItemsCount,
       activeCart,
       totalAmount,
       removeItemFromCart,
-      addItemToCart,
+      addItemToLocalCart,
+      syncCartWithBackEnd,
+      reset,
     }
   },
   {
     persist: {
-      storage: sessionStorage,
+      storage: localStorage,
       paths: ['activeCart'],
     },
   },
