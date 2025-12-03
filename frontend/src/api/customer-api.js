@@ -1,4 +1,4 @@
-import api from './auth-api'
+import api from './api-config'
 
 export function getCustomerAccount(token) {
   return api.get('/api/v1/customers/account', {
