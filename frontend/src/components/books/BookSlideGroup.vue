@@ -14,7 +14,7 @@ const props = defineProps({
     class="text-h5 custom-link"
     :to="{ name: routeTo }"
   >
-    {{ groupHeader }}
+     {{ groupHeader }}
   </router-link>
 
   <v-slide-group class="pa-4">
