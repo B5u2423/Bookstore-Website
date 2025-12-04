@@ -1,8 +1,24 @@
 <script setup>
 import { BookService } from '@/api/book-api'
 import { formatPriceVNLocale } from '@/utils/utils'
-import { onMounted, toRef, ref, shallowRef } from 'vue'
+import { computed, onMounted, toRef, ref, shallowRef } from 'vue'
 import { VFileUpload } from 'vuetify/labs/VFileUpload'
+
+function createNewRecord() {
+  return {
+    title: '',
+    author: '',
+    isbn: '',
+    productCode: '',
+    pageCount: 1,
+    inStock: 0,
+    description: '',
+    imageUrl: '',
+    publisher: '',
+    publishYear: '',
+    price: '',
+  }
+}
 
 // table
 const headers = ref([
@@ -21,7 +37,7 @@ const serverItems = ref([])
 const totalItems = ref(0)
 
 // edit-add dialog
-const formModel = ref(null)
+const formModel = ref(createNewRecord())
 const dialog = shallowRef(false)
 const isEditing = toRef(() => !!formModel.value.id)
 
@@ -39,21 +55,6 @@ async function loadItems({ page, itemsPerPage }) {
   }
 }
 
-function createNewRecord() {
-  return {
-    title: '',
-    author: '',
-    isbn: '',
-    productCode: '',
-    pageCount: 1,
-    inStock: 0,
-    description: '',
-    imageUrl: '',
-    publisher: '',
-    publishYear: '',
-    price: '',
-  }
-}
 
 function add() {
   formModel.value = createNewRecord()
@@ -84,6 +85,40 @@ function edit(id) {
 function save() {
   console.log('saved')
 }
+
+// auto capitalize
+  function capitalizeVietnamese(str) {
+    return str
+      .trim()
+      .replace(/\s+/g, ' ')
+      .split(' ')
+      .map(word =>
+        word.charAt(0).toLocaleUpperCase('vi') +
+        word.slice(1).toLocaleLowerCase('vi')
+      )
+      .join(' ')
+  }
+
+  const titleCaps = computed({
+    get: () => formModel.value.title,
+    set: val => {
+      formModel.value.title = capitalizeVietnamese(val || '')
+    }
+  })
+
+  const authorCaps = computed({
+    get: () => formModel.value.author,
+    set: val => {
+      formModel.value.author = capitalizeVietnamese(val || '')
+    }
+  })
+
+  const publisherCaps = computed({
+    get: () => formModel.value.publisher,
+    set: val => {
+      formModel.value.publisher = capitalizeVietnamese(val || '')
+    }
+  })
 
 onMounted(() => {
   loadItems()
@@ -204,7 +239,7 @@ onMounted(() => {
 
             <v-text-field
               variant="outlined"
-              v-model="formModel.title"
+              v-model="titleCaps"
               density="compact"
               hide-details="true"
             ></v-text-field>
@@ -220,7 +255,7 @@ onMounted(() => {
 
             <v-text-field
               variant="outlined"
-              v-model="formModel.author"
+              v-model="authorCaps"
               density="compact"
               hide-details="true"
             ></v-text-field>
@@ -271,7 +306,7 @@ onMounted(() => {
 
             <v-text-field
               variant="outlined"
-              v-model="formModel.publisher"
+              v-model="publisherCaps"
               density="compact"
               hide-details="true"
             ></v-text-field>
