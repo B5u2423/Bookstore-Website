@@ -47,7 +47,19 @@ public class BookController {
   // ADMIN
   @PostMapping("/add")
   public ResponseEntity<BookResponseDTO> addNewBook(@RequestBody BookResponseDTO payload) {
-    return ResponseEntity.status(HttpStatus.OK).body(bookService.addOrUpdateBook(payload));
+    return ResponseEntity.status(HttpStatus.OK).body(bookService.addNewBook(payload));
+  }
+
+  @PutMapping("/update")
+  public ResponseEntity<BookResponseDTO> updateBookById(
+      @RequestBody BookResponseDTO payload, @RequestParam(value = "id") Integer id) {
+    return ResponseEntity.ok().body(bookService.updateBookById(payload, id));
+  }
+
+  @DeleteMapping("/delete")
+  public ResponseEntity<String> deleteBookById(@RequestParam(value = "id") Integer id) {
+    bookService.deleteBookById(id);
+    return ResponseEntity.ok().body("Book with id %d deleted successfully!".formatted(id));
   }
 
   @ExceptionHandler({BookWithIsbnAlreadyExists.class})

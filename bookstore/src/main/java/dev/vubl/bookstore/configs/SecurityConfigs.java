@@ -147,7 +147,9 @@ public class SecurityConfigs {
   private static PathPatternRequestMatcher[] adminRoutes() {
     return new PathPatternRequestMatcher[] {
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/admin/**"),
-      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, "/api/v1/books/add")
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, "/api/v1/books/**"),
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.DELETE, "/api/v1/books/**"),
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.PUT, "/api/v1/books/**"),
     };
   }
 }

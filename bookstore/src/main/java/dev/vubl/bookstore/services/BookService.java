@@ -6,6 +6,7 @@ import dev.vubl.bookstore.exceptions.BookDoesNotExistException;
 import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
 import dev.vubl.bookstore.repos.BookRepo;
 import jakarta.transaction.Transactional;
+import java.text.Normalizer;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,14 +37,12 @@ public class BookService {
     return mapToBookResponseDTO(b);
   }
 
-  public BookResponseDTO addOrUpdateBook(BookResponseDTO bookResponseDTO) {
+  public BookResponseDTO addNewBook(BookResponseDTO bookResponseDTO) {
     String isbn = bookResponseDTO.isbn();
-    // some book will not have isbn
-    if (isbn != null) {
-      if (bookRepo.findByIsbn(isbn).isPresent()) {
-        throw new BookWithIsbnAlreadyExists("Book with isbn :: %s already exists!".formatted(isbn));
-      }
+    if (isIsbnNotUnique(isbn)) {
+      throw new BookWithIsbnAlreadyExists("Book with isbn :: %s already exists!".formatted(isbn));
     }
+
     try {
       log.info("[{}] Adding new book", this.getClass().getName());
       return mapToBookResponseDTO(bookRepo.save(mapToBookEntity(bookResponseDTO)));
@@ -52,9 +51,67 @@ public class BookService {
     }
   }
 
-  public void deleteBook(BookResponseDTO bookResponseDTO) {
-    bookRepo.delete(mapToBookEntity(bookResponseDTO));
-    log.info("[{}] Book deleted", this.getClass().getName());
+  public BookResponseDTO updateBookById(BookResponseDTO bookResponseDTO, Integer id) {
+    String isbn = bookResponseDTO.isbn();
+    if (isIsbnNotUnique(isbn)) {
+      throw new BookWithIsbnAlreadyExists("Book with isbn :: %s already exists!".formatted(isbn));
+    }
+
+    try {
+      Book b =
+          bookRepo
+              .findById(id)
+              .orElseThrow(
+                  () ->
+                      new BookDoesNotExistException(
+                          "Book with id %d does not exist".formatted(id)));
+
+      // update
+      b.setTitle(bookResponseDTO.title());
+      b.setAuthor(bookResponseDTO.author());
+      b.setPublisher(bookResponseDTO.publisher());
+      b.setPublishYear(bookResponseDTO.publishYear());
+      b.setPageCount(bookResponseDTO.pageCount());
+      b.setIsbn(bookResponseDTO.isbn());
+      b.setAuthor(bookResponseDTO.author());
+      b.setImageUrl(bookResponseDTO.imageUrl());
+      b.setInStock(bookResponseDTO.inStock());
+      b.setUrlSlug(convertTitleToSlug(bookResponseDTO.title()));
+
+      return mapToBookResponseDTO(bookRepo.save(b));
+
+    } catch (DataIntegrityViolationException e) {
+      throw new DataIntegrityViolationException("Error adding or updating new book!", e);
+    }
+  }
+
+  public void deleteBookById(Integer id) {
+    bookRepo.deleteById(id);
+    log.info("[{}] Book with id {} deleted", this.getClass().getName(), id);
+  }
+
+  private boolean isIsbnNotUnique(String isbn) {
+    if (isbn != null) {
+      return bookRepo.findByIsbn(isbn).isPresent();
+    }
+    return false;
+  }
+
+  private String convertTitleToSlug(String title) {
+    if (title == null) return null;
+
+    // normalize
+    String normalized = Normalizer.normalize(title, Normalizer.Form.NFD);
+
+    // remove diacritics
+    String slug = normalized.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+    slug = slug.toLowerCase();
+    // replace all non-alphanumeric characters with hyphens
+    slug = slug.replaceAll("[^a-z0-9]+", "-");
+    // Trim leading & trailing hyphens
+    slug = slug.replaceAll("^-+|-+$", "");
+
+    return slug;
   }
 
   private BookResponseDTO mapToBookResponseDTO(Book book) {
@@ -77,6 +134,11 @@ public class BookService {
   private Book mapToBookEntity(BookResponseDTO bookResponseDTO) {
     return Book.builder()
         .title(bookResponseDTO.title())
+        .author(bookResponseDTO.author())
+        .publishYear(bookResponseDTO.publishYear())
+        .imageUrl(bookResponseDTO.imageUrl())
+        .pageCount(bookResponseDTO.pageCount())
+        .urlSlug(convertTitleToSlug(bookResponseDTO.title()))
         .publisher(bookResponseDTO.publisher())
         .price(bookResponseDTO.price())
         .description(bookResponseDTO.description())
