@@ -166,6 +166,22 @@ onMounted(() => {
 
     </template>
 
+    <!-- style the header -->
+    <template v-slot:headers="{ columns }">
+      <tr>
+        <template v-for="column in columns" :key="column.key">
+          <th>
+            <div class="d-flex align-center">
+              <span
+                class="me-2 cursor-pointer font-weight-bold"
+                v-text="column.title"
+              ></span>
+            </div>
+          </th>
+        </template>
+      </tr>
+    </template>
+
     <!-- stylized book title as chips -->
 
     <template v-slot:item.title="{ value }">
