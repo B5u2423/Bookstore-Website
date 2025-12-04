@@ -1,10 +1,12 @@
 package dev.vubl.bookstore.controllers;
 
 import dev.vubl.bookstore.dtos.BookResponseDTO;
+import dev.vubl.bookstore.entities.Book;
 import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
 import dev.vubl.bookstore.services.BookService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +18,10 @@ public class BookController {
   private final BookService bookService;
 
   @GetMapping
-  public ResponseEntity<List<BookResponseDTO>> getAllBooks() {
-    return null;
+  public PagedModel<Book> getAllBooks(
+      @RequestParam(value = "page", defaultValue = "0") int page,
+      @RequestParam(value = "size", defaultValue = "5") int size) {
+    return new PagedModel<>(bookService.getAllBooksPaginated(page, size));
   }
 
   @GetMapping("/featured")

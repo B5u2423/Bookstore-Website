@@ -10,6 +10,9 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +24,11 @@ public class BookService {
 
   public List<BookResponseDTO> getAllBooks() {
     return bookRepo.findAll().stream().map(this::mapToBookResponseDTO).toList();
+  }
+
+  public Page<Book> getAllBooksPaginated(int page, int size) {
+    Pageable pageable = PageRequest.of(page, size);
+    return bookRepo.findAll(pageable);
   }
 
   public BookResponseDTO getBookById(Integer id) {
