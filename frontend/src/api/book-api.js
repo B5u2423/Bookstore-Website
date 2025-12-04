@@ -16,7 +16,7 @@ export const BookService = {
       const res = await api.get(API_ENDPOINTS.BEST_SELLERS)
       return res.data
     } catch (error) {
-      console.error("Error fetching best sellers: ", error)
+      console.error('Error fetching best sellers: ', error)
       throw error
     }
   },
@@ -31,14 +31,14 @@ export const BookService = {
       const res = await api.get(API_ENDPOINTS.NEW_ARRIVAL)
       return res.data
     } catch (error) {
-      console.error("Error fetching new arrival books: ", error)
+      console.error('Error fetching new arrival books: ', error)
       throw error
     }
   },
 
   /**
-   * Fetch a book by its ID 
-   * @param {String} id - The ID of a book to fetch 
+   * Fetch a book by its ID
+   * @param {String} id - The ID of a book to fetch
    * @returns {Promise<Book>} A promise resolves to a book object
    * @throws {Error} if API call fails
    */
@@ -51,9 +51,14 @@ export const BookService = {
       throw error
     }
   },
-}
 
-export function fetchAllBooks() {
-  return api.get('/api/v1/books')
+  async fetchAllBooks(params = {}) {
+    try {
+      const res = await api.get('/api/v1/books', { params })
+      return res.data
+    } catch (error) {
+      console.error('Error fetching all books', error)
+      throw error
+    }
+  },
 }
-
