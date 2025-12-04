@@ -29,7 +29,7 @@ async function handleLogout() {
     <v-app-bar-title class="ml-10">{{ formattedDate }}</v-app-bar-title>
 
     <v-btn
-      class="mr-16"
+      class="mr-4"
       variant="elevated"
       color="primary"
       @click="handleLogout"

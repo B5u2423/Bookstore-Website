@@ -131,7 +131,7 @@ function checkout() {
             <span class="text-h6 mr-4">Tổng số thành tiền:</span>
 
             <span class="text-h6 text-primary">
-              {{ formatPriceVNLocale(cartStore.totalAmount) }}₫
+               {{ formatPriceVNLocale(cartStore.totalAmount) }}₫
             </span>
 
           </v-col>

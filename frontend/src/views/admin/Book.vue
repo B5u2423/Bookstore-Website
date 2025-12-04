@@ -2,6 +2,9 @@
 import { BookService } from '@/api/book-api'
 import { formatPriceVNLocale } from '@/utils/utils'
 import { onMounted, ref } from 'vue'
+import { VFileUpload } from 'vuetify/labs/VFileUpload'
+
+// table
 const headers = ref([
   { title: 'Tên sách', key: 'title', align: 'start' },
   { title: 'Mã ISBN', key: 'isbn', align: 'start' },
@@ -17,7 +20,12 @@ const loading = ref(false)
 const serverItems = ref([])
 const totalItems = ref(0)
 
-async function loadItems({page, itemsPerPage }) {
+// edit-add dialog
+const formModel = ref(null)
+const dialog = ref(false)
+const isEditing = ref(false)
+
+async function loadItems({ page, itemsPerPage }) {
   loading.value = true
   try {
     // page on BE start with index 0
@@ -29,6 +37,31 @@ async function loadItems({page, itemsPerPage }) {
   } finally {
     loading.value = false
   }
+}
+
+function createNewRecord() {
+  return {
+    title: '',
+    author: '',
+    isbn: '',
+    productCode: '',
+    pages: 1,
+    inStock: 0,
+    description: '',
+    imageUrl: '',
+    publisher: '',
+    publishYear: '',
+    price: '',
+  }
+}
+
+function add() {
+  formModel.value = createNewRecord()
+  dialog.value = true
+}
+
+function save() {
+  console.log('saved')
 }
 
 onMounted(() => {
@@ -70,6 +103,7 @@ onMounted(() => {
           rounded="lg"
           text="Thêm sách"
           variant="outlined"
+          @click="add"
         ></v-btn>
 
       </v-toolbar>
@@ -125,4 +159,233 @@ onMounted(() => {
 
   </v-data-table-server>
 
+  <v-dialog
+    v-model="dialog"
+    max-width="800"
+  >
+
+    <v-card
+      :title="`${isEditing ? 'Thay đổi thông tin' : 'Tạo bản ghi mới'}`"
+      :subtitle="`${isEditing ? 'Cập nhật' : 'Thêm'} sách`"
+    >
+
+      <template v-slot:text>
+
+        <v-row class="px-3">
+
+          <v-col
+            cols="12"
+            md="7"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">Tên sách</div>
+
+            <v-text-field
+              variant="outlined"
+              v-model="formModel.title"
+              density="compact"
+              hide-details="true"
+            ></v-text-field>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="5"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">Tác giả</div>
+
+            <v-text-field
+              variant="outlined"
+              v-model="formModel.author"
+              density="compact"
+              hide-details="true"
+            ></v-text-field>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="3"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">Mã ISBN</div>
+
+            <v-text-field
+              variant="outlined"
+              v-model="formModel.isbn"
+              density="compact"
+              hide-details="true"
+            ></v-text-field>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="2"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">Số trang</div>
+
+            <v-number-input
+              class="rounded-lg"
+              variant="outlined"
+              v-model="formModel.pages"
+              density="compact"
+              :min="1"
+              hide-details="true"
+              control-variant="stacked"
+            ></v-number-input>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="4"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">Nhà xuất bản</div>
+
+            <v-text-field
+              variant="outlined"
+              v-model="formModel.publisher"
+              density="compact"
+              hide-details="true"
+            ></v-text-field>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="3"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">Năm xuất bản</div>
+
+            <v-text-field
+              variant="outlined"
+              v-model="formModel.publishYear"
+              density="compact"
+              hide-details="true"
+            ></v-text-field>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="3"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">Mã sản phẩm</div>
+
+            <v-text-field
+              variant="outlined"
+              v-model="formModel.productCode"
+              density="compact"
+              hide-details="true"
+            ></v-text-field>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="2"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">Số lượng</div>
+
+            <v-number-input
+              class="rounded-lg"
+              variant="outlined"
+              v-model="formModel.inStock"
+              density="compact"
+              :min="0"
+              hide-details="true"
+              control-variant="stacked"
+            ></v-number-input>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="7"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">Giá tiền (VND)</div>
+
+            <v-text-field
+              variant="outlined"
+              v-model="formModel.price"
+              density="compact"
+              hide-details="true"
+            ></v-text-field>
+
+          </v-col>
+
+          <v-col cols="12">
+
+            <div class="text-subtitle-1 text-high-emphasis">Mô tả thông tin sách</div>
+
+            <v-textarea
+              variant="outlined"
+              v-model="formModel.description"
+              density="compact"
+              hide-details="true"
+            ></v-textarea>
+
+          </v-col>
+
+          <v-col cols="12">
+
+            <div class="text-subtitle-1 text-high-emphasis">Hình ảnh</div>
+
+            <v-file-upload
+              title="Kéo thả hoặc chọn hình ảnh"
+              clearable
+              density="compact"
+              variant="compact"
+            ></v-file-upload>
+
+            <v-text-field
+              class="mt-3"
+              variant="outlined"
+              v-model="formModel.imageUrl"
+              density="compact"
+              hide-details="true"
+            ></v-text-field>
+
+          </v-col>
+
+        </v-row>
+
+      </template>
+
+      <v-divider></v-divider>
+
+      <v-card-actions class="bg-surface-light">
+
+        <v-btn
+          color="green-darken-1"
+          @click="save"
+          variant="elevated"
+        >
+          Lưu
+        </v-btn>
+
+        <v-btn
+          color="red-lighten-1"
+          @click="dialog = false"
+          variant="elevated"
+        >
+          Hủy
+        </v-btn>
+
+      </v-card-actions>
+
+    </v-card>
+
+  </v-dialog>
+
 </template>
+

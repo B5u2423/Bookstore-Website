@@ -104,7 +104,7 @@ function handleAddToCart() {
                 >
 
                   <v-card-title class="bg-red">
-                    {{ formatPriceVNLocale(book.price) }} VND
+                     {{ formatPriceVNLocale(book.price) }} VND
                   </v-card-title>
 
                   <v-card-text class="mt-3">
