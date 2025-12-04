@@ -1,6 +1,7 @@
 <script setup>
 import { BookService } from '@/api/book-api'
 import { useCartStore } from '@/stores/cart-store'
+import { formatPriceVNLocale } from '@/utils/utils'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -27,7 +28,7 @@ async function loadBookDetail() {
   try {
     book.value = await BookService.fetchBookById(route.params.id)
   } catch (error) {
-    console.error("Error fetching book", error)
+    console.error('Error fetching book', error)
   }
   // or const response = await fetch(`/api/books/${route.params.id}/${route.params.slug}`)
 
@@ -51,10 +52,6 @@ function handleAddToCart() {
     image: book.value.imageUrl,
     quantity: quantity.value,
   })
-}
-
-const formatPrice = (price = 0) => {
-  return new Intl.NumberFormat('vi-VN').format(price)
 }
 </script>
 
@@ -106,7 +103,9 @@ const formatPrice = (price = 0) => {
                   class="bg-transparent"
                 >
 
-                  <v-card-title class="bg-red">{{ formatPrice(book.price) }} VND</v-card-title>
+                  <v-card-title class="bg-red">
+                    {{ formatPriceVNLocale(book.price) }} VND
+                  </v-card-title>
 
                   <v-card-text class="mt-3">
 

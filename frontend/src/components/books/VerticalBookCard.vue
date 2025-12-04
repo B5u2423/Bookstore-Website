@@ -1,11 +1,9 @@
 <script setup>
+import { formatPriceVNLocale } from '@/utils/utils'
+
 const props = defineProps({
   book: Object,
 })
-
-const formatPrice = (price = 0) => {
-  return new Intl.NumberFormat('vi-VN').format(price)
-}
 </script>
 
 <template>
@@ -36,7 +34,7 @@ const formatPrice = (price = 0) => {
 
       <div> {{ book.author }} </div>
 
-      <div>{{ formatPrice(book.price) }} ₫</div>
+      <div>{{ formatPriceVNLocale(book.price) }} ₫</div>
 
     </v-card-text>
 

@@ -1,6 +1,7 @@
 <script setup>
 import { useAuthStore } from '@/stores/auth-store'
 import { useCartStore } from '@/stores/cart-store'
+import { formatPriceVNLocale } from '@/utils/utils'
 import { useRouter } from 'vuetify/lib/composables/router'
 
 const cartStore = useCartStore()
@@ -8,9 +9,6 @@ const authStore = useAuthStore()
 const router = useRouter()
 
 // Methods
-const formatPrice = (price = 0) => {
-  return new Intl.NumberFormat('vi-VN').format(price)
-}
 
 function continueShopping() {
   router.push('/')
@@ -100,7 +98,7 @@ function checkout() {
 
               </td>
 
-              <td>{{ formatPrice(item.price) }}₫</td>
+              <td>{{ formatPriceVNLocale(item.price) }}₫</td>
 
               <td>
 
@@ -115,7 +113,7 @@ function checkout() {
 
               </td>
 
-              <td>{{ formatPrice(item.price * item.quantity) }}₫</td>
+              <td>{{ formatPriceVNLocale(item.price * item.quantity) }}₫</td>
 
             </tr>
 
@@ -132,7 +130,9 @@ function checkout() {
 
             <span class="text-h6 mr-4">Tổng số thành tiền:</span>
 
-            <span class="text-h6 text-primary">{{ formatPrice(cartStore.totalAmount) }}₫</span>
+            <span class="text-h6 text-primary">
+              {{ formatPriceVNLocale(cartStore.totalAmount) }}₫
+            </span>
 
           </v-col>
 
