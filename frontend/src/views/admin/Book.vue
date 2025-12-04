@@ -1,7 +1,7 @@
 <script setup>
 import { BookService } from '@/api/book-api'
 import { formatPriceVNLocale } from '@/utils/utils'
-import { onMounted, ref } from 'vue'
+import { onMounted, toRef, ref, shallowRef } from 'vue'
 import { VFileUpload } from 'vuetify/labs/VFileUpload'
 
 // table
@@ -22,8 +22,8 @@ const totalItems = ref(0)
 
 // edit-add dialog
 const formModel = ref(null)
-const dialog = ref(false)
-const isEditing = ref(false)
+const dialog = shallowRef(false)
+const isEditing = toRef(() => !!formModel.value.id)
 
 async function loadItems({ page, itemsPerPage }) {
   loading.value = true
@@ -45,7 +45,7 @@ function createNewRecord() {
     author: '',
     isbn: '',
     productCode: '',
-    pages: 1,
+    pageCount: 1,
     inStock: 0,
     description: '',
     imageUrl: '',
@@ -57,6 +57,27 @@ function createNewRecord() {
 
 function add() {
   formModel.value = createNewRecord()
+  dialog.value = true
+}
+
+function edit(id) {
+  const found = serverItems.value.find((book) => book.id === id)
+
+  formModel.value = {
+    id: found.id,
+    title: found.title,
+    author: found.author,
+    isbn: found.isbn,
+    productCode: found.productCode,
+    pageCount: found.pageCount,
+    inStock: found.inStock,
+    description: found.description,
+    imageUrl: found.imageUrl,
+    publisher: found.publisher,
+    publishYear: found.publishYear,
+    price: found.price,
+  }
+
   dialog.value = true
 }
 
@@ -141,6 +162,7 @@ onMounted(() => {
           color="medium-emphasis"
           icon="mdi-pencil"
           size="small"
+          @click="edit(item.id)"
         ></v-icon>
 
         <v-icon
@@ -175,7 +197,7 @@ onMounted(() => {
 
           <v-col
             cols="12"
-            md="7"
+            md="6"
           >
 
             <div class="text-subtitle-1 text-high-emphasis">Tên sách</div>
@@ -191,7 +213,7 @@ onMounted(() => {
 
           <v-col
             cols="12"
-            md="5"
+            md="6"
           >
 
             <div class="text-subtitle-1 text-high-emphasis">Tác giả</div>
@@ -207,7 +229,7 @@ onMounted(() => {
 
           <v-col
             cols="12"
-            md="3"
+            md="4"
           >
 
             <div class="text-subtitle-1 text-high-emphasis">Mã ISBN</div>
@@ -231,7 +253,7 @@ onMounted(() => {
             <v-number-input
               class="rounded-lg"
               variant="outlined"
-              v-model="formModel.pages"
+              v-model="formModel.pageCount"
               density="compact"
               :min="1"
               hide-details="true"
@@ -242,7 +264,7 @@ onMounted(() => {
 
           <v-col
             cols="12"
-            md="4"
+            md="3"
           >
 
             <div class="text-subtitle-1 text-high-emphasis">Nhà xuất bản</div>
@@ -274,7 +296,7 @@ onMounted(() => {
 
           <v-col
             cols="12"
-            md="3"
+            md="4"
           >
 
             <div class="text-subtitle-1 text-high-emphasis">Mã sản phẩm</div>
@@ -309,7 +331,7 @@ onMounted(() => {
 
           <v-col
             cols="12"
-            md="7"
+            md="6"
           >
 
             <div class="text-subtitle-1 text-high-emphasis">Giá tiền (VND)</div>
@@ -370,7 +392,7 @@ onMounted(() => {
           @click="save"
           variant="elevated"
         >
-          Lưu
+           Lưu
         </v-btn>
 
         <v-btn
@@ -378,7 +400,7 @@ onMounted(() => {
           @click="dialog = false"
           variant="elevated"
         >
-          Hủy
+           Hủy
         </v-btn>
 
       </v-card-actions>
