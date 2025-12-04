@@ -62,7 +62,7 @@ export const useAdminAuthStore = defineStore(
   },
   {
     persist: {
-      storage: localStorage,
+      storage: sessionStorage,
       paths: ['accessToken'],
     },
   },
