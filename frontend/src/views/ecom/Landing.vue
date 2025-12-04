@@ -2,7 +2,8 @@
 import BookSlideGroup from '@/components/books/BookSlideGroup.vue'
 import Carousel from '@/components/books/Carousel.vue'
 import { ref, onMounted } from 'vue'
-import { fetchBestSellersBooks, fetchNewArrivalBooks } from '@/api/book-api'
+import { BookService } from '@/api/book-api'
+import Book from '../admin/Book.vue'
 
 const bestsellers = ref([])
 const newbooks = ref([])
@@ -12,16 +13,10 @@ const error = ref(null)
 const fetchBooks = async () => {
   loading.value = true
   try {
-    const [bestSellersResponse, newArrivalsResponse] = await Promise.all([
-      fetchBestSellersBooks(),
-      fetchNewArrivalBooks(),
-    ])
-
-    bestsellers.value = bestSellersResponse.data
-    newbooks.value = newArrivalsResponse.data
-  } catch (err) {
-    error.value = err.message
-    console.error('Error fetching books:', err)
+    bestsellers.value = await BookService.fetchBestSellersBooks()
+    newbooks.value = await BookService.fetchNewArrivalBooks()
+  } catch (error) {
+    console.error('Error fetching books:', error)
   } finally {
     loading.value = false
   }

@@ -1,5 +1,5 @@
 <script setup>
-import { fetchBookById } from '@/api/book-api'
+import { BookService } from '@/api/book-api'
 import { useCartStore } from '@/stores/cart-store'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
@@ -25,17 +25,16 @@ const book = ref({
 
 async function loadBookDetail() {
   try {
-    const response = await fetchBookById(route.params.id)
-    book.value = response.data
-    // or const response = await fetch(`/api/books/${route.params.id}/${route.params.slug}`)
-
-    // Optional: Validate that the loaded book's slug matches the URL slug
-    // if (book.value.urlSlug !== route.params.slug) {
-    //   // Handle mismatch - maybe redirect to 404 or correct URL
-    // }
+    book.value = await BookService.fetchBookById(route.params.id)
   } catch (error) {
-    console.error('Error loading book:', error)
+    console.error("Error fetching book", error)
   }
+  // or const response = await fetch(`/api/books/${route.params.id}/${route.params.slug}`)
+
+  // Optional: Validate that the loaded book's slug matches the URL slug
+  // if (book.value.urlSlug !== route.params.slug) {
+  //   // Handle mismatch - maybe redirect to 404 or correct URL
+  // }
 }
 
 onMounted(() => {
