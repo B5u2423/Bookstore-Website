@@ -44,6 +44,7 @@ CREATE TABLE categories
     create_ts     TIMESTAMP WITHOUT TIME ZONE,
     update_ts     TIMESTAMP WITHOUT TIME ZONE,
     category_name VARCHAR(255),
+    category_slug VARCHAR(255),
     parent_id     INTEGER,
     CONSTRAINT pk_categories PRIMARY KEY (id)
 );

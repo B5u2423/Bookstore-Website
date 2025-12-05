@@ -58,11 +58,11 @@ INSERT INTO books (
 
       (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '978-604-1-01020-0', 'Hồn Trương Ba, Da Hàng Thịt', 'Vở kịch nổi tiếng về số phận con người và những day dứt về bản thể, thân phận con người', 'Lưu Quang Vũ', 90000, 70, 'hon-truong-ba-da-hang-thit', 'NXB Sân Khấu', 1981, 148, 'https://cdn1.fahasa.com/media/catalog/product/i/m/image_232595.jpg');
 
-INSERT INTO categories (category_name, create_ts, update_ts) VALUES
-    ('Văn học', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Kinh tế', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Tâm lý - kỹ năng sống', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Nuôi dạy con', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Tiểu sử - hồi ký', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Sách thiếu nhi', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Sách học ngoại ngữ', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO categories (category_name, category_slug, create_ts, update_ts) VALUES
+    ('Văn học', 'van-hoc', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Kinh tế', 'kinh-te', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Tâm lý - kỹ năng sống', 'tam-ly-ky-nang-song', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Nuôi dạy con', 'nuoi-day-con', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Tiểu sử - hồi ký', 'tieu-su-hoi-ky', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Sách thiếu nhi', 'sach-thieu-nhi', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Sách học ngoại ngữ', 'sach-hoc-ngoai-ngu', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);

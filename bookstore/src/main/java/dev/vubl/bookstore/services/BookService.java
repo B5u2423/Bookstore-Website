@@ -5,8 +5,8 @@ import dev.vubl.bookstore.entities.Book;
 import dev.vubl.bookstore.exceptions.BookDoesNotExistException;
 import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
 import dev.vubl.bookstore.repos.BookRepo;
+import dev.vubl.bookstore.utils.SlugUtils;
 import jakarta.transaction.Transactional;
-import java.text.Normalizer;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -71,7 +71,7 @@ public class BookService {
       b.setAuthor(bookResponseDTO.author());
       b.setImageUrl(bookResponseDTO.imageUrl());
       b.setInStock(bookResponseDTO.inStock());
-      b.setUrlSlug(convertTitleToSlug(bookResponseDTO.title()));
+      b.setUrlSlug(SlugUtils.convertStringToSlug(bookResponseDTO.title()));
       b.setPrice(bookResponseDTO.price());
 
       return mapToBookResponseDTO(bookRepo.save(b));
@@ -91,23 +91,6 @@ public class BookService {
       return bookRepo.findByIsbn(isbn).isPresent();
     }
     return false;
-  }
-
-  private String convertTitleToSlug(String title) {
-    if (title == null) return null;
-
-    // normalize
-    String normalized = Normalizer.normalize(title, Normalizer.Form.NFD);
-
-    // remove diacritics
-    String slug = normalized.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
-    slug = slug.toLowerCase();
-    // replace all non-alphanumeric characters with hyphens
-    slug = slug.replaceAll("[^a-z0-9]+", "-");
-    // Trim leading & trailing hyphens
-    slug = slug.replaceAll("^-+|-+$", "");
-
-    return slug;
   }
 
   private BookResponseDTO mapToBookResponseDTO(Book book) {
@@ -134,7 +117,7 @@ public class BookService {
         .publishYear(bookResponseDTO.publishYear())
         .imageUrl(bookResponseDTO.imageUrl())
         .pageCount(bookResponseDTO.pageCount())
-        .urlSlug(convertTitleToSlug(bookResponseDTO.title()))
+        .urlSlug(SlugUtils.convertStringToSlug(bookResponseDTO.title()))
         .publisher(bookResponseDTO.publisher())
         .price(bookResponseDTO.price())
         .description(bookResponseDTO.description())

@@ -17,6 +17,9 @@ public class Category extends BaseEntity {
   @Column(name = "category_name")
   private String categoryName;
 
+  @Column(name = "category_slug")
+  private String categorySlug;
+
   @ManyToOne
   @JoinColumn(name = "parent_id", nullable = true)
   @JsonBackReference
