@@ -1,4 +1,5 @@
 <script setup>
+import { CategoryService } from '@/api/category-api'
 import { ref } from 'vue'
 // table
 const headers = ref([
@@ -13,10 +14,22 @@ const loading = ref(false)
 const serverItems = ref([])
 const totalItems = ref(0)
 
-async function loadItems(params) {
-  
+async function loadItems({ page, itemsPerPage }) {
+  loading.value = true
+  try {
+    // page on BE start with index 0
+    const payload = await CategoryService.fetchAllCategoriesPaginated({
+      page: page - 1,
+      size: itemsPerPage,
+    })
+    serverItems.value = payload.content
+    totalItems.value = payload.page.totalElements
+  } catch (error) {
+    console.error('Error loading books from server', error)
+  } finally {
+    loading.value = false
+  }
 }
-
 </script>
 
 <template>
@@ -44,7 +57,7 @@ async function loadItems(params) {
             size="x-small"
             start
           ></v-icon>
-          Thông tin danh mục
+           Thông tin danh mục
         </v-toolbar-title>
 
         <v-btn
@@ -90,27 +103,6 @@ async function loadItems(params) {
 
     </template>
 
-    <!-- stylized book title as chips -->
-
-    <template v-slot:item.title="{ value }">
-
-      <v-chip
-        :text="value"
-        class="border-thin"
-        prepend-icon="mdi-book"
-        label
-      >
-
-        <template v-slot:prepend>
-
-          <v-icon color="medium-emphasis"></v-icon>
-
-        </template>
-
-      </v-chip>
-
-    </template>
-
     <!-- action buttons -->
 
     <template v-slot:item.actions="{ item }">
@@ -121,20 +113,57 @@ async function loadItems(params) {
           color="medium-emphasis"
           icon="mdi-pencil"
           size="small"
-          @click="edit(item.id)"
         ></v-icon>
 
         <v-icon
           color="medium-emphasis"
           icon="mdi-delete"
           size="small"
-          @click="confirm(item.id)"
         ></v-icon>
 
       </div>
 
     </template>
 
+    <!-- parent category -->
+
+    <template v-slot:item.parent="{ item }">
+
+      <template v-if="item.value == null">
+
+        <v-chip
+          color="red-lighten-1"
+          variant="outlined"
+        >
+           N/A
+        </v-chip>
+
+      </template>
+
+      <template v-else> {{ item }} </template>
+
+    </template>
+
+    <!-- parent category -->
+
+    <template v-slot:item.children="{ item }">
+
+      <template v-if="item.value == null">
+
+        <v-chip
+          color="red-lighten-1"
+          variant="outlined"
+        >
+           N/A
+        </v-chip>
+
+      </template>
+
+      <template v-else> {{ item }} </template>
+
+    </template>
+
   </v-data-table-server>
+
 </template>
 

@@ -276,7 +276,7 @@ onMounted(() => {
           color="green-darken-1"
           variant="elevated"
         >
-          Lưu
+           Lưu
         </v-btn>
 
         <v-btn
@@ -284,7 +284,7 @@ onMounted(() => {
           variant="elevated"
           @click="dialog = !dialog"
         >
-          Hủy
+           Hủy
         </v-btn>
 
       </v-card-actions>
