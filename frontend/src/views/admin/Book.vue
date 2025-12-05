@@ -235,7 +235,7 @@ onMounted(() => {
             size="x-small"
             start
           ></v-icon>
-          Thông tin sách
+           Thông tin sách
         </v-toolbar-title>
 
         <v-btn

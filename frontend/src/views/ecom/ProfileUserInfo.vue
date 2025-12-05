@@ -2,6 +2,7 @@
 import { useAuthStore } from '@/stores/auth-store'
 import { useCartStore } from '@/stores/cart-store'
 import { useUserProfileStore } from '@/stores/user-profile-store'
+import { cityNames } from '@/utils/province-info'
 import { onBeforeMount, onMounted, ref, watch } from 'vue'
 
 const userProfileStore = useUserProfileStore()
@@ -10,6 +11,8 @@ const authStore = useAuthStore()
 
 const isFieldsEnabled = ref(false)
 const isUpdated = ref(false)
+
+const dialog = ref(false)
 
 const currentUserProfileSnapshot = ref({
   firstName: userProfileStore.userInfo.firstName,
@@ -192,6 +195,7 @@ onMounted(() => {
           class="my-3"
           prepend-icon="mdi-plus"
           color="primary"
+          @click="dialog = !dialog"
         >
            Thêm địa chỉ
         </v-btn>
@@ -205,6 +209,89 @@ onMounted(() => {
     </v-card>
 
   </v-sheet>
+
+  <v-dialog
+    v-model="dialog"
+    max-width="500"
+  >
+
+    <v-card
+      title="Tạo địa chỉ"
+      subtitle="Thêm mới địa chỉ giao hàng"
+    >
+
+      <v-card-text>
+
+        <v-row class="px-3">
+
+          <v-col cols="12">
+
+            <div class="text-subtitle-1 text-high-emphasis">Tỉnh thành</div>
+
+            <v-autocomplete
+              variant="outlined"
+              density="compact"
+              hide-details="true"
+              :items="cityNames"
+            >
+
+            </v-autocomplete>
+
+          </v-col>
+
+          <v-col cols="12">
+
+            <div class="text-subtitle-1 text-high-emphasis">Xã phường</div>
+
+            <v-text-field
+              variant="outlined"
+              density="compact"
+              hide-details="true"
+            ></v-text-field>
+
+          </v-col>
+
+          <v-col cols="12">
+
+            <div class="text-subtitle-1 text-high-emphasis">
+               Địa chỉ (số nhà, đường, thôn, ngõ,...)
+            </div>
+
+            <v-text-field
+              variant="outlined"
+              v-model="titleCaps"
+              density="compact"
+              hide-details="true"
+            ></v-text-field>
+
+          </v-col>
+
+        </v-row>
+
+      </v-card-text>
+
+      <v-card-actions>
+
+        <v-btn
+          color="green-darken-1"
+          variant="elevated"
+        >
+          Lưu
+        </v-btn>
+
+        <v-btn
+          color="red-lighten-1"
+          variant="elevated"
+          @click="dialog = !dialog"
+        >
+          Hủy
+        </v-btn>
+
+      </v-card-actions>
+
+    </v-card>
+
+  </v-dialog>
 
 </template>
 
