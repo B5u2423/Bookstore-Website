@@ -112,9 +112,9 @@ async function remove() {
       color: 'success',
     }
     // update on frontend, just for immediate view
-    const index = serverItems.value.findIndex(book => book.id === itemId.value)
+    const index = serverItems.value.findIndex((book) => book.id === itemId.value)
     serverItems.value.splice(index, 1)
-    totalItems.value--;
+    totalItems.value--
   } catch (error) {
     console.error(`Error deleting book with id ${id}`, error)
   } finally {
@@ -123,8 +123,55 @@ async function remove() {
   }
 }
 
-function save() {
-  console.log('saved')
+async function save() {
+  if (isEditing.value) {
+    try {
+      // API call
+      const res = await BookService.updateBookById(
+        formModel.value,
+        formModel.value.id,
+        adminAuthStore.accessToken,
+      )
+      snackbar.value = {
+        show: true,
+        message: 'Cập nhật sản phẩm thành công',
+        color: 'success',
+      }
+      // edit immediate view
+      const index = serverItems.value.findIndex((book) => book.id === formModel.value.id)
+      serverItems.value[index] = formModel.value
+    } catch (error) {
+      snackbar.value = {
+        show: true,
+        message: `Lỗi cập nhật sản phẩm: ${error.message}`,
+        color: 'error',
+      }
+      console.error('Error editing book')
+    }
+  } else {
+    // API call
+    try {
+      const res = await BookService.addNewBook(formModel.value, adminAuthStore.accessToken)
+      snackbar.value = {
+        show: true,
+        message: 'Thêm sản phẩm thành công',
+        color: 'success',
+      }
+    } catch (error) {
+      snackbar.value = {
+        show: true,
+        message: `Lỗi thêm mới sản phẩm: ${error.message}`,
+        color: 'error',
+      }
+      console.error('Error adding new book')
+    }
+    // update the immediate view
+    formModel.value.id = serverItems.value.length + 1
+    serverItems.value.push(formModel.value)
+    totalItems.value++
+  }
+
+  dialog.value = false
 }
 
 // auto capitalize
@@ -188,7 +235,7 @@ onMounted(() => {
             size="x-small"
             start
           ></v-icon>
-           Popular books
+          Thông tin sách
         </v-toolbar-title>
 
         <v-btn

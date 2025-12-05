@@ -52,11 +52,6 @@ public class BookService {
   }
 
   public BookResponseDTO updateBookById(BookResponseDTO bookResponseDTO, Integer id) {
-    String isbn = bookResponseDTO.isbn();
-    if (isIsbnNotUnique(isbn)) {
-      throw new BookWithIsbnAlreadyExists("Book with isbn :: %s already exists!".formatted(isbn));
-    }
-
     try {
       Book b =
           bookRepo
@@ -77,6 +72,7 @@ public class BookService {
       b.setImageUrl(bookResponseDTO.imageUrl());
       b.setInStock(bookResponseDTO.inStock());
       b.setUrlSlug(convertTitleToSlug(bookResponseDTO.title()));
+      b.setPrice(bookResponseDTO.price());
 
       return mapToBookResponseDTO(bookRepo.save(b));
 
