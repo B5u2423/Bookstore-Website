@@ -78,12 +78,12 @@ export const BookService = {
   async deleteBookById(id, token) {
     try {
       const res = await api.delete('/api/v1/books/delete', {
-        params: {id}, 
+        params: { id },
         headers: { Authorization: `Bearer ${token}` },
       })
       return res.data
     } catch (error) {
       console.error(`Error deleting book with id ${id}`, error)
     }
-  }
+  },
 }

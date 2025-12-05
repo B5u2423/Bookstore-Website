@@ -59,7 +59,7 @@ public class BookController {
   @DeleteMapping("/delete")
   public ResponseEntity<String> deleteBookById(@RequestParam(value = "id") Integer id) {
     bookService.deleteBookById(id);
-    return ResponseEntity.ok().body("Book with id %d deleted successfully!".formatted(id));
+    return ResponseEntity.ok().body("Thành công xóa sản phẩm với id %d!".formatted(id));
   }
 
   @ExceptionHandler({BookWithIsbnAlreadyExists.class})

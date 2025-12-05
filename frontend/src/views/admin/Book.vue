@@ -2,8 +2,9 @@
 import { BookService } from '@/api/book-api'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
 import { formatPriceVNLocale } from '@/utils/utils'
-import { computed, onMounted, toRef, ref, shallowRef } from 'vue'
+import { computed, onMounted, toRef, ref, shallowRef, onUpdated } from 'vue'
 import { VFileUpload } from 'vuetify/labs/VFileUpload'
+import SnackBar from '@/components/common/SnackBar.vue'
 
 const adminAuthStore = useAdminAuthStore()
 
@@ -48,6 +49,13 @@ const isEditing = toRef(() => !!formModel.value.id)
 const confirmationDialog = shallowRef(false)
 const itemId = ref('')
 const isDelLoading = ref(false)
+
+// snackbar
+const snackbar = ref({
+  show: false,
+  message: '',
+  color: 'success',
+})
 
 async function loadItems({ page, itemsPerPage }) {
   loading.value = true
@@ -98,10 +106,20 @@ async function remove() {
   isDelLoading.value = true
   try {
     const res = await BookService.deleteBookById(itemId.value, adminAuthStore.accessToken)
+    snackbar.value = {
+      show: true,
+      message: res,
+      color: 'success',
+    }
+    // update on frontend, just for immediate view
+    const index = serverItems.value.findIndex(book => book.id === itemId.value)
+    serverItems.value.splice(index, 1)
+    totalItems.value--;
   } catch (error) {
-    console.error(`Error deleting book with id ${id}`, error) 
+    console.error(`Error deleting book with id ${id}`, error)
   } finally {
     isDelLoading.value = false
+    confirmationDialog.value = false
   }
 }
 
@@ -521,7 +539,7 @@ onMounted(() => {
           :loading="isDelLoading"
           @click="remove()"
         >
-          Đồng ý
+           Đồng ý
         </v-btn>
 
         <v-btn
@@ -529,7 +547,7 @@ onMounted(() => {
           color="red-lighten-1"
           @click="confirmationDialog = !confirmationDialog"
         >
-          Hủy
+           Hủy
         </v-btn>
 
       </v-card-actions>
@@ -537,6 +555,8 @@ onMounted(() => {
     </v-card>
 
   </v-dialog>
+
+  <SnackBar :snackbar="snackbar" />
 
 </template>
 
