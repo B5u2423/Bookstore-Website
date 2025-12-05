@@ -132,7 +132,8 @@ public class SecurityConfigs {
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/auth/admin/login"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/auth/register"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/auth/refresh"),
-      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/v1/books/**")
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/v1/books/**"),
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/v1/categories/**")
     };
   }
 
@@ -150,6 +151,9 @@ public class SecurityConfigs {
       PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, "/api/v1/books/**"),
       PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.DELETE, "/api/v1/books/**"),
       PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.PUT, "/api/v1/books/**"),
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, "/api/v1/categories/**"),
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.DELETE, "/api/v1/categories/**"),
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.PUT, "/api/v1/categories/**")
     };
   }
 }
