@@ -40,17 +40,4 @@ public class CategoryService {
                 : c.getChildrenCategories().stream().map(this::toDto).toList())
         .build();
   }
-
-  private CategoryDTO toDto(Category c) {
-    return CategoryDTO.builder()
-        .id(c.getId())
-        .parent(c.getParentCategory() != null ? c.getParentCategory().getId() : null)
-        .categorySlug(c.getCategorySlug())
-        .categoryName(c.getCategoryName())
-        .children(
-            c.getChildrenCategories() == null
-                ? Collections.emptyList()
-                : c.getChildrenCategories().stream().map(this::toDto).toList())
-        .build();
-  }
 }
