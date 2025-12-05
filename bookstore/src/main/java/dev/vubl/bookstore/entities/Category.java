@@ -1,7 +1,5 @@
 package dev.vubl.bookstore.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.Set;
 import lombok.*;
@@ -22,10 +20,8 @@ public class Category extends BaseEntity {
 
   @ManyToOne
   @JoinColumn(name = "parent_id", nullable = true)
-  @JsonBackReference
   private Category parentCategory;
 
   @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL)
-  @JsonManagedReference
   private Set<Category> childrenCategories;
 }
