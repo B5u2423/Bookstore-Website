@@ -166,7 +166,7 @@ async function save() {
       console.error('Error adding new book')
     }
     // update the immediate view
-    formModel.value.id = serverItems.value.length + 1
+    formModel.value.id = totalItems.value++ 
     serverItems.value.push(formModel.value)
     totalItems.value++
   }
