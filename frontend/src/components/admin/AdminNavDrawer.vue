@@ -1,11 +1,9 @@
 <script setup>
 const homepage = [{ title: 'Thống kê', icon: 'mdi-chart-bar', nameRoute: 'admin-dashboard' }]
 const inventory = [
+  { title: 'Thông tin sách', icon: 'mdi-book', nameRoute: 'i-books' },
   { title: 'Danh mục', icon: 'mdi-shape', nameRoute: 'i-categories' },
   { title: 'Bộ sưu tập', icon: 'mdi-view-dashboard', nameRoute: 'i-collections' },
-  { title: 'Thông tin sách', icon: 'mdi-book', nameRoute: 'i-books' },
-  { title: 'Tác giả', icon: 'mdi-account', nameRoute: 'i-authors' },
-  { title: 'Nhà phát hành', icon: 'mdi-package', nameRoute: 'i-publishers' },
 ]
 
 const accounts = [

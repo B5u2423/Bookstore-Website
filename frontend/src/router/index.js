@@ -106,11 +106,6 @@ const routes = [
             component: () => import('@/views/admin/Book.vue'),
           },
           {
-            path: 'authors',
-            name: 'i-authors',
-            component: () => import('@/views/admin/Author.vue'),
-          },
-          {
             path: 'collections',
             name: 'i-collections',
             component: () => import('@/views/admin/Collection.vue'),
@@ -124,11 +119,6 @@ const routes = [
             path: 'orders',
             name: 'i-orders',
             component: () => import('@/views/admin/Order.vue'),
-          },
-          {
-            path: 'publishers',
-            name: 'i-publishers',
-            component: () => import('@/views/admin/Publisher.vue'),
           },
         ],
       },
