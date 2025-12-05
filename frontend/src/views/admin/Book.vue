@@ -424,11 +424,18 @@ onMounted(() => {
             <div class="text-subtitle-1 text-high-emphasis">Hình ảnh</div>
 
             <v-file-upload
-              title="Kéo thả hoặc chọn hình ảnh"
               clearable
               density="compact"
               variant="compact"
-            ></v-file-upload>
+            >
+          
+            <template v-slot:title>
+              <span class="text-h5">
+
+              Kéo thả hoặc tải lên hình ảnh
+              </span>
+            </template>
+          </v-file-upload>
 
             <v-text-field
               class="mt-3"
