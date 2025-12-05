@@ -1,5 +1,6 @@
 package dev.vubl.bookstore.controllers;
 
+import dev.vubl.bookstore.dtos.CategoryDTO;
 import dev.vubl.bookstore.entities.Category;
 import dev.vubl.bookstore.services.CategoryService;
 import java.util.List;
@@ -18,7 +19,7 @@ public class CategoryController {
   private final CategoryService categoryService;
 
   @GetMapping("/all")
-  public ResponseEntity<List<Category>> getAllCategories() {
+  public ResponseEntity<List<CategoryDTO>> getAllCategories() {
     return ResponseEntity.ok().body(categoryService.getAllCategories());
   }
 
