@@ -52,6 +52,12 @@ export const BookService = {
     }
   },
 
+  /**
+   * Fetch all books with optional query parameters
+   * @param {Object} params - Optional query parameters for filtering, sorting, or pagination
+   * @returns {Promise<Book[]>} A promise resolves to an array of books
+   * @throws {Error} if API call fails
+   */
   async fetchAllBooks(params = {}) {
     try {
       const res = await api.get('/api/v1/books', { params })
@@ -62,6 +68,13 @@ export const BookService = {
     }
   },
 
+  /**
+   * Delete a book by its ID
+   * @param {String} id - The ID of the book to delete
+   * @param {String} token - Authorization token for the request
+   * @returns {Promise<Object>} A promise resolves to the API response data
+   * @throws {Error} if API call fails
+   */
   async deleteBookById(id, token) {
     try {
       const res = await api.delete('/api/v1/books/delete', {
