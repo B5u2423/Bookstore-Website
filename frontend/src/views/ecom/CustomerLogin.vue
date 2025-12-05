@@ -138,7 +138,7 @@ async function handleLogin() {
       </div>
 
       <div class="text-center">
-        Bạn chưa có tài khoản, vui lòng đăng ký
+         Bạn chưa có tài khoản, vui lòng đăng ký
         <a href="/register"> tại đây </a>
 
       </div>

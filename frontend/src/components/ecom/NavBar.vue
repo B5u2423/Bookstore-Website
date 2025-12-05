@@ -78,14 +78,14 @@ async function handleLogout() {
           :active="false"
           :to="{ name: 'register' }"
         >
-          Đăng ký
+           Đăng ký
         </v-btn>
 
         <v-btn
           :active="false"
           :to="{ name: 'login' }"
         >
-          Đăng nhập
+           Đăng nhập
         </v-btn>
 
       </template>

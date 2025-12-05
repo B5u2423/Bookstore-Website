@@ -1,8 +1,11 @@
 <script setup>
 import { BookService } from '@/api/book-api'
+import { useAdminAuthStore } from '@/stores/admin-auth-store'
 import { formatPriceVNLocale } from '@/utils/utils'
 import { computed, onMounted, toRef, ref, shallowRef } from 'vue'
 import { VFileUpload } from 'vuetify/labs/VFileUpload'
+
+const adminAuthStore = useAdminAuthStore()
 
 function createNewRecord() {
   return {
@@ -40,6 +43,11 @@ const totalItems = ref(0)
 const formModel = ref(createNewRecord())
 const dialog = shallowRef(false)
 const isEditing = toRef(() => !!formModel.value.id)
+
+// confirmation dialog
+const confirmationDialog = shallowRef(false)
+const itemId = ref('')
+const isDelLoading = ref(false)
 
 async function loadItems({ page, itemsPerPage }) {
   loading.value = true
@@ -79,6 +87,22 @@ function edit(id) {
   }
 
   dialog.value = true
+}
+
+function confirm(id) {
+  confirmationDialog.value = true
+  itemId.value = id
+}
+
+async function remove() {
+  isDelLoading.value = true
+  try {
+    const res = await BookService.deleteBookById(itemId.value, adminAuthStore.accessToken)
+  } catch (error) {
+    console.error(`Error deleting book with id ${id}`, error) 
+  } finally {
+    isDelLoading.value = false
+  }
 }
 
 function save() {
@@ -230,6 +254,7 @@ onMounted(() => {
           color="medium-emphasis"
           icon="mdi-delete"
           size="small"
+          @click="confirm(item.id)"
         ></v-icon>
 
       </div>
@@ -428,14 +453,14 @@ onMounted(() => {
               density="compact"
               variant="compact"
             >
-          
-            <template v-slot:title>
-              <span class="text-h5">
 
-              Kéo thả hoặc tải lên hình ảnh
-              </span>
-            </template>
-          </v-file-upload>
+              <template v-slot:title>
+
+                <span class="text-h5"> Kéo thả hoặc tải lên hình ảnh </span>
+
+              </template>
+
+            </v-file-upload>
 
             <v-text-field
               class="mt-3"
@@ -469,6 +494,42 @@ onMounted(() => {
           variant="elevated"
         >
            Hủy
+        </v-btn>
+
+      </v-card-actions>
+
+    </v-card>
+
+  </v-dialog>
+
+  <!-- confirmation dialog -->
+
+  <v-dialog
+    v-model="confirmationDialog"
+    max-width="500"
+  >
+
+    <v-card title="Xác nhận">
+
+      <v-card-text>Bạn có chắc chắn muốn xóa sản phẩm?</v-card-text>
+
+      <v-card-actions>
+
+        <v-btn
+          variant="elevated"
+          color="green-darken-1"
+          :loading="isDelLoading"
+          @click="remove()"
+        >
+          Đồng ý
+        </v-btn>
+
+        <v-btn
+          variant="elevated"
+          color="red-lighten-1"
+          @click="confirmationDialog = !confirmationDialog"
+        >
+          Hủy
         </v-btn>
 
       </v-card-actions>
