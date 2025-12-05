@@ -55,7 +55,6 @@ async function loadItems({ page, itemsPerPage }) {
   }
 }
 
-
 function add() {
   formModel.value = createNewRecord()
   dialog.value = true
@@ -87,38 +86,35 @@ function save() {
 }
 
 // auto capitalize
-  function capitalizeVietnamese(str) {
-    return str
-      .trim()
-      .replace(/\s+/g, ' ')
-      .split(' ')
-      .map(word =>
-        word.charAt(0).toLocaleUpperCase('vi') +
-        word.slice(1).toLocaleLowerCase('vi')
-      )
-      .join(' ')
-  }
+function capitalizeVietnamese(str) {
+  return str
+    .trim()
+    .replace(/\s+/g, ' ')
+    .split(' ')
+    .map((word) => word.charAt(0).toLocaleUpperCase('vi') + word.slice(1).toLocaleLowerCase('vi'))
+    .join(' ')
+}
 
-  const titleCaps = computed({
-    get: () => formModel.value.title,
-    set: val => {
-      formModel.value.title = capitalizeVietnamese(val || '')
-    }
-  })
+const titleCaps = computed({
+  get: () => formModel.value.title,
+  set: (val) => {
+    formModel.value.title = capitalizeVietnamese(val || '')
+  },
+})
 
-  const authorCaps = computed({
-    get: () => formModel.value.author,
-    set: val => {
-      formModel.value.author = capitalizeVietnamese(val || '')
-    }
-  })
+const authorCaps = computed({
+  get: () => formModel.value.author,
+  set: (val) => {
+    formModel.value.author = capitalizeVietnamese(val || '')
+  },
+})
 
-  const publisherCaps = computed({
-    get: () => formModel.value.publisher,
-    set: val => {
-      formModel.value.publisher = capitalizeVietnamese(val || '')
-    }
-  })
+const publisherCaps = computed({
+  get: () => formModel.value.publisher,
+  set: (val) => {
+    formModel.value.publisher = capitalizeVietnamese(val || '')
+  },
+})
 
 onMounted(() => {
   loadItems()
@@ -167,19 +163,33 @@ onMounted(() => {
     </template>
 
     <!-- style the header -->
+
     <template v-slot:headers="{ columns }">
+
       <tr>
-        <template v-for="column in columns" :key="column.key">
+
+        <template
+          v-for="column in columns"
+          :key="column.key"
+        >
+
           <th>
+
             <div class="d-flex align-center">
+
               <span
                 class="me-2 cursor-pointer font-weight-bold"
                 v-text="column.title"
               ></span>
+
             </div>
+
           </th>
+
         </template>
+
       </tr>
+
     </template>
 
     <!-- stylized book title as chips -->

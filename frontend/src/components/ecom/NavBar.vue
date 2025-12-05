@@ -74,9 +74,19 @@ async function handleLogout() {
 
       <template v-if="!authStore.isAuthenticated">
 
-        <v-btn :to="{ name: 'register' }">Đăng ký</v-btn>
+        <v-btn
+          :active="false"
+          :to="{ name: 'register' }"
+        >
+          Đăng ký
+        </v-btn>
 
-        <v-btn :to="{ name: 'login' }">Đăng nhập</v-btn>
+        <v-btn
+          :active="false"
+          :to="{ name: 'login' }"
+        >
+          Đăng nhập
+        </v-btn>
 
       </template>
 
