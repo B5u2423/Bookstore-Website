@@ -1,18 +1,31 @@
 <script setup>
 import { CategoryService } from '@/api/category-api'
-import { ref } from 'vue'
+import { toRef, shallowRef, ref } from 'vue'
 // table
 const headers = ref([
-  { title: 'ID', key: 'id', align: 'start' },
-  { title: 'Tên danh mục', key: 'categoryName', align: 'start' },
-  { title: 'Danh mục cha', key: 'parent', align: 'start' },
-  { title: 'Các danh mục con', key: 'children', align: 'start' },
+  { title: 'ID', key: 'id', align: 'start', sortable: false },
+  { title: 'Tên danh mục', key: 'categoryName', align: 'start', sortable: false },
+  { title: 'Danh mục cha', key: 'parentName', align: 'start', sortable: false },
+  { title: 'Các danh mục con', key: 'children', align: 'start', sortable:false },
   { title: 'Thao tác', key: 'actions', align: 'end', sortable: false },
 ])
 const itemsPerPage = ref(10)
 const loading = ref(false)
 const serverItems = ref([])
 const totalItems = ref(0)
+
+function createNewRecord() {
+  return {
+    categoryName: '',
+    parentName: '',
+    children: [],
+  }
+}
+
+// edit-add dialog
+const formModel = ref(createNewRecord())
+const dialog = shallowRef(false)
+const isEditing = toRef(() => !!formModel.value.id)
 
 async function loadItems({ page, itemsPerPage }) {
   loading.value = true
@@ -29,6 +42,28 @@ async function loadItems({ page, itemsPerPage }) {
   } finally {
     loading.value = false
   }
+}
+
+function add() {
+  formModel.value = createNewRecord()
+  dialog.value = true
+}
+
+function edit(id) {
+  const found = serverItems.value.find((c) => c.id === id)
+
+  formModel.value = {
+    categoryName: found.categoryName,
+    parentName: found.parentName == null ? 'N/A' : found.parentName,
+    children: found.children
+  }
+  console.log(found)
+
+  dialog.value = true
+}
+
+function remove() {
+
 }
 </script>
 
@@ -73,36 +108,6 @@ async function loadItems({ page, itemsPerPage }) {
 
     </template>
 
-    <!-- style the header -->
-
-    <template v-slot:headers="{ columns }">
-
-      <tr>
-
-        <template
-          v-for="column in columns"
-          :key="column.key"
-        >
-
-          <th>
-
-            <div class="d-flex align-center">
-
-              <span
-                class="me-2 cursor-pointer font-weight-bold"
-                v-text="column.title"
-              ></span>
-
-            </div>
-
-          </th>
-
-        </template>
-
-      </tr>
-
-    </template>
-
     <!-- action buttons -->
 
     <template v-slot:item.actions="{ item }">
@@ -113,12 +118,14 @@ async function loadItems({ page, itemsPerPage }) {
           color="medium-emphasis"
           icon="mdi-pencil"
           size="small"
+          @click="edit(item.id)"
         ></v-icon>
 
         <v-icon
           color="medium-emphasis"
           icon="mdi-delete"
           size="small"
+          @click="remove"
         ></v-icon>
 
       </div>
@@ -127,9 +134,9 @@ async function loadItems({ page, itemsPerPage }) {
 
     <!-- parent category -->
 
-    <template v-slot:item.parent="{ item }">
+    <template v-slot:item.parentName="{ item }">
 
-      <template v-if="item.parent == null">
+      <template v-if="item.parentName == null">
 
         <v-chip
           color="red-lighten-1"
@@ -142,7 +149,7 @@ async function loadItems({ page, itemsPerPage }) {
 
       <template v-else>
 
-        <v-chip> ID: {{ item.parent }} - {{ item.parentName }} </v-chip>
+        <v-chip>{{ item.parentName }}</v-chip>
 
       </template>
 
@@ -179,5 +186,65 @@ async function loadItems({ page, itemsPerPage }) {
 
   </v-data-table-server>
 
+    <v-dialog v-model="dialog" max-width="800">
+      <v-card 
+
+      :title="`${isEditing ? 'Thay đổi thông tin' : 'Tạo bản ghi mới'}`"
+      :subtitle="`${isEditing ? 'Cập nhật' : 'Thêm'} danh mục`">
+        <v-card-text>
+          <v-row>
+
+          <v-col
+            cols="12"
+            md="6"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">Tên danh mục</div>
+
+            <v-text-field
+              variant="outlined"
+              v-model="formModel.categoryName"
+              density="compact"
+              hide-details="true"
+            ></v-text-field>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="6"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">Danh mục cha</div>
+
+            <v-text-field
+              variant="outlined"
+              v-model="formModel.parentName"
+              disabled="true"
+              density="compact"
+              hide-details="true"
+            ></v-text-field>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">Các danh mục con</div>
+
+          </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="green-darken-1" variant="elevated">Lưu</v-btn>
+          <v-btn color="red-lighten-1"
+          variant="elevated"
+          @click="dialog = !dialog"
+          >Hủy</v-btn>
+
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 </template>
 
