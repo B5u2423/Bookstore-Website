@@ -34,4 +34,10 @@ public class CategoryController {
     categoryService.addChildCategory(parentId, childId);
     return ResponseEntity.ok().body("Ok");
   }
+
+  @GetMapping("/candidates")
+  public ResponseEntity<List<CategoryDTO>> getAllCandidates(
+      @RequestParam(value = "id") Integer id) {
+    return ResponseEntity.ok().body(categoryService.getPossibleChildCategories(id));
+  }
 }

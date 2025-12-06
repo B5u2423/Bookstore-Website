@@ -4,8 +4,7 @@ import dev.vubl.bookstore.dtos.CategoryDTO;
 import dev.vubl.bookstore.entities.Category;
 import dev.vubl.bookstore.repos.CategoryRepo;
 import jakarta.transaction.Transactional;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,6 +35,40 @@ public class CategoryService {
     Category child = categoryRepo.findById(childId).orElseThrow();
 
     parent.addChild(child);
+  }
+
+  public List<CategoryDTO> getPossibleChildCategories(Integer id) {
+    if (id == null) throw new IllegalArgumentException("Category Id must not be null");
+    Category c = categoryRepo.findById(id).orElseThrow();
+    Set<Integer> illegalCategoryIds = new HashSet<>();
+    illegalCategoryIds.add(c.getId());
+    // parent Id
+    if (c.getParentCategory() != null) {
+      illegalCategoryIds.add(c.getParentCategory().getId());
+    }
+    addAllDescendantIds(c, illegalCategoryIds);
+
+    return categoryRepo.findAll().stream()
+        .filter(item -> !illegalCategoryIds.contains(item.getId()))
+        .filter(
+            item -> {
+              if (item.getChildrenCategories() != null) {
+                return item.getChildrenCategories().stream()
+                    .noneMatch(child -> illegalCategoryIds.contains(child.getId()));
+              }
+              return true;
+            })
+        .map(this::toDto)
+        .toList();
+  }
+
+  private void addAllDescendantIds(Category category, Set<Integer> ids) {
+    if (category.getChildrenCategories() != null) {
+      for (Category child : category.getChildrenCategories()) {
+        ids.add(child.getId());
+        addAllDescendantIds(child, ids); // recursive call for each child
+      }
+    }
   }
 
   private CategoryDTO toDto(Category c) {
