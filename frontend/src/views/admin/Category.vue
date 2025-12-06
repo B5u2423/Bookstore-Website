@@ -31,6 +31,11 @@ const dialog = shallowRef(false)
 const isEditing = toRef(() => !!formModel.value.id)
 const candidates = ref([])
 
+// confirmation dialog
+const confirmationDialog = shallowRef(false)
+const itemId = ref('')
+const isDelLoading = ref(false)
+
 async function loadItems({ page, itemsPerPage }) {
   loading.value = true
   try {
@@ -77,7 +82,22 @@ async function edit(id) {
   dialog.value = true
 }
 
-function remove() {}
+function confirm(id) {
+  confirmationDialog.value = true
+  itemId.value = id
+}
+
+function remove() {
+  // TODO: snackbar
+  try {
+    const res = CategoryService.deleteCategoryById(itemId.value, adminAuthStore.accessToken)
+  } catch (error) {
+    console.error('Error deleting item')
+  } finally{
+    isDelLoading.value = false
+    confirmationDialog.value = false
+  }
+}
 
 async function save() {
   if (isEditing.value) {
@@ -159,7 +179,7 @@ async function save() {
           color="medium-emphasis"
           icon="mdi-delete"
           size="small"
-          @click="remove"
+          @click="confirm(item.id)"
         ></v-icon>
 
       </div>
@@ -314,5 +334,40 @@ async function save() {
 
   </v-dialog>
 
+  <!-- confirmation dialog -->
+
+  <v-dialog
+    v-model="confirmationDialog"
+    max-width="500"
+  >
+
+    <v-card title="Xác nhận">
+
+      <v-card-text>Bạn có chắc chắn muốn xóa danh mục?</v-card-text>
+
+      <v-card-actions>
+
+        <v-btn
+          variant="elevated"
+          color="green-darken-1"
+          :loading="isDelLoading"
+          @click="remove"
+        >
+           Đồng ý
+        </v-btn>
+
+        <v-btn
+          variant="elevated"
+          color="red-lighten-1"
+          @click="confirmationDialog = !confirmationDialog"
+        >
+           Hủy
+        </v-btn>
+
+      </v-card-actions>
+
+    </v-card>
+
+  </v-dialog>
 </template>
 

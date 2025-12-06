@@ -6,6 +6,7 @@ const CATEGORY_ENDPOINT = {
   GET_CANDIDATES: '/api/v1/categories/candidates',
   PUT_UPDATE: '/api/v1/categories/update',
   POST_ADD: '/api/v1/categories/add',
+  DELETE: `/api/v1/categories/delete`
 }
 
 export const CategoryService = {
@@ -70,4 +71,19 @@ export const CategoryService = {
       throw error
     }
   },
+
+  async deleteCategoryById(id, token) {
+    try {
+      const res = await api.delete(CATEGORY_ENDPOINT.DELETE, {
+        params: {id},
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      return res.data
+    } catch (error) {
+      console.error('Error deleting category')
+      throw error
+    }
+  }
 }
