@@ -23,7 +23,7 @@ public class CategoryService {
 
   public Page<CategoryDTO> getAllCategoriesPaginated(int page, int size) {
     Pageable pageable = PageRequest.of(page, size);
-    Page<Category> categoryPage = categoryRepo.findAll(pageable);
+    Page<Category> categoryPage = categoryRepo.findAllByOrderByIdAsc(pageable);
     return categoryPage.map(this::toDto);
   }
 
