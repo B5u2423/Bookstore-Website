@@ -33,7 +33,7 @@ async function handleRegister() {
   if (res.success) {
     snackbar.value = {
       show: true,
-      message: 'Đăng ký thành công!',
+      message: 'Đăng ký thành công! Vui lòng truy cập trang đăng nhập!',
       color: 'success',
     }
   } else {

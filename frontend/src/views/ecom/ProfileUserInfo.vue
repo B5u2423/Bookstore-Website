@@ -1,4 +1,5 @@
 <script setup>
+import { UserService } from '@/api/customer-api'
 import { useAuthStore } from '@/stores/auth-store'
 import { useCartStore } from '@/stores/cart-store'
 import { useUserProfileStore } from '@/stores/user-profile-store'
@@ -18,7 +19,7 @@ const currentUserProfileSnapshot = ref({
   firstName: userProfileStore.userInfo.firstName,
   lastName: userProfileStore.userInfo.lastName,
   email: userProfileStore.userInfo.email,
-  phone: userProfileStore.userInfo.phone,
+  phoneNumber: userProfileStore.userInfo.phone,
 })
 
 watch(
@@ -38,18 +39,30 @@ function discardChanges() {
   currentUserProfileSnapshot.value.firstName = userProfileStore.userInfo.firstName
   currentUserProfileSnapshot.value.lastName = userProfileStore.userInfo.lastName
   currentUserProfileSnapshot.value.email = userProfileStore.userInfo.email
-  currentUserProfileSnapshot.value.phone = userProfileStore.userInfo.phone
+  currentUserProfileSnapshot.value.phoneNumber = userProfileStore.userInfo.phone
 
   // return to original state
   isUpdated.value = false
   isFieldsEnabled.value = false
 }
 
-function updateChanges() {
-  userProfileStore.updateUserInfo(currentUserProfileSnapshot.value)
-  // return to original state
-  isUpdated.value = false
-  isFieldsEnabled.value = false
+async function updateChanges() {
+  try {
+  // API call
+    const res = await UserService.updateUserProfile(
+      authStore.accessToken, currentUserProfileSnapshot.value
+    )
+    // update immediate view
+    userProfileStore.updateUserInfo(currentUserProfileSnapshot.value)
+    return res
+  } catch (error) {
+    console.error("Error updating user info", error)
+    throw error
+  } finally {
+    // return to original state
+    isUpdated.value = false
+    isFieldsEnabled.value = false
+  }
 }
 
 // sync cart on load
@@ -77,7 +90,7 @@ onMounted(() => {
 
           <v-col class="py-0">
 
-            <div class="text-subtitle-1 text-medium-emphasis">Họ</div>
+            <div class="text-subtitle-1 text-medium-emphasis">Họ <span class="text-red">*</span></div>
 
             <v-text-field
               variant="outlined"
@@ -91,7 +104,9 @@ onMounted(() => {
 
           <v-col class="py-0">
 
-            <div class="text-subtitle-1 text-medium-emphasis">Tên</div>
+            <div class="text-subtitle-1 text-medium-emphasis">Tên
+<span class="text-red">*</span>
+            </div>
 
             <v-text-field
               variant="outlined"
@@ -109,7 +124,9 @@ onMounted(() => {
 
           <v-col class="py-0">
 
-            <div class="text-subtitle-1 text-medium-emphasis">Email</div>
+            <div class="text-subtitle-1 text-medium-emphasis">Email
+<span class="text-red">*</span>
+            </div>
 
             <v-text-field
               variant="outlined"
@@ -130,7 +147,7 @@ onMounted(() => {
               density="compact"
               placeholder="Số điện thoại"
               :disabled="!isFieldsEnabled"
-              v-model="currentUserProfileSnapshot.phone"
+              v-model="currentUserProfileSnapshot.phoneNumber"
             ></v-text-field>
 
           </v-col>
@@ -160,14 +177,14 @@ onMounted(() => {
                 :disabled="!isUpdated"
                 class="mr-3"
                 color="success"
-                @click="updateChanges()"
+                @click="updateChanges"
               >
                  Lưu
               </v-btn>
 
               <v-btn
                 color="warning"
-                @click="discardChanges()"
+                @click="discardChanges"
               >
                  Hủy
               </v-btn>
@@ -275,6 +292,7 @@ onMounted(() => {
         <v-btn
           color="green-darken-1"
           variant="elevated"
+          @click="save"
         >
            Lưu
         </v-btn>
