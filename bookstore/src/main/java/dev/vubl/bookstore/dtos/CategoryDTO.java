@@ -9,4 +9,5 @@ public record CategoryDTO(
     String categoryName,
     String categorySlug,
     Integer parent,
+    String parentName,
     List<CategoryDTO> children) {}

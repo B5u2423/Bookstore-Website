@@ -1,10 +1,10 @@
 package dev.vubl.bookstore.entities;
 
 import jakarta.persistence.*;
+import java.util.Objects;
 import java.util.Set;
 import lombok.*;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "categories")
 @Data
@@ -24,4 +24,39 @@ public class Category extends BaseEntity {
 
   @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL)
   private Set<Category> childrenCategories;
+
+  public void addChild(Category child) {
+    child.setParentCategory(this);
+    this.childrenCategories.add(child);
+  }
+
+  // has to override these methods so category doesn't call super infinitely
+  // thus lead to a SFO.
+
+  @Override
+  public String toString() {
+    return "Category{"
+        + "id="
+        + getId()
+        + ", categoryName='"
+        + categoryName
+        + '\''
+        + ", categorySlug='"
+        + categorySlug
+        + '\''
+        + '}';
+  }
+
+  // Override equals and hashCode to prevent infinite recursion
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Category category)) return false;
+    return Objects.equals(getId(), category.getId());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getId());
+  }
 }

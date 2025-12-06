@@ -28,10 +28,21 @@ public class CategoryService {
     return categoryPage.map(this::toDto);
   }
 
+  // TODO: Might remove this later
+  public void addChildCategory(Integer parentId, Integer childId) {
+    if (parentId == null || childId == null)
+      throw new IllegalArgumentException("Parent/child category Id must not be null!");
+    Category parent = categoryRepo.findById(parentId).orElseThrow();
+    Category child = categoryRepo.findById(childId).orElseThrow();
+
+    parent.addChild(child);
+  }
+
   private CategoryDTO toDto(Category c) {
     return CategoryDTO.builder()
         .id(c.getId())
         .parent(c.getParentCategory() != null ? c.getParentCategory().getId() : null)
+        .parentName(c.getParentCategory() != null ? c.getParentCategory().getCategoryName() : null)
         .categorySlug(c.getCategorySlug())
         .categoryName(c.getCategoryName())
         .children(

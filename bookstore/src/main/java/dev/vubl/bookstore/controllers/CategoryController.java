@@ -6,10 +6,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/categories")
@@ -27,5 +24,14 @@ public class CategoryController {
       @RequestParam(value = "page", defaultValue = "0") int page,
       @RequestParam(value = "size", defaultValue = "10") int size) {
     return new PagedModel<>(categoryService.getAllCategoriesPaginated(page, size));
+  }
+
+  // TODO: Might remove this later
+  @PutMapping("/add-child")
+  public ResponseEntity<String> addChildCategory(
+      @RequestParam(value = "parent") Integer parentId,
+      @RequestParam(value = "child") Integer childId) {
+    categoryService.addChildCategory(parentId, childId);
+    return ResponseEntity.ok().body("Ok");
   }
 }
