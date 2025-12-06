@@ -1,12 +1,15 @@
 <script setup>
 import { CategoryService } from '@/api/category-api'
+import { useAdminAuthStore } from '@/stores/admin-auth-store'
 import { toRef, shallowRef, ref } from 'vue'
+
+const adminAuthStore = useAdminAuthStore()
 // table
 const headers = ref([
   { title: 'ID', key: 'id', align: 'start', sortable: false },
   { title: 'Tên danh mục', key: 'categoryName', align: 'start', sortable: false },
   { title: 'Danh mục cha', key: 'parentName', align: 'start', sortable: false },
-  { title: 'Các danh mục con', key: 'children', align: 'start', sortable:false },
+  { title: 'Các danh mục con', key: 'children', align: 'start', sortable: false },
   { title: 'Thao tác', key: 'actions', align: 'end', sortable: false },
 ])
 const itemsPerPage = ref(10)
@@ -26,6 +29,7 @@ function createNewRecord() {
 const formModel = ref(createNewRecord())
 const dialog = shallowRef(false)
 const isEditing = toRef(() => !!formModel.value.id)
+const candidates = ref([])
 
 async function loadItems({ page, itemsPerPage }) {
   loading.value = true
@@ -44,26 +48,56 @@ async function loadItems({ page, itemsPerPage }) {
   }
 }
 
-function add() {
+async function add() {
   formModel.value = createNewRecord()
+  try {
+    candidates.value = await CategoryService.fetchAllCategories()
+  } catch (error) {
+    console.log("Error fetching all candidates for new record")
+  }
   dialog.value = true
 }
 
-function edit(id) {
+async function edit(id) {
   const found = serverItems.value.find((c) => c.id === id)
 
   formModel.value = {
+    id: found.id,
     categoryName: found.categoryName,
     parentName: found.parentName == null ? 'N/A' : found.parentName,
-    children: found.children
+    children: found.children,
   }
-  console.log(found)
+
+  try {
+    candidates.value = await CategoryService.fetchChildCandidates(id)
+  } catch (error) {
+    console.error('Error fetching children candidates')
+  }
 
   dialog.value = true
 }
 
-function remove() {
+function remove() {}
 
+async function save() {
+  if (isEditing.value) {
+    // TODO: adding snackbar
+    try {
+      // API call
+      const res = await CategoryService.updateCategory(formModel.value, adminAuthStore.accessToken)
+    } catch (error) {
+      console.error('Error editing category')
+    }
+  } else {
+    try {
+      // API call
+      const res = await CategoryService.addCategory(formModel.value, adminAuthStore.accessToken)
+    } catch (error) {
+      console.error('Error adding new category')
+    }
+  }
+
+  dialog.value = false
 }
 </script>
 
@@ -186,13 +220,19 @@ function remove() {
 
   </v-data-table-server>
 
-    <v-dialog v-model="dialog" max-width="800">
-      <v-card 
+  <v-dialog
+    v-model="dialog"
+    max-width="800"
+  >
 
+    <v-card
       :title="`${isEditing ? 'Thay đổi thông tin' : 'Tạo bản ghi mới'}`"
-      :subtitle="`${isEditing ? 'Cập nhật' : 'Thêm'} danh mục`">
-        <v-card-text>
-          <v-row>
+      :subtitle="`${isEditing ? 'Cập nhật' : 'Thêm'} danh mục`"
+    >
+
+      <v-card-text>
+
+        <v-row>
 
           <v-col
             cols="12"
@@ -227,24 +267,52 @@ function remove() {
 
           </v-col>
 
-          <v-col
-            cols="12"
-          >
+          <v-col cols="12">
 
             <div class="text-subtitle-1 text-high-emphasis">Các danh mục con</div>
 
+            <v-autocomplete
+              v-model="formModel.children"
+              variant="outlined"
+              density="compact"
+              item-value="id"
+              item-title="categoryName"
+              hide-details
+              :items="candidates"
+              multiple
+              chips
+              closable-chips
+            ></v-autocomplete>
+
           </v-col>
-          </v-row>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="green-darken-1" variant="elevated">Lưu</v-btn>
-          <v-btn color="red-lighten-1"
+
+        </v-row>
+
+      </v-card-text>
+
+      <v-card-actions>
+
+        <v-btn
+          color="green-darken-1"
+          variant="elevated"
+          @click="save"
+        >
+           Lưu
+        </v-btn>
+
+        <v-btn
+          color="red-lighten-1"
           variant="elevated"
           @click="dialog = !dialog"
-          >Hủy</v-btn>
+        >
+           Hủy
+        </v-btn>
 
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      </v-card-actions>
+
+    </v-card>
+
+  </v-dialog>
+
 </template>
 
