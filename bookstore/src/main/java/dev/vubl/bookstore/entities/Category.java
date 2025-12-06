@@ -34,6 +34,11 @@ public class Category extends BaseEntity {
     this.childrenCategories.add(child);
   }
 
+  public void removeChild(Category child) {
+    this.childrenCategories.remove(child);
+    child.setParentCategory(null);
+  }
+
   public void removeAllChildren() {
     for (Category child : childrenCategories) {
       child.setParentCategory(null);

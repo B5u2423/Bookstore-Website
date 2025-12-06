@@ -54,4 +54,10 @@ public class CategoryController {
       @RequestParam(value = "id") Integer id) {
     return ResponseEntity.ok().body(categoryService.getPossibleChildCategories(id));
   }
+
+  @DeleteMapping("/delete")
+  public ResponseEntity<String> deleteCategoryById(@RequestParam(value = "id") Integer id) {
+    categoryService.deleteCategoryById(id);
+    return ResponseEntity.ok().body("Category deleted");
+  }
 }

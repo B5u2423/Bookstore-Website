@@ -77,6 +77,28 @@ public class CategoryService {
     categoryRepo.save(c);
   }
 
+  public void addNewCategory(CategoryCreationRequest payload) {
+    Category c =
+        Category.builder()
+            .categoryName(payload.categoryName())
+            .categorySlug(SlugUtils.convertStringToSlug(payload.categoryName()))
+            .build();
+    for (Integer childID : payload.children()) {
+      c.addChild(getCategoryByIdOrThrowException(childID));
+    }
+    categoryRepo.save(c);
+  }
+
+  public void deleteCategoryById(Integer id) {
+    Category c = getCategoryByIdOrThrowException(id);
+    if (c.getParentCategory() != null) {
+      Category parent = c.getParentCategory();
+      parent.removeChild(c);
+    }
+    c.removeAllChildren();
+    categoryRepo.deleteById(id);
+  }
+
   private Category getCategoryByIdOrThrowException(Integer id) {
     return categoryRepo
         .findById(id)
@@ -98,17 +120,5 @@ public class CategoryService {
                 ? Collections.emptyList()
                 : c.getChildrenCategories().stream().map(this::toDto).toList())
         .build();
-  }
-
-  public void addNewCategory(CategoryCreationRequest payload) {
-    Category c =
-        Category.builder()
-            .categoryName(payload.categoryName())
-            .categorySlug(SlugUtils.convertStringToSlug(payload.categoryName()))
-            .build();
-    for (Integer childID : payload.children()) {
-      c.addChild(getCategoryByIdOrThrowException(childID));
-    }
-    categoryRepo.save(c);
   }
 }
