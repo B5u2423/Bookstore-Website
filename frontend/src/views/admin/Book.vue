@@ -44,6 +44,7 @@ const totalItems = ref(0)
 const formModel = ref(createNewRecord())
 const dialog = shallowRef(false)
 const isEditing = toRef(() => !!formModel.value.id)
+const imageUrlToggleEdit = ref(true)
 
 // confirmation dialog
 const confirmationDialog = shallowRef(false)
@@ -533,6 +534,9 @@ onMounted(() => {
               v-model="formModel.imageUrl"
               density="compact"
               hide-details="true"
+              :readonly="imageUrlNotAllowedEdit"
+              append-icon="mdi-pencil"
+              @click:append="imageUrlToggleEdit = !imageUrlToggleEdit"
             ></v-text-field>
 
           </v-col>
