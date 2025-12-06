@@ -61,8 +61,12 @@ public class ApplicationUserService implements UserDetailsService {
     user.setPhoneNumber(payload.phoneNumber());
     user.setEmail(payload.email());
 
-    this.createOrUpdateUser(user);
-    return "Update profile successfully";
+    try {
+      this.createOrUpdateUser(user);
+      return "Update profile successfully";
+    } catch (Exception e) {
+      throw e;
+    }
   }
 
   private ApplicationUser readUserByEmailOrThrowException(String email) {
