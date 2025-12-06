@@ -129,37 +129,51 @@ async function loadItems({ page, itemsPerPage }) {
 
     <template v-slot:item.parent="{ item }">
 
-      <template v-if="item.value == null">
+      <template v-if="item.parent == null">
 
         <v-chip
           color="red-lighten-1"
           variant="outlined"
         >
-           N/A
+           Không có
         </v-chip>
 
       </template>
 
-      <template v-else> {{ item }} </template>
+      <template v-else>
+
+        <v-chip> ID: {{ item.parent }} - {{ item.parentName }} </v-chip>
+
+      </template>
 
     </template>
 
-    <!-- parent category -->
+    <!-- children categories -->
 
     <template v-slot:item.children="{ item }">
 
-      <template v-if="item.value == null">
+      <template v-if="!item.children.length">
 
         <v-chip
           color="red-lighten-1"
           variant="outlined"
         >
-           N/A
+           Không có
         </v-chip>
 
       </template>
 
-      <template v-else> {{ item }} </template>
+      <template v-else>
+
+        <v-chip
+          v-for="child in item.children"
+          class="ma-1"
+          color="green-darken-1"
+        >
+           {{ child.categoryName }}
+        </v-chip>
+
+      </template>
 
     </template>
 

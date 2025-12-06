@@ -92,8 +92,9 @@ onMounted(() => {
           <v-col class="py-0">
 
             <div class="text-subtitle-1 text-medium-emphasis">
-              Họ
+               Họ
               <span class="text-red">*</span>
+
             </div>
 
             <v-text-field
@@ -109,7 +110,7 @@ onMounted(() => {
           <v-col class="py-0">
 
             <div class="text-subtitle-1 text-medium-emphasis">
-              Tên
+               Tên
               <span class="text-red">*</span>
 
             </div>
@@ -131,7 +132,7 @@ onMounted(() => {
           <v-col class="py-0">
 
             <div class="text-subtitle-1 text-medium-emphasis">
-              Email
+               Email
               <span class="text-red">*</span>
 
             </div>
