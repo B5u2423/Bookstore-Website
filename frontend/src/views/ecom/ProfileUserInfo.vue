@@ -48,15 +48,16 @@ function discardChanges() {
 
 async function updateChanges() {
   try {
-  // API call
+    // API call
     const res = await UserService.updateUserProfile(
-      authStore.accessToken, currentUserProfileSnapshot.value
+      authStore.accessToken,
+      currentUserProfileSnapshot.value,
     )
     // update immediate view
     userProfileStore.updateUserInfo(currentUserProfileSnapshot.value)
     return res
   } catch (error) {
-    console.error("Error updating user info", error)
+    console.error('Error updating user info', error)
     throw error
   } finally {
     // return to original state
@@ -90,7 +91,10 @@ onMounted(() => {
 
           <v-col class="py-0">
 
-            <div class="text-subtitle-1 text-medium-emphasis">Họ <span class="text-red">*</span></div>
+            <div class="text-subtitle-1 text-medium-emphasis">
+              Họ
+              <span class="text-red">*</span>
+            </div>
 
             <v-text-field
               variant="outlined"
@@ -104,8 +108,10 @@ onMounted(() => {
 
           <v-col class="py-0">
 
-            <div class="text-subtitle-1 text-medium-emphasis">Tên
-<span class="text-red">*</span>
+            <div class="text-subtitle-1 text-medium-emphasis">
+              Tên
+              <span class="text-red">*</span>
+
             </div>
 
             <v-text-field
@@ -124,8 +130,10 @@ onMounted(() => {
 
           <v-col class="py-0">
 
-            <div class="text-subtitle-1 text-medium-emphasis">Email
-<span class="text-red">*</span>
+            <div class="text-subtitle-1 text-medium-emphasis">
+              Email
+              <span class="text-red">*</span>
+
             </div>
 
             <v-text-field

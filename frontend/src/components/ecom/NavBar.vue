@@ -103,8 +103,8 @@ async function handleLogout() {
             color="primary"
             v-bind="props"
             prepend-icon="mdi-account"
-          > 
-           {{ userProfileStore.userInfo.lastName }} {{ userProfileStore.userInfo.firstName }}
+          >
+             {{ userProfileStore.userInfo.lastName }} {{ userProfileStore.userInfo.firstName }}
           </v-btn>
 
         </template>
