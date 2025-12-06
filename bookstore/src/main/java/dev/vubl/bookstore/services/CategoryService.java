@@ -1,8 +1,11 @@
 package dev.vubl.bookstore.services;
 
 import dev.vubl.bookstore.dtos.CategoryDTO;
+import dev.vubl.bookstore.dtos.CategoryUpdateRequest;
 import dev.vubl.bookstore.entities.Category;
+import dev.vubl.bookstore.exceptions.CategoryDoesNotExistException;
 import dev.vubl.bookstore.repos.CategoryRepo;
+import dev.vubl.bookstore.utils.SlugUtils;
 import jakarta.transaction.Transactional;
 import java.util.*;
 import lombok.RequiredArgsConstructor;
@@ -60,6 +63,26 @@ public class CategoryService {
             })
         .map(this::toDto)
         .toList();
+  }
+
+  public void updateCategory(CategoryUpdateRequest payload) {
+    Category c = getCategoryByIdOrThrowException(payload.id());
+    c.setCategoryName(payload.categoryName());
+    c.setCategorySlug(SlugUtils.convertStringToSlug(payload.categoryName()));
+    c.removeAllChildren();
+    for (Integer childId : payload.children()) {
+      c.addChild(getCategoryByIdOrThrowException(childId));
+    }
+    categoryRepo.save(c);
+  }
+
+  private Category getCategoryByIdOrThrowException(Integer id) {
+    return categoryRepo
+        .findById(id)
+        .orElseThrow(
+            () ->
+                new CategoryDoesNotExistException(
+                    "Category with id %d does not exist".formatted(id)));
   }
 
   private CategoryDTO toDto(Category c) {

@@ -30,6 +30,13 @@ public class Category extends BaseEntity {
     this.childrenCategories.add(child);
   }
 
+  public void removeAllChildren() {
+    for (Category child : childrenCategories) {
+      child.setParentCategory(null);
+    }
+    this.childrenCategories.clear();
+  }
+
   // has to override these methods so category doesn't call super infinitely
   // thus lead to a SFO.
 

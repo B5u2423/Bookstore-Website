@@ -1,6 +1,7 @@
 package dev.vubl.bookstore.controllers;
 
 import dev.vubl.bookstore.dtos.CategoryDTO;
+import dev.vubl.bookstore.dtos.CategoryUpdateRequest;
 import dev.vubl.bookstore.services.CategoryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,12 @@ public class CategoryController {
       @RequestParam(value = "parent") Integer parentId,
       @RequestParam(value = "child") Integer childId) {
     categoryService.addChildCategory(parentId, childId);
+    return ResponseEntity.ok().body("Ok");
+  }
+
+  @PutMapping("/update")
+  public ResponseEntity<String> updateCategory(@RequestBody CategoryUpdateRequest payload) {
+    categoryService.updateCategory(payload);
     return ResponseEntity.ok().body("Ok");
   }
 
