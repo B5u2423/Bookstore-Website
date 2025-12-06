@@ -1,5 +1,6 @@
 package dev.vubl.bookstore.controllers;
 
+import dev.vubl.bookstore.dtos.CategoryCreationRequest;
 import dev.vubl.bookstore.dtos.CategoryDTO;
 import dev.vubl.bookstore.dtos.CategoryUpdateRequest;
 import dev.vubl.bookstore.services.CategoryService;
@@ -39,6 +40,12 @@ public class CategoryController {
   @PutMapping("/update")
   public ResponseEntity<String> updateCategory(@RequestBody CategoryUpdateRequest payload) {
     categoryService.updateCategory(payload);
+    return ResponseEntity.ok().body("Ok");
+  }
+
+  @PostMapping("/add")
+  public ResponseEntity<String> addCategory(@RequestBody CategoryCreationRequest payload) {
+    categoryService.addNewCategory(payload);
     return ResponseEntity.ok().body("Ok");
   }
 

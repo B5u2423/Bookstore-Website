@@ -1,6 +1,7 @@
 package dev.vubl.bookstore.entities;
 
 import jakarta.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import lombok.*;
@@ -27,6 +28,9 @@ public class Category extends BaseEntity {
 
   public void addChild(Category child) {
     child.setParentCategory(this);
+    if (this.childrenCategories == null) {
+      this.setChildrenCategories(new HashSet<>());
+    }
     this.childrenCategories.add(child);
   }
 

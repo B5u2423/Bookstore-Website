@@ -1,5 +1,6 @@
 package dev.vubl.bookstore.services;
 
+import dev.vubl.bookstore.dtos.CategoryCreationRequest;
 import dev.vubl.bookstore.dtos.CategoryDTO;
 import dev.vubl.bookstore.dtos.CategoryUpdateRequest;
 import dev.vubl.bookstore.entities.Category;
@@ -97,5 +98,17 @@ public class CategoryService {
                 ? Collections.emptyList()
                 : c.getChildrenCategories().stream().map(this::toDto).toList())
         .build();
+  }
+
+  public void addNewCategory(CategoryCreationRequest payload) {
+    Category c =
+        Category.builder()
+            .categoryName(payload.categoryName())
+            .categorySlug(SlugUtils.convertStringToSlug(payload.categoryName()))
+            .build();
+    for (Integer childID : payload.children()) {
+      c.addChild(getCategoryByIdOrThrowException(childID));
+    }
+    categoryRepo.save(c);
   }
 }
