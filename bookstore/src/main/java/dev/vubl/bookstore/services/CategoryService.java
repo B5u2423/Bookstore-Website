@@ -46,11 +46,11 @@ public class CategoryService {
     if (c.getParentCategory() != null) {
       illegalCategoryIds.add(c.getParentCategory().getId());
     }
-    addAllDescendantIds(c, illegalCategoryIds);
 
     return categoryRepo.findAll().stream()
         .filter(item -> !illegalCategoryIds.contains(item.getId()))
         .filter(
+            // filter grandparent category
             item -> {
               if (item.getChildrenCategories() != null) {
                 return item.getChildrenCategories().stream()
@@ -60,15 +60,6 @@ public class CategoryService {
             })
         .map(this::toDto)
         .toList();
-  }
-
-  private void addAllDescendantIds(Category category, Set<Integer> ids) {
-    if (category.getChildrenCategories() != null) {
-      for (Category child : category.getChildrenCategories()) {
-        ids.add(child.getId());
-        addAllDescendantIds(child, ids); // recursive call for each child
-      }
-    }
   }
 
   private CategoryDTO toDto(Category c) {
