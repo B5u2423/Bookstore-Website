@@ -45,6 +45,12 @@ public class CustomerController {
         .body(applicationUserService.addAddressInfo(authService.readUserFromToken(token), payload));
   }
 
+  @PutMapping("/update-address")
+  public ResponseEntity<CustomerAddressInfo> updateAddress(
+      @RequestBody AddressDTO payload, @RequestParam(value = "id") Integer addressId) {
+    return ResponseEntity.ok().body(applicationUserService.updateAddressInfo(addressId, payload));
+  }
+
   @DeleteMapping("/remove-address")
   public ResponseEntity<String> removeAddress(
       @RequestHeader(HttpHeaders.AUTHORIZATION) String token,

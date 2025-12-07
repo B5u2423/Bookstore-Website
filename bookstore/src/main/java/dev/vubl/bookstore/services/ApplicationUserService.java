@@ -8,6 +8,7 @@ import dev.vubl.bookstore.entities.CustomerAddressInfo;
 import dev.vubl.bookstore.exceptions.UnableToRegisterApplicationUserException;
 import dev.vubl.bookstore.exceptions.UserDoesNotExistException;
 import dev.vubl.bookstore.repos.ApplicationUserRepo;
+import dev.vubl.bookstore.repos.CustomerAddressInfoRepo;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ApplicationUserService implements UserDetailsService {
   private final ApplicationUserRepo userRepo;
+  private final CustomerAddressInfoRepo customerAddressInfoRepo;
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -85,6 +87,18 @@ public class ApplicationUserService implements UserDetailsService {
     try {
       userRepo.save(user);
       return addressInfo;
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public CustomerAddressInfo updateAddressInfo(Integer addressId, AddressDTO payload) {
+    CustomerAddressInfo address = customerAddressInfoRepo.findById(addressId).orElseThrow();
+    address.setCity(payload.city());
+    address.setCommune(payload.commune());
+    address.setStreet(payload.street());
+    try {
+      return customerAddressInfoRepo.save(address);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
