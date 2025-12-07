@@ -8,7 +8,8 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "orders")
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

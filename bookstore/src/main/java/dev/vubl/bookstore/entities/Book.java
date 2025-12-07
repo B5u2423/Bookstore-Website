@@ -5,7 +5,8 @@ import java.math.BigDecimal;
 import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

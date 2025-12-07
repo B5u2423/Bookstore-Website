@@ -1,15 +1,16 @@
 package dev.vubl.bookstore.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.List;
 import lombok.*;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "users")
-@Data
 @Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApplicationUser extends BaseEntity {
@@ -31,6 +32,7 @@ public class ApplicationUser extends BaseEntity {
   @Column(name = "phone_number")
   private String phoneNumber;
 
-  @OneToMany(mappedBy = "customer")
+  @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonManagedReference
   private List<CustomerAddressInfo> addressList;
 }

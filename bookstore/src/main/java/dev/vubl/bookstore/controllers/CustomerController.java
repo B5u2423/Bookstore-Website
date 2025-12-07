@@ -1,7 +1,8 @@
 package dev.vubl.bookstore.controllers;
 
+import dev.vubl.bookstore.dtos.AccountDetailDTO;
+import dev.vubl.bookstore.dtos.AddressDTO;
 import dev.vubl.bookstore.dtos.UpdateProfileRequest;
-import dev.vubl.bookstore.entities.ApplicationUser;
 import dev.vubl.bookstore.services.ApplicationUserService;
 import dev.vubl.bookstore.services.AuthService;
 import jakarta.validation.Valid;
@@ -19,9 +20,10 @@ public class CustomerController {
   private final ApplicationUserService applicationUserService;
 
   @GetMapping("/account")
-  public ResponseEntity<ApplicationUser> getUserAccountDetail(
+  public ResponseEntity<AccountDetailDTO> getUserAccountDetail(
       @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-    return ResponseEntity.status(HttpStatus.OK).body(authService.readUserFromToken(token));
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(applicationUserService.getAccountDetail(authService.readUserFromToken(token)));
   }
 
   @PutMapping("/profile")
@@ -32,5 +34,13 @@ public class CustomerController {
         .body(
             applicationUserService.updateUserProfileInfo(
                 authService.readUserFromToken(token), payload));
+  }
+
+  @PostMapping("/add-address")
+  public ResponseEntity<String> addAddressInfo(
+      @RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestBody AddressDTO payload) {
+
+    return ResponseEntity.ok()
+        .body(applicationUserService.addAddressInfo(authService.readUserFromToken(token), payload));
   }
 }

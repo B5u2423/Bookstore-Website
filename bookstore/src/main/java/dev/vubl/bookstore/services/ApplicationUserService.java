@@ -1,7 +1,10 @@
 package dev.vubl.bookstore.services;
 
+import dev.vubl.bookstore.dtos.AccountDetailDTO;
+import dev.vubl.bookstore.dtos.AddressDTO;
 import dev.vubl.bookstore.dtos.UpdateProfileRequest;
 import dev.vubl.bookstore.entities.ApplicationUser;
+import dev.vubl.bookstore.entities.CustomerAddressInfo;
 import dev.vubl.bookstore.exceptions.UnableToRegisterApplicationUserException;
 import dev.vubl.bookstore.exceptions.UserDoesNotExistException;
 import dev.vubl.bookstore.repos.ApplicationUserRepo;
@@ -67,6 +70,44 @@ public class ApplicationUserService implements UserDetailsService {
     } catch (Exception e) {
       throw e;
     }
+  }
+
+  public String addAddressInfo(ApplicationUser user, AddressDTO payload) {
+    CustomerAddressInfo addressInfo =
+        CustomerAddressInfo.builder()
+            .city(payload.city())
+            .commune(payload.commune())
+            .street(payload.street())
+            .customer(user)
+            .build();
+    user.getAddressList().add(addressInfo);
+
+    try {
+      userRepo.save(user);
+      return "ok";
+    } catch (Exception e) {
+      throw e;
+    }
+  }
+
+  public AccountDetailDTO getAccountDetail(ApplicationUser user) {
+    return AccountDetailDTO.builder()
+        .email(user.getEmail())
+        .phoneNumber(user.getPhoneNumber())
+        .firstName(user.getFirstName())
+        .lastName(user.getLastName())
+        .addressList(
+            user.getAddressList().stream()
+                .map(
+                    item ->
+                        AddressDTO.builder()
+                            .id(item.getId())
+                            .city(item.getCity())
+                            .commune(item.getCommune())
+                            .street(item.getStreet())
+                            .build())
+                .toList())
+        .build();
   }
 
   private ApplicationUser readUserByEmailOrThrowException(String email) {
