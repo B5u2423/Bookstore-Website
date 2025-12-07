@@ -1,10 +1,8 @@
 <script setup>
-const categories = [
-  { title: 'Sách kinh tế' },
-  { title: 'Sách giáo khoa - giáo trình' },
-  { title: 'Sách thường thức đời sống' },
-  { title: 'Click Me 2' },
-]
+import { CategoryService } from '@/api/category-api'
+import { ref, onMounted } from 'vue'
+
+const categories = ref([])
 
 function capitalizeFirstword(sentence) {
   const words = sentence.split(' ')
@@ -15,6 +13,19 @@ function capitalizeFirstword(sentence) {
     })
     .join(' ')
 }
+
+async function fetchAllCategories() {
+  try {
+    const res = await CategoryService.fetchAllCategories()
+    categories.value = res
+  } catch (error) {
+    console.error('Error fetching all categories')
+  }
+}
+
+onMounted(() => {
+  fetchAllCategories()
+})
 </script>
 
 <template>
@@ -33,13 +44,10 @@ function capitalizeFirstword(sentence) {
         <v-list-item
           density="compact"
           class="text-left"
-          v-for="(category, i) in categories"
           link
-          :key="i"
+          :to="{ name: 'category-page', params: { slug: 'tat-ca' } }"
         >
-
-          <v-list-item-title>{{ capitalizeFirstword(category.title) }}</v-list-item-title>
-
+          Tất Cả Sách
           <template v-slot:append>
 
             <v-icon
@@ -49,35 +57,28 @@ function capitalizeFirstword(sentence) {
 
           </template>
 
-          <v-menu
-            :offset="[6, 0]"
-            activator="parent"
-            open-on-click
-            open-on-hover
-            submenu
-          >
+        </v-list-item>
 
-            <v-list>
+        <v-list-item
+          density="compact"
+          class="text-left"
+          v-for="(category, i) in categories"
+          :to="{ name: 'category-page', params: { slug: category.categorySlug } }"
+          link
+          :active="false"
+          :key="i"
+        >
 
-              <v-list-item
-                link
-                v-for="value in 3"
-              >
-                 Something
-                <template v-slot:append>
+          <v-list-item-title>{{ capitalizeFirstword(category.categoryName) }}</v-list-item-title>
 
-                  <v-icon
-                    icon="mdi-menu-right"
-                    size="small"
-                  ></v-icon>
+          <template v-slot:append>
 
-                </template>
+            <v-icon
+              icon="mdi-menu-right"
+              size="small"
+            ></v-icon>
 
-              </v-list-item>
-
-            </v-list>
-
-          </v-menu>
+          </template>
 
         </v-list-item>
 

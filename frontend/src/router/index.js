@@ -6,7 +6,6 @@ import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth-store'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
-import { compile } from 'vue'
 
 const routes = [
   {
@@ -70,6 +69,11 @@ const routes = [
             component: () => import('@/views/ecom/ProfileOrderHistory.vue'),
           },
         ],
+      },
+      {
+        path: 'categories/:slug',
+        name: 'category-page',
+        component: () => import('@/views/ecom/CategoryShowcase.vue'),
       },
     ],
   },

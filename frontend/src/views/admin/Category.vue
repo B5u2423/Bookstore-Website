@@ -58,7 +58,7 @@ async function add() {
   try {
     candidates.value = await CategoryService.fetchAllCategories()
   } catch (error) {
-    console.log("Error fetching all candidates for new record")
+    console.log('Error fetching all candidates for new record')
   }
   dialog.value = true
 }
@@ -93,7 +93,7 @@ function remove() {
     const res = CategoryService.deleteCategoryById(itemId.value, adminAuthStore.accessToken)
   } catch (error) {
     console.error('Error deleting item')
-  } finally{
+  } finally {
     isDelLoading.value = false
     confirmationDialog.value = false
   }
@@ -369,5 +369,6 @@ async function save() {
     </v-card>
 
   </v-dialog>
+
 </template>
 
