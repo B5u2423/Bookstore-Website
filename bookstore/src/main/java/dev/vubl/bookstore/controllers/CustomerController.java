@@ -3,6 +3,7 @@ package dev.vubl.bookstore.controllers;
 import dev.vubl.bookstore.dtos.AccountDetailDTO;
 import dev.vubl.bookstore.dtos.AddressDTO;
 import dev.vubl.bookstore.dtos.UpdateProfileRequest;
+import dev.vubl.bookstore.entities.CustomerAddressInfo;
 import dev.vubl.bookstore.services.ApplicationUserService;
 import dev.vubl.bookstore.services.AuthService;
 import jakarta.validation.Valid;
@@ -37,10 +38,20 @@ public class CustomerController {
   }
 
   @PostMapping("/add-address")
-  public ResponseEntity<String> addAddressInfo(
+  public ResponseEntity<CustomerAddressInfo> addAddressInfo(
       @RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestBody AddressDTO payload) {
 
     return ResponseEntity.ok()
         .body(applicationUserService.addAddressInfo(authService.readUserFromToken(token), payload));
+  }
+
+  @DeleteMapping("/remove-address")
+  public ResponseEntity<String> removeAddress(
+      @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+      @RequestParam(value = "id") Integer addressId) {
+    return ResponseEntity.ok()
+        .body(
+            applicationUserService.removeAddressInfo(
+                authService.readUserFromToken(token), addressId));
   }
 }

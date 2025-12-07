@@ -72,7 +72,7 @@ public class ApplicationUserService implements UserDetailsService {
     }
   }
 
-  public String addAddressInfo(ApplicationUser user, AddressDTO payload) {
+  public CustomerAddressInfo addAddressInfo(ApplicationUser user, AddressDTO payload) {
     CustomerAddressInfo addressInfo =
         CustomerAddressInfo.builder()
             .city(payload.city())
@@ -84,9 +84,22 @@ public class ApplicationUserService implements UserDetailsService {
 
     try {
       userRepo.save(user);
-      return "ok";
+      return addressInfo;
     } catch (Exception e) {
-      throw e;
+      throw new RuntimeException(e);
+    }
+  }
+
+  public String removeAddressInfo(ApplicationUser user, Integer addressId) {
+    if (addressId == null) {
+      throw new IllegalArgumentException("Address ID should not be null");
+    }
+    user.getAddressList().removeIf(item -> item.getId().equals(addressId));
+    try {
+      userRepo.save(user);
+      return "Address with id %d removed".formatted(addressId);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
   }
 
