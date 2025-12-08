@@ -1,7 +1,6 @@
 package dev.vubl.bookstore.controllers;
 
 import dev.vubl.bookstore.dtos.BookResponseDTO;
-import dev.vubl.bookstore.entities.Book;
 import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
 import dev.vubl.bookstore.services.BookService;
 import java.util.List;
@@ -18,10 +17,12 @@ public class BookController {
   private final BookService bookService;
 
   @GetMapping
-  public PagedModel<Book> getAllBooks(
+  public PagedModel<BookResponseDTO> getAllBooks(
       @RequestParam(value = "page", defaultValue = "0") int page,
-      @RequestParam(value = "size", defaultValue = "5") int size) {
-    return new PagedModel<>(bookService.getAllBooksPaginated(page, size));
+      @RequestParam(value = "size", defaultValue = "5") int size,
+      @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
+      @RequestParam(value = "order", defaultValue = "asc") String order) {
+    return new PagedModel<>(bookService.getAllBooksPaginated(page, size, sortBy, order));
   }
 
   @GetMapping("/featured")

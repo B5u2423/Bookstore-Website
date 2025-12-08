@@ -10,6 +10,7 @@ CREATE TABLE books
     price        DECIMAL,
     in_stock     INTEGER,
     url_slug     VARCHAR(255),
+    category_id  INTEGER,
     publisher    VARCHAR(255),
     publish_year INTEGER,
     page_count   INTEGER,
@@ -121,6 +122,9 @@ ALTER TABLE refresh_tokens
 
 ALTER TABLE users
     ADD CONSTRAINT uc_users_email UNIQUE (email);
+
+ALTER TABLE books
+    ADD CONSTRAINT FK_BOOKS_ON_CATEGORY FOREIGN KEY (category_id) REFERENCES categories (id);
 
 ALTER TABLE carts
     ADD CONSTRAINT FK_CARTS_ON_USER FOREIGN KEY (user_id) REFERENCES users (id);

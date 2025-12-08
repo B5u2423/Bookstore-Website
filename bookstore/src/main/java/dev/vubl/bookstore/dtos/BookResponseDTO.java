@@ -12,6 +12,8 @@ public record BookResponseDTO(
     String author,
     BigDecimal price,
     Integer inStock,
+    Integer categoryId,
+    String categoryName,
     Integer publishYear,
     String publisher,
     String urlSlug,

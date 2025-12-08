@@ -33,7 +33,9 @@ public class Book extends BaseEntity {
   @Column(name = "url_slug")
   private String urlSlug;
 
-  // TODO: Add categories
+  @ManyToOne
+  @JoinColumn(name = "category_id")
+  private Category category;
 
   @Column(name = "publisher")
   private String publisher; // NXB

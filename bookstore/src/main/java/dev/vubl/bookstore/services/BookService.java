@@ -4,7 +4,9 @@ import dev.vubl.bookstore.dtos.BookResponseDTO;
 import dev.vubl.bookstore.entities.Book;
 import dev.vubl.bookstore.exceptions.BookDoesNotExistException;
 import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
+import dev.vubl.bookstore.exceptions.CategoryDoesNotExistException;
 import dev.vubl.bookstore.repos.BookRepo;
+import dev.vubl.bookstore.repos.CategoryRepo;
 import dev.vubl.bookstore.utils.SlugUtils;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -14,6 +16,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,14 +25,23 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class BookService {
   private final BookRepo bookRepo;
+  private final CategoryRepo categoryRepo;
 
   public List<BookResponseDTO> getAllBooks() {
     return bookRepo.findAll().stream().map(this::mapToBookResponseDTO).toList();
   }
 
-  public Page<Book> getAllBooksPaginated(int page, int size) {
-    Pageable pageable = PageRequest.of(page, size);
-    return bookRepo.findAll(pageable);
+  public Page<BookResponseDTO> getAllBooksPaginated(
+      int page, int size, String sortBy, String order) {
+    List<String> allowed = List.of("id");
+    if (!allowed.contains(sortBy)) {
+      throw new IllegalArgumentException("Invalid sort field: %s".formatted(sortBy));
+    }
+
+    Sort sort = order.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+    Pageable pageable = PageRequest.of(page, size, sort);
+    Page<Book> books = bookRepo.findAll(pageable);
+    return books.map(this::mapToBookResponseDTO);
   }
 
   public BookResponseDTO getBookById(Integer id) {
@@ -73,8 +85,13 @@ public class BookService {
       b.setInStock(bookResponseDTO.inStock());
       b.setUrlSlug(SlugUtils.convertStringToSlug(bookResponseDTO.title()));
       b.setPrice(bookResponseDTO.price());
+      b.setCategory(
+          categoryRepo
+              .findById(bookResponseDTO.categoryId())
+              .orElseThrow(CategoryDoesNotExistException::new));
 
-      return mapToBookResponseDTO(bookRepo.save(b));
+      Book savedBook = bookRepo.save(b);
+      return mapToBookResponseDTO(savedBook);
 
     } catch (DataIntegrityViolationException e) {
       throw new DataIntegrityViolationException("Error adding or updating new book!", e);
@@ -107,6 +124,8 @@ public class BookService {
         .imageUrl(book.getImageUrl())
         .urlSlug(book.getUrlSlug())
         .author(book.getAuthor())
+        .categoryId(book.getCategory() == null ? null : book.getCategory().getId())
+        .categoryName(book.getCategory() == null ? null : book.getCategory().getCategoryName())
         .build();
   }
 
@@ -123,6 +142,10 @@ public class BookService {
         .description(bookResponseDTO.description())
         .isbn(bookResponseDTO.isbn())
         .inStock(bookResponseDTO.inStock())
+        .category(
+            categoryRepo
+                .findById(bookResponseDTO.categoryId())
+                .orElseThrow(CategoryDoesNotExistException::new))
         .build();
   }
 }

@@ -5,6 +5,8 @@ import { formatPriceVNLocale } from '@/utils/utils'
 import { computed, onMounted, toRef, ref, shallowRef, onUpdated } from 'vue'
 import { VFileUpload } from 'vuetify/labs/VFileUpload'
 import SnackBar from '@/components/common/SnackBar.vue'
+import Category from './Category.vue'
+import { CategoryService } from '@/api/category-api'
 
 const adminAuthStore = useAdminAuthStore()
 
@@ -21,6 +23,8 @@ function createNewRecord() {
     publisher: '',
     publishYear: '',
     price: '',
+    categoryId: '',  
+    categoryName: ''
   }
 }
 
@@ -39,6 +43,7 @@ const itemsPerPage = ref(10)
 const loading = ref(false)
 const serverItems = ref([])
 const totalItems = ref(0)
+const candidates = ref([])
 
 // edit-add dialog
 const formModel = ref(createNewRecord())
@@ -77,7 +82,7 @@ function add() {
   dialog.value = true
 }
 
-function edit(id) {
+async function edit(id) {
   const found = serverItems.value.find((book) => book.id === id)
 
   formModel.value = {
@@ -93,6 +98,15 @@ function edit(id) {
     publisher: found.publisher,
     publishYear: found.publishYear,
     price: found.price,
+    categoryId: found.categoryId,
+    categoryName: found.categoryName
+  }
+
+  try {
+    const res = await CategoryService.fetchAllCategories()
+    candidates.value = res
+  } catch (error) {
+    console.error('Error fetching all categories')
   }
 
   dialog.value = true
@@ -127,12 +141,14 @@ async function remove() {
 async function save() {
   if (isEditing.value) {
     try {
+      console.log(formModel.value)
       // API call
       const res = await BookService.updateBookById(
         formModel.value,
         formModel.value.id,
         adminAuthStore.accessToken,
       )
+      // success snack bar
       snackbar.value = {
         show: true,
         message: 'Cập nhật sản phẩm thành công',
@@ -142,13 +158,14 @@ async function save() {
       const index = serverItems.value.findIndex((book) => book.id === formModel.value.id)
       serverItems.value[index] = formModel.value
     } catch (error) {
+      // error snack bar
       snackbar.value = {
         show: true,
         message: `Lỗi cập nhật sản phẩm: ${error.message}`,
         color: 'error',
       }
       console.error('Error editing book')
-    }
+    }   
   } else {
     // API call
     try {
@@ -497,6 +514,24 @@ onMounted(() => {
 
           </v-col>
 
+          <v-col
+            cols="12"
+            md="6"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">Thể loại</div>
+            <v-autocomplete
+              v-model="formModel.categoryId"
+              variant="outlined"
+              density="compact"
+              item-value="id"
+              item-title="categoryName"
+              hide-details
+              :items="candidates"
+            ></v-autocomplete>
+
+          </v-col>
+
           <v-col cols="12">
 
             <div class="text-subtitle-1 text-high-emphasis">Mô tả thông tin sách</div>
@@ -534,7 +569,7 @@ onMounted(() => {
               v-model="formModel.imageUrl"
               density="compact"
               hide-details="true"
-              :readonly="imageUrlNotAllowedEdit"
+              :readonly="imageUrlToggleEdit"
               append-icon="mdi-pencil"
               @click:append="imageUrlToggleEdit = !imageUrlToggleEdit"
             ></v-text-field>
