@@ -47,7 +47,7 @@ onMounted(() => {
           link
           :to="{ name: 'category-page', params: { slug: 'tat-ca' } }"
         >
-          Tất Cả Sách
+           Tất Cả Sách
           <template v-slot:append>
 
             <v-icon
