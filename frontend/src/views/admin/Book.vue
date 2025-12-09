@@ -23,8 +23,8 @@ function createNewRecord() {
     publisher: '',
     publishYear: '',
     price: '',
-    categoryId: '',  
-    categoryName: ''
+    categoryId: '',
+    categoryName: '',
   }
 }
 
@@ -99,7 +99,7 @@ async function edit(id) {
     publishYear: found.publishYear,
     price: found.price,
     categoryId: found.categoryId,
-    categoryName: found.categoryName
+    categoryName: found.categoryName,
   }
 
   try {
@@ -165,7 +165,7 @@ async function save() {
         color: 'error',
       }
       console.error('Error editing book')
-    }   
+    }
   } else {
     // API call
     try {
@@ -520,6 +520,7 @@ onMounted(() => {
           >
 
             <div class="text-subtitle-1 text-high-emphasis">Thể loại</div>
+
             <v-autocomplete
               v-model="formModel.categoryId"
               variant="outlined"

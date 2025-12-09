@@ -84,16 +84,7 @@ onMounted(() => {
 
       </v-list>
 
-      <!-- <v-menu location="end" open-on-hover scroll-strategy="close"
-              > <template v-slot:activator="{ props }"
-                > <v-btn variant="plain" width="100%" color="primary" v-bind="props"> Dropdown </v-btn> 
-                </template
-              > <v-list class="ml-1"
-                > <v-list-item v-for="(item, index) in items" :key="index" :value="index"
-                  > <v-list-item-title>{{ item.title }}</v-list-item-title
-                  > </v-list-item
-                > </v-list
-              > </v-menu> -->
+      <!-- List group or treeview should be suffice for this -->
 
     </v-card-text>
 
