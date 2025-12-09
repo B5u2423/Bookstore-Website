@@ -4,6 +4,8 @@ import EComNoSidebar from '@/layouts/EComNoSidebar.vue'
 import SideBar from '@/components/ecom/SideBar.vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/auth-store'
+import { useAdminAuthStore } from '@/stores/admin-auth-store'
 
 const routes = [
   {
@@ -26,18 +28,12 @@ const routes = [
         },
       },
       {
-        path: 'cart',
-        name: 'cart',
-        components: {
-          default: () => import('@/views/ecom/Cart.vue'),
-        },
-      },
-      {
         path: 'register',
         name: 'register',
         components: {
           default: () => import('@/views/ecom/Register.vue'),
         },
+        meta: { entrypoint: true },
       },
       {
         path: 'login',
@@ -45,13 +41,18 @@ const routes = [
         components: {
           default: () => import('@/views/ecom/CustomerLogin.vue'),
         },
+        meta: { entrypoint: true },
       },
       {
         path: 'profile',
-        name: 'profile',
         component: () => import('@/views/ecom/Profile.vue'),
+        meta: { requiresAuth: true },
         children: [
-          { path: '', name: 'profile-root', redirect: { name: 'user-info' } },
+          {
+            path: '',
+            name: 'profile-root',
+            redirect: { name: 'user-info' },
+          },
           {
             path: 'info',
             name: 'user-info',
@@ -69,6 +70,11 @@ const routes = [
           },
         ],
       },
+      {
+        path: 'categories/:slug',
+        name: 'category-page',
+        component: () => import('@/views/ecom/CategoryShowcase.vue'),
+      },
     ],
   },
   {
@@ -85,6 +91,7 @@ const routes = [
   {
     path: '/admin',
     component: DashboardLayout,
+    meta: { requiresAdminAuth: true },
     children: [
       { path: 'login', redirect: { name: 'admin-login' } },
       {
@@ -103,11 +110,6 @@ const routes = [
             component: () => import('@/views/admin/Book.vue'),
           },
           {
-            path: 'authors',
-            name: 'i-authors',
-            component: () => import('@/views/admin/Author.vue'),
-          },
-          {
             path: 'collections',
             name: 'i-collections',
             component: () => import('@/views/admin/Collection.vue'),
@@ -121,11 +123,6 @@ const routes = [
             path: 'orders',
             name: 'i-orders',
             component: () => import('@/views/admin/Order.vue'),
-          },
-          {
-            path: 'publishers',
-            name: 'i-publishers',
-            component: () => import('@/views/admin/Publisher.vue'),
           },
         ],
       },
@@ -153,14 +150,47 @@ const routes = [
     component: EComNoSidebar,
     children: [
       { path: '', name: 'book-root', redirect: { name: 'landing' } },
-      { path: ':slug/pid/:id', name: 'book-detail', component: () => import('@/views/ecom/BookDetail.vue') },
+      {
+        path: ':slug/pid/:id',
+        name: 'book-detail',
+        component: () => import('@/views/ecom/BookDetail.vue'),
+      },
     ],
+  },
+  {
+    path: '/cart',
+    component: EComNoSidebar,
+    children: [{ path: '', name: 'cart', component: () => import('@/views/ecom/Cart.vue') }],
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/',
   },
 ]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
+})
+
+router.beforeEach((to) => {
+  const auth = useAuthStore()
+  const adminAuth = useAdminAuthStore()
+
+  if (to.meta.requiresAuth && !auth.isAuthenticated) {
+    return { path: 'login' }
+  }
+
+  // if already logged in, no route to register or login page
+  if (auth.isAuthenticated && to.meta.entrypoint) {
+    return { path: 'user-info' }
+  }
+
+  if (to.meta.requiresAdminAuth && !adminAuth.isAuthenticated) {
+    return { path: 'admin-login' }
+  }
+
+  return true
 })
 
 export default router

@@ -1,22 +1,34 @@
 <script setup>
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth-store'
+import { useRouter } from 'vue-router'
+import SnackBar from '@/components/common/SnackBar.vue'
+import { useCartStore } from '@/stores/cart-store'
 
 const authStore = useAuthStore()
+const cartStore = useCartStore()
+const router = useRouter()
 
 const email = ref('')
 const password = ref('')
 const isValidForm = ref(false)
 const visible = ref(false)
 const form = ref(null)
+const isLoading = ref(false)
 
 const rules = {
   required: (v) => !!v || 'Không được bỏ trống trường',
   email: (v) => /[\w\d.-]{6,30}@[\w\d.-]+/.test(v) || 'Email không hợp lệ',
 }
 
+const snackbar = ref({
+  show: false,
+  message: '',
+  color: 'success',
+})
+
 async function handleLogin() {
-  // login
+  isLoading.value = true
   const result = await authStore.login({
     email: email.value,
     password: password.value,
@@ -24,15 +36,22 @@ async function handleLogin() {
 
   // handle response
   if (result.success) {
-    console.log(result)
-    console.log('Logged in')
-    // route to home page
+    snackbar.value = {
+      show: true,
+      message: 'Đăng nhập thành công!',
+      color: 'success',
+    }
     setTimeout(() => {
-      router.push('/')
+      router.push({ name: 'profile-root' })
+      isLoading.value = false
     }, 1500)
   } else {
-    console.log(email, password)
-    console.log('Failed')
+    isLoading.value = false
+    snackbar.value = {
+      show: true,
+      message: result.error || 'Đăng nhập thất bại',
+      color: 'error',
+    }
   }
 }
 </script>
@@ -87,6 +106,7 @@ async function handleLogin() {
             width="100%"
             type="submit"
             :disabled="!isValidForm"
+            :loading="isLoading"
           >
              ĐĂNG NHẬP
           </v-btn>
@@ -117,7 +137,15 @@ async function handleLogin() {
 
       </div>
 
+      <div class="text-center">
+         Bạn chưa có tài khoản, vui lòng đăng ký
+        <a href="/register"> tại đây </a>
+
+      </div>
+
     </div>
+
+    <SnackBar :snackbar="snackbar" />
 
   </v-sheet>
 

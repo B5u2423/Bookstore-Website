@@ -11,6 +11,7 @@ services:
       TZ: Asia/Ho_Chi_Minh
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - ./seeds:/docker-entrypoint-initdb.d/seeds
 
 volumes:
   postgres-data:

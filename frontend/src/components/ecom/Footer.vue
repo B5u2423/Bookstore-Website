@@ -13,10 +13,9 @@ const supports = [
   { name: 'Hình thức thanh toán' },
 ]
 const accounts = [
-  { name: 'Đăng nhập/Tạo mới tài khoản' },
-  { name: 'Thay đổi địa chỉ khách hàng' },
-  { name: 'Chi tiết tài khoản' },
-  { name: 'Lịch sử mua hàng' },
+  { name: 'Đăng nhập/Tạo mới tài khoản', route: 'login' },
+  { name: 'Chi tiết tài khoản', route: 'user-info' },
+  { name: 'Lịch sử mua hàng', route: 'history' },
 ]
 </script>
 
@@ -102,6 +101,8 @@ const accounts = [
                 class="cursor-pointer"
                 v-for="item in accounts"
                 :key="item"
+                :active="false"
+                :to="{ name: item.route }"
                 :title="item.name"
               ></v-list-item>
 

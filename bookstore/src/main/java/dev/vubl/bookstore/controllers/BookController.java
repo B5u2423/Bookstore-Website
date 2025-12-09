@@ -5,20 +5,24 @@ import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
 import dev.vubl.bookstore.services.BookService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/books")
-@CrossOrigin(origins = "http://localhost:5713")
 @RequiredArgsConstructor
 public class BookController {
   private final BookService bookService;
 
   @GetMapping
-  public ResponseEntity<List<BookResponseDTO>> getAllBooks() {
-    return null;
+  public PagedModel<BookResponseDTO> getAllBooks(
+      @RequestParam(value = "page", defaultValue = "0") int page,
+      @RequestParam(value = "size", defaultValue = "5") int size,
+      @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
+      @RequestParam(value = "order", defaultValue = "asc") String order) {
+    return new PagedModel<>(bookService.getAllBooksPaginated(page, size, sortBy, order));
   }
 
   @GetMapping("/featured")
@@ -36,10 +40,27 @@ public class BookController {
     return bookService.getAllBooks();
   }
 
+  @GetMapping("/{id}")
+  public ResponseEntity<BookResponseDTO> getBookById(@PathVariable Integer id) {
+    return ResponseEntity.ok().body(bookService.getBookById(id));
+  }
+
   // ADMIN
   @PostMapping("/add")
   public ResponseEntity<BookResponseDTO> addNewBook(@RequestBody BookResponseDTO payload) {
-    return ResponseEntity.status(HttpStatus.OK).body(bookService.addOrUpdateBook(payload));
+    return ResponseEntity.status(HttpStatus.OK).body(bookService.addNewBook(payload));
+  }
+
+  @PutMapping("/update")
+  public ResponseEntity<BookResponseDTO> updateBookById(
+      @RequestBody BookResponseDTO payload, @RequestParam(value = "id") Integer id) {
+    return ResponseEntity.ok().body(bookService.updateBookById(payload, id));
+  }
+
+  @DeleteMapping("/delete")
+  public ResponseEntity<String> deleteBookById(@RequestParam(value = "id") Integer id) {
+    bookService.deleteBookById(id);
+    return ResponseEntity.ok().body("Thành công xóa sản phẩm với id %d!".formatted(id));
   }
 
   @ExceptionHandler({BookWithIsbnAlreadyExists.class})

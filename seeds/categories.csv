@@ -1,0 +1,55 @@
+category_name,category_slug,parent_id
+Văn học,van-hoc,
+Kinh tế,kinh-te,
+Tâm lý - kỹ năng sống,tam-ly-ky-nang-song,
+Nuôi dạy con,nuoi-day-con,
+Sách thiếu nhi,sach-thieu-nhi,
+Tiểu sử - hồi ký,tieu-su-hoi-ky,
+Sách học ngoại ngữ,sach-hoc-ngoai-ngu,
+Tiểu thuyết,tieu-thuyet,1
+Truyện ngắn - Tản Văn,truyen-ngan-tan-van,1
+Light Novel,light-novel,1
+Truyện Trinh Thám - Kiếm Hiệp,trinh-tham-kiem-hiep,1
+Tác Phẩm Kinh Điển,tac-pham-kinh-dien,1
+Huyền Bí - Giả Tưởng - Kinh Dị,huyen-bi-gia-tuong-kinh-di,1
+Thơ ca - Tục ngữ - Ca Dao - Thành Ngữ,tho-tuc-ngu-ca-dao-thanh-ngu,1
+Ngôn Tình,ngon-tinh,1
+Quản Trị - Lãnh Đạo,quan-tri-lanh-dao,2
+Nhân vật - Bài Học Kinh doanh,nhan-vat-bai-hoc-kinh-doanh,2
+Marketing - Bán Hàng,marketing-ban-hang,2
+Khởi Nghiệp - Làm Giàu,khoi-nghiep-lam-giau,2
+Phân Tích Kinh Tế,phan-tich-kinh-te,2
+Chứng Khoán - Bất Động Sản - Đầu Tư,chung-khoan-bat-dong-san-dau-tu,2
+Tài Chính - Ngân Hàng,tai-chinh-ngan-hang,2
+Nhân Sự - Việc Làm,nhan-su-viec-lam,2
+Kỹ năng sống,ky-nang-song,3
+Tâm lý,tam-ly,3
+Sách cho tuổi mới lớn,sach-cho-tuoi-moi-lon,3
+Chicken Soup - Hạt Giống Tâm Hồn,chicken-soup-hat-giong-tam-hon,3
+Rèn luyện nhân cách,ren-luyen-nhan-cach,3
+Cẩm Nang Làm Cha Mẹ,cam-nang-lam-cha-me,4
+Phát Triển Kỹ Năng - Trí Tuệ Cho Trẻ,phat-trien-ky-nang-tri-tue-cho-tre,4
+Phương Pháp Giáo Dục Trẻ Các Nước,phuong-phap-giao-duc-tre-cac-nuoc,4
+Dinh Dưỡng - Sức Khỏe Cho Trẻ,dinh-duong-suc-khoe-cho-tre,4
+Giáo Dục Trẻ Tuổi Teen,giao-duc-tre-tuoi-teen,4
+Dành Cho Mẹ Bầu,danh-cho-me-bau,4
+Truyện Thiếu Nhi,truyen-thieu-nhi,5
+Kiến Thức - Kỹ Năng Sống Cho Trẻ,kien-thuc-ky-nang-song-cho-tre,5
+Kiến thức bách khoa,kien-thuc-bach-khoa,5
+"Tô màu, luyện chữ",to-mau-luyen-chu,5
+Từ Điển Thiếu Nhi,tu-dien-thieu-nhi,5
+Flashcard - Thẻ Học Thông Minh,flashcard-the-hoc-thong-minh,5
+Sách Nói,sach-noi,5
+Tạp Chí Thiếu Nhi,tap-chi-thieu-nhi,5
+Câu Chuyện Cuộc Đời,cau-chuyen-cuoc-doi,6
+Lịch Sử,lich-su,6
+Nghệ Thuật - Giải Trí,nghe-thuat-giai-tri,6
+Kinh Tế,kinh-te,6
+Chính Trị,chinh-tri,6
+Thể Thao,the-thao,6
+Tiếng Anh,tieng-anh,7
+Tiếng Hoa,tieng-hoa,7
+Tiếng Nhật,tieng-nhat,7
+Tiếng Hàn,tieng-han,7
+Ngoại ngữ khác,ngoai-ngu-khac,7
+Tiếng Pháp,tieng-phap,7

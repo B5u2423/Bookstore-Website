@@ -1,5 +1,8 @@
 <script setup>
-import { ref } from 'vue'
+import { useUserProfileStore } from '@/stores/user-profile-store'
+import { onMounted, ref } from 'vue'
+
+const userInfoStore = useUserProfileStore()
 
 const tab = ref('Thông tin cá nhân')
 const items = [
@@ -7,6 +10,10 @@ const items = [
   { tab: 'Mã giảm giá', nameRoute: 'vouchers' },
   { tab: 'Lịch sử đơn hàng', nameRoute: 'history' },
 ]
+
+onMounted(() => {
+  userInfoStore.getUserInfo()
+})
 </script>
 
 <template>
@@ -29,30 +36,6 @@ const items = [
     </v-tabs>
 
     <router-view></router-view>
-
-    <!-- <v-tabs-window v-model="tab">
-
-      <v-tabs-window-item
-        v-for="item in items"
-        :key="item"
-        :value="item"
-      >
-
-        <v-card
-          flat
-        >
-        <v-card-text>
-
-
-        {{ text }}
-
-        </v-card-text>
-
-        </v-card>
-
-      </v-tabs-window-item>
-
-    </v-tabs-window> -->
 
   </v-sheet>
 

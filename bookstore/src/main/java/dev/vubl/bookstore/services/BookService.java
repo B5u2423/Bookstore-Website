@@ -2,14 +2,23 @@ package dev.vubl.bookstore.services;
 
 import dev.vubl.bookstore.dtos.BookResponseDTO;
 import dev.vubl.bookstore.entities.Book;
+import dev.vubl.bookstore.entities.Category;
+import dev.vubl.bookstore.exceptions.BookDoesNotExistException;
 import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
-import dev.vubl.bookstore.repos.AuthorRepo;
+import dev.vubl.bookstore.exceptions.CategoryDoesNotExistException;
 import dev.vubl.bookstore.repos.BookRepo;
+import dev.vubl.bookstore.repos.CategoryRepo;
+import dev.vubl.bookstore.utils.SlugUtils;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,20 +27,36 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class BookService {
   private final BookRepo bookRepo;
-  private final AuthorRepo authorRepo;
+  private final CategoryRepo categoryRepo;
 
   public List<BookResponseDTO> getAllBooks() {
     return bookRepo.findAll().stream().map(this::mapToBookResponseDTO).toList();
   }
 
-  public BookResponseDTO addOrUpdateBook(BookResponseDTO bookResponseDTO) {
-    String isbn = bookResponseDTO.isbn();
-    // some book will not have isbn
-    if (isbn != null) {
-      if (bookRepo.findByIsbn(isbn).isPresent()) {
-        throw new BookWithIsbnAlreadyExists("Book with isbn :: %s already exists!".formatted(isbn));
-      }
+  public Page<BookResponseDTO> getAllBooksPaginated(
+      int page, int size, String sortBy, String order) {
+    List<String> allowed = List.of("id");
+    if (!allowed.contains(sortBy)) {
+      throw new IllegalArgumentException("Invalid sort field: %s".formatted(sortBy));
     }
+
+    Sort sort = order.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+    Pageable pageable = PageRequest.of(page, size, sort);
+    Page<Book> books = bookRepo.findAll(pageable);
+    return books.map(this::mapToBookResponseDTO);
+  }
+
+  public BookResponseDTO getBookById(Integer id) {
+    Book b = bookRepo.findById(id).orElseThrow(BookDoesNotExistException::new);
+    return mapToBookResponseDTO(b);
+  }
+
+  public BookResponseDTO addNewBook(BookResponseDTO bookResponseDTO) {
+    String isbn = bookResponseDTO.isbn();
+    if (isIsbnNotUnique(isbn)) {
+      throw new BookWithIsbnAlreadyExists("Book with isbn :: %s already exists!".formatted(isbn));
+    }
+
     try {
       log.info("[{}] Adding new book", this.getClass().getName());
       return mapToBookResponseDTO(bookRepo.save(mapToBookEntity(bookResponseDTO)));
@@ -40,9 +65,72 @@ public class BookService {
     }
   }
 
-  public void deleteBook(BookResponseDTO bookResponseDTO) {
-    bookRepo.delete(mapToBookEntity(bookResponseDTO));
-    log.info("[{}] Book deleted", this.getClass().getName());
+  public BookResponseDTO updateBookById(BookResponseDTO bookResponseDTO, Integer id) {
+    try {
+      Book b =
+          bookRepo
+              .findById(id)
+              .orElseThrow(
+                  () ->
+                      new BookDoesNotExistException(
+                          "Book with id %d does not exist".formatted(id)));
+
+      // update
+      b.setTitle(bookResponseDTO.title());
+      b.setAuthor(bookResponseDTO.author());
+      b.setPublisher(bookResponseDTO.publisher());
+      b.setPublishYear(bookResponseDTO.publishYear());
+      b.setPageCount(bookResponseDTO.pageCount());
+      b.setIsbn(bookResponseDTO.isbn());
+      b.setAuthor(bookResponseDTO.author());
+      b.setImageUrl(bookResponseDTO.imageUrl());
+      b.setInStock(bookResponseDTO.inStock());
+      b.setUrlSlug(SlugUtils.convertStringToSlug(bookResponseDTO.title()));
+      b.setPrice(bookResponseDTO.price());
+      b.setCategory(
+          categoryRepo
+              .findById(bookResponseDTO.categoryId())
+              .orElseThrow(CategoryDoesNotExistException::new));
+
+      Book savedBook = bookRepo.save(b);
+      return mapToBookResponseDTO(savedBook);
+
+    } catch (DataIntegrityViolationException e) {
+      throw new DataIntegrityViolationException("Error adding or updating new book!", e);
+    }
+  }
+
+  public void deleteBookById(Integer id) {
+    bookRepo.deleteById(id);
+    log.info("[{}] Book with id {} deleted", this.getClass().getName(), id);
+  }
+
+  public Page<BookResponseDTO> getBookByCategory(
+      String slug, int page, int size, String sortBy, String order) {
+    List<String> allowed = List.of("id");
+    if (!allowed.contains(sortBy)) {
+      throw new IllegalArgumentException("Invalid sort field: %s".formatted(sortBy));
+    }
+    // get children of category
+    Category c =
+        categoryRepo.findByCategorySlug(slug).orElseThrow(CategoryDoesNotExistException::new);
+    List<Category> categories = new ArrayList<>();
+    categories.add(c);
+    if (c.getChildrenCategories() != null) {
+      categories.addAll(c.getChildrenCategories());
+    }
+    // query all books from children
+    Sort sort = order.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+    Pageable pageable = PageRequest.of(page, size, sort);
+    Page<Book> bookPage = bookRepo.findAllByCategoryIn(categories, pageable);
+    return bookPage.map(this::mapToBookResponseDTO);
+  }
+
+  private boolean isIsbnNotUnique(String isbn) {
+    if (isbn != null) {
+      return bookRepo.findByIsbn(isbn).isPresent();
+    }
+    return false;
   }
 
   private BookResponseDTO mapToBookResponseDTO(Book book) {
@@ -53,25 +141,34 @@ public class BookService {
         .description(book.getDescription())
         .price(book.getPrice())
         .inStock(book.getInStock())
-        .productCode(book.getProductCode())
+        .publisher(book.getPublisher())
         .publishYear(book.getPublishYear())
-        .language(book.getLanguage())
-        .weightGrams(book.getWeightGrams())
-        .dimensions(book.getDimensions())
         .pageCount(book.getPageCount())
-        .format(book.getFormat())
         .imageUrl(book.getImageUrl())
+        .urlSlug(book.getUrlSlug())
+        .author(book.getAuthor())
+        .categoryId(book.getCategory() == null ? null : book.getCategory().getId())
+        .categoryName(book.getCategory() == null ? null : book.getCategory().getCategoryName())
         .build();
   }
 
   private Book mapToBookEntity(BookResponseDTO bookResponseDTO) {
     return Book.builder()
         .title(bookResponseDTO.title())
-        .authors(bookResponseDTO.authors())
+        .author(bookResponseDTO.author())
+        .publishYear(bookResponseDTO.publishYear())
+        .imageUrl(bookResponseDTO.imageUrl())
+        .pageCount(bookResponseDTO.pageCount())
+        .urlSlug(SlugUtils.convertStringToSlug(bookResponseDTO.title()))
+        .publisher(bookResponseDTO.publisher())
         .price(bookResponseDTO.price())
         .description(bookResponseDTO.description())
         .isbn(bookResponseDTO.isbn())
         .inStock(bookResponseDTO.inStock())
+        .category(
+            categoryRepo
+                .findById(bookResponseDTO.categoryId())
+                .orElseThrow(CategoryDoesNotExistException::new))
         .build();
   }
 }

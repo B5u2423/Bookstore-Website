@@ -7,7 +7,8 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Builder
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "refresh_tokens")

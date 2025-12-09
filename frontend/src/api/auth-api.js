@@ -1,12 +1,4 @@
-import axios from 'axios'
-
-const api = axios.create({
-  baseURL: 'http://localhost:8080',
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-})
+import api from './api-config'
 
 api.interceptors.request.use(
   (config) => {
@@ -125,8 +117,7 @@ export function refreshJwtToken(refreshToken) {
  * User logout
  * @returns {Promise} API response
  */
-export function logoutUser() {
-  const token = localStorage.getItem('accessToken')
+export function logoutUser(token) {
   return api.delete('/api/v1/auth/logout', {
     headers: {
       Authorization: `Bearer ${token}`,

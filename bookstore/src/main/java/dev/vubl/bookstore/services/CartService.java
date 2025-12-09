@@ -10,16 +10,16 @@ import dev.vubl.bookstore.repos.CartRepo;
 import jakarta.transaction.Transactional;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class CartService {
   private final CartRepo cartRepo;
   private final CartItemRepo cartItemRepo;
-  private final ApplicationUserService userService;
-  private final TokenService tokenService;
   private final BookRepo bookRepo;
   private final AuthService authService;
 
@@ -33,6 +33,7 @@ public class CartService {
     if (ci.isPresent()) {
       ci.get().setQuantity(ci.get().getQuantity() + payload.quantity());
     } else {
+      log.info("[{}] New item added to cart", this.getClass().getName());
       cartItemRepo.save(
           CartItem.builder().cart(cart).book(book).quantity(payload.quantity()).build());
     }
@@ -47,5 +48,17 @@ public class CartService {
     Optional<Cart> c = cartRepo.findCartByUserAndCartStatus(user, CartStatus.ACTIVE);
     return c.orElseGet(
         () -> cartRepo.save(Cart.builder().cartStatus(CartStatus.ACTIVE).user(user).build()));
+  }
+
+  public void removeAllItems(String token) {
+    try {
+      Cart c = getActiveCartByUser(token);
+      cartItemRepo.deleteByCart(c);
+      c.getItems().clear();
+      cartRepo.save(c);
+      log.info("[{}] Remove all item from cart", this.getClass().getName());
+    } catch (Exception e) {
+      log.error("[{}] Error remove all items from cart", this.getClass().getName());
+    }
   }
 }

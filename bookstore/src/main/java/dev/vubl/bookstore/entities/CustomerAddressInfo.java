@@ -1,12 +1,14 @@
 package dev.vubl.bookstore.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "customer_addresses")
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,5 +25,6 @@ public class CustomerAddressInfo extends BaseEntity {
 
   @ManyToOne
   @JoinColumn(name = "user_id")
+  @JsonBackReference
   private ApplicationUser customer;
 }

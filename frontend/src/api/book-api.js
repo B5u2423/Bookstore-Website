@@ -1,29 +1,136 @@
-import axios from 'axios'
+import api from './api-config'
 
-const bookApi = axios.create({
-  baseURL: 'http://localhost:8080',
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
+const API_ENDPOINTS = {
+  NEW_ARRIVAL: '/api/v1/books/new',
+  BEST_SELLERS: '/api/v1/books/best-sellers',
+  ADD_NEW_BOOK: '/api/v1/books/add',
+  UPDATE_BOOK: '/api/v1/books/update',
+}
+
+export const BookService = {
+  /**
+   * Fetch best seller books from API
+   * @returns {Promise<Book[]>} A promise resolves to an array of best seller books
+   * @throws {Error} if API call fails
+   */
+  async fetchBestSellersBooks() {
+    try {
+      const res = await api.get(API_ENDPOINTS.BEST_SELLERS)
+      return res.data
+    } catch (error) {
+      console.error('Error fetching best sellers: ', error)
+      throw error
+    }
   },
-})
 
-export function fetchFeaturedBooks() {
-  return bookApi.get('/api/v1/books/featured')
-}
+  /**
+   * Fetch new arrival books from API
+   * @returns {Promise<Book[]>} A promise resolves to an array of new arrival books
+   * @throws {Error} if API call fails
+   */
+  async fetchNewArrivalBooks() {
+    try {
+      const res = await api.get(API_ENDPOINTS.NEW_ARRIVAL)
+      return res.data
+    } catch (error) {
+      console.error('Error fetching new arrival books: ', error)
+      throw error
+    }
+  },
 
-export function fetchBestSellersBooks() {
-  return bookApi.get('/api/v1/books/best-sellers')
-}
+  /**
+   * Fetch a book by its ID
+   * @param {String} id - The ID of a book to fetch
+   * @returns {Promise<Book>} A promise resolves to a book object
+   * @throws {Error} if API call fails
+   */
+  async fetchBookById(id) {
+    try {
+      const res = await api.get(`/api/v1/books/${id}`)
+      return res.data
+    } catch (error) {
+      console.error(`Error fetching book with id: ${id}`, error)
+      throw error
+    }
+  },
 
-export function fetchNewArrivalBooks() {
-  return bookApi.get('/api/v1/books/new')
-}
+  /**
+   * Fetch all books with optional query parameters
+   * @param {Object} params - Optional query parameters for filtering, sorting, or pagination
+   * @returns {Promise<Book[]>} A promise resolves to an array of books
+   * @throws {Error} if API call fails
+   */
+  async fetchAllBooks(params = {}) {
+    try {
+      const res = await api.get('/api/v1/books', { params })
+      return res.data
+    } catch (error) {
+      console.error('Error fetching all books', error)
+      throw error
+    }
+  },
 
-export function fetchAllBooks() {
-  return bookApi.get('/api/v1/books')
-}
+  /**
+   * Delete a book by its ID
+   * @param {String} id - The ID of the book to delete
+   * @param {String} token - Authorization token for the request
+   * @returns {Promise<Object>} A promise resolves to the API response data
+   * @throws {Error} if API call fails
+   */
+  async deleteBookById(id, token) {
+    try {
+      const res = await api.delete('/api/v1/books/delete', {
+        params: { id },
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      return res.data
+    } catch (error) {
+      console.error(`Error deleting book with id ${id}`, error)
+      throw error
+    }
+  },
 
-export function fetchBookById(id) {
-  return bookApi.get(`/api/v1/books/${id}`)
+  /**
+   * Update a book by its ID
+   * @param {Object} body - The book data to update
+   * @param {String} id - The ID of the book to update
+   * @param {String} token - Authorization token for the request
+   * @returns {Promise<Object>} A promise resolves to the API response data
+   * @throws {Error} if API call fails
+   */
+  async updateBookById(body, id, token) {
+    try {
+      const res = await api.put(API_ENDPOINTS.UPDATE_BOOK, body, {
+        params: { id },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      return res.data
+    } catch (error) {
+      console.error(`Error updating book with id ${id}`, error)
+      throw error
+    }
+  },
+
+  /**
+   * Add a new book to the system
+   * @param {Object} body - The book data to create
+   * @param {String} token - Authorization token for the request
+   * @returns {Promise<Object>} A promise resolves to the created book data
+   * @throws {Error} if API call fails
+   */
+  async addNewBook(body, token) {
+    try {
+      const res = await api.post(API_ENDPOINTS.ADD_NEW_BOOK, body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      return res.data
+    } catch (error) {
+      console.error('Error creating new book', error)
+      throw error
+    }
+  },
 }

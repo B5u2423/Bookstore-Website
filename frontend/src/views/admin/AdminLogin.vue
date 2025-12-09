@@ -1,11 +1,48 @@
 <script setup>
+import SnackBar from '@/components/common/SnackBar.vue'
+import { useAdminAuthStore } from '@/stores/admin-auth-store'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
-const username = ref('')
+const adminAuthStore = useAdminAuthStore()
+const router = useRouter()
+
+const email = ref('')
 const password = ref('')
+const isLoading = ref(false)
 
-function handleLogin() {
-  console.log('Username and password :: ', username.value, password.value)
+const snackbar = ref({
+  show: false,
+  message: '',
+  color: 'success',
+})
+
+async function handleLogin() {
+  isLoading.value = true
+  const result = await adminAuthStore.adminLogin({
+    email: email.value,
+    password: password.value,
+  })
+
+  // handle response
+  if (result.success) {
+    snackbar.value = {
+      show: true,
+      message: 'Đăng nhập thành công!',
+      color: 'success',
+    }
+    setTimeout(() => {
+      router.push({ name: 'admin-dashboard' })
+      isLoading.value = false
+    }, 1500)
+  } else {
+    isLoading.value = false
+    snackbar.value = {
+      show: true,
+      message: result.error || 'Đăng nhập thất bại',
+      color: 'error',
+    }
+  }
 }
 </script>
 
@@ -53,7 +90,7 @@ function handleLogin() {
               <!-- username/email -->
 
               <v-text-field
-                v-model="username"
+                v-model="email"
                 label="Tên đăng nhập"
                 variant="solo-filled"
                 full-width
@@ -83,6 +120,7 @@ function handleLogin() {
               color="primary"
               variant="outlined"
               block
+              :loading="isLoading"
               @click="handleLogin"
             >
                Đăng nhập
@@ -95,6 +133,8 @@ function handleLogin() {
       </v-col>
 
     </v-row>
+
+    <SnackBar :snackbar="snackbar" />
 
   </v-container>
 

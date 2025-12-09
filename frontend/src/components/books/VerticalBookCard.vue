@@ -1,4 +1,6 @@
 <script setup>
+import { formatPriceVNLocale } from '@/utils/utils'
+
 const props = defineProps({
   book: Object,
 })
@@ -9,31 +11,32 @@ const props = defineProps({
   <v-card
     variant="outlined"
     elevation="4"
-    class="pb-3 custom"
+    class="custom ma-2"
     hover
-    :to="{ name: 'book-detail', params: { id: book.id, slug: book.slug } }"
+    :to="{ name: 'book-detail', params: { id: book.id, slug: book.urlSlug } }"
     :ripple="false"
+    width="180"
   >
 
     <!-- `cover` prop to crop the image to fill the parent size -->
 
     <v-img
       cover
-      :src="book.image"
+      :src="book.imageUrl"
       height="200px"
     >
 
     </v-img>
 
-    <v-card-title>{{ book.title }}</v-card-title>
+    <v-card-text>
 
-    <v-card-subtitle>
+      <h3 class="mb-3"> {{ book.title }} </h3>
 
       <div> {{ book.author }} </div>
 
-      <div> {{ book.price }} </div>
+      <div>{{ formatPriceVNLocale(book.price) }} ₫</div>
 
-    </v-card-subtitle>
+    </v-card-text>
 
   </v-card>
 

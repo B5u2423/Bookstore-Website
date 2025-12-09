@@ -1,8 +1,6 @@
 package dev.vubl.bookstore.dtos;
 
-import dev.vubl.bookstore.entities.Author;
 import java.math.BigDecimal;
-import java.util.List;
 import lombok.Builder;
 
 @Builder
@@ -11,14 +9,13 @@ public record BookResponseDTO(
     String isbn,
     String title,
     String description,
-    List<Author> authors,
+    String author,
     BigDecimal price,
     Integer inStock,
-    String productCode,
+    Integer categoryId,
+    String categoryName,
     Integer publishYear,
-    String language,
-    Integer weightGrams,
-    String dimensions,
+    String publisher,
+    String urlSlug,
     Integer pageCount,
-    String format,
     String imageUrl) {}

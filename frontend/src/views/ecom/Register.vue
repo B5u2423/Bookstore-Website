@@ -1,12 +1,48 @@
 <script setup>
+import { useAuthStore } from '@/stores/auth-store'
 import { ref } from 'vue'
+import SnackBar from '@/components/common/SnackBar.vue'
+
+const authStore = useAuthStore()
 
 const visible = ref(false)
 const visibleRetype = ref(false)
 
+const formData = ref({
+  firstName: '',
+  lastName: '',
+  email: '',
+  password: '',
+  userType: 'CUSTOMER',
+})
+
+const snackbar = ref({
+  show: false,
+  message: '',
+  color: 'success',
+})
+
 const rules = {
   required: (v) => !!v || 'Không được bỏ trống trường',
   email: (v) => /[\w\d.-]{6,30}@[\w\d.-]+/.test(v) || 'Email không hợp lệ',
+}
+
+async function handleRegister() {
+  const res = await authStore.register(formData.value)
+
+  if (res.success) {
+    snackbar.value = {
+      show: true,
+      message: 'Đăng ký thành công! Vui lòng truy cập trang đăng nhập!',
+      color: 'success',
+    }
+  } else {
+    snackbar.value = {
+      show: true,
+      message: res.error || 'Đăng ký thất bại!',
+      color: 'error',
+    }
+  }
 }
 </script>
 
@@ -32,6 +68,7 @@ const rules = {
           min-width="400"
           label="Họ"
           variant="outlined"
+          v-model="formData.lastName"
         ></v-text-field>
 
         <v-text-field
@@ -39,6 +76,7 @@ const rules = {
           density="compact"
           label="Tên"
           variant="outlined"
+          v-model="formData.firstName"
         ></v-text-field>
 
         <v-text-field
@@ -47,6 +85,7 @@ const rules = {
           label="Email"
           variant="outlined"
           :rules="[rules.email, rules.required]"
+          v-model="formData.email"
         ></v-text-field>
 
         <v-text-field
@@ -58,6 +97,7 @@ const rules = {
           :type="visible ? 'text' : 'password'"
           :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
           @click:append-inner="visible = !visible"
+          v-model="formData.password"
         ></v-text-field>
 
         <v-text-field
@@ -76,6 +116,7 @@ const rules = {
         color="green"
         class="mb-3"
         width="100%"
+        @click="handleRegister"
       >
          ĐĂNG KÝ
       </v-btn>
@@ -103,6 +144,8 @@ const rules = {
       </div>
 
     </div>
+
+    <SnackBar :snackbar="snackbar" />
 
   </v-sheet>
 

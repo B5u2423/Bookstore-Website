@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api/v1/admin")
 @RestController
-@CrossOrigin(origins = "http://localhost:5713")
 @RequiredArgsConstructor
 public class AdminController {
   private final ApplicationUserService userService;
