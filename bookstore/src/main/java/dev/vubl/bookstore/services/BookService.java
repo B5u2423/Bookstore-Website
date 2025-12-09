@@ -105,7 +105,12 @@ public class BookService {
     log.info("[{}] Book with id {} deleted", this.getClass().getName(), id);
   }
 
-  public List<Book> getBookByCategory(String slug) {
+  public Page<BookResponseDTO> getBookByCategory(
+      String slug, int page, int size, String sortBy, String order) {
+    List<String> allowed = List.of("id");
+    if (!allowed.contains(sortBy)) {
+      throw new IllegalArgumentException("Invalid sort field: %s".formatted(sortBy));
+    }
     // get children of category
     Category c =
         categoryRepo.findByCategorySlug(slug).orElseThrow(CategoryDoesNotExistException::new);
@@ -115,7 +120,10 @@ public class BookService {
       categories.addAll(c.getChildrenCategories());
     }
     // query all books from children
-    return bookRepo.findAllByCategoryIn(categories);
+    Sort sort = order.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+    Pageable pageable = PageRequest.of(page, size, sort);
+    Page<Book> bookPage = bookRepo.findAllByCategoryIn(categories, pageable);
+    return bookPage.map(this::mapToBookResponseDTO);
   }
 
   private boolean isIsbnNotUnique(String isbn) {

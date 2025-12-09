@@ -1,9 +1,9 @@
 package dev.vubl.bookstore.controllers;
 
+import dev.vubl.bookstore.dtos.BookResponseDTO;
 import dev.vubl.bookstore.dtos.CategoryCreationRequest;
 import dev.vubl.bookstore.dtos.CategoryDTO;
 import dev.vubl.bookstore.dtos.CategoryUpdateRequest;
-import dev.vubl.bookstore.entities.Book;
 import dev.vubl.bookstore.services.BookService;
 import dev.vubl.bookstore.services.CategoryService;
 import java.util.List;
@@ -65,7 +65,12 @@ public class CategoryController {
   }
 
   @GetMapping("/{category}")
-  public List<Book> getAllBooksWithCategory(@PathVariable(name = "category") String category) {
-    return bookService.getBookByCategory(category);
+  public PagedModel<BookResponseDTO> getAllBooksWithCategory(
+      @PathVariable(name = "category") String category,
+      @RequestParam(value = "page", defaultValue = "0") int page,
+      @RequestParam(value = "size", defaultValue = "5") int size,
+      @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
+      @RequestParam(value = "order", defaultValue = "asc") String order) {
+    return new PagedModel<>(bookService.getBookByCategory(category, page, size, sortBy, order));
   }
 }
