@@ -14,9 +14,9 @@ function capitalizeFirstword(sentence) {
     .join(' ')
 }
 
-async function fetchAllCategories() {
+async function fetchParentCategories() {
   try {
-    const res = await CategoryService.fetchAllCategories()
+    const res = await CategoryService.fetchParentCategories()
     categories.value = res
   } catch (error) {
     console.error('Error fetching all categories')
@@ -24,7 +24,7 @@ async function fetchAllCategories() {
 }
 
 onMounted(() => {
-  fetchAllCategories()
+  fetchParentCategories()
 })
 </script>
 

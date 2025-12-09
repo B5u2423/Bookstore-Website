@@ -21,6 +21,17 @@ import org.springframework.stereotype.Service;
 public class CategoryService {
   private final CategoryRepo categoryRepo;
 
+  public List<CategoryDTO> getAllCategories() {
+    return categoryRepo.findAll().stream().map(this::toDto).toList();
+  }
+
+  public List<CategoryDTO> getChildrenCategories() {
+    return categoryRepo.findAll().stream()
+        .filter(item -> item.getParentCategory() != null)
+        .map(this::toDto)
+        .toList();
+  }
+
   public List<CategoryDTO> getParentCategories() {
     return categoryRepo.findAll().stream()
         .filter(item -> item.getParentCategory() == null)

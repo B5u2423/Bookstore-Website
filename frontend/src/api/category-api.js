@@ -2,6 +2,8 @@ import api from './api-config'
 
 const CATEGORY_ENDPOINT = {
   GET_ALL: '/api/v1/categories/all',
+  GET_PARENTS: '/api/v1/categories/parents',
+  GET_CHILDREN: '/api/v1/categories/children',
   GET_ALL_PAGINATED: '/api/v1/categories',
   GET_CANDIDATES: '/api/v1/categories/candidates',
   PUT_UPDATE: '/api/v1/categories/update',
@@ -10,6 +12,25 @@ const CATEGORY_ENDPOINT = {
 }
 
 export const CategoryService = {
+  async fetchChildrenCategories() {
+    try {
+      const res = await api.get(CATEGORY_ENDPOINT.GET_CHILDREN)
+      return res.data
+    } catch (error) {
+      console.error('Error fetching children')
+      throw error
+    }
+  },
+  async fetchParentCategories() {
+    try {
+      const res = await api.get(CATEGORY_ENDPOINT.GET_PARENTS)
+      return res.data
+    } catch (error) {
+      console.error('Error fetching parents')
+      throw error
+    }
+  },
+
   async fetchAllCategories() {
     try {
       const res = await api.get(CATEGORY_ENDPOINT.GET_ALL)

@@ -103,10 +103,10 @@ async function edit(id) {
   }
 
   try {
-    const res = await CategoryService.fetchAllCategories()
+    const res = await CategoryService.fetchChildrenCategories()
     candidates.value = res
   } catch (error) {
-    console.error('Error fetching all categories')
+    console.error('Error fetching categories that is not root')
   }
 
   dialog.value = true
