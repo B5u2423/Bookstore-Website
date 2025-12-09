@@ -34,8 +34,8 @@ export const useCartStore = defineStore(
     async function syncCartWithBackEnd({ token: accessToken }) {
       // if FE cart is not empty
       if (activeCart.value.length > 0) {
-        const res = activeCart.value.map((item) =>
-          addToCart(accessToken, { bookId: item.id, quantity: item.quantity }),
+        const removeAllRes = await removeAllItemsFromCart(accessToken)
+        const res = activeCart.value.map((item) => addToCart(accessToken, { bookId: item.id, quantity: item.quantity }),
         )
       }
       const response = await getUsersActiveCart(accessToken)

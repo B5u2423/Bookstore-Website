@@ -1,5 +1,7 @@
 import api from './api-config'
 
+// TODO: Rewrite these api into CartService Object
+
 export function addToCart(token, body) {
   return api.post('/api/v1/carts/add', body, {
     headers: {
@@ -25,12 +27,27 @@ export function removeAllItemsFromCart(token) {
 }
 
 export const PaymentService = {
-  async createPaymentPage(body) {
+  async createPaymentPage(body, token) {
     try {
-      const res = await api.post('/api/v1/payment/create-payment', body)
+      const res = await api.post('/api/v1/payment/create-payment', body, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       return res.data
     } catch (error) {
-      console.error('Error changing to payment page')
+      console.error('Error changing to payment page', error)
+    }
+  }
+}
+
+export const OrderService = {
+  async createOrder(body, token) {
+    try {
+      const res = await api.post('/api/v1/orders/create-order', body, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      return res.data
+    } catch (error) {
+      console.error('Error making order', error)
     }
   }
 }

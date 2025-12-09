@@ -1,13 +1,24 @@
 <script setup>
-import { PaymentService } from '@/api/cart-api'
+import { OrderService, PaymentService } from '@/api/cart-api'
 import { useAuthStore } from '@/stores/auth-store'
 import { useCartStore } from '@/stores/cart-store'
 import { formatPriceVNLocale } from '@/utils/utils'
+import { shallowRef, ref } from 'vue'
 import { useRouter } from 'vuetify/lib/composables/router'
 
 const cartStore = useCartStore()
 const authStore = useAuthStore()
 const router = useRouter()
+
+const shippingInfo = ref(
+  {
+    city: '',
+    commune: '',
+    street: '',
+    amount: cartStore.totalAmount
+  }
+)
+const dialog = shallowRef(false)
 
 // Methods
 
@@ -19,15 +30,28 @@ async function checkout() {
   // if not logged in
   if (!authStore.isAuthenticated) {
     router.push({ name: 'login' })
+  } else {
+    dialog.value = !dialog.value
   }
-  // change to payment page
-  const res = await PaymentService.createPaymentPage({
-    amount: authStore.totalAmount,
-    info: "hello"
-  });
+}
 
+async function confirmCheckout() {
+  // change to payment page
+  try {
+    // create order in db
+    const orderResponse = await OrderService.createOrder(shippingInfo.value, authStore.accessToken)
+    
+    // create payment url
+  const res = await PaymentService.createPaymentPage({
+    amount: cartStore.totalAmount,
+    info: "hello"
+  }, authStore.accessToken);
   // redirect 
   window.location.href = res.paymentUrl
+  cartStore.reset()
+  } catch (error) {
+    console.error('Error checkout', error)
+  }
 }
 </script>
 
@@ -178,6 +202,113 @@ async function checkout() {
     </v-container>
 
   </v-container>
+
+  <v-dialog
+    v-model="dialog"
+    max-width="800"
+  >
+
+    <v-card
+      title="Chỉnh sửa thông tin đơn hàng"
+      subtitle="Cập nhật địa chỉ"
+    >
+
+      <v-card-text>
+
+        <v-row>
+
+          <v-col
+            cols="12"
+            md="6"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">Tỉnh thành</div>
+
+            <v-text-field
+              variant="outlined"
+              v-model="shippingInfo.city"
+              density="compact"
+              hide-details="true"
+            ></v-text-field>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="6"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">Xã phường</div>
+
+            <v-text-field
+              variant="outlined"
+              v-model="shippingInfo.commune"
+              density="compact"
+              hide-details="true"
+            ></v-text-field>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="6"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">Địa chỉ (số nhà, ngõ, phố,...)</div>
+
+            <v-text-field
+              variant="outlined"
+              v-model="shippingInfo.street"
+              density="compact"
+              hide-details="true"
+            ></v-text-field>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="6"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">Tổng giá trị đơn hàng</div>
+
+            <v-text-field
+              variant="outlined"
+              v-model="shippingInfo.amount"
+              :disabled="true"
+              density="compact"
+              hide-details="true"
+            ></v-text-field>
+
+          </v-col>
+
+        </v-row>
+
+      </v-card-text>
+
+      <v-card-actions>
+
+        <v-btn
+          color="green-darken-1"
+          variant="elevated"
+          @click="confirmCheckout"
+        >
+           Đồng ý thanh toán
+        </v-btn>
+
+        <v-btn
+          color="red-lighten-1"
+          variant="elevated"
+          @click="dialog = !dialog"
+        >
+           Hủy
+        </v-btn>
+
+      </v-card-actions>
+
+    </v-card>
+
+  </v-dialog>
 
 </template>
 
