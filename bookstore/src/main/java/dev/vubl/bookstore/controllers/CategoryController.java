@@ -20,8 +20,8 @@ public class CategoryController {
   private final BookService bookService;
 
   @GetMapping("/all")
-  public ResponseEntity<List<CategoryDTO>> getAllCategories() {
-    return ResponseEntity.ok().body(categoryService.getAllCategories());
+  public ResponseEntity<List<CategoryDTO>> getParentCategories() {
+    return ResponseEntity.ok().body(categoryService.getParentCategories());
   }
 
   @GetMapping
