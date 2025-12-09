@@ -2,6 +2,7 @@ package dev.vubl.bookstore.services;
 
 import dev.vubl.bookstore.dtos.BookResponseDTO;
 import dev.vubl.bookstore.entities.Book;
+import dev.vubl.bookstore.entities.Category;
 import dev.vubl.bookstore.exceptions.BookDoesNotExistException;
 import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
 import dev.vubl.bookstore.exceptions.CategoryDoesNotExistException;
@@ -9,6 +10,7 @@ import dev.vubl.bookstore.repos.BookRepo;
 import dev.vubl.bookstore.repos.CategoryRepo;
 import dev.vubl.bookstore.utils.SlugUtils;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -101,6 +103,19 @@ public class BookService {
   public void deleteBookById(Integer id) {
     bookRepo.deleteById(id);
     log.info("[{}] Book with id {} deleted", this.getClass().getName(), id);
+  }
+
+  public List<Book> getBookByCategory(String slug) {
+    // get children of category
+    Category c =
+        categoryRepo.findByCategorySlug(slug).orElseThrow(CategoryDoesNotExistException::new);
+    List<Category> categories = new ArrayList<>();
+    categories.add(c);
+    if (c.getChildrenCategories() != null) {
+      categories.addAll(c.getChildrenCategories());
+    }
+    // query all books from children
+    return bookRepo.findAllByCategoryIn(categories);
   }
 
   private boolean isIsbnNotUnique(String isbn) {

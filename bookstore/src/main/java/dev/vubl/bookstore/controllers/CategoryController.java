@@ -3,6 +3,8 @@ package dev.vubl.bookstore.controllers;
 import dev.vubl.bookstore.dtos.CategoryCreationRequest;
 import dev.vubl.bookstore.dtos.CategoryDTO;
 import dev.vubl.bookstore.dtos.CategoryUpdateRequest;
+import dev.vubl.bookstore.entities.Book;
+import dev.vubl.bookstore.services.BookService;
 import dev.vubl.bookstore.services.CategoryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CategoryController {
   private final CategoryService categoryService;
+  private final BookService bookService;
 
   @GetMapping("/all")
   public ResponseEntity<List<CategoryDTO>> getAllCategories() {
@@ -59,5 +62,10 @@ public class CategoryController {
   public ResponseEntity<String> deleteCategoryById(@RequestParam(value = "id") Integer id) {
     categoryService.deleteCategoryById(id);
     return ResponseEntity.ok().body("Category deleted");
+  }
+
+  @GetMapping("/{category}")
+  public List<Book> getAllBooksWithCategory(@PathVariable(name = "category") String category) {
+    return bookService.getBookByCategory(category);
   }
 }
