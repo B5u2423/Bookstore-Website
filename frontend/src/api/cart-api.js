@@ -23,3 +23,14 @@ export function removeAllItemsFromCart(token) {
     },
   })
 }
+
+export const PaymentService = {
+  async createPaymentPage(body) {
+    try {
+      const res = await api.post('/api/v1/payment/create-payment', body)
+      return res.data
+    } catch (error) {
+      console.error('Error changing to payment page')
+    }
+  }
+}

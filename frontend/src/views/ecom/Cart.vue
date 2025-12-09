@@ -1,4 +1,5 @@
 <script setup>
+import { PaymentService } from '@/api/cart-api'
 import { useAuthStore } from '@/stores/auth-store'
 import { useCartStore } from '@/stores/cart-store'
 import { formatPriceVNLocale } from '@/utils/utils'
@@ -14,11 +15,19 @@ function continueShopping() {
   router.push('/')
 }
 
-function checkout() {
+async function checkout() {
   // if not logged in
   if (!authStore.isAuthenticated) {
     router.push({ name: 'login' })
   }
+  // change to payment page
+  const res = await PaymentService.createPaymentPage({
+    amount: authStore.totalAmount,
+    info: "hello"
+  });
+
+  // redirect 
+  window.location.href = res.paymentUrl
 }
 </script>
 
