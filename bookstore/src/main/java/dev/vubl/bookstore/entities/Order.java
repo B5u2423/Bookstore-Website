@@ -2,6 +2,8 @@ package dev.vubl.bookstore.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.*;
 
@@ -20,7 +22,14 @@ public class Order extends BaseEntity {
   @JsonManagedReference
   private List<OrderItem> items;
 
-  // TODO: Payment method
+  @Enumerated(EnumType.STRING)
+  private PaymentMethod paymentMethod;
+
+  @Column(name = "total_amount")
+  private BigDecimal totalAmount;
+
+  @Column(name = "order_date")
+  private LocalDate orderDate;
 
   @Column(name = "city")
   private String city; // tỉnh/thành

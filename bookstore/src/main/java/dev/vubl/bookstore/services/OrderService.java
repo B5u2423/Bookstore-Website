@@ -6,6 +6,8 @@ import dev.vubl.bookstore.repos.BookRepo;
 import dev.vubl.bookstore.repos.CartRepo;
 import dev.vubl.bookstore.repos.OrderRepo;
 import jakarta.transaction.Transactional;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +23,14 @@ public class OrderService {
   private final CartRepo cartRepo;
   private final BookRepo bookRepo;
 
-  public Order checkout(String token) {
+  public Order checkout(String token, ShippingInfoDTO shippingInfo) {
     Cart cart = cartService.getActiveCartByUser(token);
     ApplicationUser user = authService.readUserFromToken(token);
 
     Order order = new Order();
     order.setCustomer(user);
     order.setItems(new ArrayList<>());
+    BigDecimal total = BigDecimal.ZERO;
 
     for (CartItem ci : cart.getItems()) {
       Book ciBook = ci.getBook();
@@ -53,7 +56,18 @@ public class OrderService {
 
       // add to order
       order.getItems().add(oi);
+      total = total.add(oi.getPriceAtPurchase().multiply(BigDecimal.valueOf(oi.getQuantity())));
     }
+    // TODO: Update this to user choice later
+    order.setPaymentMethod(PaymentMethod.ONLINE_TRANSFER);
+    order.setOrderDate(LocalDate.now());
+    if (shippingInfo.amount().compareTo(total) != 0) {
+      throw new IllegalStateException("Order total is not the same !!!!");
+    }
+    order.setTotalAmount(shippingInfo.amount());
+    order.setCity(shippingInfo.city());
+    order.setCommune(shippingInfo.commune());
+    order.setStreet(shippingInfo.street());
 
     // save order
     Order savedOrder = orderRepo.save(order);

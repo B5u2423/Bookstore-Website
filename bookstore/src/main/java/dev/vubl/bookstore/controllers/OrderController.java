@@ -2,6 +2,7 @@ package dev.vubl.bookstore.controllers;
 
 import dev.vubl.bookstore.entities.Order;
 import dev.vubl.bookstore.services.OrderService;
+import dev.vubl.bookstore.services.ShippingInfoDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
   private final OrderService orderService;
 
-  @PostMapping
+  @PostMapping("/create-order")
   @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-  public ResponseEntity<Order> placeOrder(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-    return ResponseEntity.ok().body(orderService.checkout(token));
+  public ResponseEntity<Order> placeOrder(
+      @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+      @RequestBody ShippingInfoDTO shippingInfo) {
+    return ResponseEntity.ok().body(orderService.checkout(token, shippingInfo));
   }
 }
