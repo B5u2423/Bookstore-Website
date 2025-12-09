@@ -163,6 +163,11 @@ const routes = [
     children: [{ path: '', name: 'cart', component: () => import('@/views/ecom/Cart.vue') }],
   },
   {
+    path: '/payment',
+    component: EComNoSidebar,
+    children: [{ path: 'call-back', name: 'payment-callback', component: () => import('@/views/ecom/PaymentCallback.vue') }],
+  },
+  {
     path: '/:pathMatch(.*)*',
     redirect: '/',
   },
