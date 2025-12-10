@@ -160,12 +160,15 @@ const routes = [
   {
     path: '/cart',
     component: EComNoSidebar,
-    children: [{ path: '', name: 'cart', component: () => import('@/views/ecom/Cart.vue') }],
-  },
-  {
-    path: '/payment',
-    component: EComNoSidebar,
-    children: [{ path: 'call-back', name: 'payment-callback', component: () => import('@/views/ecom/PaymentCallback.vue') }],
+    children: [
+      { path: '', name: 'cart', component: () => import('@/views/ecom/Cart.vue') },
+      {
+        path: 'payment-callback',
+        name: 'callback',
+        component: () => import('@/views/ecom/PaymentCallback.vue'),
+      },
+      { path: 'checkout', name: 'checkout', component: () => import('@/views/ecom/Checkout.vue') },
+    ],
   },
   {
     path: '/:pathMatch(.*)*',
