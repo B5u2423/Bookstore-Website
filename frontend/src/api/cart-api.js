@@ -36,7 +36,7 @@ export const PaymentService = {
     } catch (error) {
       console.error('Error changing to payment page', error)
     }
-  }
+  },
 }
 
 export const OrderService = {
@@ -49,5 +49,5 @@ export const OrderService = {
     } catch (error) {
       console.error('Error making order', error)
     }
-  }
+  },
 }
