@@ -153,11 +153,15 @@ async function handleLogout() {
         <v-btn
           :to="{ name: 'cart' }"
           icon="mdi-cart"
+          :active="false"
         ></v-btn>
 
       </v-badge>
 
-      <v-btn icon="mdi-bell"></v-btn>
+      <v-btn
+        icon="mdi-bell"
+        :active="false"
+      ></v-btn>
 
     </template>
 

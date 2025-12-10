@@ -8,4 +8,8 @@ const api = axios.create({
   },
 })
 
+export const provinceApi = axios.create({
+  baseURL: 'https://provinces.open-api.vn',
+})
+
 export default api

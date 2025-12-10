@@ -1,4 +1,4 @@
-import api from './api-config'
+import api, { provinceApi } from './api-config'
 
 // TODO: Rewrite these api into CartService Object
 
@@ -48,6 +48,27 @@ export const OrderService = {
       return res.data
     } catch (error) {
       console.error('Error making order', error)
+    }
+  },
+}
+
+export const AddressInfoService = {
+  async getCities() {
+    try {
+      const res = await provinceApi.get('/api/v2/')
+      return res.data
+    } catch (error) {
+      console.error('Error fetching cities data', error)
+    }
+  },
+  async getCommunes(province) {
+    try {
+      const res = await api.get('/api/v1/proxy/commune', {
+        params: { province },
+      })
+      return res.data
+    } catch (error) {
+      console.error('Error fetching communes data', error)
     }
   },
 }
