@@ -41,15 +41,6 @@ public class CategoryController {
     return new PagedModel<>(categoryService.getAllCategoriesPaginated(page, size));
   }
 
-  // TODO: Might remove this later
-  @PutMapping("/add-child")
-  public ResponseEntity<String> addChildCategory(
-      @RequestParam(value = "parent") Integer parentId,
-      @RequestParam(value = "child") Integer childId) {
-    categoryService.addChildCategory(parentId, childId);
-    return ResponseEntity.ok().body("Ok");
-  }
-
   @PutMapping("/update")
   public ResponseEntity<String> updateCategory(@RequestBody CategoryUpdateRequest payload) {
     categoryService.updateCategory(payload);

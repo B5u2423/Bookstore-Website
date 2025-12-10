@@ -45,16 +45,6 @@ public class CategoryService {
     return categoryPage.map(this::toDto);
   }
 
-  // TODO: Might remove this later
-  public void addChildCategory(Integer parentId, Integer childId) {
-    if (parentId == null || childId == null)
-      throw new IllegalArgumentException("Parent/child category Id must not be null!");
-    Category parent = categoryRepo.findById(parentId).orElseThrow();
-    Category child = categoryRepo.findById(childId).orElseThrow();
-
-    parent.addChild(child);
-  }
-
   public List<CategoryDTO> getPossibleChildCategories(Integer id) {
     if (id == null) throw new IllegalArgumentException("Category Id must not be null");
     Category c = categoryRepo.findById(id).orElseThrow();
