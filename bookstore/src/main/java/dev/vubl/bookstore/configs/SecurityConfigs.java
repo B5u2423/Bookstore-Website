@@ -134,6 +134,7 @@ public class SecurityConfigs {
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/auth/refresh"),
       PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/v1/books/**"),
       PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/v1/categories/**"),
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/v1/proxy/**"),
     };
   }
 
