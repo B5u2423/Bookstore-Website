@@ -44,6 +44,14 @@ const routes = [
         meta: { entrypoint: true },
       },
       {
+        path: 'reset',
+        name: 'reset',
+        components: {
+          default: () => import('@/views/ecom/ResetPassword.vue'),
+        },
+        meta: { entrypoint: true },
+      },
+      {
         path: 'profile',
         component: () => import('@/views/ecom/Profile.vue'),
         meta: { requiresAuth: true },

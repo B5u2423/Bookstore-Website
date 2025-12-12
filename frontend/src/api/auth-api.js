@@ -45,13 +45,6 @@ api.interceptors.response.use(
   },
 )
 
-/**
- * User login
- * @param {Object} loginData - Login credentials
- * @param {string} loginData.email - User email
- * @param {string} loginData.password - User password
- * @returns {Promise} API response with user data and tokens
- */
 export function loginUser(loginData) {
   return api.post('/api/v1/auth/login', {
     email: loginData.email,
@@ -59,13 +52,6 @@ export function loginUser(loginData) {
   })
 }
 
-/**
- * Admin login
- * @param {Object} loginData - Admin login credentials
- * @param {string} loginData.email - Admin email
- * @param {string} loginData.password - Admin password
- * @returns {Promise} API response with admin user data and tokens
- */
 export function loginAdmin(loginData) {
   return api.post('/api/v1/auth/admin/login', {
     email: loginData.email,
@@ -73,16 +59,6 @@ export function loginAdmin(loginData) {
   })
 }
 
-/**
- * User registration
- * @param {Object} registrationData - Registration data
- * @param {string} registrationData.firstName - User first name
- * @param {string} registrationData.lastName - User last name
- * @param {string} registrationData.email - User email
- * @param {string} registrationData.password - User password
- * @param {string} registrationData.userType - User type (CUSTOMER, STAFF only - ADMIN not allowed)
- * @returns {Promise} API response with created user data
- */
 export function registerUser(registrationData) {
   // Prevent ADMIN users from registering through regular endpoint
   if (registrationData.userType === 'ADMIN') {
@@ -102,21 +78,12 @@ export function registerUser(registrationData) {
   })
 }
 
-/**
- * Refresh JWT access token
- * @param {string} refreshToken - Refresh token
- * @returns {Promise} API response with new tokens
- */
 export function refreshJwtToken(refreshToken) {
   return api.get('/api/v1/auth/refresh', {
     data: { refreshToken },
   })
 }
 
-/**
- * User logout
- * @returns {Promise} API response
- */
 export function logoutUser(token) {
   return api.delete('/api/v1/auth/logout', {
     headers: {
@@ -125,12 +92,17 @@ export function logoutUser(token) {
   })
 }
 
-/**
- * Get current user profile (if authenticated)
- * @returns {Promise} API response with user data
- */
 export function getCurrentUser() {
   return api.get('/api/v1/customers/account')
 }
 
-export default api
+export const AuthService = {
+  async resetPassword(body) {
+    try {
+      const res = await api.post('/api/v1/auth/reset-password', body)
+      return res.data
+    } catch (error) {
+      console.error('Error reset password', error)
+    }
+  },
+}

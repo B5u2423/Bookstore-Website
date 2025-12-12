@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
-  private final ApplicationUserService userService;
+  private final ApplicationUserService applicationUserService;
   private final AuthService authService;
   private final TokenService tokenService;
 
@@ -57,6 +57,12 @@ public class AuthenticationController {
     return ResponseEntity.status(HttpStatus.OK).body("User logged out");
   }
 
+  @PostMapping("/reset-password")
+  public ResponseEntity<String> forgetPassword(@Valid @RequestBody ResetPasswordRequest email) {
+    applicationUserService.resetPassword(email);
+    return ResponseEntity.ok().body("Mật khẩu đã được đật lại. Vui lòng kiểm tra email.");
+  }
+
   @ExceptionHandler({RevalidateTokenException.class})
   public ResponseEntity<String> revalidateTokenExceptionHandler() {
     return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -71,7 +77,7 @@ public class AuthenticationController {
   @ExceptionHandler({MethodArgumentNotValidException.class})
   public ResponseEntity<String> methodArgumentNotValidException() {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body("Các trường dữ liệu không được bỏ trống");
+        .body("Trường dữ liệu bị bỏ trống hoặc không đúng định dạng");
   }
 
   @ExceptionHandler({InvalidCredentialException.class, UserDoesNotExistException.class})

@@ -285,7 +285,7 @@ onMounted(() => {
           color="primary"
           @click="confirmCheckout"
         >
-          Hoàn tất đơn hàng
+           Hoàn tất đơn hàng
         </v-btn>
 
         <v-btn
@@ -293,7 +293,7 @@ onMounted(() => {
           :to="{ name: 'cart' }"
           prepend-icon="mdi-chevron-left"
         >
-          Quay lại giỏ hàng
+           Quay lại giỏ hàng
         </v-btn>
 
       </v-col>
