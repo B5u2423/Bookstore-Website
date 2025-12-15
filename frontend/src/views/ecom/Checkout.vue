@@ -268,7 +268,18 @@ onMounted(() => {
         cols="12"
         md="3"
       >
-         Cart items here
+
+        <v-card v-for="item in cartStore.activeCart">
+          <v-card-text>
+            <v-img
+                :src="item.image"
+                max-width="100"
+                class="ma-2"
+            ></v-img>
+            {{item.title}}
+          </v-card-text>
+        </v-card>
+
         <v-divider></v-divider>
 
         <p>Tạm tính {{ shippingInfo.amount }}</p>
