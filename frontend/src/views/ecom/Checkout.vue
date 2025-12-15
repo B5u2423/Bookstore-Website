@@ -5,6 +5,8 @@ import { PaymentService, OrderService, AddressInfoService } from '@/api/cart-api
 import { useAuthStore } from '@/stores/auth-store'
 import { useUserProfileStore } from '@/stores/user-profile-store'
 import router from '@/router'
+import HorizontalBookCard from '@/components/books/HorizontalBookCard.vue'
+import { formatPriceVNLocale } from '@/utils/utils'
 
 const cartStore = useCartStore()
 const authStore = useAuthStore()
@@ -76,6 +78,8 @@ async function confirmCheckout() {
   }
 }
 
+function load() {}
+
 onMounted(() => {
   fetchCities()
 })
@@ -89,7 +93,7 @@ onMounted(() => {
 
       <v-col
         cols="12"
-        md="9"
+        md="7"
       >
 
         <v-row>
@@ -263,49 +267,121 @@ onMounted(() => {
 
       </v-col>
 
+      <!-- Third col -->
+
       <v-col
         class="bg-grey-lighten-3"
         cols="12"
-        md="3"
+        md="5"
       >
 
-        <v-card v-for="item in cartStore.activeCart">
-          <v-card-text>
-            <v-img
-                :src="item.image"
-                max-width="100"
-                class="ma-2"
-            ></v-img>
-            {{item.title}}
-          </v-card-text>
-        </v-card>
+        <v-row>
 
-        <v-divider></v-divider>
+          <v-col cols="12">
 
-        <p>Tạm tính {{ shippingInfo.amount }}</p>
+            <v-infinite-scroll height="300">
 
-        <p>Phí vận chuyển {{ shippingInfo.amount }}</p>
+              <div>
 
-        <v-divider></v-divider>
+                <template
+                  v-for="item in cartStore.activeCart"
+                  :key="item"
+                >
 
-        <p>Tổng cộng {{ shippingInfo.amount }}</p>
+                  <HorizontalBookCard :product="item" />
 
-        <v-divider class="py-2"></v-divider>
+                </template>
 
-        <v-btn
-          color="primary"
-          @click="confirmCheckout"
-        >
-           Hoàn tất đơn hàng
-        </v-btn>
+              </div>
 
-        <v-btn
-          variant="plain"
-          :to="{ name: 'cart' }"
-          prepend-icon="mdi-chevron-left"
-        >
-           Quay lại giỏ hàng
-        </v-btn>
+              <template v-slot:loading></template>
+
+            </v-infinite-scroll>
+
+          </v-col>
+
+          <v-col cols="12">
+
+            <v-row>
+
+              <v-col md="6">
+
+                <p>Tạm tính</p>
+
+              </v-col>
+
+              <v-col
+                md="6"
+                class="text-end"
+              >
+                 {{ formatPriceVNLocale(shippingInfo.amount) }} VND
+              </v-col>
+
+            </v-row>
+
+            <v-row>
+
+              <v-col md="6">
+
+                <p>Phí vận chuyển</p>
+
+              </v-col>
+
+              <v-col
+                md="6"
+                class="text-end"
+              >
+                 -
+              </v-col>
+
+            </v-row>
+
+            <v-row>
+
+              <v-col md="6">
+
+                <p>TỔNG CỘNG</p>
+
+              </v-col>
+
+              <v-col
+                md="6"
+                class="text-end"
+              >
+                 {{ formatPriceVNLocale(shippingInfo.amount) }} VND
+              </v-col>
+
+            </v-row>
+
+            <v-divider class="py-2"></v-divider>
+
+            <v-row class="mb-9 pt-3">
+
+              <v-btn
+                class="mt-3"
+                variant="plain"
+                :to="{ name: 'cart' }"
+                prepend-icon="mdi-chevron-left"
+                density="compact"
+              >
+                 Quay lại giỏ hàng
+              </v-btn>
+
+              <v-spacer></v-spacer>
+
+              <v-btn
+                color="primary"
+                @click="confirmCheckout"
+                class="mr-3"
+              >
+                 Hoàn tất đơn hàng
+              </v-btn>
+
+            </v-row>
+
+          </v-col>
+
+        </v-row>
 
       </v-col>
 

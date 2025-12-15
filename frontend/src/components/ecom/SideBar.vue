@@ -72,25 +72,24 @@ onMounted(() => {
             >
 
               <v-list-item-title @click="reRoute(c.categorySlug)">
-                {{ c.categoryName }}
+                 {{ c.categoryName }}
               </v-list-item-title>
 
               <template v-slot:append>
 
                 <v-icon
-                class="pa-3"
-                v-show="isOpen == false"
+                  class="pa-3"
+                  v-show="isOpen == false"
                   v-bind="props"
                   icon="mdi-chevron-down"
                 ></v-icon>
 
                 <v-icon
-                class="pa-3"
-                v-show="isOpen"
+                  class="pa-3"
+                  v-show="isOpen"
                   v-bind="props"
                   icon="mdi-chevron-up"
                 ></v-icon>
-
 
               </template>
 
