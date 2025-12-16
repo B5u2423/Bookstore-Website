@@ -13,16 +13,34 @@ export const UserService = {
         },
       })
     } catch (error) {
-      console.error('Error updateing user profile', error)
+      console.error('Error updating user profile', error)
       throw error
     }
   },
 }
 
-export function getCustomerAccount(token) {
-  return api.get('/api/v1/customers/account', {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
+export const CustomerService = {
+  async setAddress(body, token) {
+    try {
+      const res = await api.post('/api/v1/customers/add-address', body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      return res.data
+    } catch (error) {
+      console.error('Error create new address for user')
+    }
+  },
+
+  async getCustomerAccount(token) {
+    try {
+      const res = await api.get('/api/v1/customers/account', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      return res.data
+    } catch (error) {}
+  },
 }

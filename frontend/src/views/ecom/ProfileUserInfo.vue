@@ -1,10 +1,10 @@
 <script setup>
-import { UserService } from '@/api/customer-api'
+import { CustomerService, UserService } from '@/api/customer-api'
 import { useAuthStore } from '@/stores/auth-store'
 import { useCartStore } from '@/stores/cart-store'
 import { useUserProfileStore } from '@/stores/user-profile-store'
-import { cityNames } from '@/utils/province-info'
 import { onBeforeMount, onMounted, ref, watch } from 'vue'
+import { AddressInfoService } from '@/api/cart-api.js'
 
 const userProfileStore = useUserProfileStore()
 const cartStore = useCartStore()
@@ -12,6 +12,15 @@ const authStore = useAuthStore()
 
 const isFieldsEnabled = ref(false)
 const isUpdated = ref(false)
+const cities = ref([])
+const communes = ref([])
+const address = ref({
+  cityId: '',
+  cityName: '',
+  communeId: '',
+  communeName: '',
+  street: '',
+})
 
 const dialog = ref(false)
 
@@ -66,9 +75,42 @@ async function updateChanges() {
   }
 }
 
+async function fetchCities() {
+  try {
+    const res = await AddressInfoService.getCities()
+    cities.value = res
+  } catch (error) {
+    console.error('Error fetching cities')
+  }
+}
+
+async function fetchCommunes() {
+  try {
+    address.value.communeId = ''
+    const res = await AddressInfoService.getCommunes(address.value.cityId)
+    communes.value = res
+  } catch (error) {
+    console.error('Error fetching communes')
+  }
+}
+
+async function save() {
+  try {
+    const res = CustomerService.setAddress(
+      {
+        city: cities.value.find((obj) => obj.code === address.value.cityId)?.name,
+        commune: communes.value.find((obj) => obj.code === address.value.communeId)?.name,
+        street: address.value.street,
+      },
+      authStore.accessToken,
+    )
+  } catch (error) {}
+}
+
 // sync cart on load
 onMounted(() => {
   cartStore.syncCartWithBackEnd({ token: authStore.accessToken })
+  fetchCities()
 })
 </script>
 
@@ -234,6 +276,8 @@ onMounted(() => {
 
     </v-card>
 
+    <v-data-table :items="userProfileStore.userInfo.addressList"> </v-data-table>
+
   </v-sheet>
 
   <v-dialog
@@ -255,13 +299,15 @@ onMounted(() => {
             <div class="text-subtitle-1 text-high-emphasis">Tỉnh thành</div>
 
             <v-autocomplete
-              variant="outlined"
               density="compact"
               hide-details="true"
-              :items="cityNames"
-            >
-
-            </v-autocomplete>
+              v-model="address.cityId"
+              :items="cities"
+              item-title="name"
+              item-value="code"
+              variant="outlined"
+              @update:modelValue="fetchCommunes"
+            ></v-autocomplete>
 
           </v-col>
 
@@ -269,11 +315,16 @@ onMounted(() => {
 
             <div class="text-subtitle-1 text-high-emphasis">Xã phường</div>
 
-            <v-text-field
-              variant="outlined"
+            <v-autocomplete
               density="compact"
               hide-details="true"
-            ></v-text-field>
+              v-model="address.communeId"
+              :items="communes"
+              item-title="name"
+              item-value="code"
+              variant="outlined"
+              :disabled="!address.cityId"
+            ></v-autocomplete>
 
           </v-col>
 
@@ -285,7 +336,7 @@ onMounted(() => {
 
             <v-text-field
               variant="outlined"
-              v-model="titleCaps"
+              v-model="address.street"
               density="compact"
               hide-details="true"
             ></v-text-field>
