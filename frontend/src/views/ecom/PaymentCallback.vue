@@ -15,11 +15,12 @@ const route = useRoute()
       <template v-else-if="route.query.page_method === 'COD'"> COD </template>
 
       <template v-else>NOT OK</template>
+
     </v-card-text>
 
     <v-card-actions class="justify-center align-center">
 
-      <v-btn :to="{name: 'landing'}">Tiếp tục mua sắm</v-btn>
+      <v-btn :to="{ name: 'landing' }">Tiếp tục mua sắm</v-btn>
 
     </v-card-actions>
 

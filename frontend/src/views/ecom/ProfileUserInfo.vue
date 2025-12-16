@@ -272,11 +272,18 @@ onMounted(() => {
 
       <v-divider></v-divider>
 
-      <v-card-text> </v-card-text>
+      <v-card-text>
+
+        <v-data-table
+          :items="userProfileStore.userInfo.addressList"
+          hide-default-footer
+        >
+
+        </v-data-table>
+
+      </v-card-text>
 
     </v-card>
-
-    <v-data-table :items="userProfileStore.userInfo.addressList"> </v-data-table>
 
   </v-sheet>
 

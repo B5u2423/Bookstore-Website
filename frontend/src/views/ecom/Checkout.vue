@@ -1,6 +1,6 @@
 <script setup>
 import { useCartStore } from '@/stores/cart-store'
-import {onBeforeMount, onMounted, ref} from 'vue'
+import { onBeforeMount, onMounted, ref } from 'vue'
 import { PaymentService, OrderService, AddressInfoService } from '@/api/cart-api'
 import { useAuthStore } from '@/stores/auth-store'
 import { useUserProfileStore } from '@/stores/user-profile-store'
@@ -59,10 +59,10 @@ async function confirmCheckout() {
   // change to payment page
   try {
     // create order in db
-    // const orderResponse = await OrderService.createOrder(shippingInfo.value, authStore.accessToken)
+    const orderResponse = await OrderService.createOrder(shippingInfo.value, authStore.accessToken)
 
     if (shippingInfo.value.paymentMethod === 'COD') {
-      router.push({ name: 'callback', query: {page_method: 'COD'} })
+      router.push({ name: 'callback', query: { page_method: 'COD' } })
       cartStore.reset()
     } else {
       // create payment url
@@ -82,7 +82,6 @@ async function confirmCheckout() {
     console.error('Error checkout', error)
   }
 }
-
 
 onMounted(() => {
   fetchCities()
@@ -146,17 +145,27 @@ onMounted(() => {
               :disabled="true"
             ></v-text-field>
 
-            <div class="text-subtitle-1 text-high-emphasis">Số điện thoại</div>
+            <div class="text-subtitle-1 text-high-emphasis">
+              Số điện thoại
+              <span class="text-red">*</span>
+
+            </div>
 
             <v-text-field
               variant="outlined"
               v-model="shippingInfo.phone"
               density="compact"
               hide-details="true"
-              :disabled="userProfileStore.userInfo.phone !== '' && userProfileStore.userInfo.phone !== null"
+              :disabled="
+                userProfileStore.userInfo.phone !== '' && userProfileStore.userInfo.phone !== null
+              "
             ></v-text-field>
 
-            <div class="text-subtitle-1 text-high-emphasis">Tỉnh thành</div>
+            <div class="text-subtitle-1 text-high-emphasis">
+              Tỉnh thành
+              <span class="text-red">*</span>
+
+            </div>
 
             <v-autocomplete
               density="compact"
@@ -169,7 +178,10 @@ onMounted(() => {
               @update:modelValue="fetchCommunes"
             ></v-autocomplete>
 
-            <div class="text-subtitle-1 text-high-emphasis">Xã phường</div>
+            <div class="text-subtitle-1 text-high-emphasis">
+              Xã phường
+              <span class="text-red">*</span>
+            </div>
 
             <v-autocomplete
               density="compact"
@@ -182,7 +194,11 @@ onMounted(() => {
               :disabled="!shippingInfo.cityId"
             ></v-autocomplete>
 
-            <div class="text-subtitle-1 text-high-emphasis">Địa chỉ (số nhà, đường ngõ,...)</div>
+            <div class="text-subtitle-1 text-high-emphasis">
+              Địa chỉ (số nhà, đường ngõ,...)
+              <span class="text-red">*</span>
+
+            </div>
 
             <v-text-field
               variant="outlined"
@@ -377,6 +393,12 @@ onMounted(() => {
                 color="primary"
                 @click="confirmCheckout"
                 class="mr-3"
+                :disabled="
+                  shippingInfo.communeId === '' ||
+                  shippingInfo.cityId === '' ||
+                  shippingInfo.street === '' ||
+                  shipping == ''
+                "
               >
                  Hoàn tất đơn hàng
               </v-btn>
