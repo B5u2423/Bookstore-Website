@@ -1,4 +1,4 @@
-import { CustomerService, getCustomerAccount } from '@/api/customer-api'
+import { CustomerService } from '@/api/customer-api'
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import { useAuthStore } from './auth-store'

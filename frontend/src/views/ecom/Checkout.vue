@@ -1,6 +1,6 @@
 <script setup>
 import { useCartStore } from '@/stores/cart-store'
-import { onMounted, ref } from 'vue'
+import {onBeforeMount, onMounted, ref} from 'vue'
 import { PaymentService, OrderService, AddressInfoService } from '@/api/cart-api'
 import { useAuthStore } from '@/stores/auth-store'
 import { useUserProfileStore } from '@/stores/user-profile-store'
@@ -8,29 +8,33 @@ import router from '@/router'
 import HorizontalBookCard from '@/components/books/HorizontalBookCard.vue'
 import { formatPriceVNLocale } from '@/utils/utils'
 
+function bootStrapValues() {
+  return {
+    cityId: '',
+    communeId: '',
+    cityName: '',
+    communeName: '',
+    street: '',
+    amount: cartStore.totalAmount,
+    email: userProfileStore.userInfo.email,
+    phone: userProfileStore.userInfo.phone,
+    firstName: userProfileStore.userInfo.firstName,
+    lastName: userProfileStore.userInfo.lastName,
+    paymentMethod: 'COD',
+    info: '',
+  }
+}
+
 const cartStore = useCartStore()
 const authStore = useAuthStore()
 const userProfileStore = useUserProfileStore()
-const paymentMethod = ref('COD')
 const shipping = ref('')
 
 // select box data for input shipping info
 const cities = ref([])
 const communes = ref([])
 
-const shippingInfo = ref({
-  cityId: '',
-  communeId: '',
-  cityName: '',
-  communeName: '',
-  street: '',
-  amount: cartStore.totalAmount,
-  email: userProfileStore.userInfo.email,
-  phone: userProfileStore.userInfo.phone,
-  firstName: userProfileStore.userInfo.firstName,
-  lastName: userProfileStore.userInfo.lastName,
-  info: '',
-})
+const shippingInfo = ref(bootStrapValues())
 
 async function fetchCities() {
   try {
@@ -57,28 +61,28 @@ async function confirmCheckout() {
     // create order in db
     // const orderResponse = await OrderService.createOrder(shippingInfo.value, authStore.accessToken)
 
-    if (paymentMethod.value === 'COD') {
-      router.push({ name: 'callback' })
-      console.log('ok')
+    if (shippingInfo.value.paymentMethod === 'COD') {
+      router.push({ name: 'callback', query: {page_method: 'COD'} })
+      cartStore.reset()
     } else {
       // create payment url
-      // const res = await PaymentService.createPaymentPage(
-      //   {
-      //     amount: cartStore.totalAmount,
-      //     info: shippingInfo.info,
-      //   },
-      //   authStore.accessToken,
-      // )
-      // // redirect
-      // window.location.href = res.paymentUrl
-      // cartStore.reset()
+      const res = await PaymentService.createPaymentPage(
+        {
+          amount: cartStore.totalAmount,
+          info: shippingInfo.value.info,
+        },
+        authStore.accessToken,
+      )
+      // redirect
+      window.location.href = res?.paymentUrl
+      cartStore.reset()
+      // call back to page after
     }
   } catch (error) {
     console.error('Error checkout', error)
   }
 }
 
-function load() {}
 
 onMounted(() => {
   fetchCities()
@@ -149,7 +153,7 @@ onMounted(() => {
               v-model="shippingInfo.phone"
               density="compact"
               hide-details="true"
-              :disabled="true"
+              :disabled="userProfileStore.userInfo.phone !== '' && userProfileStore.userInfo.phone !== null"
             ></v-text-field>
 
             <div class="text-subtitle-1 text-high-emphasis">Tỉnh thành</div>
@@ -247,7 +251,7 @@ onMounted(() => {
               class="my-2"
             ></v-divider>
 
-            <v-radio-group v-model="paymentMethod">
+            <v-radio-group v-model="shippingInfo.paymentMethod">
 
               <v-radio
                 label="Thanh toán khi giao hàng (Cash On Delivery)"

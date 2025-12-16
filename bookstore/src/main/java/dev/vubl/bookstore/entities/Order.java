@@ -16,7 +16,23 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order extends BaseEntity {
-  @ManyToOne private ApplicationUser customer;
+  @Column(name = "email")
+  private String email;
+
+  @Column(name = "phone_number")
+  private String phoneNumber;
+
+  @Column(name = "first_name")
+  private String firstName;
+
+  @Column(name = "last_name")
+  private String lastName;
+
+  @Column(name = "note")
+  private String note;
+
+  @Enumerated(EnumType.STRING)
+  private OrderStatus orderStatus;
 
   @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
   @JsonManagedReference

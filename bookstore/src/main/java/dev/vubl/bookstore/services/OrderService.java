@@ -28,7 +28,6 @@ public class OrderService {
     ApplicationUser user = authService.readUserFromToken(token);
 
     Order order = new Order();
-    order.setCustomer(user);
     order.setItems(new ArrayList<>());
     BigDecimal total = BigDecimal.ZERO;
 
@@ -58,16 +57,24 @@ public class OrderService {
       order.getItems().add(oi);
       total = total.add(oi.getPriceAtPurchase().multiply(BigDecimal.valueOf(oi.getQuantity())));
     }
-    // TODO: Update this to user choice later
-    order.setPaymentMethod(PaymentMethod.ONLINE_TRANSFER);
+    // order meta data
+    order.setPaymentMethod(shippingInfo.paymentMethod());
     order.setOrderDate(LocalDate.now());
+    order.setNote(shippingInfo.info());
+    order.setOrderStatus(OrderStatus.PENDING);
     if (shippingInfo.amount().compareTo(total) != 0) {
       throw new IllegalStateException("Order total is not the same !!!!");
     }
+    // set address
     order.setTotalAmount(shippingInfo.amount());
     order.setCity(shippingInfo.city());
     order.setCommune(shippingInfo.commune());
     order.setStreet(shippingInfo.street());
+    // set user
+    order.setFirstName(shippingInfo.firstName());
+    order.setLastName(shippingInfo.lastName());
+    order.setEmail(shippingInfo.email());
+    order.setPhoneNumber(shippingInfo.phone());
 
     // save order
     Order savedOrder = orderRepo.save(order);
