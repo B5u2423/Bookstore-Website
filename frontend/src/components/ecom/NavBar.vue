@@ -146,7 +146,7 @@ async function handleLogout() {
         :offset-x="6"
         :offset-y="6"
         location="top right"
-        color="warning"
+        color="primary"
         :content="cartStore.cartItemsCount"
       >
 
