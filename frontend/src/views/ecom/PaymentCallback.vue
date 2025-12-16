@@ -12,8 +12,6 @@ const route = useRoute()
 
       <template v-if="route.query.vnp_ResponseCode === '00'"> ONLINE </template>
 
-      <template v-else-if="route.query.page_method === 'COD'"> COD </template>
-
       <template v-else>NOT OK</template>
 
     </v-card-text>

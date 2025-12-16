@@ -1,6 +1,6 @@
 <script setup>
 import { useCartStore } from '@/stores/cart-store'
-import { onBeforeMount, onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { PaymentService, OrderService, AddressInfoService } from '@/api/cart-api'
 import { useAuthStore } from '@/stores/auth-store'
 import { useUserProfileStore } from '@/stores/user-profile-store'
@@ -30,6 +30,10 @@ const authStore = useAuthStore()
 const userProfileStore = useUserProfileStore()
 const shipping = ref('')
 
+const rules = {
+  required: (v) => !!v || 'Không được bỏ trống trường',
+  phone: (v) => /^\d{10,11}$/.test(v) || 'Số điện thoại không được chứa chữ cái hay kí tự, độ dài phải nhỏ hơn 11'
+}
 // select box data for input shipping info
 const cities = ref([])
 const communes = ref([])
@@ -62,7 +66,7 @@ async function confirmCheckout() {
     const orderResponse = await OrderService.createOrder(shippingInfo.value, authStore.accessToken)
 
     if (shippingInfo.value.paymentMethod === 'COD') {
-      router.push({ name: 'callback', query: { page_method: 'COD' } })
+      router.push({ name: 'landing' })
       cartStore.reset()
     } else {
       // create payment url
@@ -75,13 +79,29 @@ async function confirmCheckout() {
       )
       // redirect
       window.location.href = res?.paymentUrl
-      cartStore.reset()
       // call back to page after
+      cartStore.reset()
     }
   } catch (error) {
     console.error('Error checkout', error)
   }
 }
+
+const isPhoneValid = computed(() => {
+  return /^\d{10,11}$/.test(shippingInfo.value.phone)
+})
+
+const isShippingValid = computed(() => {
+  return (
+      isPhoneValid.value &&
+      !!shippingInfo.value.communeId  &&
+      !!shippingInfo.value.cityId  &&
+      !!shippingInfo.value.street  &&
+          !!shippingInfo.value.phone &&
+      !!shipping.value
+  )
+})
+
 
 onMounted(() => {
   fetchCities()
@@ -146,7 +166,7 @@ onMounted(() => {
             ></v-text-field>
 
             <div class="text-subtitle-1 text-high-emphasis">
-              Số điện thoại
+               Số điện thoại
               <span class="text-red">*</span>
 
             </div>
@@ -155,14 +175,14 @@ onMounted(() => {
               variant="outlined"
               v-model="shippingInfo.phone"
               density="compact"
-              hide-details="true"
+              :rules="[rules.required, rules.phone]"
               :disabled="
                 userProfileStore.userInfo.phone !== '' && userProfileStore.userInfo.phone !== null
               "
             ></v-text-field>
 
             <div class="text-subtitle-1 text-high-emphasis">
-              Tỉnh thành
+               Tỉnh thành
               <span class="text-red">*</span>
 
             </div>
@@ -179,7 +199,7 @@ onMounted(() => {
             ></v-autocomplete>
 
             <div class="text-subtitle-1 text-high-emphasis">
-              Xã phường
+               Xã phường
               <span class="text-red">*</span>
             </div>
 
@@ -195,7 +215,7 @@ onMounted(() => {
             ></v-autocomplete>
 
             <div class="text-subtitle-1 text-high-emphasis">
-              Địa chỉ (số nhà, đường ngõ,...)
+               Địa chỉ (số nhà, đường ngõ,...)
               <span class="text-red">*</span>
 
             </div>
@@ -204,7 +224,7 @@ onMounted(() => {
               variant="outlined"
               v-model="shippingInfo.street"
               density="compact"
-              hide-details="true"
+              :rules="[rules.required]"
             ></v-text-field>
 
             <div class="text-subtitle-1 text-high-emphasis">Ghi chú (tùy chọn)</div>
@@ -393,12 +413,7 @@ onMounted(() => {
                 color="primary"
                 @click="confirmCheckout"
                 class="mr-3"
-                :disabled="
-                  shippingInfo.communeId === '' ||
-                  shippingInfo.cityId === '' ||
-                  shippingInfo.street === '' ||
-                  shipping == ''
-                "
+                :disabled="!isShippingValid"
               >
                  Hoàn tất đơn hàng
               </v-btn>
