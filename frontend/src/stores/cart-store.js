@@ -43,20 +43,20 @@ export const useCartStore = defineStore(
       }
       const response = await CartService.getUsersActiveCart(accessToken)
       const { id, user, items, cartStatus } = response
+      // short circuit if the item list is empty
+      if (!items) return
       // mapper
-      if (items.length > 0) {
-        items.map((item) => {
-          addItemToLocalCart({
-            id: item.book.id,
-            title: item.book.title,
-            author: item.book.author,
-            price: item.book.price,
-            slug: item.book.urlSlug,
-            image: item.book.imageUrl,
-            quantity: item.quantity,
-          })
+      items.map((item) => {
+        addItemToLocalCart({
+          id: item.book.id,
+          title: item.book.title,
+          author: item.book.author,
+          price: item.book.price,
+          slug: item.book.urlSlug,
+          image: item.book.imageUrl,
+          quantity: item.quantity,
         })
-      }
+      })
     }
 
     function reset() {

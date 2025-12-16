@@ -10,8 +10,8 @@ import { formatPriceVNLocale } from '@/utils/utils'
 
 function bootStrapValues() {
   return {
-    cityId: '',
-    communeId: '',
+    cityId: null,
+    communeId: null,
     cityName: '',
     communeName: '',
     street: '',
@@ -64,12 +64,20 @@ async function fetchCommunes() {
 async function confirmCheckout() {
   // change to payment page
   try {
+    // mapping cityId and communeId
+    const selectedCity = cities.value.find((obj) => obj?.code === Number(shippingInfo.value.cityId))
+    shippingInfo.value.cityName = selectedCity.name
+    const selectedCommune = communes.value.find(
+      (obj) => obj?.code === Number(shippingInfo.value.communeId),
+    )
+    shippingInfo.value.communeName = selectedCommune.name
+
     // create order in db
     const orderResponse = await OrderService.createOrder(shippingInfo.value, authStore.accessToken)
 
     if (shippingInfo.value.paymentMethod === 'COD') {
-      router.push({ name: 'landing' })
       cartStore.reset()
+      router.push('/')
     } else {
       // create payment url
       const res = await PaymentService.createPaymentPage(

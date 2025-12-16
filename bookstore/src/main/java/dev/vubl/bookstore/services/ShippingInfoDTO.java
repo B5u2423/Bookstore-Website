@@ -12,9 +12,9 @@ public record ShippingInfoDTO(
     String phone,
     PaymentMethod paymentMethod,
     BigDecimal amount,
-    String city,
+    String cityName,
     Integer cityId,
     Integer communeId,
-    String commune,
+    String communeName,
     String street,
     String info) {}
