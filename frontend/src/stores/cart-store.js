@@ -1,7 +1,9 @@
-import { addToCart, getUsersActiveCart, removeAllItemsFromCart } from '@/api/cart-api'
+import {CartService} from '@/api/cart-api'
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import { useAuthStore } from './auth-store'
+import Book from "@/views/admin/Book.vue";
+import {BookService} from "@/api/book-api.js";
 
 export const useCartStore = defineStore(
   'cart',
@@ -34,14 +36,16 @@ export const useCartStore = defineStore(
     async function syncCartWithBackEnd({ token: accessToken }) {
       // if FE cart is not empty
       if (activeCart.value.length > 0) {
-        const removeAllRes = await removeAllItemsFromCart(accessToken)
+        const removeAllRes = await CartService.removeAllItemsFromCart(accessToken)
         const res = activeCart.value.map((item) =>
-          addToCart(accessToken, { bookId: item.id, quantity: item.quantity }),
+          CartService.addToCart(accessToken, { bookId: item.id, quantity: item.quantity }),
         )
       }
-      const response = await getUsersActiveCart(accessToken)
-      const { id, user, items, cartStatus } = response.data
+      const response = await CartService.getUsersActiveCart(accessToken)
+      const { id, user, items, cartStatus } = response
       // mapper
+        if (items.length > 0) {
+
       items.map((item) => {
         addItemToLocalCart({
           id: item.book.id,
@@ -53,6 +57,7 @@ export const useCartStore = defineStore(
           quantity: item.quantity,
         })
       })
+        }
     }
 
     function reset() {
