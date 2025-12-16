@@ -3,48 +3,44 @@ import api, { provinceApi } from './api-config'
 // TODO: Rewrite these api into CartService Object
 
 export const CartService = {
-   async addToCart(token, body) {
-       try {
-           const res= await api.post('/api/v1/carts/add', body, {
-               headers: {
-                   Authorization: `Bearer ${token}`,
-               },
-           })
-           return res.data
-       } catch (error) {
-           console.error("Error adding item to cart")
-       }
-   },
+  async addToCart(token, body) {
+    try {
+      const res = await api.post('/api/v1/carts/add', body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      return res.data
+    } catch (error) {
+      console.error('Error adding item to cart')
+    }
+  },
 
-    async getUsersActiveCart(token) {
-       try {
-
-           const res = await api.get('/api/v1/carts', {
-               headers: {
-                   Authorization: `Bearer ${token}`,
-               },
-           })
-           return res.data
-       } catch (error) {
-           console.error("Error get user active cart")
-       }
-},
-    async removeAllItemsFromCart(token) {
-       try {
-
-           const res = await api.delete('/api/v1/carts/remove-all', {
-               headers: {
-                   Authorization: `Bearer ${token}`,
-               },
-           })
-           return res.data
-       } catch(error) {
-           console.error("Error remove item from cart")
-       }
+  async getUsersActiveCart(token) {
+    try {
+      const res = await api.get('/api/v1/carts', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      return res.data
+    } catch (error) {
+      console.error('Error get user active cart')
+    }
+  },
+  async removeAllItemsFromCart(token) {
+    try {
+      const res = await api.delete('/api/v1/carts/remove-all', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      return res.data
+    } catch (error) {
+      console.error('Error remove item from cart')
+    }
+  },
 }
-}
-
-
 
 export const PaymentService = {
   async createPaymentPage(body, token) {

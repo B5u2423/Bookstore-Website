@@ -32,7 +32,9 @@ const shipping = ref('')
 
 const rules = {
   required: (v) => !!v || 'Không được bỏ trống trường',
-  phone: (v) => /^\d{10,11}$/.test(v) || 'Số điện thoại không được chứa chữ cái hay kí tự, độ dài phải nhỏ hơn 11'
+  phone: (v) =>
+    /^\d{10,11}$/.test(v) ||
+    'Số điện thoại không được chứa chữ cái hay kí tự, độ dài phải nhỏ hơn 11',
 }
 // select box data for input shipping info
 const cities = ref([])
@@ -93,15 +95,14 @@ const isPhoneValid = computed(() => {
 
 const isShippingValid = computed(() => {
   return (
-      isPhoneValid.value &&
-      !!shippingInfo.value.communeId  &&
-      !!shippingInfo.value.cityId  &&
-      !!shippingInfo.value.street  &&
-          !!shippingInfo.value.phone &&
-      !!shipping.value
+    isPhoneValid.value &&
+    !!shippingInfo.value.communeId &&
+    !!shippingInfo.value.cityId &&
+    !!shippingInfo.value.street &&
+    !!shippingInfo.value.phone &&
+    !!shipping.value
   )
 })
-
 
 onMounted(() => {
   fetchCities()
@@ -201,6 +202,7 @@ onMounted(() => {
             <div class="text-subtitle-1 text-high-emphasis">
                Xã phường
               <span class="text-red">*</span>
+
             </div>
 
             <v-autocomplete

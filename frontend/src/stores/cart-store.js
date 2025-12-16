@@ -1,9 +1,9 @@
-import {CartService} from '@/api/cart-api'
+import { CartService } from '@/api/cart-api'
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import { useAuthStore } from './auth-store'
-import Book from "@/views/admin/Book.vue";
-import {BookService} from "@/api/book-api.js";
+import Book from '@/views/admin/Book.vue'
+import { BookService } from '@/api/book-api.js'
 
 export const useCartStore = defineStore(
   'cart',
@@ -44,20 +44,19 @@ export const useCartStore = defineStore(
       const response = await CartService.getUsersActiveCart(accessToken)
       const { id, user, items, cartStatus } = response
       // mapper
-        if (items.length > 0) {
-
-      items.map((item) => {
-        addItemToLocalCart({
-          id: item.book.id,
-          title: item.book.title,
-          author: item.book.author,
-          price: item.book.price,
-          slug: item.book.urlSlug,
-          image: item.book.imageUrl,
-          quantity: item.quantity,
+      if (items.length > 0) {
+        items.map((item) => {
+          addItemToLocalCart({
+            id: item.book.id,
+            title: item.book.title,
+            author: item.book.author,
+            price: item.book.price,
+            slug: item.book.urlSlug,
+            image: item.book.imageUrl,
+            quantity: item.quantity,
+          })
         })
-      })
-        }
+      }
     }
 
     function reset() {
