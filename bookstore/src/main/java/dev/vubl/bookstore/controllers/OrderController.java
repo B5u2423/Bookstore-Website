@@ -2,7 +2,7 @@ package dev.vubl.bookstore.controllers;
 
 import dev.vubl.bookstore.entities.Order;
 import dev.vubl.bookstore.services.OrderService;
-import dev.vubl.bookstore.services.ShippingInfoDTO;
+import dev.vubl.bookstore.dtos.ShippingInfoDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;

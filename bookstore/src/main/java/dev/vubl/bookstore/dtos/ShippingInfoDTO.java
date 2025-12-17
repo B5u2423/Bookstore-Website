@@ -1,4 +1,4 @@
-package dev.vubl.bookstore.services;
+package dev.vubl.bookstore.dtos;
 
 import dev.vubl.bookstore.entities.PaymentMethod;
 import java.math.BigDecimal;
