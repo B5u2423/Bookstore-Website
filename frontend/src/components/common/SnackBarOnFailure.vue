@@ -1,18 +1,19 @@
 <script setup>
 const props = defineProps({
-  snackbar: Object,
+  message: String,
+  show: Boolean,
 })
 </script>
 
 <template>
 
   <v-snackbar
-    v-model="snackbar.show"
-    :color="snackbar.color"
+    v-model="show"
+    color="error"
     timeout="3000"
     location="top"
   >
-     {{ snackbar.message }}
+     {{ message }}
   </v-snackbar>
 
 </template>

@@ -2,10 +2,10 @@
 import { BookService } from '@/api/book-api'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
 import { formatPriceVNLocale } from '@/utils/utils'
-import { computed, onMounted, toRef, ref, shallowRef, onUpdated } from 'vue'
+import { computed, onMounted, toRef, ref, shallowRef, onUpdated, isShallow } from 'vue'
 import { VFileUpload } from 'vuetify/labs/VFileUpload'
-import SnackBar from '@/components/common/SnackBar.vue'
-import Category from './Category.vue'
+import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
+import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 import { CategoryService } from '@/api/category-api'
 
 const adminAuthStore = useAdminAuthStore()
@@ -56,12 +56,10 @@ const confirmationDialog = shallowRef(false)
 const itemId = ref('')
 const isDelLoading = ref(false)
 
-// snackbar
-const snackbar = ref({
-  show: false,
-  message: '',
-  color: 'success',
-})
+// snackbars
+const isError = ref(false)
+const isSuccess = ref(false)
+const message = ref('')
 
 async function loadItems({ page, itemsPerPage }) {
   loading.value = true
@@ -121,11 +119,6 @@ async function remove() {
   isDelLoading.value = true
   try {
     const res = await BookService.deleteBookById(itemId.value, adminAuthStore.accessToken)
-    snackbar.value = {
-      show: true,
-      message: res,
-      color: 'success',
-    }
     // update on frontend, just for immediate view
     const index = serverItems.value.findIndex((book) => book.id === itemId.value)
     serverItems.value.splice(index, 1)
@@ -149,38 +142,26 @@ async function save() {
         adminAuthStore.accessToken,
       )
       // success snack bar
-      snackbar.value = {
-        show: true,
-        message: 'Cập nhật sản phẩm thành công',
-        color: 'success',
-      }
+      isSuccess.value = true
+      message.value = 'Cập nhật sản phẩm thành công'
       // edit immediate view
       const index = serverItems.value.findIndex((book) => book.id === formModel.value.id)
       serverItems.value[index] = formModel.value
     } catch (error) {
       // error snack bar
-      snackbar.value = {
-        show: true,
-        message: `Lỗi cập nhật sản phẩm: ${error.message}`,
-        color: 'error',
-      }
+      isError.value = true
+      message.value = `Lỗi cập nhật sản phẩm ${error.message}`
       console.error('Error editing book')
     }
   } else {
     // API call
     try {
       const res = await BookService.addNewBook(formModel.value, adminAuthStore.accessToken)
-      snackbar.value = {
-        show: true,
-        message: 'Thêm sản phẩm thành công',
-        color: 'success',
-      }
+      isSuccess.value = true
+      message.value = 'Thêm sản phẩm thành công'
     } catch (error) {
-      snackbar.value = {
-        show: true,
-        message: `Lỗi thêm mới sản phẩm: ${error.message}`,
-        color: 'error',
-      }
+      isError.value = true
+      message.value = `Lỗi thêm mới sản phẩm ${error.message}`
       console.error('Error adding new book')
     }
     // update the immediate view
@@ -643,7 +624,15 @@ onMounted(() => {
 
   </v-dialog>
 
-  <SnackBar :snackbar="snackbar" />
+  <SnackBarOnFailure
+    :show="isError"
+    :message="message"
+  />
+
+  <SnackBarOnSuccess
+    :show="isSuccess"
+    :message="message"
+  />
 
 </template>
 

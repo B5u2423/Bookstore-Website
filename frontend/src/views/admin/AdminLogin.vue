@@ -1,5 +1,6 @@
 <script setup>
-import SnackBar from '@/components/common/SnackBar.vue'
+import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
+import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -11,11 +12,10 @@ const email = ref('')
 const password = ref('')
 const isLoading = ref(false)
 
-const snackbar = ref({
-  show: false,
-  message: '',
-  color: 'success',
-})
+// snackbars
+const isError = ref(false)
+const isSuccess = ref(false)
+const message = ref('')
 
 async function handleLogin() {
   isLoading.value = true
@@ -26,22 +26,15 @@ async function handleLogin() {
 
   // handle response
   if (result.success) {
-    snackbar.value = {
-      show: true,
-      message: 'Đăng nhập thành công!',
-      color: 'success',
-    }
+    isSuccess.value = true
+    message.value = 'Đăng nhập thành công!'
     setTimeout(() => {
       router.push({ name: 'admin-dashboard' })
       isLoading.value = false
     }, 1500)
   } else {
     isLoading.value = false
-    snackbar.value = {
-      show: true,
-      message: result.error || 'Đăng nhập thất bại',
-      color: 'error',
-    }
+    ;((isError.value = true), (message.value = 'Đăng nhập thất bại'))
   }
 }
 </script>
@@ -134,7 +127,15 @@ async function handleLogin() {
 
     </v-row>
 
-    <SnackBar :snackbar="snackbar" />
+    <SnackBarOnFailure
+      :show="isError"
+      :message="message"
+    />
+
+    <SnackBarOnSuccess
+      :show="isSuccess"
+      :message="message"
+    />
 
   </v-container>
 
