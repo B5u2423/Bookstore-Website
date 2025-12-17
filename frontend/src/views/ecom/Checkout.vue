@@ -65,10 +65,10 @@ async function confirmCheckout() {
   // change to payment page
   try {
     // mapping cityId and communeId
-    const selectedCity = cities.value.find((obj) => obj?.code === Number(shippingInfo.value.cityId))
+    const selectedCity = cities.value.find((obj) => obj?.code === shippingInfo.value.cityId)
     shippingInfo.value.cityName = selectedCity.name
     const selectedCommune = communes.value.find(
-      (obj) => obj?.code === Number(shippingInfo.value.communeId),
+      (obj) => obj?.code === shippingInfo.value.communeId,
     )
     shippingInfo.value.communeName = selectedCommune.name
 
