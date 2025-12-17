@@ -1,4 +1,4 @@
-import { getCustomerAccount } from '@/api/customer-api'
+import { CustomerService } from '@/api/customer-api'
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import { useAuthStore } from './auth-store'
@@ -11,16 +11,18 @@ export const useUserProfileStore = defineStore(
       lastName: '',
       phone: '',
       email: '',
+      addressList: [],
     })
 
     async function getUserInfo() {
       const authStore = useAuthStore()
-      const res = await getCustomerAccount(authStore.accessToken)
+      const res = await CustomerService.getCustomerAccount(authStore.accessToken)
 
-      userInfo.value.firstName = res.data.firstName
-      userInfo.value.lastName = res.data.lastName
-      userInfo.value.email = res.data.email
-      userInfo.value.phone = res.data.phoneNumber
+      userInfo.value.firstName = res.firstName
+      userInfo.value.lastName = res.lastName
+      userInfo.value.email = res.email
+      userInfo.value.phone = res.phoneNumber
+      userInfo.value.addressList = res.addressList
     }
 
     function updateUserInfo({ firstName, lastName, phone, email }) {

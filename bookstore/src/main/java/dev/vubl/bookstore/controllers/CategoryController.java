@@ -20,6 +20,16 @@ public class CategoryController {
   private final BookService bookService;
 
   @GetMapping("/all")
+  public ResponseEntity<List<CategoryDTO>> getAllCategories() {
+    return ResponseEntity.ok().body(categoryService.getAllCategories());
+  }
+
+  @GetMapping("/children")
+  public ResponseEntity<List<CategoryDTO>> getChildrenCategories() {
+    return ResponseEntity.ok().body(categoryService.getChildrenCategories());
+  }
+
+  @GetMapping("/parents")
   public ResponseEntity<List<CategoryDTO>> getParentCategories() {
     return ResponseEntity.ok().body(categoryService.getParentCategories());
   }
@@ -29,15 +39,6 @@ public class CategoryController {
       @RequestParam(value = "page", defaultValue = "0") int page,
       @RequestParam(value = "size", defaultValue = "10") int size) {
     return new PagedModel<>(categoryService.getAllCategoriesPaginated(page, size));
-  }
-
-  // TODO: Might remove this later
-  @PutMapping("/add-child")
-  public ResponseEntity<String> addChildCategory(
-      @RequestParam(value = "parent") Integer parentId,
-      @RequestParam(value = "child") Integer childId) {
-    categoryService.addChildCategory(parentId, childId);
-    return ResponseEntity.ok().body("Ok");
   }
 
   @PutMapping("/update")

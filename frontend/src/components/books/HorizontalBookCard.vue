@@ -1,53 +1,47 @@
 <script setup>
-import { ref } from 'vue'
-
-const props = defineProps(['product'])
-
-// Custom hover to style `a` element
-const isHovered = ref(false)
+import { formatPriceVNLocale } from '@/utils/utils'
+const props = defineProps({
+  product: Object,
+})
 </script>
 
 <template>
 
   <v-card
-    class="ma-2"
-    width="200"
-    @mouseenter="isHovered = true"
-    @mouseleave="isHovered = false"
-    hover
+    density="compact"
+    variant="flat"
+    min-width="100%"
+    class="pa-1"
   >
 
-    <router-link :to="{ name: 'product-detail', params: { title: product.title } }">
+    <div class="d-flex">
 
-      <v-img
-        :src="product.image"
-        height="250"
-        cove
-      ></v-img>
+      <div>
 
-      <v-card-title :class="[isHovered ? 'text-decoration-underline' : '']">
-         {{ product.title }}
-      </v-card-title>
+        <v-img
+          cover
+          :src="product.image"
+          width="75"
+          height="75"
+        ></v-img>
 
-      <v-card-subtitle>{{ product.author }}</v-card-subtitle>
+      </div>
 
-      <v-card-text>
-         From:
-        <strong>{{ product.price }}</strong>
+      <div class="d-flex flex-column justify-center">
 
-      </v-card-text>
+        <v-card-title class="pt-0">{{ product.title }}</v-card-title>
 
-    </router-link>
+        <v-card-subtitle>
+           {{ formatPriceVNLocale(product.price) }} x {{ product.quantity }} = {{
+            formatPriceVNLocale(product.price * product.quantity)
+          }} VND
+        </v-card-subtitle>
+
+      </div>
+
+    </div>
 
   </v-card>
 
 </template>
-
-<style scoped>
-a:link,
-  a:visited {
-    color: black; /* or whatever color you want */
-    text-decoration: none;
-  }
-</style>
 

@@ -146,18 +146,22 @@ async function handleLogout() {
         :offset-x="6"
         :offset-y="6"
         location="top right"
-        color="warning"
+        color="primary"
         :content="cartStore.cartItemsCount"
       >
 
         <v-btn
           :to="{ name: 'cart' }"
           icon="mdi-cart"
+          :active="false"
         ></v-btn>
 
       </v-badge>
 
-      <v-btn icon="mdi-bell"></v-btn>
+      <v-btn
+        icon="mdi-bell"
+        :active="false"
+      ></v-btn>
 
     </template>
 

@@ -1,8 +1,10 @@
 <script setup>
 import { CategoryService } from '@/api/category-api'
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
 const categories = ref([])
+const router = useRouter()
 
 function capitalizeFirstword(sentence) {
   const words = sentence.split(' ')
@@ -14,17 +16,21 @@ function capitalizeFirstword(sentence) {
     .join(' ')
 }
 
-async function fetchAllCategories() {
+async function fetchParentCategories() {
   try {
-    const res = await CategoryService.fetchAllCategories()
+    const res = await CategoryService.fetchParentCategories()
     categories.value = res
   } catch (error) {
     console.error('Error fetching all categories')
   }
 }
 
+function reRoute(route) {
+  router.push({ name: 'category-page', params: { slug: route } })
+}
+
 onMounted(() => {
-  fetchAllCategories()
+  fetchParentCategories()
 })
 </script>
 
@@ -46,45 +52,62 @@ onMounted(() => {
           class="text-left"
           link
           :to="{ name: 'category-page', params: { slug: 'tat-ca' } }"
-        >
-           Tất Cả Sách
-          <template v-slot:append>
-
-            <v-icon
-              icon="mdi-menu-right"
-              size="small"
-            ></v-icon>
-
-          </template>
-
-        </v-list-item>
-
-        <v-list-item
-          density="compact"
-          class="text-left"
-          v-for="(category, i) in categories"
-          :to="{ name: 'category-page', params: { slug: category.categorySlug } }"
-          link
           :active="false"
-          :key="i"
+          title="Tất Cả Sách"
         >
 
-          <v-list-item-title>{{ capitalizeFirstword(category.categoryName) }}</v-list-item-title>
+        </v-list-item>
 
-          <template v-slot:append>
+        <v-list-group
+          v-for="c in categories"
+          :value="c.categoryName"
+        >
 
-            <v-icon
-              icon="mdi-menu-right"
-              size="small"
-            ></v-icon>
+          <template v-slot:activator="{ props, isOpen }">
+
+            <v-list-item
+              class="text-start"
+              density="compact"
+              :active="false"
+            >
+
+              <v-list-item-title @click="reRoute(c.categorySlug)">
+                 {{ c.categoryName }}
+              </v-list-item-title>
+
+              <template v-slot:append>
+
+                <v-icon
+                  class="pa-3"
+                  v-show="isOpen == false"
+                  v-bind="props"
+                  icon="mdi-chevron-down"
+                ></v-icon>
+
+                <v-icon
+                  class="pa-3"
+                  v-show="isOpen"
+                  v-bind="props"
+                  icon="mdi-chevron-up"
+                ></v-icon>
+
+              </template>
+
+            </v-list-item>
 
           </template>
 
-        </v-list-item>
+          <v-list-item
+            v-for="sub in c.children"
+            :title="sub.categoryName"
+            :to="{ name: 'category-page', params: { slug: sub.categorySlug } }"
+            class="text-start"
+            density="compact"
+          ></v-list-item>
+
+        </v-list-group>
 
       </v-list>
-
-      <!-- List group or treeview should be suffice for this -->
 
     </v-card-text>
 

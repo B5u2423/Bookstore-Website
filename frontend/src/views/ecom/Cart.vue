@@ -1,23 +1,29 @@
 <script setup>
+import { OrderService, PaymentService } from '@/api/cart-api'
 import { useAuthStore } from '@/stores/auth-store'
 import { useCartStore } from '@/stores/cart-store'
 import { formatPriceVNLocale } from '@/utils/utils'
+import { shallowRef, ref } from 'vue'
 import { useRouter } from 'vuetify/lib/composables/router'
 
 const cartStore = useCartStore()
 const authStore = useAuthStore()
 const router = useRouter()
 
-// Methods
+const shippingInfo = ref({
+  city: '',
+  commune: '',
+  street: '',
+  amount: cartStore.totalAmount,
+})
+const dialog = shallowRef(false)
 
-function continueShopping() {
-  router.push('/')
-}
-
-function checkout() {
+async function checkout() {
   // if not logged in
   if (!authStore.isAuthenticated) {
     router.push({ name: 'login' })
+  } else {
+    router.push({ name: 'checkout' })
   }
 }
 </script>
@@ -148,7 +154,7 @@ function checkout() {
             <v-btn
               color="grey-lighten-1"
               class="mr-4"
-              @click="continueShopping"
+              :to="{ name: 'landing' }"
             >
                Tiếp tục mua hàng
             </v-btn>

@@ -21,6 +21,17 @@ import org.springframework.stereotype.Service;
 public class CategoryService {
   private final CategoryRepo categoryRepo;
 
+  public List<CategoryDTO> getAllCategories() {
+    return categoryRepo.findAll().stream().map(this::toDto).toList();
+  }
+
+  public List<CategoryDTO> getChildrenCategories() {
+    return categoryRepo.findAll().stream()
+        .filter(item -> item.getParentCategory() != null)
+        .map(this::toDto)
+        .toList();
+  }
+
   public List<CategoryDTO> getParentCategories() {
     return categoryRepo.findAll().stream()
         .filter(item -> item.getParentCategory() == null)
@@ -32,16 +43,6 @@ public class CategoryService {
     Pageable pageable = PageRequest.of(page, size);
     Page<Category> categoryPage = categoryRepo.findAllByOrderByIdAsc(pageable);
     return categoryPage.map(this::toDto);
-  }
-
-  // TODO: Might remove this later
-  public void addChildCategory(Integer parentId, Integer childId) {
-    if (parentId == null || childId == null)
-      throw new IllegalArgumentException("Parent/child category Id must not be null!");
-    Category parent = categoryRepo.findById(parentId).orElseThrow();
-    Category child = categoryRepo.findById(childId).orElseThrow();
-
-    parent.addChild(child);
   }
 
   public List<CategoryDTO> getPossibleChildCategories(Integer id) {

@@ -2,6 +2,7 @@ package dev.vubl.bookstore.services;
 
 import dev.vubl.bookstore.dtos.AccountDetailDTO;
 import dev.vubl.bookstore.dtos.AddressDTO;
+import dev.vubl.bookstore.dtos.ResetPasswordRequest;
 import dev.vubl.bookstore.dtos.UpdateProfileRequest;
 import dev.vubl.bookstore.entities.ApplicationUser;
 import dev.vubl.bookstore.entities.CustomerAddressInfo;
@@ -11,19 +12,28 @@ import dev.vubl.bookstore.repos.ApplicationUserRepo;
 import dev.vubl.bookstore.repos.CustomerAddressInfoRepo;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ApplicationUserService implements UserDetailsService {
+  private static final String EMAIL_SUBJECT = "Đặt lại mật khẩu";
+  private final String INSTANCE_NAME = this.getClass().getName();
+
   private final ApplicationUserRepo userRepo;
   private final CustomerAddressInfoRepo customerAddressInfoRepo;
+  private final PasswordEncoder passwordEncoder;
+  private final EmailService emailService;
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -69,7 +79,8 @@ public class ApplicationUserService implements UserDetailsService {
     try {
       this.createOrUpdateUser(user);
       return "Update profile successfully";
-    } catch (Exception e) {
+    } catch (RuntimeException e) {
+      log.error("[{}] Error updating user profile", INSTANCE_NAME);
       throw e;
     }
   }
@@ -135,6 +146,29 @@ public class ApplicationUserService implements UserDetailsService {
                             .build())
                 .toList())
         .build();
+  }
+
+  public void resetPassword(ResetPasswordRequest payload) {
+    // reset password
+    ApplicationUser user =
+        userRepo
+            .findByEmail(payload.email())
+            .orElseThrow(
+                () ->
+                    new RuntimeException(
+                        "[%s] No user with email  %s".formatted(INSTANCE_NAME, payload.email())));
+    String pass = UUID.randomUUID().toString().replace("-", "").substring(0, 12);
+    user.setPassword(passwordEncoder.encode(pass));
+    log.info("[{}] Password generated", INSTANCE_NAME);
+    try {
+      userRepo.save(user);
+      // send email
+      emailService.sendEmail(
+          payload.email(), EMAIL_SUBJECT, "Mật khẩu mới của bạn là %s".formatted(pass));
+      log.info("[{}] Email sent", INSTANCE_NAME);
+    } catch (RuntimeException e) {
+      log.error("[{}] Error in forget password flow", INSTANCE_NAME);
+    }
   }
 
   private ApplicationUser readUserByEmailOrThrowException(String email) {

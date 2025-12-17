@@ -143,6 +143,8 @@ async function handleLogin() {
 
       </div>
 
+      <p class="text-center"><a href="/reset"> Quên mật khẩu? </a></p>
+
     </div>
 
     <SnackBar :snackbar="snackbar" />

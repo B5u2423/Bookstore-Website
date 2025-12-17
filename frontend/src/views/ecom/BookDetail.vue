@@ -4,8 +4,11 @@ import { useCartStore } from '@/stores/cart-store'
 import { formatPriceVNLocale } from '@/utils/utils'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { useAuthStore } from '@/stores/auth-store.js'
+import { CartService } from '@/api/cart-api.js'
 
 const cartStore = useCartStore()
+const authStore = useAuthStore()
 
 const route = useRoute()
 const quantity = ref(1)
@@ -52,6 +55,17 @@ function handleAddToCart() {
     image: book.value.imageUrl,
     quantity: quantity.value,
   })
+  // call the endpoint directly
+  if (authStore.isAuthenticated) {
+    try {
+      const res = CartService.addToCart(authStore.accessToken, {
+        bookId: book.value.id,
+        quantity: quantity.value,
+      })
+    } catch (error) {
+      console.error('Error adding new book when already logged in')
+    }
+  }
 }
 </script>
 

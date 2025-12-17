@@ -2,6 +2,8 @@ package dev.vubl.bookstore.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.*;
 
@@ -14,13 +16,36 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order extends BaseEntity {
-  @ManyToOne private ApplicationUser customer;
+  @Column(name = "email")
+  private String email;
+
+  @Column(name = "phone_number")
+  private String phoneNumber;
+
+  @Column(name = "first_name")
+  private String firstName;
+
+  @Column(name = "last_name")
+  private String lastName;
+
+  @Column(name = "note")
+  private String note;
+
+  @Enumerated(EnumType.STRING)
+  private OrderStatus orderStatus;
 
   @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
   @JsonManagedReference
   private List<OrderItem> items;
 
-  // TODO: Payment method
+  @Enumerated(EnumType.STRING)
+  private PaymentMethod paymentMethod;
+
+  @Column(name = "total_amount")
+  private BigDecimal totalAmount;
+
+  @Column(name = "order_date")
+  private LocalDate orderDate;
 
   @Column(name = "city")
   private String city; // tỉnh/thành

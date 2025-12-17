@@ -7,7 +7,7 @@ import FooterSection from '@/components/ecom/Footer.vue'
 
   <NavBar />
 
-  <v-main class="bg-light-green-lighten-5 mt-3">
+  <v-main class="mt-3">
 
     <router-view></router-view>
 

@@ -44,6 +44,14 @@ const routes = [
         meta: { entrypoint: true },
       },
       {
+        path: 'reset',
+        name: 'reset',
+        components: {
+          default: () => import('@/views/ecom/ResetPassword.vue'),
+        },
+        meta: { entrypoint: true },
+      },
+      {
         path: 'profile',
         component: () => import('@/views/ecom/Profile.vue'),
         meta: { requiresAuth: true },
@@ -160,7 +168,15 @@ const routes = [
   {
     path: '/cart',
     component: EComNoSidebar,
-    children: [{ path: '', name: 'cart', component: () => import('@/views/ecom/Cart.vue') }],
+    children: [
+      { path: '', name: 'cart', component: () => import('@/views/ecom/Cart.vue') },
+      {
+        path: 'payment-callback',
+        name: 'callback',
+        component: () => import('@/views/ecom/PaymentCallback.vue'),
+      },
+      { path: 'checkout', name: 'checkout', component: () => import('@/views/ecom/Checkout.vue') },
+    ],
   },
   {
     path: '/:pathMatch(.*)*',
