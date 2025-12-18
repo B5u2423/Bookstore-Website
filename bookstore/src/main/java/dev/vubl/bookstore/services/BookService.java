@@ -10,7 +10,6 @@ import dev.vubl.bookstore.repos.BookRepo;
 import dev.vubl.bookstore.repos.CategoryRepo;
 import dev.vubl.bookstore.utils.SlugUtils;
 import jakarta.transaction.Transactional;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,9 +63,7 @@ public class BookService {
     try {
       if (bookResponseDTO.imageFile() != null) {
         log.info("[{}] Uploading image...", this.getClass().getName());
-        String returnedUrl = cloudinaryService.uploadImage(
-                bookResponseDTO.imageFile()
-        );
+        String returnedUrl = cloudinaryService.uploadImage(bookResponseDTO.imageFile());
         b.setImageUrl(returnedUrl);
       }
       log.info("[{}] Adding new book", this.getClass().getName());
@@ -101,10 +98,13 @@ public class BookService {
       b.setInStock(bookResponseDTO.inStock());
       b.setUrlSlug(SlugUtils.convertStringToSlug(bookResponseDTO.title()));
       b.setPrice(bookResponseDTO.price());
-      b.setCategory(
-          categoryRepo
-              .findById(bookResponseDTO.categoryId())
-              .orElseThrow(CategoryDoesNotExistException::new));
+      if (bookResponseDTO.categoryId() != null) {
+
+        b.setCategory(
+            categoryRepo
+                .findById(bookResponseDTO.categoryId())
+                .orElseThrow(CategoryDoesNotExistException::new));
+      }
 
       Book savedBook = bookRepo.save(b);
       return mapToBookResponseDTO(savedBook);

@@ -3,7 +3,6 @@ package dev.vubl.bookstore.controllers;
 import dev.vubl.bookstore.dtos.BookResponseDTO;
 import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
 import dev.vubl.bookstore.services.BookService;
-
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +49,8 @@ public class BookController {
 
   // ADMIN
   @PostMapping(path = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<BookResponseDTO> addNewBook(@ModelAttribute BookResponseDTO payload) throws IOException {
+  public ResponseEntity<BookResponseDTO> addNewBook(@ModelAttribute BookResponseDTO payload)
+      throws IOException {
     return ResponseEntity.status(HttpStatus.OK).body(bookService.addNewBook(payload));
   }
 

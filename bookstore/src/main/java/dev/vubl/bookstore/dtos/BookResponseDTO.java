@@ -20,5 +20,4 @@ public record BookResponseDTO(
     String urlSlug,
     Integer pageCount,
     String imageUrl,
-    MultipartFile imageFile
-) {}
+    MultipartFile imageFile) {}
