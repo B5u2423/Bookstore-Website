@@ -1,16 +1,16 @@
 package dev.vubl.bookstore.dtos;
 
+import jakarta.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import lombok.Builder;
-import org.springframework.web.multipart.MultipartFile;
 
 @Builder
 public record BookResponseDTO(
     Integer id,
     String isbn,
-    String title,
+    @NotBlank(message = "Tên sản phẩm không được bỏ trống") String title,
     String description,
-    String author,
+    @NotBlank(message = "Tên tác giả không được bỏ trống") String author,
     BigDecimal price,
     Integer inStock,
     Integer categoryId,
@@ -19,5 +19,4 @@ public record BookResponseDTO(
     String publisher,
     String urlSlug,
     Integer pageCount,
-    String imageUrl,
-    MultipartFile imageFile) {}
+    String imageUrl) {}

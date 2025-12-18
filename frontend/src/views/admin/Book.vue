@@ -2,7 +2,7 @@
 import { BookService } from '@/api/book-api'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
 import { formatPriceVNLocale } from '@/utils/utils'
-import { computed, onMounted, toRef, ref, shallowRef, onUpdated, isShallow } from 'vue'
+import { computed, onMounted, toRef, ref, shallowRef } from 'vue'
 import { VFileUpload } from 'vuetify/labs/VFileUpload'
 import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
 import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
@@ -125,29 +125,10 @@ async function remove() {
   }
 }
 
-function buildFormData() {
-  const formData = new FormData()
-
-  // append file only if selected
-  if (imageFile.value) {
-    formData.append("imageFile", imageFile.value)
-  }
-
-  // append other fields
-  Object.entries(formModel.value).forEach(([key, value]) => {
-    if (value !== null && value !== undefined) {
-      formData.append(key, value)
-    }
-  })
-
-  return formData 
-}
-
 async function save() {
   if (isEditing.value) {
     try {
-      // build form
-      const formData = buildFormData()
+      const formData = new FormData()
       // API call
       const res = await BookService.updateBookById(
         formData,
@@ -167,23 +148,32 @@ async function save() {
       console.error('Error editing book')
     }
   } else {
-    // API call
     try {
-      // build form
-      const formData = buildFormData()
+      // make form data
+      const formData = new FormData()
+      formData.append(
+        'book',
+        new Blob([JSON.stringify(formModel.value)], { type: 'application/json' }),
+      )
+      formData.append('image', imageFile.value)
       // API call
       const res = await BookService.addNewBook(formData, adminAuthStore.accessToken)
       isSuccess.value = true
       message.value = 'Thêm sản phẩm thành công'
     } catch (error) {
       isError.value = true
-      message.value = `Lỗi thêm mới sản phẩm ${error.message}`
+      const errorData = error.response?.data || {}
+      const errorField = errorData.title
+        ? 'title'
+        : errorData.author
+          ? 'author'
+          : Object.keys(errorData)[0] // fallback to the first key if neither
+
+      message.value = errorField
+        ? `Lỗi thêm mới sản phẩm: ${errorData[errorField]}`
+        : 'Lỗi thêm mới sản phẩm: Đã xảy ra lỗi không xác định'
       console.error('Error adding new book')
     }
-    // update the immediate view
-    formModel.value.id = totalItems.value++
-    serverItems.value.push(formModel.value)
-    totalItems.value++
   }
 
   dialog.value = false
@@ -376,7 +366,11 @@ onMounted(() => {
             md="6"
           >
 
-            <div class="text-subtitle-1 text-high-emphasis">Tên sách</div>
+            <div class="text-subtitle-1 text-high-emphasis">
+              Tên sách
+              <span class="text-red">(*)</span>
+
+            </div>
 
             <v-text-field
               variant="outlined"
@@ -392,7 +386,11 @@ onMounted(() => {
             md="6"
           >
 
-            <div class="text-subtitle-1 text-high-emphasis">Tác giả</div>
+            <div class="text-subtitle-1 text-high-emphasis">
+              Tác giả
+              <span class="text-red">(*)</span>
+
+            </div>
 
             <v-text-field
               variant="outlined"
@@ -526,7 +524,11 @@ onMounted(() => {
             md="6"
           >
 
-            <div class="text-subtitle-1 text-high-emphasis">Thể loại</div>
+            <div class="text-subtitle-1 text-high-emphasis">
+              Thể loại
+              <span class="text-red">(*)</span>
+
+            </div>
 
             <v-autocomplete
               v-model="formModel.categoryId"
@@ -572,6 +574,8 @@ onMounted(() => {
 
             </v-file-upload>
 
+            <p>{{ imageFile }}</p>
+
             <v-text-field
               class="mt-3"
               variant="outlined"
@@ -603,7 +607,12 @@ onMounted(() => {
 
         <v-btn
           color="red-lighten-1"
-          @click="dialog = false"
+          @click="
+            () => {
+              dialog = false
+              imageFile.value = null
+            }
+          "
           variant="elevated"
         >
            Hủy
@@ -652,12 +661,12 @@ onMounted(() => {
   </v-dialog>
 
   <SnackBarOnFailure
-    model-value:show="isError"
+    :show="isError"
     :message="message"
   />
 
   <SnackBarOnSuccess
-    model-value:show="isSuccess"
+    :show="isSuccess"
     :message="message"
   />
 

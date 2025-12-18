@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -53,7 +54,8 @@ public class BookService {
     return mapToBookResponseDTO(b);
   }
 
-  public BookResponseDTO addNewBook(BookResponseDTO bookResponseDTO) throws IOException {
+  public BookResponseDTO addNewBook(BookResponseDTO bookResponseDTO, MultipartFile image)
+      throws IOException {
     String isbn = bookResponseDTO.isbn();
     if (isIsbnNotUnique(isbn)) {
       throw new BookWithIsbnAlreadyExists("Book with isbn :: %s already exists!".formatted(isbn));
@@ -61,9 +63,9 @@ public class BookService {
 
     Book b = mapToBookEntity(bookResponseDTO);
     try {
-      if (bookResponseDTO.imageFile() != null) {
+      if (image != null) {
         log.info("[{}] Uploading image...", this.getClass().getName());
-        String returnedUrl = cloudinaryService.uploadImage(bookResponseDTO.imageFile());
+        String returnedUrl = cloudinaryService.uploadImage(image);
         b.setImageUrl(returnedUrl);
       }
       log.info("[{}] Adding new book", this.getClass().getName());
@@ -180,9 +182,11 @@ public class BookService {
         .isbn(bookResponseDTO.isbn())
         .inStock(bookResponseDTO.inStock())
         .category(
-            categoryRepo
-                .findById(bookResponseDTO.categoryId())
-                .orElseThrow(CategoryDoesNotExistException::new))
+            bookResponseDTO.categoryId() == null
+                ? null
+                : categoryRepo
+                    .findById(bookResponseDTO.categoryId())
+                    .orElseThrow(CategoryDoesNotExistException::new))
         .build();
   }
 }
