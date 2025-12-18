@@ -5,6 +5,8 @@ import { useCartStore } from '@/stores/cart-store'
 import { useUserProfileStore } from '@/stores/user-profile-store'
 import { onBeforeMount, onMounted, ref, watch } from 'vue'
 import { AddressInfoService } from '@/api/cart-api.js'
+import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
+import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 
 const userProfileStore = useUserProfileStore()
 const cartStore = useCartStore()
@@ -23,6 +25,10 @@ const address = ref({
 })
 
 const dialog = ref(false)
+// snackbars
+const isError = ref(false)
+const isSuccess = ref(false)
+const message = ref('')
 
 const currentUserProfileSnapshot = ref({
   firstName: userProfileStore.userInfo.firstName,
@@ -30,6 +36,13 @@ const currentUserProfileSnapshot = ref({
   email: userProfileStore.userInfo.email,
   phoneNumber: userProfileStore.userInfo.phone,
 })
+
+// address data table headers
+const headers = ref(
+  { title: 'Tỉnh thành', key: 'city', align: 'start' },
+  { title: 'Xã phường', key: 'commune', align: 'start' },
+  { title: 'Địa chỉ cụ thể (số nhà, đường, ngõ,...)', key: 'street', align: 'start' },
+)
 
 watch(
   currentUserProfileSnapshot,
@@ -64,9 +77,13 @@ async function updateChanges() {
     )
     // update immediate view
     userProfileStore.updateUserInfo(currentUserProfileSnapshot.value)
+    isSuccess.value = true
+    message.value = "Cập nhật thông tin người dùng thành công"
     return res
   } catch (error) {
     console.error('Error updating user info', error)
+    isError.value = true
+    message.value = "Lỗi xảy ra khi cập nhật thông tin người dùng"
     throw error
   } finally {
     // return to original state
@@ -94,6 +111,7 @@ async function fetchCommunes() {
   }
 }
 
+// add address
 async function save() {
   try {
     const res = CustomerService.setAddress(
@@ -104,7 +122,16 @@ async function save() {
       },
       authStore.accessToken,
     )
-  } catch (error) {}
+    isSuccess.value = true
+    message.value = "Thêm địa chỉ thành công! Vui lòng tải lại trang"
+  } catch (error) {
+    isError.value = true
+    message.value = "Lỗi xảy khi thêm địa chỉ"
+    console.error('Error adding new address')
+  } finally {
+    // close dialog box
+    dialog.value = false
+  }
 }
 
 // sync cart on load
@@ -275,6 +302,7 @@ onMounted(() => {
       <v-card-text>
 
         <v-data-table
+          :headers="headers"
           :items="userProfileStore.userInfo.addressList"
           hide-default-footer
         >
@@ -377,6 +405,9 @@ onMounted(() => {
     </v-card>
 
   </v-dialog>
+
+  <SnackBarOnFailure :show="isError" :mesasge="message"/>
+  <SnackBarOnSuccess :show="isSuccess" :message="message"/>
 
 </template>
 
