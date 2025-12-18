@@ -143,12 +143,12 @@ async function handleLogin() {
     </div>
 
     <SnackBarOnFailure
-      :show="isError"
+      v-model:show="isError"
       :message="message"
     />
 
     <SnackBarOnSuccess
-      :show="isSuccess"
+      v-model:show="isSuccess"
       :message="message"
     />
 
