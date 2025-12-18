@@ -101,13 +101,6 @@ async function edit(id) {
     categoryName: found.categoryName,
   }
 
-  try {
-    const res = await CategoryService.fetchChildrenCategories()
-    candidates.value = res
-  } catch (error) {
-    console.error('Error fetching categories that is not root')
-  }
-
   dialog.value = true
 }
 
@@ -196,6 +189,15 @@ async function save() {
   dialog.value = false
 }
 
+async function fetchCategoryCandidates() {
+  try {
+    const res = await CategoryService.fetchChildrenCategories()
+    candidates.value = res
+  } catch (error) {
+    console.error('Error fetching categories that is not root')
+  }
+}
+
 // auto capitalize
 function capitalizeVietnamese(str) {
   return str
@@ -229,6 +231,7 @@ const publisherCaps = computed({
 
 onMounted(() => {
   loadItems()
+  fetchCategoryCandidates()
 })
 </script>
 
