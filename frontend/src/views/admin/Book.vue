@@ -652,12 +652,12 @@ onMounted(() => {
   </v-dialog>
 
   <SnackBarOnFailure
-  v-model:show="isError"
+    model-value:show="isError"
     :message="message"
   />
 
   <SnackBarOnSuccess
-    v-model:show="isSuccess"
+    model-value:show="isSuccess"
     :message="message"
   />
 
