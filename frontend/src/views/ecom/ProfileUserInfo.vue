@@ -407,12 +407,12 @@ onMounted(() => {
   </v-dialog>
 
   <SnackBarOnFailure
-    v-model:show="isError"
+    :show="isError"
     :mesasge="message"
   />
 
   <SnackBarOnSuccess
-    v-model:show="isSuccess"
+    :show="isSuccess"
     :message="message"
   />
 

@@ -140,12 +140,12 @@ async function handleRegister() {
     </div>
 
     <SnackBarOnFailure
-      v-model:show="isError"
+      :show="isError"
       :message="message"
     />
 
     <SnackBarOnSuccess
-      v-model:show="isSuccess"
+      :show="isSuccess"
       :message="message"
     />
 
