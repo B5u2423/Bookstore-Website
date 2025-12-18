@@ -1,7 +1,9 @@
 <script setup>
 import { useAuthStore } from '@/stores/auth-store'
 import { ref } from 'vue'
-import SnackBar from '@/components/common/SnackBar.vue'
+import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
+import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
+import { mergeAlias } from 'vite'
 
 const authStore = useAuthStore()
 
@@ -16,11 +18,10 @@ const formData = ref({
   userType: 'CUSTOMER',
 })
 
-const snackbar = ref({
-  show: false,
-  message: '',
-  color: 'success',
-})
+// snackbars
+const isError = ref(false)
+const isSuccess = ref(false)
+const message = ref('')
 
 const rules = {
   required: (v) => !!v || 'Không được bỏ trống trường',
@@ -31,17 +32,10 @@ async function handleRegister() {
   const res = await authStore.register(formData.value)
 
   if (res.success) {
-    snackbar.value = {
-      show: true,
-      message: 'Đăng ký thành công! Vui lòng truy cập trang đăng nhập!',
-      color: 'success',
-    }
+    isSuccess.value = true
+    message.value = 'Đăng ký thành công! Vui lòng truy cập trang đăng nhập!'
   } else {
-    snackbar.value = {
-      show: true,
-      message: res.error || 'Đăng ký thất bại!',
-      color: 'error',
-    }
+    ;((isError.value = true), (message.value = 'Đăng ký thất bại!'))
   }
 }
 </script>
@@ -145,7 +139,15 @@ async function handleRegister() {
 
     </div>
 
-    <SnackBar :snackbar="snackbar" />
+    <SnackBarOnFailure
+      :show="isError"
+      :message="message"
+    />
+
+    <SnackBarOnSuccess
+      :show="isSuccess"
+      :message="message"
+    />
 
   </v-sheet>
 

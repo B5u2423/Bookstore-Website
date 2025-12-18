@@ -2,8 +2,10 @@
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth-store'
 import { useRouter } from 'vue-router'
-import SnackBar from '@/components/common/SnackBar.vue'
+import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
+import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 import { useCartStore } from '@/stores/cart-store'
+import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
 
 const authStore = useAuthStore()
 const cartStore = useCartStore()
@@ -21,11 +23,10 @@ const rules = {
   email: (v) => /[\w\d.-]{6,30}@[\w\d.-]+/.test(v) || 'Email không hợp lệ',
 }
 
-const snackbar = ref({
-  show: false,
-  message: '',
-  color: 'success',
-})
+// snackbars
+const isError = ref(false)
+const isSuccess = ref(false)
+const message = ref('')
 
 async function handleLogin() {
   isLoading.value = true
@@ -36,22 +37,16 @@ async function handleLogin() {
 
   // handle response
   if (result.success) {
-    snackbar.value = {
-      show: true,
-      message: 'Đăng nhập thành công!',
-      color: 'success',
-    }
+    isSuccess.value = true
+    message.value = 'Đăng nhập thành công!'
     setTimeout(() => {
       router.push({ name: 'profile-root' })
       isLoading.value = false
     }, 1500)
   } else {
     isLoading.value = false
-    snackbar.value = {
-      show: true,
-      message: result.error || 'Đăng nhập thất bại',
-      color: 'error',
-    }
+    isError.value = true
+    message.value = 'Đăng nhập thất bại'
   }
 }
 </script>
@@ -147,7 +142,15 @@ async function handleLogin() {
 
     </div>
 
-    <SnackBar :snackbar="snackbar" />
+    <SnackBarOnFailure
+      :show="isError"
+      :message="message"
+    />
+
+    <SnackBarOnSuccess
+      :show="isSuccess"
+      :message="message"
+    />
 
   </v-sheet>
 
