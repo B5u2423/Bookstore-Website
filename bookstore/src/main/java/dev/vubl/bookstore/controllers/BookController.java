@@ -3,10 +3,13 @@ package dev.vubl.bookstore.controllers;
 import dev.vubl.bookstore.dtos.BookResponseDTO;
 import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
 import dev.vubl.bookstore.services.BookService;
+
+import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,8 +49,8 @@ public class BookController {
   }
 
   // ADMIN
-  @PostMapping("/add")
-  public ResponseEntity<BookResponseDTO> addNewBook(@RequestBody BookResponseDTO payload) {
+  @PostMapping(path = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<BookResponseDTO> addNewBook(@ModelAttribute BookResponseDTO payload) throws IOException {
     return ResponseEntity.status(HttpStatus.OK).body(bookService.addNewBook(payload));
   }
 

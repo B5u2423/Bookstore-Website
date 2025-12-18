@@ -10,6 +10,8 @@ import dev.vubl.bookstore.repos.BookRepo;
 import dev.vubl.bookstore.repos.CategoryRepo;
 import dev.vubl.bookstore.utils.SlugUtils;
 import jakarta.transaction.Transactional;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Service;
 public class BookService {
   private final BookRepo bookRepo;
   private final CategoryRepo categoryRepo;
+  private final CloudinaryService cloudinaryService;
 
   public List<BookResponseDTO> getAllBooks() {
     return bookRepo.findAll().stream().map(this::mapToBookResponseDTO).toList();
@@ -51,17 +54,28 @@ public class BookService {
     return mapToBookResponseDTO(b);
   }
 
-  public BookResponseDTO addNewBook(BookResponseDTO bookResponseDTO) {
+  public BookResponseDTO addNewBook(BookResponseDTO bookResponseDTO) throws IOException {
     String isbn = bookResponseDTO.isbn();
     if (isIsbnNotUnique(isbn)) {
       throw new BookWithIsbnAlreadyExists("Book with isbn :: %s already exists!".formatted(isbn));
     }
 
+    Book b = mapToBookEntity(bookResponseDTO);
     try {
+      if (bookResponseDTO.imageFile() != null) {
+        log.info("[{}] Uploading image...", this.getClass().getName());
+        String returnedUrl = cloudinaryService.uploadImage(
+                bookResponseDTO.imageFile()
+        );
+        b.setImageUrl(returnedUrl);
+      }
       log.info("[{}] Adding new book", this.getClass().getName());
-      return mapToBookResponseDTO(bookRepo.save(mapToBookEntity(bookResponseDTO)));
+      return mapToBookResponseDTO(bookRepo.save(b));
     } catch (DataIntegrityViolationException e) {
       throw new DataIntegrityViolationException("Error adding or updating new book!", e);
+    } catch (IOException e) {
+      log.info("[{}] Error uploading image", this.getClass().getName());
+      throw new IOException("Error uploading book image to cloud");
     }
   }
 

@@ -2,6 +2,7 @@ package dev.vubl.bookstore.dtos;
 
 import java.math.BigDecimal;
 import lombok.Builder;
+import org.springframework.web.multipart.MultipartFile;
 
 @Builder
 public record BookResponseDTO(
@@ -18,4 +19,6 @@ public record BookResponseDTO(
     String publisher,
     String urlSlug,
     Integer pageCount,
-    String imageUrl) {}
+    String imageUrl,
+    MultipartFile imageFile
+) {}

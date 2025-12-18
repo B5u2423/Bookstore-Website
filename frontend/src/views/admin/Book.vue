@@ -50,6 +50,7 @@ const formModel = ref(createNewRecord())
 const dialog = shallowRef(false)
 const isEditing = toRef(() => !!formModel.value.id)
 const imageUrlToggleEdit = ref(true)
+const imageFile = ref(null)
 
 // confirmation dialog
 const confirmationDialog = shallowRef(false)
@@ -131,13 +132,32 @@ async function remove() {
   }
 }
 
+function buildFormData() {
+  const formData = new FormData()
+
+  // append file only if selected
+  if (imageFile.value) {
+    formData.append("imageFile", imageFile.value)
+  }
+
+  // append other fields
+  Object.entries(formModel.value).forEach(([key, value]) => {
+    if (value !== null && value !== undefined) {
+      formData.append(key, value)
+    }
+  })
+
+  return formData 
+}
+
 async function save() {
   if (isEditing.value) {
     try {
-      console.log(formModel.value)
+      // build form
+      const formData = buildFormData()
       // API call
       const res = await BookService.updateBookById(
-        formModel.value,
+        formData,
         formModel.value.id,
         adminAuthStore.accessToken,
       )
@@ -156,7 +176,10 @@ async function save() {
   } else {
     // API call
     try {
-      const res = await BookService.addNewBook(formModel.value, adminAuthStore.accessToken)
+      // build form
+      const formData = buildFormData()
+      // API call
+      const res = await BookService.addNewBook(formData, adminAuthStore.accessToken)
       isSuccess.value = true
       message.value = 'Thêm sản phẩm thành công'
     } catch (error) {
@@ -532,6 +555,7 @@ onMounted(() => {
             <div class="text-subtitle-1 text-high-emphasis">Hình ảnh</div>
 
             <v-file-upload
+              v-model="imageFile"
               clearable
               density="compact"
               variant="compact"
