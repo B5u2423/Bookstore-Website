@@ -78,12 +78,12 @@ async function updateChanges() {
     // update immediate view
     userProfileStore.updateUserInfo(currentUserProfileSnapshot.value)
     isSuccess.value = true
-    message.value = "Cập nhật thông tin người dùng thành công"
+    message.value = 'Cập nhật thông tin người dùng thành công'
     return res
   } catch (error) {
     console.error('Error updating user info', error)
     isError.value = true
-    message.value = "Lỗi xảy ra khi cập nhật thông tin người dùng"
+    message.value = 'Lỗi xảy ra khi cập nhật thông tin người dùng'
     throw error
   } finally {
     // return to original state
@@ -123,10 +123,10 @@ async function save() {
       authStore.accessToken,
     )
     isSuccess.value = true
-    message.value = "Thêm địa chỉ thành công! Vui lòng tải lại trang"
+    message.value = 'Thêm địa chỉ thành công! Vui lòng tải lại trang'
   } catch (error) {
     isError.value = true
-    message.value = "Lỗi xảy khi thêm địa chỉ"
+    message.value = 'Lỗi xảy khi thêm địa chỉ'
     console.error('Error adding new address')
   } finally {
     // close dialog box
@@ -406,8 +406,15 @@ onMounted(() => {
 
   </v-dialog>
 
-  <SnackBarOnFailure :show="isError" :mesasge="message"/>
-  <SnackBarOnSuccess :show="isSuccess" :message="message"/>
+  <SnackBarOnFailure
+    :show="isError"
+    :mesasge="message"
+  />
+
+  <SnackBarOnSuccess
+    :show="isSuccess"
+    :message="message"
+  />
 
 </template>
 
