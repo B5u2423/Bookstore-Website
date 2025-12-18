@@ -128,7 +128,13 @@ async function remove() {
 async function save() {
   if (isEditing.value) {
     try {
+      // make form data
       const formData = new FormData()
+      formData.append(
+        'book',
+        new Blob([JSON.stringify(formModel.value)], { type: 'application/json' }),
+      )
+      formData.append('image', imageFile.value)
       // API call
       const res = await BookService.updateBookById(
         formData,
