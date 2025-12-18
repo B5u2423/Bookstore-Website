@@ -1,7 +1,5 @@
 import api, { provinceApi } from './api-config'
 
-// TODO: Rewrite these api into CartService Object
-
 export const CartService = {
   async addToCart(token, body) {
     try {

@@ -2,6 +2,8 @@
 import { CategoryService } from '@/api/category-api'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
 import { toRef, shallowRef, ref } from 'vue'
+import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
+import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 
 const adminAuthStore = useAdminAuthStore()
 // table
@@ -16,6 +18,11 @@ const itemsPerPage = ref(10)
 const loading = ref(false)
 const serverItems = ref([])
 const totalItems = ref(0)
+
+// snackbars
+const isSuccess = ref(false)
+const isError = ref(false)
+const message = ref('')
 
 function createNewRecord() {
   return {
@@ -88,10 +95,13 @@ function confirm(id) {
 }
 
 function remove() {
-  // TODO: snackbar
   try {
     const res = CategoryService.deleteCategoryById(itemId.value, adminAuthStore.accessToken)
+    isSuccess.value = true
+    message.value = 'Xóa danh mục thành công!'
   } catch (error) {
+    isError.value = true
+    message.value = 'Lỗi xảy ra khi xóa danh mục'
     console.error('Error deleting item')
   } finally {
     isDelLoading.value = false
@@ -101,18 +111,25 @@ function remove() {
 
 async function save() {
   if (isEditing.value) {
-    // TODO: adding snackbar
     try {
       // API call
       const res = await CategoryService.updateCategory(formModel.value, adminAuthStore.accessToken)
+      isSuccess.value = true
+      message.value = 'Cập nhật thông tin danh mục thành công!'
     } catch (error) {
       console.error('Error editing category')
+      isError.value = true
+      message.value = 'Lỗi xảy ra khi cập nhật danh mục'
     }
   } else {
     try {
       // API call
       const res = await CategoryService.addCategory(formModel.value, adminAuthStore.accessToken)
+      isSuccess.value = true
+      message.value = 'Cập nhật thông tin danh mục thành công!'
     } catch (error) {
+      isError.value = true
+      message.value = 'Lỗi xảy ra khi thêm danh mục'
       console.error('Error adding new category')
     }
   }
