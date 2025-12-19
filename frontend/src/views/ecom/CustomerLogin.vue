@@ -5,7 +5,6 @@ import { useRouter } from 'vue-router'
 import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
 import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 import { useCartStore } from '@/stores/cart-store'
-import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
 
 const authStore = useAuthStore()
 const cartStore = useCartStore()
