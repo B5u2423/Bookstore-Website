@@ -33,6 +33,12 @@ public class CouponController {
     return ResponseEntity.ok().body("Ok");
   }
 
+  @DeleteMapping("/deletee")
+  public ResponseEntity<String> deleteCoupon(@RequestParam(value = "id") Integer id) {
+    couponService.deleteById(id);
+    return ResponseEntity.ok().body( "Ok" );
+  }
+
   @PostMapping("/apply")
   public ResponseEntity<?> applyCoupon(@RequestBody ApplyCouponRequest request) {
     BigDecimal finalAmount = couponService.applyCoupon(request.couponCode(), request.orderAmount());

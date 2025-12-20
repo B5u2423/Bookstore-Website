@@ -9,8 +9,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -41,7 +43,7 @@ public class CouponService {
     Coupon c =
         couponRepo
             .findById(payload.id())
-            .orElseThrow(() -> new IllegalArgumentException("Coupon ID must not be null"));
+            .orElseThrow(() -> new IllegalArgumentException("Update OP: Coupon ID must not be null"));
     c.setActive(payload.isActive());
     c.setCode(payload.code());
     c.setDiscountType(payload.discountType());
@@ -69,6 +71,13 @@ public class CouponService {
             .usedCount(0)
             .build();
     return couponRepo.save(c);
+  }
+
+  public void deleteById(Integer id) {
+    if (couponRepo.existsById(id)) {
+      couponRepo.deleteById(id);
+      log.info("[{}] Coupon with id:{} deleted", this.getClass().getName(), id);
+    }
   }
 
   private void validateCoupon(Coupon coupon, BigDecimal orderAmount) {
