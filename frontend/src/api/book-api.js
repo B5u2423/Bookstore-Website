@@ -103,6 +103,7 @@ export const BookService = {
       const res = await api.put(API_ENDPOINTS.UPDATE_BOOK, body, {
         params: { id },
         headers: {
+          'Content-Type': `multipart/form-data`,
           Authorization: `Bearer ${token}`,
         },
       })
@@ -124,6 +125,7 @@ export const BookService = {
     try {
       const res = await api.post(API_ENDPOINTS.ADD_NEW_BOOK, body, {
         headers: {
+          'Content-Type': `multipart/form-data`,
           Authorization: `Bearer ${token}`,
         },
       })

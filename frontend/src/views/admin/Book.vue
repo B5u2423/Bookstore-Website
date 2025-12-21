@@ -2,7 +2,7 @@
 import { BookService } from '@/api/book-api'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
 import { formatPriceVNLocale } from '@/utils/utils'
-import { computed, onMounted, toRef, ref, shallowRef, onUpdated, isShallow } from 'vue'
+import { computed, onMounted, toRef, ref, shallowRef } from 'vue'
 import { VFileUpload } from 'vuetify/labs/VFileUpload'
 import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
 import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
@@ -50,6 +50,7 @@ const formModel = ref(createNewRecord())
 const dialog = shallowRef(false)
 const isEditing = toRef(() => !!formModel.value.id)
 const imageUrlToggleEdit = ref(true)
+const imageFile = ref(null)
 
 // confirmation dialog
 const confirmationDialog = shallowRef(false)
@@ -100,13 +101,6 @@ async function edit(id) {
     categoryName: found.categoryName,
   }
 
-  try {
-    const res = await CategoryService.fetchChildrenCategories()
-    candidates.value = res
-  } catch (error) {
-    console.error('Error fetching categories that is not root')
-  }
-
   dialog.value = true
 }
 
@@ -134,10 +128,16 @@ async function remove() {
 async function save() {
   if (isEditing.value) {
     try {
-      console.log(formModel.value)
+      // make form data
+      const formData = new FormData()
+      formData.append(
+        'book',
+        new Blob([JSON.stringify(formModel.value)], { type: 'application/json' }),
+      )
+      formData.append('image', imageFile.value)
       // API call
       const res = await BookService.updateBookById(
-        formModel.value,
+        formData,
         formModel.value.id,
         adminAuthStore.accessToken,
       )
@@ -154,23 +154,44 @@ async function save() {
       console.error('Error editing book')
     }
   } else {
-    // API call
     try {
-      const res = await BookService.addNewBook(formModel.value, adminAuthStore.accessToken)
+      // make form data
+      const formData = new FormData()
+      formData.append(
+        'book',
+        new Blob([JSON.stringify(formModel.value)], { type: 'application/json' }),
+      )
+      formData.append('image', imageFile.value)
+      // API call
+      const res = await BookService.addNewBook(formData, adminAuthStore.accessToken)
       isSuccess.value = true
       message.value = 'Thêm sản phẩm thành công'
     } catch (error) {
       isError.value = true
-      message.value = `Lỗi thêm mới sản phẩm ${error.message}`
+      const errorData = error.response?.data || {}
+      const errorField = errorData.title
+        ? 'title'
+        : errorData.author
+          ? 'author'
+          : Object.keys(errorData)[0] // fallback to the first key if neither
+
+      message.value = errorField
+        ? `Lỗi thêm mới sản phẩm: ${errorData[errorField]}`
+        : 'Lỗi thêm mới sản phẩm: Đã xảy ra lỗi không xác định'
       console.error('Error adding new book')
     }
-    // update the immediate view
-    formModel.value.id = totalItems.value++
-    serverItems.value.push(formModel.value)
-    totalItems.value++
   }
 
   dialog.value = false
+}
+
+async function fetchCategoryCandidates() {
+  try {
+    const res = await CategoryService.fetchChildrenCategories()
+    candidates.value = res
+  } catch (error) {
+    console.error('Error fetching categories that is not root')
+  }
 }
 
 // auto capitalize
@@ -206,6 +227,7 @@ const publisherCaps = computed({
 
 onMounted(() => {
   loadItems()
+  fetchCategoryCandidates()
 })
 </script>
 
@@ -350,7 +372,11 @@ onMounted(() => {
             md="6"
           >
 
-            <div class="text-subtitle-1 text-high-emphasis">Tên sách</div>
+            <div class="text-subtitle-1 text-high-emphasis">
+              Tên sách
+              <span class="text-red">(*)</span>
+
+            </div>
 
             <v-text-field
               variant="outlined"
@@ -366,7 +392,11 @@ onMounted(() => {
             md="6"
           >
 
-            <div class="text-subtitle-1 text-high-emphasis">Tác giả</div>
+            <div class="text-subtitle-1 text-high-emphasis">
+              Tác giả
+              <span class="text-red">(*)</span>
+
+            </div>
 
             <v-text-field
               variant="outlined"
@@ -500,7 +530,11 @@ onMounted(() => {
             md="6"
           >
 
-            <div class="text-subtitle-1 text-high-emphasis">Thể loại</div>
+            <div class="text-subtitle-1 text-high-emphasis">
+              Thể loại
+              <span class="text-red">(*)</span>
+
+            </div>
 
             <v-autocomplete
               v-model="formModel.categoryId"
@@ -532,6 +566,7 @@ onMounted(() => {
             <div class="text-subtitle-1 text-high-emphasis">Hình ảnh</div>
 
             <v-file-upload
+              v-model="imageFile"
               clearable
               density="compact"
               variant="compact"
@@ -544,6 +579,8 @@ onMounted(() => {
               </template>
 
             </v-file-upload>
+
+            <p>{{ imageFile }}</p>
 
             <v-text-field
               class="mt-3"
@@ -576,7 +613,12 @@ onMounted(() => {
 
         <v-btn
           color="red-lighten-1"
-          @click="dialog = false"
+          @click="
+            () => {
+              dialog = false
+              imageFile.value = null
+            }
+          "
           variant="elevated"
         >
            Hủy

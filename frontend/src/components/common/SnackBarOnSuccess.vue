@@ -8,7 +8,7 @@ const props = defineProps({
 <template>
 
   <v-snackbar
-    v-model="show"
+    :model-value="show"
     color="success"
     timeout="3000"
     location="top"

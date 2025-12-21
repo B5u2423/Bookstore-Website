@@ -3,7 +3,6 @@ import { useAuthStore } from '@/stores/auth-store'
 import { ref } from 'vue'
 import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
 import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
-import { mergeAlias } from 'vite'
 
 const authStore = useAuthStore()
 
