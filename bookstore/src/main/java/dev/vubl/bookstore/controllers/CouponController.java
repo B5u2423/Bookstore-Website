@@ -36,7 +36,7 @@ public class CouponController {
   @DeleteMapping("/deletee")
   public ResponseEntity<String> deleteCoupon(@RequestParam(value = "id") Integer id) {
     couponService.deleteById(id);
-    return ResponseEntity.ok().body( "Ok" );
+    return ResponseEntity.ok().body("Ok");
   }
 
   @PostMapping("/apply")

@@ -69,7 +69,7 @@ public class SecurityConfigs {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration corsConfiguration = new CorsConfiguration();
     corsConfiguration.setAllowCredentials(true);
-    corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173"));
+    corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5174"));
     corsConfiguration.setAllowedMethods(List.of("*"));
     corsConfiguration.setAllowedHeaders(List.of("*"));
 

@@ -11,10 +11,13 @@ public record ShippingInfoDTO(
     String email,
     String phone,
     PaymentMethod paymentMethod,
-    BigDecimal amount,
+    BigDecimal itemsTotal,
+    BigDecimal shippingFee,
+    BigDecimal orderTotal,
     String cityName,
     Integer cityId,
     Integer communeId,
     String communeName,
     String street,
-    String info) {}
+    String info,
+    String couponCode) {}

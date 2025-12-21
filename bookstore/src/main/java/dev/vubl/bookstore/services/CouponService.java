@@ -43,7 +43,8 @@ public class CouponService {
     Coupon c =
         couponRepo
             .findById(payload.id())
-            .orElseThrow(() -> new IllegalArgumentException("Update OP: Coupon ID must not be null"));
+            .orElseThrow(
+                () -> new IllegalArgumentException("Update OP: Coupon ID must not be null"));
     c.setActive(payload.isActive());
     c.setCode(payload.code());
     c.setDiscountType(payload.discountType());
