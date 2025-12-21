@@ -301,13 +301,19 @@ onMounted(() => {
 
       <v-card-text>
 
-        <v-data-table
-          :headers="headers"
+        <template v-if="userProfileStore.userInfo.addressList.length === 0">
+          Không có địa chỉ mới
+        </template>
+
+        <template v-else>
+
+        <v-data-table :headers="headers"
           :items="userProfileStore.userInfo.addressList"
           hide-default-footer
         >
 
         </v-data-table>
+        </template>
 
       </v-card-text>
 
