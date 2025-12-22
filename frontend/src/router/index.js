@@ -132,6 +132,11 @@ const routes = [
             name: 'i-orders',
             component: () => import('@/views/admin/Order.vue'),
           },
+          {
+            path: 'coupons',
+            name: 'i-coupons',
+            component: () => import('@/views/admin/Coupon.vue'),
+          },
         ],
       },
       {

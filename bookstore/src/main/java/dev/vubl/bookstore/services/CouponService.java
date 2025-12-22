@@ -10,6 +10,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -35,8 +39,15 @@ public class CouponService {
     return orderAmount.subtract(discount);
   }
 
-  public List<Coupon> getAllCoupons() {
-    return couponRepo.findAll();
+  public Page<Coupon> getAllCoupons(int page, int size, String sortBy, String order) {
+    List<String> allowed = List.of("id");
+    if (!allowed.contains(sortBy)) {
+      throw new IllegalArgumentException("Invalid sort field: %s".formatted(sortBy));
+    }
+
+    Sort sort = order.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+    Pageable pageable = PageRequest.of(page, size, sort);
+    return couponRepo.findAll(pageable);
   }
 
   public void updateCoupon(CouponDTO payload) {
