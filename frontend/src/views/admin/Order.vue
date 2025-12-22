@@ -1,6 +1,7 @@
 <script setup>
 import { CartService, OrderService } from '@/api/cart-api'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
+import { formatPriceVNLocale } from '@/utils/utils'
 import { ref } from 'vue'
 
 const adminAuthStore = useAdminAuthStore()
@@ -49,6 +50,7 @@ const dialog = ref(false)
 
 function showMoreDetails(id) {
   const found = serverItems.value.find((order) => order.id === id)
+  console.log(found)
 
   detailDialog.value = {
     id: found.id,
@@ -69,6 +71,7 @@ function showMoreDetails(id) {
     commune: found.commune,
     street: found.street,
   }
+  dialog.value = !dialog.value
 }
 
 async function loadItems({ page, itemsPerPage }) {
@@ -154,7 +157,6 @@ async function loadItems({ page, itemsPerPage }) {
     <template v-slot:item.fullname="{ item }">
 
       <div class="d-flex ga-2 justify-start"
-      @click="dialog = !dialog"
       > {{ item.lastName }} {{ item.firstName }} </div>
 
     </template>
@@ -171,7 +173,7 @@ async function loadItems({ page, itemsPerPage }) {
 
     <template v-slot:item.actions="{ item }">
 
-      <div class="d-flex ga-2 justify-end">
+      <div class="d-flex ga-2 justify-center">
 
         <v-icon
           color="medium-emphasis"
@@ -197,127 +199,163 @@ async function loadItems({ page, itemsPerPage }) {
 
       <template v-slot:text>
 
-        <v-row class="px-3">
-
-          <v-col
-            cols="12"
-            md="6"
-          >
-
-            <div class="text-subtitle-1 text-high-emphasis">
-               Họ Và Tên Người Mua
-            </div>
-
-            <v-text-field variant="outlined"
-              :model-value="detailDialog.lastName + ' ' + detailDialog.firstName"
-              density="compact"
-              hide-details="true"
-              :readonly="true"
-            ></v-text-field>
-
-          </v-col>
-          <v-col
-            cols="12"
-            md="3"
-          >
-
-            <div class="text-subtitle-1 text-high-emphasis">
-              Email
-            </div>
-
-            <v-text-field variant="outlined"
-              :model-value="detailDialog.email"
-              density="compact"
-              hide-details="true"
-              :readonly="true"
-            ></v-text-field>
-
-          </v-col>
-          <v-col
-            cols="12"
-            md="3"
-          >
-
-            <div class="text-subtitle-1 text-high-emphasis">
-              Số Điện Thoại
-            </div>
-
-            <v-text-field variant="outlined"
-              :model-value="detailDialog.phoneNumber"
-              density="compact"
-              hide-details="true"
-              :readonly="true"
-            ></v-text-field>
-
-          </v-col>
-
-          <v-col
-            cols="12"
-            md="6"
-          >
-
-            <div class="text-subtitle-1 text-high-emphasis">
-              Địa Chỉ Giao Hàng
-            </div>
-
-            <v-text-field variant="outlined"
-              :model-value="detailDialog.street + ' ' + detailDialog.commune + ' ' + detailDialog.city"
-              density="compact"
-              hide-details="true"
-              :readonly="true"
-            ></v-text-field>
-
-          </v-col>
-
+        <v-row class="px-3" no-gutters>
 
           <v-col
             cols="12"
             md="4"
+            class="border-md pa-2"
           >
+          <b>
+               Họ và tên người mua
+          </b>
+          </v-col>
 
-            <div class="text-subtitle-1 text-high-emphasis">
-              Mã giảm giá
-            </div>
-
-            <v-text-field variant="outlined"
-              :model-value="detailDialog.couponCode"
-              density="compact"
-              hide-details="true"
-              :readonly="true"
-            ></v-text-field>
-
+          <v-col cols="12" md="8"
+            class="border-md pa-2"
+          >
+              {{detailDialog.lastName + ' ' + detailDialog.firstName}}
           </v-col>
 
           <v-col
             cols="12"
             md="4"
+            class="border-md pa-2"
           >
-            <div class="text-subtitle-1 text-high-emphasis">
-              Tình Trạng Đơn Hàng
-            </div>
+          <b>
 
-            <v-text-field variant="outlined"
-              :model-value="detailDialog.orderStatus"
-              density="compact"
-              hide-details="true"
-              :readonly="true"
-            ></v-text-field>
+          Số điện thoại
+          </b>
+          </v-col>
 
+          <v-col cols="12" md="8"
+            class="border-md pa-2"
+          >
+              {{detailDialog.phoneNumber}}
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="4"
+            class="border-md pa-2"
+          >
+          <b>
+
+          Email
+          </b>
+          </v-col>
+
+          <v-col cols="12" md="8"
+            class="border-md pa-2"
+          >
+              {{detailDialog.email}}
           </v-col>
           <v-col
             cols="12"
             md="4"
+            class="border-md pa-2"
           >
-            <div class="text-subtitle-1 text-high-emphasis">
-              Phương Thức Thanh Toán
-            </div>
+          <b>
 
-            <v-text-field variant="outlined"
-              :model-value="detailDialog.paymentMethod"
-              density="compact"
-              hide-details="true"
-              :readonly="true"
-            ></v-text-field>
+          Địa chỉ giao hàng
+          </b>
+          </v-col>
+
+          <v-col cols="12" md="8"
+            class="border-md pa-2"
+          >
+              {{
+
+              detailDialog.street + ' ' + detailDialog.commune + ' ' + detailDialog.city
+              }}
+          </v-col>
+          <v-col
+            cols="12"
+            md="4"
+            class="border-md pa-2"
+          >
+          <b>
+
+          Mã giảm giá
+          </b>
+          </v-col>
+
+          <v-col cols="12" md="8"
+            class="border-md pa-2"
+          >
+          <template v-if="detailDialog.couponCode === null">N/A</template>
+          <template v-else> 
+              {{detailDialog.couponCode}}
+             </template>
+          </v-col>
+          <v-col
+            cols="12"
+            md="4"
+            class="border-md pa-2"
+          >
+          <b>
+
+          Tình trạng đơn hàng
+          </b>
+          </v-col>
+
+          <v-col cols="12" md="8"
+            class="border-md pa-2"
+          >
+              {{detailDialog.orderStatus}}
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="4"
+            class="border-md pa-2"
+          >
+          <b>
+
+          Ngày đặt hàng
+          </b>
+          </v-col>
+
+          <v-col cols="12" md="8"
+            class="border-md pa-2"
+          >
+              {{detailDialog.orderDate}}
+          </v-col>
+
+          <v-col cols="12" md="4" class="border-md pa-2" > <b> Phương thức thanh toán </b> </v-col>
+
+          <v-col cols="12" md="8" class="border-md pa-2" > {{detailDialog.paymentMethod}}</v-col>
+
+          <v-col cols="12" md="4" class="border-md pa-2" > <b>Tổng giá tiền sản phẩm</b> </v-col>
+          <v-col cols="12" md="8" class="border-md pa-2" > {{ formatPriceVNLocale(detailDialog.itemsTotal)}} VNĐ</v-col>
+
+          <v-col cols="12" md="4" class="border-md pa-2" > <b>Chi phí giao hàng</b> </v-col>
+          <v-col cols="12" md="8" class="border-md pa-2" > {{ formatPriceVNLocale(detailDialog.shippingFee)}} VNĐ</v-col>
+
+          <v-col cols="12" md="4" class="border-md pa-2" > <b>Tổng giá tiền đơn hàng</b> </v-col>
+          <v-col cols="12" md="8" class="border-md pa-2" > {{ formatPriceVNLocale(detailDialog.orderTotal)}} VNĐ</v-col>
+
+          <v-col cols="12" md="4" class="border-md pa-2" > <b>Sản phẩm</b> </v-col>
+          <v-col cols="12" md="8" class="border-md pa-2" >
+            <v-col v-for="item in detailDialog.items">
+              <v-card variant="flat">
+                <v-card-title>
+              {{ item.book.title }} 
+                </v-card-title>
+                <v-card-subtitle>
+                  <p>
+
+              Giá thành: {{ formatPriceVNLocale(item.priceAtPurchase) }} VNĐ
+                  </p>
+                  <p>
+
+              Số lượng: {{ item.quantity }}
+                  </p>
+                </v-card-subtitle>
+              </v-card>
+
+
+            </v-col>
 
           </v-col>
         </v-row>
@@ -331,6 +369,7 @@ async function loadItems({ page, itemsPerPage }) {
         <v-btn
           color="red-lighten-1"
           variant="elevated"
+          @click="dialog = !dialog"
         >
            Hủy
         </v-btn>
