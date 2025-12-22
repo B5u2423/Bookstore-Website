@@ -1,4 +1,4 @@
-import api from "./api-config"
+import api from './api-config'
 
 export const CouponService = {
   async getAllCouponsPaginated(token, params = {}) {
@@ -12,11 +12,11 @@ export const CouponService = {
       console.error('Error fetch paginated coupons', error)
       throw error
     }
-  }, 
+  },
   async updateCoupon(body, token) {
     try {
       const res = api.put('/api/v1/coupons/update', body, {
-        headers: { Authorization: `Bearer ${token}`}
+        headers: { Authorization: `Bearer ${token}` },
       })
       return res.data
     } catch (error) {
@@ -28,26 +28,26 @@ export const CouponService = {
   async addNewCoupon(body, id, token) {
     try {
       const res = api.post('/api/v1/coupons/add', body, {
-        params: {id},
-        headers: { Authorization: `Bearer ${token}`}
+        params: { id },
+        headers: { Authorization: `Bearer ${token}` },
       })
       return res.data
     } catch (error) {
       console.error('Error add coupon')
       throw error
     }
-  }, 
+  },
 
   async deleteCoupon(id, token) {
     try {
       const res = api.delete('/api/v1/coupons/delete', {
-        params: {id},
-        headers: { Authorization: `Bearer ${token}`}
+        params: { id },
+        headers: { Authorization: `Bearer ${token}` },
       })
       return res.data
     } catch (error) {
       console.error('Error delete coupon')
       throw error
     }
-  }
+  },
 }

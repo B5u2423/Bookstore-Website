@@ -1,21 +1,21 @@
 <script setup>
-  import { CouponService } from '@/api/coupon-api'
+import { CouponService } from '@/api/coupon-api'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
 import { ref, onMounted, toRef, shallowRef } from 'vue'
 
-  const adminAuthStore = useAdminAuthStore()
+const adminAuthStore = useAdminAuthStore()
 
 function createNewRecord() {
   return {
     code: '',
-discountType: '',
-discountValue: '',
-minOrderAmount: 0,
-maxUses: 0,
-usedCount: 0,
-validFrom: null,
-validUntil: null,
-isActive: false
+    discountType: '',
+    discountValue: '',
+    minOrderAmount: 0,
+    maxUses: 0,
+    usedCount: 0,
+    validFrom: null,
+    validUntil: null,
+    isActive: false,
   }
 }
 
@@ -44,12 +44,13 @@ const dialog = shallowRef(false)
 const isEditing = toRef(() => !!formModel.value.id)
 const types = ref([
   {
-
-  id: 'FIXED', name: 'Theo số tiền'
+    id: 'FIXED',
+    name: 'Theo số tiền',
   },
   {
-  id: 'PERCENT', name: 'Theo phần trăm'
-  }
+    id: 'PERCENT',
+    name: 'Theo phần trăm',
+  },
 ])
 
 // confirmation dialog
@@ -80,14 +81,14 @@ async function edit(id) {
   formModel.value = {
     id: found.id,
     code: found.code,
-discountType: found.discountType,
-discountValue: found.discountValue,
-minOrderAmount: found.minOrderAmount,
-maxUses: found.maxUses,
-usedCount: found.usedCount,
-validFrom: found.validFrom,
-validUntil: found.validUntil,
-isActive: found.isActive,
+    discountType: found.discountType,
+    discountValue: found.discountValue,
+    minOrderAmount: found.minOrderAmount,
+    maxUses: found.maxUses,
+    usedCount: found.usedCount,
+    validFrom: found.validFrom,
+    validUntil: found.validUntil,
+    isActive: found.isActive,
   }
 
   dialog.value = true
@@ -107,10 +108,7 @@ async function save() {
   if (isEditing.value) {
     try {
       // API call
-      const res = await CouponService.updateBookById(
-        formModel.value.id,
-        adminAuthStore.accessToken,
-      )
+      const res = await CouponService.updateBookById(formModel.value.id, adminAuthStore.accessToken)
       // edit immediate view
       const index = serverItems.value.findIndex((book) => book.id === formModel.value.id)
       serverItems.value[index] = formModel.value
@@ -134,6 +132,7 @@ onMounted(() => {
 </script>
 
 <template>
+
   <v-data-table-server
     v-model:items-per-page="itemsPerPage"
     :headers="headers"
@@ -228,7 +227,8 @@ onMounted(() => {
     </template>
 
   </v-data-table-server>
-   <v-dialog
+
+  <v-dialog
     v-model="dialog"
     max-width="800"
   >
@@ -242,7 +242,10 @@ onMounted(() => {
 
         <v-row class="px-3">
 
-          <v-col cols="12" md="4" >
+          <v-col
+            cols="12"
+            md="4"
+          >
 
             <div class="text-subtitle-1 text-high-emphasis">
                Mã giảm giá
@@ -258,10 +261,14 @@ onMounted(() => {
             ></v-text-field>
 
           </v-col>
-          <v-col cols="12" md="4" >
+
+          <v-col
+            cols="12"
+            md="4"
+          >
 
             <div class="text-subtitle-1 text-high-emphasis">
-              Mức giảm
+               Mức giảm
               <span class="text-red">(*)</span>
 
             </div>
@@ -274,10 +281,14 @@ onMounted(() => {
             ></v-text-field>
 
           </v-col>
-          <v-col cols="12" md="4" >
+
+          <v-col
+            cols="12"
+            md="4"
+          >
 
             <div class="text-subtitle-1 text-high-emphasis">
-              Phương thức
+               Phương thức
               <span class="text-red">(*)</span>
 
             </div>
@@ -293,10 +304,14 @@ onMounted(() => {
             ></v-autocomplete>
 
           </v-col>
-          <v-col cols="12" md="4" >
+
+          <v-col
+            cols="12"
+            md="4"
+          >
 
             <div class="text-subtitle-1 text-high-emphasis">
-              Đơn hàng tối thiểu
+               Đơn hàng tối thiểu
               <span class="text-red">(*)</span>
 
             </div>
@@ -309,10 +324,14 @@ onMounted(() => {
             ></v-text-field>
 
           </v-col>
-          <v-col cols="12" md="4" >
+
+          <v-col
+            cols="12"
+            md="4"
+          >
 
             <div class="text-subtitle-1 text-high-emphasis">
-              Số lượng tối đa
+               Số lượng tối đa
               <span class="text-red">(*)</span>
 
             </div>
@@ -325,6 +344,7 @@ onMounted(() => {
             ></v-text-field>
 
           </v-col>
+
         </v-row>
 
       </template>
@@ -343,7 +363,11 @@ onMounted(() => {
 
         <v-btn
           color="red-lighten-1"
-          @click=" () => {dialog = false} "
+          @click="
+            () => {
+              dialog = false
+            }
+          "
           variant="elevated"
         >
            Hủy
@@ -355,7 +379,7 @@ onMounted(() => {
 
   </v-dialog>
 
-    <!-- confirmation dialog -->
+  <!-- confirmation dialog -->
 
   <v-dialog
     v-model="confirmationDialog"
@@ -390,4 +414,5 @@ onMounted(() => {
     </v-card>
 
   </v-dialog>
+
 </template>

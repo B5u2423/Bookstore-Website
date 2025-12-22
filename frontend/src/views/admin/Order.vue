@@ -156,8 +156,7 @@ async function loadItems({ page, itemsPerPage }) {
 
     <template v-slot:item.fullname="{ item }">
 
-      <div class="d-flex ga-2 justify-start"
-      > {{ item.lastName }} {{ item.firstName }} </div>
+      <div class="d-flex ga-2 justify-start"> {{ item.lastName }} {{ item.firstName }} </div>
 
     </template>
 
@@ -193,45 +192,31 @@ async function loadItems({ page, itemsPerPage }) {
     max-width="800"
   >
 
-    <v-card
-      title="Thông Tin Đơn Hàng"
-    >
+    <v-card title="Thông Tin Đơn Hàng">
 
       <template v-slot:text>
 
-        <v-row class="px-3" no-gutters>
+        <v-row
+          class="px-3"
+          no-gutters
+        >
 
           <v-col
             cols="12"
             md="4"
             class="border-md pa-2"
           >
-          <b>
-               Họ và tên người mua
-          </b>
-          </v-col>
 
-          <v-col cols="12" md="8"
-            class="border-md pa-2"
-          >
-              {{detailDialog.lastName + ' ' + detailDialog.firstName}}
+            <b> Họ và tên người mua </b>
+
           </v-col>
 
           <v-col
             cols="12"
-            md="4"
+            md="8"
             class="border-md pa-2"
           >
-          <b>
-
-          Số điện thoại
-          </b>
-          </v-col>
-
-          <v-col cols="12" md="8"
-            class="border-md pa-2"
-          >
-              {{detailDialog.phoneNumber}}
+             {{ detailDialog.lastName + ' ' + detailDialog.firstName }}
           </v-col>
 
           <v-col
@@ -239,70 +224,17 @@ async function loadItems({ page, itemsPerPage }) {
             md="4"
             class="border-md pa-2"
           >
-          <b>
 
-          Email
-          </b>
+            <b> Số điện thoại </b>
+
           </v-col>
 
-          <v-col cols="12" md="8"
-            class="border-md pa-2"
-          >
-              {{detailDialog.email}}
-          </v-col>
           <v-col
             cols="12"
-            md="4"
+            md="8"
             class="border-md pa-2"
           >
-          <b>
-
-          Địa chỉ giao hàng
-          </b>
-          </v-col>
-
-          <v-col cols="12" md="8"
-            class="border-md pa-2"
-          >
-              {{
-
-              detailDialog.street + ' ' + detailDialog.commune + ' ' + detailDialog.city
-              }}
-          </v-col>
-          <v-col
-            cols="12"
-            md="4"
-            class="border-md pa-2"
-          >
-          <b>
-
-          Mã giảm giá
-          </b>
-          </v-col>
-
-          <v-col cols="12" md="8"
-            class="border-md pa-2"
-          >
-          <template v-if="detailDialog.couponCode === null">N/A</template>
-          <template v-else> 
-              {{detailDialog.couponCode}}
-             </template>
-          </v-col>
-          <v-col
-            cols="12"
-            md="4"
-            class="border-md pa-2"
-          >
-          <b>
-
-          Tình trạng đơn hàng
-          </b>
-          </v-col>
-
-          <v-col cols="12" md="8"
-            class="border-md pa-2"
-          >
-              {{detailDialog.orderStatus}}
+             {{ detailDialog.phoneNumber }}
           </v-col>
 
           <v-col
@@ -310,54 +242,203 @@ async function loadItems({ page, itemsPerPage }) {
             md="4"
             class="border-md pa-2"
           >
-          <b>
 
-          Ngày đặt hàng
-          </b>
+            <b> Email </b>
+
           </v-col>
 
-          <v-col cols="12" md="8"
+          <v-col
+            cols="12"
+            md="8"
             class="border-md pa-2"
           >
-              {{detailDialog.orderDate}}
+             {{ detailDialog.email }}
           </v-col>
 
-          <v-col cols="12" md="4" class="border-md pa-2" > <b> Phương thức thanh toán </b> </v-col>
+          <v-col
+            cols="12"
+            md="4"
+            class="border-md pa-2"
+          >
 
-          <v-col cols="12" md="8" class="border-md pa-2" > {{detailDialog.paymentMethod}}</v-col>
+            <b> Địa chỉ giao hàng </b>
 
-          <v-col cols="12" md="4" class="border-md pa-2" > <b>Tổng giá tiền sản phẩm</b> </v-col>
-          <v-col cols="12" md="8" class="border-md pa-2" > {{ formatPriceVNLocale(detailDialog.itemsTotal)}} VNĐ</v-col>
+          </v-col>
 
-          <v-col cols="12" md="4" class="border-md pa-2" > <b>Chi phí giao hàng</b> </v-col>
-          <v-col cols="12" md="8" class="border-md pa-2" > {{ formatPriceVNLocale(detailDialog.shippingFee)}} VNĐ</v-col>
+          <v-col
+            cols="12"
+            md="8"
+            class="border-md pa-2"
+          >
+             {{ detailDialog.street + ' ' + detailDialog.commune + ' ' + detailDialog.city }}
+          </v-col>
 
-          <v-col cols="12" md="4" class="border-md pa-2" > <b>Tổng giá tiền đơn hàng</b> </v-col>
-          <v-col cols="12" md="8" class="border-md pa-2" > {{ formatPriceVNLocale(detailDialog.orderTotal)}} VNĐ</v-col>
+          <v-col
+            cols="12"
+            md="4"
+            class="border-md pa-2"
+          >
 
-          <v-col cols="12" md="4" class="border-md pa-2" > <b>Sản phẩm</b> </v-col>
-          <v-col cols="12" md="8" class="border-md pa-2" >
+            <b> Mã giảm giá </b>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="8"
+            class="border-md pa-2"
+          >
+
+            <template v-if="detailDialog.couponCode === null">N/A</template>
+
+            <template v-else> {{ detailDialog.couponCode }} </template>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="4"
+            class="border-md pa-2"
+          >
+
+            <b> Tình trạng đơn hàng </b>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="8"
+            class="border-md pa-2"
+          >
+             {{ detailDialog.orderStatus }}
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="4"
+            class="border-md pa-2"
+          >
+
+            <b> Ngày đặt hàng </b>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="8"
+            class="border-md pa-2"
+          >
+             {{ detailDialog.orderDate }}
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="4"
+            class="border-md pa-2"
+          >
+
+            <b> Phương thức thanh toán </b>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="8"
+            class="border-md pa-2"
+          >
+             {{ detailDialog.paymentMethod }}
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="4"
+            class="border-md pa-2"
+          >
+
+            <b>Tổng giá tiền sản phẩm</b>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="8"
+            class="border-md pa-2"
+          >
+             {{ formatPriceVNLocale(detailDialog.itemsTotal) }} VNĐ
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="4"
+            class="border-md pa-2"
+          >
+
+            <b>Chi phí giao hàng</b>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="8"
+            class="border-md pa-2"
+          >
+             {{ formatPriceVNLocale(detailDialog.shippingFee) }} VNĐ
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="4"
+            class="border-md pa-2"
+          >
+
+            <b>Tổng giá tiền đơn hàng</b>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="8"
+            class="border-md pa-2"
+          >
+             {{ formatPriceVNLocale(detailDialog.orderTotal) }} VNĐ
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="4"
+            class="border-md pa-2"
+          >
+
+            <b>Sản phẩm</b>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="8"
+            class="border-md pa-2"
+          >
+
             <v-col v-for="item in detailDialog.items">
+
               <v-card variant="flat">
-                <v-card-title>
-              {{ item.book.title }} 
-                </v-card-title>
+
+                <v-card-title> {{ item.book.title }} </v-card-title>
+
                 <v-card-subtitle>
-                  <p>
 
-              Giá thành: {{ formatPriceVNLocale(item.priceAtPurchase) }} VNĐ
-                  </p>
-                  <p>
+                  <p> Giá thành: {{ formatPriceVNLocale(item.priceAtPurchase) }} VNĐ </p>
 
-              Số lượng: {{ item.quantity }}
-                  </p>
+                  <p> Số lượng: {{ item.quantity }} </p>
+
                 </v-card-subtitle>
-              </v-card>
 
+              </v-card>
 
             </v-col>
 
           </v-col>
+
         </v-row>
 
       </template>
@@ -379,5 +460,6 @@ async function loadItems({ page, itemsPerPage }) {
     </v-card>
 
   </v-dialog>
+
 </template>
 
