@@ -87,8 +87,8 @@ public class OrderService {
     order.setOrderTotal(shippingInfo.orderTotal());
 
     // set address
-    order.setCity(shippingInfo.communeName());
-    order.setCommune(shippingInfo.cityName());
+    order.setCity(shippingInfo.cityName());
+    order.setCommune(shippingInfo.communeName());
     order.setStreet(shippingInfo.street());
     // set user
     order.setFirstName(shippingInfo.firstName());
