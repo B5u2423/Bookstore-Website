@@ -10,8 +10,13 @@ import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -99,5 +104,17 @@ public class OrderService {
     cartRepo.save(cart);
 
     return savedOrder;
+  }
+
+  public Page<Order> getAllOrdersPaginated(int page, int size, String sortBy, String order) {
+    List<String> allowed = List.of("id");
+    if (!allowed.contains(sortBy)) {
+      throw new IllegalArgumentException("Invalid sort field: %s".formatted(sortBy));
+    }
+
+    Sort sort = order.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+    Pageable pageable = PageRequest.of(page, size, sort);
+    Page<Order> orders = orderRepo.findAll(pageable);
+    return orders;
   }
 }

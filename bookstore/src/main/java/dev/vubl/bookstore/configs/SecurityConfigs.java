@@ -158,9 +158,10 @@ public class SecurityConfigs {
       PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, "/api/v1/categories/**"),
       PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.DELETE, "/api/v1/categories/**"),
       PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.PUT, "/api/v1/categories/**"),
+      PathPatternRequestMatcher.withDefaults().matcher("/api/v1/images/upload"),
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/v1/orders"),
       PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/v1/coupons/**"),
       PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, "/api/v1/coupons/**"),
-      PathPatternRequestMatcher.withDefaults().matcher("/api/v1/images/upload")
     };
   }
 }
