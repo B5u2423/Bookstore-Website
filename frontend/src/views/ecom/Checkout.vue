@@ -383,7 +383,7 @@ onMounted(() => {
                   color="primary"
                   @click="confirmCheckout"
                 >
-                  ÁP DỤNG
+                   ÁP DỤNG
                 </v-btn>
 
               </v-col>

@@ -51,19 +51,22 @@ function showMoreDetails(id) {
 
   detailDialog.value = {
     id: found.id,
-    firstName: found.firstName,
-    lastName: found.lastName,
     email: found.email,
     phoneNumber: found.phoneNumber,
+    firstName: found.firstName,
+    lastName: found.lastName,
+    note: found.note,
     orderStatus: found.orderStatus,
+    items: found.items,
     paymentMethod: found.paymentMethod,
+    itemsTotal: found.itemsTotal,
+    shippingFee: found.shippingFee,
+    orderTotal: found.orderTotal,
+    couponCode: found.couponCode,
     orderDate: found.orderDate,
     city: found.city,
     commune: found.commune,
     street: found.street,
-    note: found.note,
-    items: found.items,
-    totalAmount: found.totalAmount,
   }
 }
 
