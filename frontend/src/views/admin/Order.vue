@@ -8,19 +8,22 @@ const adminAuthStore = useAdminAuthStore()
 function createNew() {
   return {
     id: null,
-    firstName: '',
-    lastName: '',
     email: '',
-    phoneNumber: '',
-    orderStatus: '',
-    paymentMethod: '',
-    orderDate: null,
-    city: '',
-    commune: '',
-    street: '',
-    note: '',
-    items: [],
-    totalAmount: 0
+phoneNumber: '',
+firstName: '',
+lastName: '',
+note: '',
+orderStatus: '',
+items: [],
+paymentMethod: '',
+itemsTotal: 0,
+shippingFee: 0,
+orderTotal: 0, 
+couponCode: '',
+orderDate: null,
+city: '',
+commune: '',
+street: ''
   }
 }
 
