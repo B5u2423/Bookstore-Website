@@ -1,5 +1,5 @@
 <script setup>
-  import { CartService, OrderService } from '@/api/cart-api'
+import { CartService, OrderService } from '@/api/cart-api'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
 import { ref } from 'vue'
 
@@ -9,21 +9,21 @@ function createNew() {
   return {
     id: null,
     email: '',
-phoneNumber: '',
-firstName: '',
-lastName: '',
-note: '',
-orderStatus: '',
-items: [],
-paymentMethod: '',
-itemsTotal: 0,
-shippingFee: 0,
-orderTotal: 0, 
-couponCode: '',
-orderDate: null,
-city: '',
-commune: '',
-street: ''
+    phoneNumber: '',
+    firstName: '',
+    lastName: '',
+    note: '',
+    orderStatus: '',
+    items: [],
+    paymentMethod: '',
+    itemsTotal: 0,
+    shippingFee: 0,
+    orderTotal: 0,
+    couponCode: '',
+    orderDate: null,
+    city: '',
+    commune: '',
+    street: '',
   }
 }
 
@@ -49,7 +49,7 @@ const detailDialog = ref(createNew())
 function showMoreDetails(id) {
   const found = serverItems.value.find((order) => order.id === id)
 
-  detailDialog.value =  {
+  detailDialog.value = {
     id: found.id,
     firstName: found.firstName,
     lastName: found.lastName,
@@ -63,7 +63,7 @@ function showMoreDetails(id) {
     street: found.street,
     note: found.note,
     items: found.items,
-    totalAmount: found.totalAmount 
+    totalAmount: found.totalAmount,
   }
 }
 
@@ -71,7 +71,10 @@ async function loadItems({ page, itemsPerPage }) {
   loading.value = true
   try {
     // page on BE start with index 0
-    const payload = await OrderService.getAllOrdersPaginated(adminAuthStore.accessToken, { page: page - 1, size: itemsPerPage })
+    const payload = await OrderService.getAllOrdersPaginated(adminAuthStore.accessToken, {
+      page: page - 1,
+      size: itemsPerPage,
+    })
     serverItems.value = payload.content
     totalItems.value = payload.page.totalElements
   } catch (error) {
@@ -146,18 +149,14 @@ async function loadItems({ page, itemsPerPage }) {
 
     <template v-slot:item.fullname="{ item }">
 
-      <div class="d-flex ga-2 justify-start">
-        {{ item.lastName }} {{ item.firstName }}
-      </div>
+      <div class="d-flex ga-2 justify-start"> {{ item.lastName }} {{ item.firstName }} </div>
 
     </template>
 
     <template v-slot:item.address="{ item }">
 
       <div class="d-flex ga-2 justify-start">
-
-        {{ item.street }}, {{ item.commune }}, {{ item.city }}
-
+         {{ item.street }}, {{ item.commune }}, {{ item.city }}
       </div>
 
     </template>
@@ -178,6 +177,7 @@ async function loadItems({ page, itemsPerPage }) {
       </div>
 
     </template>
+
   </v-data-table-server>
 
 </template>

@@ -302,17 +302,19 @@ onMounted(() => {
       <v-card-text>
 
         <template v-if="userProfileStore.userInfo.addressList.length === 0">
-          Không có địa chỉ mới
+           Không có địa chỉ mới
         </template>
 
         <template v-else>
 
-        <v-data-table :headers="headers"
-          :items="userProfileStore.userInfo.addressList"
-          hide-default-footer
-        >
+          <v-data-table
+            :headers="headers"
+            :items="userProfileStore.userInfo.addressList"
+            hide-default-footer
+          >
 
-        </v-data-table>
+          </v-data-table>
+
         </template>
 
       </v-card-text>

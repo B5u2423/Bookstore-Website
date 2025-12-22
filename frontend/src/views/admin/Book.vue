@@ -373,7 +373,7 @@ onMounted(() => {
           >
 
             <div class="text-subtitle-1 text-high-emphasis">
-              Tên sách
+               Tên sách
               <span class="text-red">(*)</span>
 
             </div>
@@ -393,7 +393,7 @@ onMounted(() => {
           >
 
             <div class="text-subtitle-1 text-high-emphasis">
-              Tác giả
+               Tác giả
               <span class="text-red">(*)</span>
 
             </div>
@@ -531,7 +531,7 @@ onMounted(() => {
           >
 
             <div class="text-subtitle-1 text-high-emphasis">
-              Thể loại
+               Thể loại
               <span class="text-red">(*)</span>
 
             </div>

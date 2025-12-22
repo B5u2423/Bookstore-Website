@@ -358,23 +358,36 @@ onMounted(() => {
           </v-col>
 
           <v-col cols="12">
+
             <v-row class="mb-3">
+
               <v-col md="8">
-            <v-text-field
-              variant="outlined"
-              v-model="shippingInfo.couponCode"
-              density="compact"
-              hide-details="true"
-              label="Mã giảm giá"
-            ></v-text-field>
+
+                <v-text-field
+                  variant="outlined"
+                  v-model="shippingInfo.couponCode"
+                  density="compact"
+                  hide-details="true"
+                  label="Mã giảm giá"
+                ></v-text-field>
+
               </v-col>
-              <v-col md="4" class="text-end justify-end">
+
+              <v-col
+                md="4"
+                class="text-end justify-end"
+              >
+
                 <v-btn
-                width="100%"
-                color="primary"
-                @click="confirmCheckout"
-                >ÁP DỤNG</v-btn>
+                  width="100%"
+                  color="primary"
+                  @click="confirmCheckout"
+                >
+                  ÁP DỤNG
+                </v-btn>
+
               </v-col>
+
             </v-row>
 
             <v-divider></v-divider>
@@ -408,10 +421,13 @@ onMounted(() => {
                 md="6"
                 class="text-end"
               >
-              <template v-if="shippingInfo.shippingFee > 0">
-                {{ formatPriceVNLocale(shippingInfo.value.shippingFee) }} 
-              </template>
-              <template v-else>-</template>
+
+                <template v-if="shippingInfo.shippingFee > 0">
+                   {{ formatPriceVNLocale(shippingInfo.value.shippingFee) }}
+                </template>
+
+                <template v-else>-</template>
+
               </v-col>
 
             </v-row>
