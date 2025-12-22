@@ -4,6 +4,7 @@ import dev.vubl.bookstore.entities.Order;
 import dev.vubl.bookstore.services.OrderService;
 import dev.vubl.bookstore.services.ShippingInfoDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,5 +22,14 @@ public class OrderController {
       @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
       @RequestBody ShippingInfoDTO shippingInfo) {
     return ResponseEntity.ok().body(orderService.checkout(token, shippingInfo));
+  }
+
+  @GetMapping
+  public PagedModel<Order> getAllOrdersPaginated(
+      @RequestParam(value = "page", defaultValue = "0") int page,
+      @RequestParam(value = "size", defaultValue = "5") int size,
+      @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
+      @RequestParam(value = "order", defaultValue = "asc") String order) {
+    return new PagedModel<>(orderService.getAllOrdersPaginated(page, size, sortBy, order));
   }
 }

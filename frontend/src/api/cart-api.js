@@ -64,6 +64,18 @@ export const OrderService = {
       console.error('Error making order', error)
     }
   },
+
+  async getAllOrdersPaginated(token, params = {}) {
+    try {
+      const res = await api.get('/api/v1/orders',{
+        params: params,
+        headers: { Authorization: `Bearer ${token}`}
+      })
+      return res.data
+    } catch (error) {
+      console.error('Error fetch paginated orders', error)
+    }
+  }
 }
 
 export const AddressInfoService = {
