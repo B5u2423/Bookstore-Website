@@ -45,6 +45,7 @@ const totalItems = ref(0)
 
 // order details dialog
 const detailDialog = ref(createNew())
+const dialog = ref(false)
 
 function showMoreDetails(id) {
   const found = serverItems.value.find((order) => order.id === id)
@@ -152,7 +153,9 @@ async function loadItems({ page, itemsPerPage }) {
 
     <template v-slot:item.fullname="{ item }">
 
-      <div class="d-flex ga-2 justify-start"> {{ item.lastName }} {{ item.firstName }} </div>
+      <div class="d-flex ga-2 justify-start"
+      @click="dialog = !dialog"
+      > {{ item.lastName }} {{ item.firstName }} </div>
 
     </template>
 
@@ -183,5 +186,159 @@ async function loadItems({ page, itemsPerPage }) {
 
   </v-data-table-server>
 
+  <v-dialog
+    v-model="dialog"
+    max-width="800"
+  >
+
+    <v-card
+      title="Thông Tin Đơn Hàng"
+    >
+
+      <template v-slot:text>
+
+        <v-row class="px-3">
+
+          <v-col
+            cols="12"
+            md="6"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">
+               Họ Và Tên Người Mua
+            </div>
+
+            <v-text-field variant="outlined"
+              :model-value="detailDialog.lastName + ' ' + detailDialog.firstName"
+              density="compact"
+              hide-details="true"
+              :readonly="true"
+            ></v-text-field>
+
+          </v-col>
+          <v-col
+            cols="12"
+            md="3"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">
+              Email
+            </div>
+
+            <v-text-field variant="outlined"
+              :model-value="detailDialog.email"
+              density="compact"
+              hide-details="true"
+              :readonly="true"
+            ></v-text-field>
+
+          </v-col>
+          <v-col
+            cols="12"
+            md="3"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">
+              Số Điện Thoại
+            </div>
+
+            <v-text-field variant="outlined"
+              :model-value="detailDialog.phoneNumber"
+              density="compact"
+              hide-details="true"
+              :readonly="true"
+            ></v-text-field>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="6"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">
+              Địa Chỉ Giao Hàng
+            </div>
+
+            <v-text-field variant="outlined"
+              :model-value="detailDialog.street + ' ' + detailDialog.commune + ' ' + detailDialog.city"
+              density="compact"
+              hide-details="true"
+              :readonly="true"
+            ></v-text-field>
+
+          </v-col>
+
+
+          <v-col
+            cols="12"
+            md="4"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">
+              Mã giảm giá
+            </div>
+
+            <v-text-field variant="outlined"
+              :model-value="detailDialog.couponCode"
+              density="compact"
+              hide-details="true"
+              :readonly="true"
+            ></v-text-field>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="4"
+          >
+            <div class="text-subtitle-1 text-high-emphasis">
+              Tình Trạng Đơn Hàng
+            </div>
+
+            <v-text-field variant="outlined"
+              :model-value="detailDialog.orderStatus"
+              density="compact"
+              hide-details="true"
+              :readonly="true"
+            ></v-text-field>
+
+          </v-col>
+          <v-col
+            cols="12"
+            md="4"
+          >
+            <div class="text-subtitle-1 text-high-emphasis">
+              Phương Thức Thanh Toán
+            </div>
+
+            <v-text-field variant="outlined"
+              :model-value="detailDialog.paymentMethod"
+              density="compact"
+              hide-details="true"
+              :readonly="true"
+            ></v-text-field>
+
+          </v-col>
+        </v-row>
+
+      </template>
+
+      <v-divider></v-divider>
+
+      <v-card-actions class="bg-surface-light">
+
+        <v-btn
+          color="red-lighten-1"
+          variant="elevated"
+        >
+           Hủy
+        </v-btn>
+
+      </v-card-actions>
+
+    </v-card>
+
+  </v-dialog>
 </template>
 
