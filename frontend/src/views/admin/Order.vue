@@ -4,20 +4,65 @@ import { useAdminAuthStore } from '@/stores/admin-auth-store'
 import { ref } from 'vue'
 
 const adminAuthStore = useAdminAuthStore()
+
+function createNew() {
+  return {
+    id: null,
+    firstName: '',
+    lastName: '',
+    email: '',
+    phoneNumber: '',
+    orderStatus: '',
+    paymentMethod: '',
+    orderDate: null,
+    city: '',
+    commune: '',
+    street: '',
+    note: '',
+    items: [],
+    totalAmount: 0
+  }
+}
+
 // table
 const headers = ref([
   { title: 'ID', key: 'id', align: 'start' },
-  { title: 'Tên Người Mua', key: 'firstName', align: 'start' },
+  { title: 'Họ Và Tên Người Mua', key: 'fullname', align: 'start' },
   { title: 'Email Người Mua', key: 'email', align: 'start' },
   { title: 'Địa Chỉ Giao Hàng', key: 'address', align: 'start' },
   { title: 'Tình Trạng Đơn Hàng', key: 'orderStatus', align: 'start' },
   { title: 'Phương Thức Thanh Toán', key: 'paymentMethod', align: 'start' },
   { title: 'Ngày Đặt Hàng', key: 'orderDate', align: 'start' },
+  { title: 'Thao tác', key: 'actions', align: 'end', sortable: false },
 ])
 const itemsPerPage = ref(10)
 const loading = ref(false)
 const serverItems = ref([])
 const totalItems = ref(0)
+
+// order details dialog
+const detailDialog = ref(createNew())
+
+function showMoreDetails(id) {
+  const found = serverItems.value.find((order) => order.id === id)
+
+  detailDialog.value =  {
+    id: found.id,
+    firstName: found.firstName,
+    lastName: found.lastName,
+    email: found.email,
+    phoneNumber: found.phoneNumber,
+    orderStatus: found.orderStatus,
+    paymentMethod: found.paymentMethod,
+    orderDate: found.orderDate,
+    city: found.city,
+    commune: found.commune,
+    street: found.street,
+    note: found.note,
+    items: found.items,
+    totalAmount: found.totalAmount 
+  }
+}
 
 async function loadItems({ page, itemsPerPage }) {
   loading.value = true
@@ -96,24 +141,11 @@ async function loadItems({ page, itemsPerPage }) {
 
     </template>
 
-    <!-- stylized book title as chips -->
+    <template v-slot:item.fullname="{ item }">
 
-    <template v-slot:item.title="{ value }">
-
-      <v-chip
-        :text="value"
-        class="border-thin"
-        prepend-icon="mdi-book"
-        label
-      >
-
-        <template v-slot:prepend>
-
-          <v-icon color="medium-emphasis"></v-icon>
-
-        </template>
-
-      </v-chip>
+      <div class="d-flex ga-2 justify-start">
+        {{ item.lastName }} {{ item.firstName }}
+      </div>
 
     </template>
 
@@ -123,6 +155,22 @@ async function loadItems({ page, itemsPerPage }) {
 
         {{ item.street }}, {{ item.commune }}, {{ item.city }}
 
+      </div>
+
+    </template>
+
+    <!-- action buttons -->
+
+    <template v-slot:item.actions="{ item }">
+
+      <div class="d-flex ga-2 justify-end">
+
+        <v-icon
+          color="medium-emphasis"
+          icon="mdi-information-outline"
+          size="small"
+          @click="showMoreDetails(item.id)"
+        ></v-icon>
 
       </div>
 
