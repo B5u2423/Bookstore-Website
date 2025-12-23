@@ -1,14 +1,14 @@
-import api from './api-config'
+import api, { adminApi } from './api-config'
 
 const CATEGORY_ENDPOINT = {
-  GET_ALL: '/api/v1/categories/all',
-  GET_PARENTS: '/api/v1/categories/parents',
-  GET_CHILDREN: '/api/v1/categories/children',
-  GET_ALL_PAGINATED: '/api/v1/categories',
-  GET_CANDIDATES: '/api/v1/categories/candidates',
-  PUT_UPDATE: '/api/v1/categories/update',
-  POST_ADD: '/api/v1/categories/add',
-  DELETE: `/api/v1/categories/delete`,
+  GET_ALL: '/categories/all',
+  GET_PARENTS: '/categories/parents',
+  GET_CHILDREN: '/categories/children',
+  GET_ALL_PAGINATED: '/categories',
+  GET_CANDIDATES: '/categories/candidates',
+  PUT_UPDATE: '/categories/update',
+  POST_ADD: '/categories/add',
+  DELETE: `/categories/delete`,
 }
 
 export const CategoryService = {
@@ -67,11 +67,7 @@ export const CategoryService = {
 
   async updateCategory(body, token) {
     try {
-      const res = await api.put(CATEGORY_ENDPOINT.PUT_UPDATE, body, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      const res = await adminApi.put(CATEGORY_ENDPOINT.PUT_UPDATE, body)
       return res.data
     } catch (error) {
       console.error('Error update category')
@@ -81,11 +77,7 @@ export const CategoryService = {
 
   async addCategory(body, token) {
     try {
-      const res = await api.post(CATEGORY_ENDPOINT.POST_ADD, body, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      const res = await adminApi.post(CATEGORY_ENDPOINT.POST_ADD, body)
       return res.data
     } catch (error) {
       console.error('Error adding category')
@@ -95,11 +87,8 @@ export const CategoryService = {
 
   async deleteCategoryById(id, token) {
     try {
-      const res = await api.delete(CATEGORY_ENDPOINT.DELETE, {
+      const res = await adminApi.delete(CATEGORY_ENDPOINT.DELETE, {
         params: { id },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       })
       return res.data
     } catch (error) {

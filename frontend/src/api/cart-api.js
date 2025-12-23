@@ -1,9 +1,9 @@
-import api, { provinceApi } from './api-config'
+import api, { adminApi, provinceApi } from './api-config'
 
 export const CartService = {
   async addToCart(token, body) {
     try {
-      const res = await api.post('/api/v1/carts/add', body, {
+      const res = await api.post('/carts/add', body, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -16,7 +16,7 @@ export const CartService = {
 
   async getUsersActiveCart(token) {
     try {
-      const res = await api.get('/api/v1/carts', {
+      const res = await api.get('/carts', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -28,7 +28,7 @@ export const CartService = {
   },
   async removeAllItemsFromCart(token) {
     try {
-      const res = await api.delete('/api/v1/carts/remove-all', {
+      const res = await api.delete('/carts/remove-all', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -43,7 +43,7 @@ export const CartService = {
 export const PaymentService = {
   async createPaymentPage(body, token) {
     try {
-      const res = await api.post('/api/v1/payment/create-payment', body, {
+      const res = await api.post('/payment/create-payment', body, {
         headers: { Authorization: `Bearer ${token}` },
       })
       return res.data
@@ -56,7 +56,7 @@ export const PaymentService = {
 export const OrderService = {
   async createOrder(body, token) {
     try {
-      const res = await api.post('/api/v1/orders/create-order', body, {
+      const res = await api.post('/orders/create-order', body, {
         headers: { Authorization: `Bearer ${token}` },
       })
       return res.data
@@ -67,9 +67,8 @@ export const OrderService = {
 
   async getAllOrdersPaginated(token, params = {}) {
     try {
-      const res = await api.get('/api/v1/orders', {
+      const res = await adminApi.get('/orders', {
         params: params,
-        headers: { Authorization: `Bearer ${token}` },
       })
       return res.data
     } catch (error) {
@@ -81,7 +80,7 @@ export const OrderService = {
 export const AddressInfoService = {
   async getCities() {
     try {
-      const res = await api.get('/api/v1/proxy/province')
+      const res = await api.get('/proxy/province')
       return res.data
     } catch (error) {
       console.error('Error fetching cities data', error)
@@ -89,7 +88,7 @@ export const AddressInfoService = {
   },
   async getCommunes(province) {
     try {
-      const res = await api.get('/api/v1/proxy/commune', {
+      const res = await api.get('/proxy/commune', {
         params: { province },
       })
       return res.data

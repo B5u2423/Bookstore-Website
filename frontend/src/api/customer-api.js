@@ -1,7 +1,7 @@
 import api from './api-config'
 
 const USER_ENDPOINTS = {
-  UPDATE_PROFILE: '/api/v1/customers/profile',
+  UPDATE_PROFILE: '/customers/profile',
 }
 
 export const UserService = {
@@ -22,7 +22,7 @@ export const UserService = {
 export const CustomerService = {
   async setAddress(body, token) {
     try {
-      const res = await api.post('/api/v1/customers/add-address', body, {
+      const res = await api.post('/customers/add-address', body, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -35,7 +35,7 @@ export const CustomerService = {
 
   async getCustomerAccount(token) {
     try {
-      const res = await api.get('/api/v1/customers/account', {
+      const res = await api.get('/customers/account', {
         headers: {
           Authorization: `Bearer ${token}`,
         },

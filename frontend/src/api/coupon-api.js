@@ -1,11 +1,10 @@
-import api from './api-config'
+import api, { adminApi } from './api-config'
 
 export const CouponService = {
   async getAllCouponsPaginated(token, params = {}) {
     try {
-      const res = await api.get('/api/v1/coupons', {
+      const res = await adminApi.get('/coupons', {
         params: params,
-        headers: { Authorization: `Bearer ${token}` },
       })
       return res.data
     } catch (error) {
@@ -15,8 +14,7 @@ export const CouponService = {
   },
   async updateCoupon(id, body, token) {
     try {
-      const res = await api.put('/api/v1/coupons/update', body, {
-        headers: { Authorization: `Bearer ${token}` },
+      const res = await adminApi.put('/coupons/update', body, {
         params: { id },
       })
       return res.data
@@ -28,9 +26,7 @@ export const CouponService = {
 
   async addNewCoupon(body, token) {
     try {
-      const res = await api.post('/api/v1/coupons/add', body, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      const res = await adminApi.post('/coupons/add', body)
       return res.data
     } catch (error) {
       console.error('Error add coupon')
@@ -40,9 +36,8 @@ export const CouponService = {
 
   async deleteCoupon(id, token) {
     try {
-      const res = api.delete('/api/v1/coupons/delete', {
+      const res = adminApi.delete('/coupons/delete', {
         params: { id },
-        headers: { Authorization: `Bearer ${token}` },
       })
       return res.data
     } catch (error) {

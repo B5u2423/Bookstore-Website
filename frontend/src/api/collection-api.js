@@ -1,11 +1,10 @@
-import api from './api-config'
+import api, { adminApi } from './api-config'
 
 export const CollectionService = {
   async getAllCollectionsPaginated(token, params = {}) {
     try {
-      const res = await api.get('/api/v1/collections', {
+      const res = await adminApi.get('/collections', {
         params: params,
-        headers: { Authorization: `Bearer ${token}` },
       })
       return res.data
     } catch (error) {
@@ -15,8 +14,7 @@ export const CollectionService = {
   },
   async updateCollection(id, body, token) {
     try {
-      const res = await api.put('/api/v1/collections/update', body, {
-        headers: { Authorization: `Bearer ${token}` },
+      const res = await adminApi.put('/collections/update', body, {
         params: { id },
       })
       return res.data
@@ -28,9 +26,7 @@ export const CollectionService = {
 
   async addNewCollection(body, token) {
     try {
-      const res = await api.post('/api/v1/collections/add', body, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      const res = await adminApi.post('/collections/add', body)
       return res.data
     } catch (error) {
       console.error('Error add collection')
@@ -40,9 +36,8 @@ export const CollectionService = {
 
   async deleteCollection(id, token) {
     try {
-      const res = api.delete('/api/v1/collections/delete', {
+      const res = adminApi.delete('/collections/delete', {
         params: { id },
-        headers: { Authorization: `Bearer ${token}` },
       })
       return res.data
     } catch (error) {
