@@ -1,7 +1,7 @@
 <script setup>
 import { CollectionService } from '@/api/collection-api'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
-import { ref, onMounted, toRef, shallowRef } from 'vue'
+import { ref, computed, onMounted, toRef, shallowRef } from 'vue'
 
 const adminAuthStore = useAdminAuthStore()
 
