@@ -71,7 +71,7 @@ async function loadItems({ page, itemsPerPage }) {
     serverItems.value = payload.content
     totalItems.value = payload.page.totalElements
   } catch (error) {
-    console.error('Error loading books from server', error)
+    console.error('Error loading coupons from server', error)
   } finally {
     loading.value = false
   }
@@ -118,16 +118,14 @@ async function save() {
       const index = serverItems.value.findIndex((coupon) => coupon.id === formModel.value.id)
       serverItems.value[index] = formModel.value
     } catch (error) {
-      console.error('Error editing book')
+      console.error('Error editing coupon')
     }
   } else {
     try {
       // API call
       const res = await CouponService.addNewCoupon(formModel.value, adminAuthStore.accessToken)
-      isSuccess.value = true
-      message.value = 'Thêm sản phẩm thành công'
     } catch (error) {
-      console.error('Error adding new book')
+      console.error('Error adding new coupon')
     }
   }
 }
