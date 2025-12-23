@@ -147,12 +147,12 @@ const routes = [
           {
             path: 'customers',
             name: 'man-customers',
-            component: () => import('@/views/admin/Book.vue'),
+            component: () => import('@/views/admin/Customer.vue'),
           },
           {
             path: 'staffs',
             name: 'man-staffs',
-            component: () => import('@/views/admin/Book.vue'),
+            component: () => import('@/views/admin/Staff.vue'),
           },
         ],
       },
