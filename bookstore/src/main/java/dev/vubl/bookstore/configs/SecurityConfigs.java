@@ -162,6 +162,7 @@ public class SecurityConfigs {
       PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/v1/orders"),
       PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/v1/coupons/**"),
       PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, "/api/v1/coupons/**"),
+      PathPatternRequestMatcher.withDefaults().matcher("/api/v1/collections/**"),
     };
   }
 }
