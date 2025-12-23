@@ -11,6 +11,8 @@ import dev.vubl.bookstore.exceptions.UserDoesNotExistException;
 import dev.vubl.bookstore.repos.ApplicationUserRepo;
 import dev.vubl.bookstore.repos.CustomerAddressInfoRepo;
 import jakarta.transaction.Transactional;
+
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -75,6 +77,7 @@ public class ApplicationUserService implements UserDetailsService {
     user.setLastName(payload.lastName());
     user.setPhoneNumber(payload.phoneNumber());
     user.setEmail(payload.email());
+    user.setCreateTimeStamp(Instant.now());
 
     try {
       this.createOrUpdateUser(user);

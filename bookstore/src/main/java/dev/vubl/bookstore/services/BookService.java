@@ -11,6 +11,7 @@ import dev.vubl.bookstore.repos.CategoryRepo;
 import dev.vubl.bookstore.utils.SlugUtils;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -100,6 +101,7 @@ public class BookService {
       b.setInStock(bookResponseDTO.inStock());
       b.setUrlSlug(SlugUtils.convertStringToSlug(bookResponseDTO.title()));
       b.setPrice(bookResponseDTO.price());
+      b.setUpdateTimeStamp(Instant.now());
       if (bookResponseDTO.categoryId() != null) {
 
         b.setCategory(

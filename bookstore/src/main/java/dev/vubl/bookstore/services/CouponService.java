@@ -6,6 +6,7 @@ import dev.vubl.bookstore.entities.DiscountType;
 import dev.vubl.bookstore.repos.CouponRepo;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +68,7 @@ public class CouponService {
     c.setMaxUses(payload.maxUses());
     c.setValidFrom(payload.validFrom());
     c.setValidUntil(payload.validUntil());
+    c.setUpdateTimeStamp(Instant.now());
 
     return couponRepo.save(c);
   }
