@@ -1,4 +1,4 @@
-import api from "./api-config";
+import api from './api-config'
 
 export const CollectionService = {
   async getAllCollectionsPaginated(token, params = {}) {
@@ -17,7 +17,7 @@ export const CollectionService = {
     try {
       const res = await api.put('/api/v1/collections/update', body, {
         headers: { Authorization: `Bearer ${token}` },
-          params: {id}
+        params: { id },
       })
       return res.data
     } catch (error) {

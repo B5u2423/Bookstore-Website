@@ -1,5 +1,4 @@
 <script setup>
-
 import { CollectionService } from '@/api/collection-api'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
 import { ref, onMounted, toRef, shallowRef } from 'vue'
@@ -7,11 +6,11 @@ import { ref, onMounted, toRef, shallowRef } from 'vue'
 const adminAuthStore = useAdminAuthStore()
 
 function createNewRecord() {
- return {
-id: '',
-collectionName: '',
-collectionSlug: ''
- } 
+  return {
+    id: '',
+    collectionName: '',
+    collectionSlug: '',
+  }
 }
 
 // table
@@ -80,11 +79,14 @@ async function save() {
     try {
       // API call
       const res = await CollectionService.updateCollection(
-          formModel.value.id
-          , formModel.value
-          , adminAuthStore.accessToken)
+        formModel.value.id,
+        formModel.value,
+        adminAuthStore.accessToken,
+      )
       // edit immediate view
-      const index = serverItems.value.findIndex((collection) => collection.id === formModel.value.id)
+      const index = serverItems.value.findIndex(
+        (collection) => collection.id === formModel.value.id,
+      )
       serverItems.value[index] = formModel.value
     } catch (error) {
       console.error('Error editing collection')
@@ -92,7 +94,10 @@ async function save() {
   } else {
     try {
       // API call
-      const res = await CollectionService.addNewCollection(formModel.value, adminAuthStore.accessToken)
+      const res = await CollectionService.addNewCollection(
+        formModel.value,
+        adminAuthStore.accessToken,
+      )
     } catch (error) {
       console.error('Error adding new collection')
     }
@@ -137,6 +142,7 @@ onMounted(() => {
 </script>
 
 <template>
+
   <v-data-table-server
     v-model:items-per-page="itemsPerPage"
     :headers="headers"
@@ -252,7 +258,7 @@ onMounted(() => {
           >
 
             <div class="text-subtitle-1 text-high-emphasis">
-              Tên bộ sưu tập
+               Tên bộ sưu tập
               <span class="text-red">(*)</span>
 
             </div>
@@ -265,6 +271,7 @@ onMounted(() => {
             ></v-text-field>
 
           </v-col>
+
         </v-row>
 
       </template>
@@ -334,5 +341,6 @@ onMounted(() => {
     </v-card>
 
   </v-dialog>
+
 </template>
 

@@ -111,9 +111,10 @@ async function save() {
     try {
       // API call
       const res = await CouponService.updateCoupon(
-          formModel.value.id
-          , formModel.value
-          , adminAuthStore.accessToken)
+        formModel.value.id,
+        formModel.value,
+        adminAuthStore.accessToken,
+      )
       // edit immediate view
       const index = serverItems.value.findIndex((coupon) => coupon.id === formModel.value.id)
       serverItems.value[index] = formModel.value
@@ -349,41 +350,45 @@ onMounted(() => {
           </v-col>
 
           <v-col
-              cols="12"
-              md="4"
+            cols="12"
+            md="4"
           >
 
             <div class="text-subtitle-1 text-high-emphasis">
-              Ngày bắt đầu
+               Ngày bắt đầu
               <span class="text-red">(*)</span>
+
             </div>
 
             <v-date-input
-                clearable
-                variant="outlined"
-                :v-model="formModel.validFrom"
+              clearable
+              variant="outlined"
+              :v-model="formModel.validFrom"
             ></v-date-input>
 
           </v-col>
+
           <v-col
-              cols="12"
-              md="4"
+            cols="12"
+            md="4"
           >
 
             <div class="text-subtitle-1 text-high-emphasis">
-              Ngày kết thúc
+               Ngày kết thúc
               <span class="text-red">(*)</span>
 
             </div>
 
             <v-date-input
-                clearable
-                variant="outlined"
-                :v-model="formModel.validUntil"
+              clearable
+              variant="outlined"
+              :v-model="formModel.validUntil"
             ></v-date-input>
-            <p>{{formModel.value.validUntil}}</p>
+
+            <p>{{ formModel.value.validUntil }}</p>
 
           </v-col>
+
         </v-row>
 
       </template>
@@ -455,3 +460,4 @@ onMounted(() => {
   </v-dialog>
 
 </template>
+

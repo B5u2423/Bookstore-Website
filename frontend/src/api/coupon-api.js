@@ -17,7 +17,7 @@ export const CouponService = {
     try {
       const res = await api.put('/api/v1/coupons/update', body, {
         headers: { Authorization: `Bearer ${token}` },
-          params: {id}
+        params: { id },
       })
       return res.data
     } catch (error) {
