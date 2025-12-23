@@ -33,8 +33,8 @@ public class CouponController {
   }
 
   @PutMapping("/update")
-  public ResponseEntity<String> updateCoupon(@RequestBody CouponDTO payload) {
-    return ResponseEntity.ok().body("Ok");
+  public ResponseEntity<Coupon> updateCoupon(@RequestBody CouponDTO payload) {
+    return ResponseEntity.ok().body(couponService.updateCoupon(payload));
   }
 
   @DeleteMapping("/delete")

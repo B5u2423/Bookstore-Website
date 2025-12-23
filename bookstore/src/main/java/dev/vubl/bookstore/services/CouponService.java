@@ -36,7 +36,9 @@ public class CouponService {
     coupon.setUsedCount(coupon.getUsedCount() + 1);
     couponRepo.save(coupon);
 
-    return orderAmount.subtract(discount);
+    return orderAmount.subtract(discount).compareTo(BigDecimal.ZERO) < 0
+        ? BigDecimal.ZERO
+        : orderAmount.subtract((discount));
   }
 
   public Page<Coupon> getAllCoupons(int page, int size, String sortBy, String order) {
@@ -50,7 +52,7 @@ public class CouponService {
     return couponRepo.findAll(pageable);
   }
 
-  public void updateCoupon(CouponDTO payload) {
+  public Coupon updateCoupon(CouponDTO payload) {
     Coupon c =
         couponRepo
             .findById(payload.id())
@@ -66,7 +68,7 @@ public class CouponService {
     c.setValidFrom(payload.validFrom());
     c.setValidUntil(payload.validUntil());
 
-    couponRepo.save(c);
+    return couponRepo.save(c);
   }
 
   public Coupon addNewCoupon(CouponDTO payload) {
@@ -106,7 +108,7 @@ public class CouponService {
   }
 
   private BigDecimal calculateDiscount(Coupon coupon, BigDecimal orderAmount) {
-    if (coupon.getDiscountType() == DiscountType.PERCENTAGE) {
+    if (coupon.getDiscountType() == DiscountType.PERCENT) {
       return orderAmount.multiply(coupon.getDiscountValue()).divide(BigDecimal.valueOf(100));
     }
     return coupon.getDiscountValue();
