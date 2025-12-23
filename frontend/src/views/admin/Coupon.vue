@@ -2,11 +2,13 @@
 import { CouponService } from '@/api/coupon-api'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
 import { ref, onMounted, toRef, shallowRef } from 'vue'
+import { VDateInput } from 'vuetify/labs/VDateInput'
 
 const adminAuthStore = useAdminAuthStore()
 
 function createNewRecord() {
   return {
+    id: null,
     code: '',
     discountType: '',
     discountValue: '',
@@ -108,9 +110,12 @@ async function save() {
   if (isEditing.value) {
     try {
       // API call
-      const res = await CouponService.updateBookById(formModel.value.id, adminAuthStore.accessToken)
+      const res = await CouponService.updateCoupon(
+          formModel.value.id
+          , formModel.value
+          , adminAuthStore.accessToken)
       // edit immediate view
-      const index = serverItems.value.findIndex((book) => book.id === formModel.value.id)
+      const index = serverItems.value.findIndex((coupon) => coupon.id === formModel.value.id)
       serverItems.value[index] = formModel.value
     } catch (error) {
       console.error('Error editing book')
@@ -345,6 +350,42 @@ onMounted(() => {
 
           </v-col>
 
+          <v-col
+              cols="12"
+              md="4"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">
+              Ngày bắt đầu
+              <span class="text-red">(*)</span>
+            </div>
+
+            <v-date-input
+                clearable
+                variant="outlined"
+                :v-model="formModel.validFrom"
+            ></v-date-input>
+
+          </v-col>
+          <v-col
+              cols="12"
+              md="4"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis">
+              Ngày kết thúc
+              <span class="text-red">(*)</span>
+
+            </div>
+
+            <v-date-input
+                clearable
+                variant="outlined"
+                :v-model="formModel.validUntil"
+            ></v-date-input>
+            <p>{{formModel.value.validUntil}}</p>
+
+          </v-col>
         </v-row>
 
       </template>

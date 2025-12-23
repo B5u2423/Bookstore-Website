@@ -13,10 +13,11 @@ export const CouponService = {
       throw error
     }
   },
-  async updateCoupon(body, token) {
+  async updateCoupon(id, body, token) {
     try {
-      const res = api.put('/api/v1/coupons/update', body, {
+      const res = await api.put('/api/v1/coupons/update', body, {
         headers: { Authorization: `Bearer ${token}` },
+          params: {id}
       })
       return res.data
     } catch (error) {
@@ -25,10 +26,9 @@ export const CouponService = {
     }
   },
 
-  async addNewCoupon(body, id, token) {
+  async addNewCoupon(body, token) {
     try {
-      const res = api.post('/api/v1/coupons/add', body, {
-        params: { id },
+      const res = await api.post('/api/v1/coupons/add', body, {
         headers: { Authorization: `Bearer ${token}` },
       })
       return res.data
