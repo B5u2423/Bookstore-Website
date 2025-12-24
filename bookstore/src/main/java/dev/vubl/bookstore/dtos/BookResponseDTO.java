@@ -15,6 +15,8 @@ public record BookResponseDTO(
     Integer inStock,
     Integer categoryId,
     String categoryName,
+    Integer collectionId,
+    String collectionName,
     Integer publishYear,
     String publisher,
     String urlSlug,

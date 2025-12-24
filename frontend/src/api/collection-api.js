@@ -1,6 +1,17 @@
 import api, { adminApi } from './api-config'
 
 export const CollectionService = {
+  async getAllCollections() {
+    try {
+      const res = await adminApi.get('/collections/get-all', {
+        params: params,
+      })
+      return res.data
+    } catch (error) {
+      console.error('Error fetching all collections', error)
+      throw error
+    }
+  },
   async getAllCollectionsPaginated(token, params = {}) {
     try {
       const res = await adminApi.get('/collections', {
@@ -8,7 +19,7 @@ export const CollectionService = {
       })
       return res.data
     } catch (error) {
-      console.error('Error fetch paginated collections', error)
+      console.error('Error fetching paginated collections', error)
       throw error
     }
   },

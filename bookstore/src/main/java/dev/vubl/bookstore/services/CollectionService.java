@@ -21,7 +21,12 @@ import org.springframework.stereotype.Service;
 public class CollectionService {
   private final CollectionRepo collectionRepo;
 
-  public Page<Collection> getAllCollections(int page, int size, String sortBy, String order) {
+  public List<Collection> getAllCollections() {
+    return collectionRepo.findAll();
+  }
+
+  public Page<Collection> getAllCollectionsPaginated(
+      int page, int size, String sortBy, String order) {
     List<String> allowed = List.of("id", "name");
     if (!allowed.contains(sortBy)) {
       throw new IllegalArgumentException("Invalid sort field: %s".formatted(sortBy));

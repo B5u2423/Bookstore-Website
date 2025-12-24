@@ -39,7 +39,7 @@ public class Book extends BaseEntity {
 
   @ManyToOne
   @JoinColumn(name = "collection_id")
-  private Category collection;
+  private Collection collection;
 
   @Column(name = "publisher")
   private String publisher; // NXB

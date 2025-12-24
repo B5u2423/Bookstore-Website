@@ -4,6 +4,7 @@ import dev.vubl.bookstore.dtos.CollectionDTO;
 import dev.vubl.bookstore.entities.Collection;
 import dev.vubl.bookstore.services.CollectionService;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +16,19 @@ import org.springframework.web.bind.annotation.*;
 public class CollectionController {
   private final CollectionService collectionService;
 
+  @GetMapping("/get-all")
+  public List<Collection> getAllCollections() {
+    return collectionService.getAllCollections();
+  }
+
   @GetMapping
   public PagedModel<Collection> getAllCoupons(
       @RequestParam(value = "page", defaultValue = "0") int page,
       @RequestParam(value = "size", defaultValue = "5") int size,
       @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
       @RequestParam(value = "order", defaultValue = "asc") String order) {
-    return new PagedModel<>(collectionService.getAllCollections(page, size, sortBy, order));
+    return new PagedModel<>(
+        collectionService.getAllCollectionsPaginated(page, size, sortBy, order));
   }
 
   @PostMapping("/add")
