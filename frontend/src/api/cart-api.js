@@ -1,13 +1,9 @@
-import api, { adminApi, provinceApi } from './api-config'
+import api, { adminApi, customerApi, provinceApi } from './api-config'
 
 export const CartService = {
   async addToCart(token, body) {
     try {
-      const res = await api.post('/carts/add', body, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      const res = await customerApi.post('/carts/add', body)
       return res.data
     } catch (error) {
       console.error('Error adding item to cart')
@@ -16,11 +12,7 @@ export const CartService = {
 
   async getUsersActiveCart(token) {
     try {
-      const res = await api.get('/carts', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      const res = await customerApi.get('/carts')
       return res.data
     } catch (error) {
       console.error('Error get user active cart')
@@ -28,11 +20,7 @@ export const CartService = {
   },
   async removeAllItemsFromCart(token) {
     try {
-      const res = await api.delete('/carts/remove-all', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      const res = await customerApi.delete('/carts/remove-all')
       return res.data
     } catch (error) {
       console.error('Error remove item from cart')
@@ -43,9 +31,7 @@ export const CartService = {
 export const PaymentService = {
   async createPaymentPage(body, token) {
     try {
-      const res = await api.post('/payment/create-payment', body, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      const res = await customerApi.post('/payment/create-payment', body)
       return res.data
     } catch (error) {
       console.error('Error changing to payment page', error)
@@ -56,9 +42,7 @@ export const PaymentService = {
 export const OrderService = {
   async createOrder(body, token) {
     try {
-      const res = await api.post('/orders/create-order', body, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      const res = await customerApi.post('/orders/create-order', body)
       return res.data
     } catch (error) {
       console.error('Error making order', error)

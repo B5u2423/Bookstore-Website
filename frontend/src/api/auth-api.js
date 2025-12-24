@@ -1,5 +1,6 @@
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
-import api, { adminApi } from './api-config'
+import api, { adminApi, customerApi } from './api-config'
+import { useAuthStore } from '@/stores/auth-store'
 
 export function loginUser(loginData) {
   return api.post('/auth/login', {
@@ -68,6 +69,7 @@ async refreshJwtToken(refreshToken) {
 }
 }
 
+// TODO: remove token param from funcs
 // admin req interceptors
 adminApi.interceptors.request.use(
   (config) => {
@@ -112,6 +114,57 @@ adminApi.interceptors.response.use(
         adminAuthStore.accessToken = ''
         adminAuthStore.refreshToken = ''
         window.location.href = '/admin/login'
+      }
+    }
+
+    return Promise.reject(error)
+  },
+)
+
+// customer req interceptors
+customerApi.interceptors.request.use(
+  (config) => {
+    const authStore = useAuthStore()
+    const token = authStore.accessToken
+
+    // exclude refresh endpoint
+    const fullUrl = `${config.baseURL ?? ''}${config.url ?? ''}`
+    const isRefreshEndpoint = fullUrl.endsWith('/auth/refresh')
+    if (token && !isRefreshEndpoint) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  },
+)
+
+  // customer resp interceptor
+customerApi.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const authStore = useAuthStore()
+    const originalRequest = error.config
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true
+
+      try {
+        const refreshToken = authStore.refreshToken
+        if (refreshToken) {
+          const response = await AuthService.refreshJwtToken(refreshToken)
+
+          authStore.accessToken = response.token
+          authStore.refreshToken = response.refresh
+
+          originalRequest.headers.Authorization = `Bearer ${response.token}`
+          return customerApi(originalRequest)
+        }
+      } catch (refreshError) {
+        authStore.accessToken = ''
+        authStore.refreshToken = ''
+        window.location.href = '/login'
       }
     }
 
