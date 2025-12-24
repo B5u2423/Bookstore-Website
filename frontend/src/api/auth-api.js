@@ -35,7 +35,6 @@ export function registerUser(registrationData) {
   })
 }
 
-
 export function logoutUser(token) {
   return api.delete('/auth/logout', {
     headers: {
@@ -57,16 +56,15 @@ export const AuthService = {
       console.error('Error reset password', error)
     }
   },
-async refreshJwtToken(refreshToken) {
-  try {
-    const res = await api.post('/auth/refresh', {refreshToken})
-    return res.data
-
-  } catch {
-    console.error('Error referesh token', error)
-    throw error
-  }
-}
+  async refreshJwtToken(refreshToken) {
+    try {
+      const res = await api.post('/auth/refresh', { refreshToken })
+      return res.data
+    } catch {
+      console.error('Error referesh token', error)
+      throw error
+    }
+  },
 }
 
 // TODO: remove token param from funcs
@@ -89,7 +87,7 @@ adminApi.interceptors.request.use(
   },
 )
 
-  // admin resp interceptor
+// admin resp interceptor
 adminApi.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -140,7 +138,7 @@ customerApi.interceptors.request.use(
   },
 )
 
-  // customer resp interceptor
+// customer resp interceptor
 customerApi.interceptors.response.use(
   (response) => response,
   async (error) => {
