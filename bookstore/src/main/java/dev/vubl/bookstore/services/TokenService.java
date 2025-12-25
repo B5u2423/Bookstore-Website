@@ -21,6 +21,7 @@ public class TokenService {
   private final JwtDecoder jwtDecoder;
   private final RefreshTokenRepo refreshTokenRepo;
 
+  // TODO: make expiration for tokens as ENV VAR
   public String generateJwt(ApplicationUser user) {
     Instant now = Instant.now();
     Instant expiration = now.plusSeconds(60 * 15);

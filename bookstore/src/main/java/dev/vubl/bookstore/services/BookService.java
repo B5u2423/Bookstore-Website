@@ -8,9 +8,11 @@ import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
 import dev.vubl.bookstore.exceptions.CategoryDoesNotExistException;
 import dev.vubl.bookstore.repos.BookRepo;
 import dev.vubl.bookstore.repos.CategoryRepo;
+import dev.vubl.bookstore.repos.CollectionRepo;
 import dev.vubl.bookstore.utils.SlugUtils;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ public class BookService {
   private final BookRepo bookRepo;
   private final CategoryRepo categoryRepo;
   private final CloudinaryService cloudinaryService;
+  private final CollectionRepo collectionRepo;
 
   public List<BookResponseDTO> getAllBooks() {
     return bookRepo.findAll().stream().map(this::mapToBookResponseDTO).toList();
@@ -100,12 +103,20 @@ public class BookService {
       b.setInStock(bookResponseDTO.inStock());
       b.setUrlSlug(SlugUtils.convertStringToSlug(bookResponseDTO.title()));
       b.setPrice(bookResponseDTO.price());
+      b.setUpdateTimeStamp(Instant.now());
       if (bookResponseDTO.categoryId() != null) {
 
         b.setCategory(
             categoryRepo
                 .findById(bookResponseDTO.categoryId())
                 .orElseThrow(CategoryDoesNotExistException::new));
+      }
+      if (bookResponseDTO.collectionId() != null) {
+
+        b.setCollection(
+            collectionRepo
+                .findById(bookResponseDTO.collectionId())
+                .orElseThrow(() -> new IllegalArgumentException("Collection ID does not exist!")));
       }
 
       Book savedBook = bookRepo.save(b);
@@ -165,6 +176,9 @@ public class BookService {
         .author(book.getAuthor())
         .categoryId(book.getCategory() == null ? null : book.getCategory().getId())
         .categoryName(book.getCategory() == null ? null : book.getCategory().getCategoryName())
+        .collectionId(book.getCollection() == null ? null : book.getCollection().getId())
+        .collectionName(
+            book.getCollection() == null ? null : book.getCollection().getCollectionName())
         .build();
   }
 
@@ -187,6 +201,16 @@ public class BookService {
                 : categoryRepo
                     .findById(bookResponseDTO.categoryId())
                     .orElseThrow(CategoryDoesNotExistException::new))
+        .collection(
+            bookResponseDTO.collectionId() == null
+                ? null
+                : collectionRepo
+                    .findById(bookResponseDTO.collectionId())
+                    .orElseThrow(
+                        () ->
+                            new IllegalArgumentException(
+                                "Collection ID %d does not exist"
+                                    .formatted(bookResponseDTO.collectionId()))))
         .build();
   }
 }

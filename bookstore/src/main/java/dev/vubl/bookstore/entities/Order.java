@@ -41,8 +41,17 @@ public class Order extends BaseEntity {
   @Enumerated(EnumType.STRING)
   private PaymentMethod paymentMethod;
 
-  @Column(name = "total_amount")
-  private BigDecimal totalAmount;
+  @Column(name = "items_total")
+  private BigDecimal itemsTotal;
+
+  @Column(name = "shipping_fee")
+  private BigDecimal shippingFee;
+
+  @Column(name = "order_total")
+  private BigDecimal orderTotal;
+
+  @Column(name = "coupon_code")
+  private String couponCode;
 
   @Column(name = "order_date")
   private LocalDate orderDate;

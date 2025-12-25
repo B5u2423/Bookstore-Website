@@ -69,7 +69,7 @@ public class SecurityConfigs {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration corsConfiguration = new CorsConfiguration();
     corsConfiguration.setAllowCredentials(true);
-    corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173"));
+    corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5174"));
     corsConfiguration.setAllowedMethods(List.of("*"));
     corsConfiguration.setAllowedHeaders(List.of("*"));
 
@@ -144,7 +144,8 @@ public class SecurityConfigs {
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/customers/**"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/carts/**"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/orders/**"),
-      PathPatternRequestMatcher.withDefaults().matcher("/api/v1/payment/**")
+      PathPatternRequestMatcher.withDefaults().matcher("/api/v1/payment/**"),
+      PathPatternRequestMatcher.withDefaults().matcher("/api/v1/coupons/apply"),
     };
   }
 
@@ -158,7 +159,10 @@ public class SecurityConfigs {
       PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.DELETE, "/api/v1/categories/**"),
       PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.PUT, "/api/v1/categories/**"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/images/upload"),
-      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/v1/orders")
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/v1/orders"),
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/v1/coupons/**"),
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, "/api/v1/coupons/**"),
+      PathPatternRequestMatcher.withDefaults().matcher("/api/v1/collections/**"),
     };
   }
 }

@@ -46,7 +46,7 @@ public class AuthenticationController {
     return ResponseEntity.status(HttpStatus.CREATED).body(authService.registerUser(request));
   }
 
-  @GetMapping("/refresh")
+  @PostMapping("/refresh")
   public ResponseEntity<LoginResponse> refreshJwtAccessToken(@RequestBody RefreshRequest body) {
     return ResponseEntity.status(HttpStatus.OK).body(tokenService.refreshJwt(body.refreshToken()));
   }

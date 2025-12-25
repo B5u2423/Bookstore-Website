@@ -1,8 +1,8 @@
 package dev.vubl.bookstore.controllers;
 
+import dev.vubl.bookstore.dtos.ShippingInfoDTO;
 import dev.vubl.bookstore.entities.Order;
 import dev.vubl.bookstore.services.OrderService;
-import dev.vubl.bookstore.services.ShippingInfoDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpHeaders;

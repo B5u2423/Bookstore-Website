@@ -37,6 +37,10 @@ public class Book extends BaseEntity {
   @JoinColumn(name = "category_id")
   private Category category;
 
+  @ManyToOne
+  @JoinColumn(name = "collection_id")
+  private Collection collection;
+
   @Column(name = "publisher")
   private String publisher; // NXB
 
