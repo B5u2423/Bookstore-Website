@@ -19,10 +19,12 @@ public interface BookRepo extends JpaRepository<Book, Integer> {
   @Query(
       value =
           """
-      SELECT *
-      FROM books
-      WHERE search_vector @@ plainto_tsquery('simple', :keyword)
-    """,
+    SELECT *,
+           ts_rank(search_vector, plainto_tsquery('simple', :keyword)) AS rank
+    FROM books
+    WHERE search_vector @@ plainto_tsquery('simple', :keyword)
+    ORDER BY rank DESC
+  """,
       nativeQuery = true)
   List<Book> searchBookV3(String keyword);
 }
