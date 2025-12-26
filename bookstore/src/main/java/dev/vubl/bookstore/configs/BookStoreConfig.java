@@ -1,8 +1,6 @@
 package dev.vubl.bookstore.configs;
 
 import com.cloudinary.Cloudinary;
-import dev.vubl.bookstore.services.ApplicationUserService;
-import dev.vubl.bookstore.services.AuthService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,7 +31,6 @@ public class BookStoreConfig {
       String email = user.getAttribute("email");
       String name = user.getAttribute("name");
       String googleId = user.getAttribute("sub");
-
 
       // 1. Find or create local user
       System.out.println(name);
