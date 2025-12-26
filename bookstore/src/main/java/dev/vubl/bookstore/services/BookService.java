@@ -157,6 +157,7 @@ public class BookService {
     return bookPage.map(this::mapToBookResponseDTO);
   }
 
+  @Deprecated
   public List<BookResponseDTO> searchBookV2(String keyword) {
     String[] tokens = keyword.toLowerCase().split("\\s+");
 
@@ -179,6 +180,10 @@ public class BookService {
       query.setParameter("t" + i, "%" + tokens[i] + "%");
     }
     return query.getResultList().stream().map(this::mapToBookResponseDTO).toList();
+  }
+
+  public List<BookResponseDTO> searchBookV3(String keyword) {
+    return bookRepo.searchBookV3(keyword).stream().map(this::mapToBookResponseDTO).toList();
   }
 
   private boolean isIsbnNotUnique(String isbn) {

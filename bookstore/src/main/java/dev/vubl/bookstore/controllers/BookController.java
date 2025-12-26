@@ -55,7 +55,7 @@ public class BookController {
 
   @GetMapping("/search")
   public List<BookResponseDTO> searchBook(@RequestParam String keyword) {
-    return bookService.searchBookV2(keyword);
+    return bookService.searchBookV3(keyword);
   }
 
   // ADMIN
