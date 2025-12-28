@@ -3,11 +3,40 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth-store'
 import { useCartStore } from '@/stores/cart-store'
 import { useUserProfileStore } from '@/stores/user-profile-store'
+import { ref, watch, onUnmounted, onMounted } from 'vue'
+import debounce from 'lodash.debounce'
+import { BookService } from '@/api/book-api'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const cartStore = useCartStore()
 const userProfileStore = useUserProfileStore()
+
+const query = ref('')
+const selected = ref(null)
+const searchResults = ref([])
+
+const search = debounce(async (q) => {
+  if (!q) {
+    searchResults.value = []
+    return
+  }
+
+  try {
+    const res = await BookService.searchBook({ keyword: q })
+    searchResults.value = res
+  } catch (e) {
+    console.error('Error searching book')
+  }
+}, 400)
+
+watch(query, (q) => {
+  search(q)
+})
+
+onUnmounted(() => {
+  search.cancel()
+})
 
 const goToHomePage = () => {
   router.push('/')
@@ -58,17 +87,32 @@ async function handleLogout() {
 
     </v-app-bar-title>
 
-    <v-text-field
-      max-width="666"
-      placeholder="Search"
-      variant="outlined"
-      rounded
-      density="comfortable"
-      class="custom-search mr-10"
-      clearable
-      prepend-inner-icon="mdi-magnify"
-      hide-details
-    />
+<v-autocomplete
+  max-width="666"
+  placeholder="Tìm kiếm sách"
+  variant="outlined"
+  rounded
+  density="comfortable"
+  class="custom-search mr-10"
+  prepend-inner-icon="mdi-magnify"
+  :menu-icon="null"
+  hide-details
+  :items="searchResults"
+  :menu="true"
+  :no-filter="true"
+  no-data-text="Không có kết quả trùng khớp"
+  hide-no-data
+  v-model:search="query">
+  <template v-slot:item="{ props, item }">
+                <v-list-item
+                  v-bind="props"
+                  :prepend-avatar="item.raw.imageUrl"
+                  :title="item.raw.title"
+    :to="{ name: 'book-detail', params: { id: item.raw.id, slug: item.raw.urlSlug } }"
+                >
+              </v-list-item>
+              </template>
+</v-autocomplete>
 
     <template v-slot:append>
 
