@@ -53,6 +53,11 @@ public class BookController {
     return ResponseEntity.ok().body(bookService.getBookById(id));
   }
 
+  @GetMapping("/search")
+  public List<BookResponseDTO> searchBook(@RequestParam String keyword) {
+    return bookService.searchBookV3(keyword);
+  }
+
   // ADMIN
   @PostMapping(path = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<BookResponseDTO> addNewBook(

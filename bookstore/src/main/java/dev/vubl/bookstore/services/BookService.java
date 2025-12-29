@@ -10,6 +10,9 @@ import dev.vubl.bookstore.repos.BookRepo;
 import dev.vubl.bookstore.repos.CategoryRepo;
 import dev.vubl.bookstore.repos.CollectionRepo;
 import dev.vubl.bookstore.utils.SlugUtils;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.time.Instant;
@@ -30,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @Slf4j
 public class BookService {
+  @PersistenceContext private final EntityManager em;
   private final BookRepo bookRepo;
   private final CategoryRepo categoryRepo;
   private final CloudinaryService cloudinaryService;
@@ -151,6 +155,35 @@ public class BookService {
     Pageable pageable = PageRequest.of(page, size, sort);
     Page<Book> bookPage = bookRepo.findAllByCategoryIn(categories, pageable);
     return bookPage.map(this::mapToBookResponseDTO);
+  }
+
+  @Deprecated
+  public List<BookResponseDTO> searchBookV2(String keyword) {
+    String[] tokens = keyword.toLowerCase().split("\\s+");
+
+    StringBuilder jpql = new StringBuilder("SELECT b FROM Book b WHERE 1=1");
+
+    for (int i = 0; i < tokens.length; i++) {
+      jpql.append(
+          """
+        AND (
+          LOWER(b.title) LIKE :t%1$d
+          OR LOWER(b.urlSlug) LIKE :t%1$d
+        )
+      """
+              .formatted(i));
+    }
+
+    TypedQuery<Book> query = em.createQuery(jpql.toString(), Book.class);
+
+    for (int i = 0; i < tokens.length; i++) {
+      query.setParameter("t" + i, "%" + tokens[i] + "%");
+    }
+    return query.getResultList().stream().map(this::mapToBookResponseDTO).toList();
+  }
+
+  public List<BookResponseDTO> searchBookV3(String keyword) {
+    return bookRepo.searchBookV3(keyword).stream().map(this::mapToBookResponseDTO).toList();
   }
 
   private boolean isIsbnNotUnique(String isbn) {
