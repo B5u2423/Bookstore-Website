@@ -21,8 +21,7 @@ function bootStrapValues() {
     couponCode: '',
     email: userProfileStore.userInfo.email,
     phone: userProfileStore.userInfo.phone,
-    firstName: userProfileStore.userInfo.firstName,
-    lastName: userProfileStore.userInfo.lastName,
+    name: userProfileStore.userInfo.name,
     paymentMethod: 'COD',
     info: '',
   }
@@ -151,7 +150,7 @@ onMounted(() => {
 
             <div class="text-subtitle-1 text-high-emphasis">Email</div>
 
-            <!-- Fist name, last name and email get from user profile so no change -->
+            <!-- Full name and email get from user profile so no change -->
 
             <v-text-field
               variant="outlined"
@@ -161,21 +160,11 @@ onMounted(() => {
               :disabled="true"
             ></v-text-field>
 
-            <div class="text-subtitle-1 text-high-emphasis">Họ</div>
-
-            <v-text-field
-              variant="outlined"
-              v-model="shippingInfo.lastName"
-              density="compact"
-              hide-details="true"
-              :disabled="true"
-            ></v-text-field>
-
             <div class="text-subtitle-1 text-high-emphasis">Tên</div>
 
             <v-text-field
               variant="outlined"
-              v-model="shippingInfo.firstName"
+              v-model="shippingInfo.name"
               density="compact"
               hide-details="true"
               :disabled="true"

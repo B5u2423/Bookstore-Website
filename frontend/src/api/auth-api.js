@@ -28,8 +28,7 @@ export function registerUser(registrationData) {
 
   return api.post('/auth/register', {
     userType: registrationData.userType || 'CUSTOMER',
-    firstName: registrationData.firstName,
-    lastName: registrationData.lastName,
+    name: registrationData.name,
     email: registrationData.email,
     password: registrationData.password,
   })

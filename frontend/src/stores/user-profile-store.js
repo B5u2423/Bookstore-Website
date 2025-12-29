@@ -7,8 +7,7 @@ export const useUserProfileStore = defineStore(
   'userprofile',
   () => {
     const userInfo = ref({
-      firstName: '',
-      lastName: '',
+      name: '',
       phone: '',
       email: '',
       addressList: [],
@@ -18,16 +17,14 @@ export const useUserProfileStore = defineStore(
       const authStore = useAuthStore()
       const res = await CustomerService.getCustomerAccount(authStore.accessToken)
 
-      userInfo.value.firstName = res.firstName
-      userInfo.value.lastName = res.lastName
+      userInfo.value.name = res.name
       userInfo.value.email = res.email
       userInfo.value.phone = res.phoneNumber
       userInfo.value.addressList = res.addressList
     }
 
-    function updateUserInfo({ firstName, lastName, phone, email }) {
-      userInfo.value.firstName = firstName
-      userInfo.value.lastName = lastName
+    function updateUserInfo({ name, phone, email }) {
+      userInfo.value.name = name
       userInfo.value.phone = phone
       userInfo.value.email = email
     }

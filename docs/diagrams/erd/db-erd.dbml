@@ -9,8 +9,7 @@ Table books {
 
 Table users {
   user_id int [pk]
-  first_name varchar
-  last_name varchar
+  name varchar
   username varchar
   email varchar
   password_hash varchar

@@ -10,8 +10,7 @@ const visible = ref(false)
 const visibleRetype = ref(false)
 
 const formData = ref({
-  firstName: '',
-  lastName: '',
+  name: '',
   email: '',
   password: '',
   userType: 'CUSTOMER',
@@ -58,18 +57,9 @@ async function handleRegister() {
         <v-text-field
           class="my-3"
           density="compact"
-          min-width="400"
-          label="Họ"
+          label="Họ và tên"
           variant="outlined"
-          v-model="formData.lastName"
-        ></v-text-field>
-
-        <v-text-field
-          class="my-3"
-          density="compact"
-          label="Tên"
-          variant="outlined"
-          v-model="formData.firstName"
+          v-model="formData.name"
         ></v-text-field>
 
         <v-text-field

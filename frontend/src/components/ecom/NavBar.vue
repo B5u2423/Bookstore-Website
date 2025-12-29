@@ -169,7 +169,7 @@ async function handleLogout() {
             v-bind="props"
             prepend-icon="mdi-account"
           >
-             {{ userProfileStore.userInfo.lastName }} {{ userProfileStore.userInfo.firstName }}
+             {{ userProfileStore.userInfo.name }}
           </v-btn>
 
         </template>

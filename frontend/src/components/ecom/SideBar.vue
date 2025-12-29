@@ -6,7 +6,7 @@ import { useRouter } from 'vue-router'
 const categories = ref([])
 const router = useRouter()
 
-function capitalizeFirstword(sentence) {
+function capitalizeFirstWord(sentence) {
   const words = sentence.split(' ')
 
   return words
