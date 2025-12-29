@@ -8,8 +8,7 @@ import lombok.Builder;
 @Builder
 public record RegistrationRequest(
     UserType userType,
-    @NotBlank(message = "Trường tên không được bỏ trống") String firstName,
-    @NotBlank(message = "Trường họ không được bỏ trống") String lastName,
+    @NotBlank(message = "Trường tên không được bỏ trống") String name,
     @NotBlank(message = "Trường email không được bỏ trống")
         @Email(message = "Email không đúng định dạng")
         String email,

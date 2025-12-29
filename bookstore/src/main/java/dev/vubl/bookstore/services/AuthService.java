@@ -29,16 +29,11 @@ public class AuthService {
         userService.createOrUpdateUser(
             ApplicationUser.builder()
                 .userType(request.userType())
-                .firstName(request.firstName())
-                .lastName(request.lastName())
+                .name(request.name())
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
                 .build());
-    return RegistrationResponse.builder()
-        .email(newUser.getEmail())
-        .firstName(newUser.getFirstName())
-        .lastName(newUser.getLastName())
-        .build();
+    return RegistrationResponse.builder().email(newUser.getEmail()).name(newUser.getName()).build();
   }
 
   public LoginResponse logInUser(

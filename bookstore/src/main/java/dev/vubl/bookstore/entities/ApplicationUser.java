@@ -21,11 +21,8 @@ public class ApplicationUser extends BaseEntity {
   @Column(name = "email", unique = true)
   private String email;
 
-  @Column(name = "first_name")
-  private String firstName;
-
-  @Column(name = "last_name")
-  private String lastName;
+  @Column(name = "name")
+  private String name;
 
   @JsonIgnore private String password;
 
