@@ -6,6 +6,7 @@ import { useUserProfileStore } from '@/stores/user-profile-store'
 import { ref, watch, onUnmounted, onMounted } from 'vue'
 import debounce from 'lodash.debounce'
 import { BookService } from '@/api/book-api'
+import HorizontalBookCard from '@/components/books/HorizontalBookCard.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -63,56 +64,76 @@ async function handleLogout() {
     class="px-16"
   >
 
-    <v-app-bar-title class="display-inline">
+    <template v-slot:title>
 
-      <v-responsive
-        max-width="333"
-        max-height="39"
+      <!--        <v-responsive-->
+
+      <!--            max-width="333"-->
+
+      <!--            max-height="39"-->
+
+      <!--        >-->
+
+      <h2
+        class="cursor-pointer"
+        @click="goToHomePage"
+      >
+         BookShelf
+      </h2>
+
+      <!-- <v-img
+            src="https://theme.hstatic.net/200000845405/1001223012/14/logo.png?v=471"
+            class="cursor-pointer"
+            @click="goToHomePage"
+          ></v-img> -->
+
+      <!--        </v-responsive>-->
+
+    </template>
+
+    <template v-slot:default>
+
+      <v-autocomplete
+        placeholder="Tìm kiếm sách"
+        variant="outlined"
+        rounded
+        density="comfortable"
+        class="custom-search mr-10"
+        prepend-inner-icon="mdi-magnify"
+        :menu-icon="null"
+        hide-details
+        :items="searchResults"
+        :menu="true"
+        :no-filter="true"
+        no-data-text="Không có kết quả trùng khớp"
+        hide-no-data
+        v-model:search="query"
       >
 
-        <h2
-          class="cursor-pointer"
-          @click="goToHomePage"
-        >
-           BookShelf
-        </h2>
+        <template v-slot:item="{ props, item }">
 
-        <!-- <v-img
-          src="https://theme.hstatic.net/200000845405/1001223012/14/logo.png?v=471"
-          class="cursor-pointer"
-          @click="goToHomePage"
-        ></v-img> -->
+          <v-list-item
+            v-bind="props"
+            :title="item.raw.title"
+            :to="{ name: 'book-detail', params: { id: item.raw.id, slug: item.raw.urlSlug } }"
+          >
 
-      </v-responsive>
+            <template v-slot:prepend>
 
-    </v-app-bar-title>
+              <v-img
+                :src="item.raw.imageUrl"
+                width="100"
+              ></v-img>
 
-<v-autocomplete
-  max-width="666"
-  placeholder="Tìm kiếm sách"
-  variant="outlined"
-  rounded
-  density="comfortable"
-  class="custom-search mr-10"
-  prepend-inner-icon="mdi-magnify"
-  :menu-icon="null"
-  hide-details
-  :items="searchResults"
-  :menu="true"
-  :no-filter="true"
-  no-data-text="Không có kết quả trùng khớp"
-  hide-no-data
-  v-model:search="query">
-  <template v-slot:item="{ props, item }">
-                <v-list-item
-                  v-bind="props"
-                  :prepend-avatar="item.raw.imageUrl"
-                  :title="item.raw.title"
-    :to="{ name: 'book-detail', params: { id: item.raw.id, slug: item.raw.urlSlug } }"
-                >
-              </v-list-item>
-              </template>
-</v-autocomplete>
+            </template>
+
+          </v-list-item>
+
+        </template>
+
+      </v-autocomplete>
+
+    </template>
 
     <template v-slot:append>
 
@@ -244,4 +265,3 @@ async function handleLogout() {
   </v-app-bar> -->
 
 </template>
-

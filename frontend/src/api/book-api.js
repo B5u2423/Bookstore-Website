@@ -141,5 +141,5 @@ export const BookService = {
       console.error('Error searching book', error)
       throw error
     }
-  }
+  },
 }

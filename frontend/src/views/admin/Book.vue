@@ -205,7 +205,7 @@ async function fetchCollections() {
     const res = await CollectionService.getAllCollections()
     collections.value = res
   } catch (error) {
-    console.error("Error fetching collections")
+    console.error('Error fetching collections')
   }
 }
 
@@ -569,9 +569,7 @@ onMounted(() => {
             md="6"
           >
 
-            <div class="text-subtitle-1 text-high-emphasis">
-              Bộ sưu tập
-            </div>
+            <div class="text-subtitle-1 text-high-emphasis"> Bộ sưu tập </div>
 
             <v-autocomplete
               v-model="formModel.collectionId"
@@ -584,6 +582,7 @@ onMounted(() => {
             ></v-autocomplete>
 
           </v-col>
+
           <v-col cols="12">
 
             <div class="text-subtitle-1 text-high-emphasis">Mô tả thông tin sách</div>
