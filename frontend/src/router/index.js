@@ -6,6 +6,7 @@ import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth-store'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
+import { compile } from 'vue'
 
 const routes = [
   {
@@ -83,6 +84,11 @@ const routes = [
         name: 'category-page',
         component: () => import('@/views/ecom/CategoryShowcase.vue'),
       },
+      {
+        path: 'oauth/callback',
+        name: 'oauth-callback',
+        component: () => import('@/views/ecom/OAuthCallback.vue')
+      }
     ],
   },
   {

@@ -1,4 +1,4 @@
-COPY users (first_name, last_name, email, password, user_type)
+COPY users (name, email, password, user_type)
     FROM '/docker-entrypoint-initdb.d/seeds/users.csv'
     DELIMITER ','
     CSV HEADER;

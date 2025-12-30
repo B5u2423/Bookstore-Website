@@ -91,8 +91,7 @@ public class OrderService {
     order.setCommune(shippingInfo.communeName());
     order.setStreet(shippingInfo.street());
     // set user
-    order.setFirstName(shippingInfo.firstName());
-    order.setLastName(shippingInfo.lastName());
+    order.setName(shippingInfo.name());
     order.setEmail(shippingInfo.email());
     order.setPhoneNumber(shippingInfo.phone());
 

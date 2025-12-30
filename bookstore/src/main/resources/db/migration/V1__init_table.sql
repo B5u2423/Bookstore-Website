@@ -85,8 +85,7 @@ CREATE TABLE orders
     update_ts      TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
     email          VARCHAR(255),
     phone_number   VARCHAR(255),
-    first_name     VARCHAR(255),
-    last_name      VARCHAR(255),
+    name           VARCHAR(255),
     note           VARCHAR(255),
     order_status   VARCHAR(255),
     payment_method VARCHAR(255),
@@ -119,10 +118,11 @@ CREATE TABLE users
     update_ts    TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
     user_type    VARCHAR(255),
     email        VARCHAR(255),
-    first_name   VARCHAR(255),
-    last_name    VARCHAR(255),
+    name   VARCHAR(255),
     password     VARCHAR(255),
     phone_number VARCHAR(255),
+    google_id VARCHAR(255),
+    facebook_id VARCHAR(255),
     CONSTRAINT pk_users PRIMARY KEY (id)
 );
 

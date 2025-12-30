@@ -3,11 +3,41 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth-store'
 import { useCartStore } from '@/stores/cart-store'
 import { useUserProfileStore } from '@/stores/user-profile-store'
+import { ref, watch, onUnmounted, onMounted } from 'vue'
+import debounce from 'lodash.debounce'
+import { BookService } from '@/api/book-api'
+import HorizontalBookCard from '@/components/books/HorizontalBookCard.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const cartStore = useCartStore()
 const userProfileStore = useUserProfileStore()
+
+const query = ref('')
+const selected = ref(null)
+const searchResults = ref([])
+
+const search = debounce(async (q) => {
+  if (!q) {
+    searchResults.value = []
+    return
+  }
+
+  try {
+    const res = await BookService.searchBook({ keyword: q })
+    searchResults.value = res
+  } catch (e) {
+    console.error('Error searching book')
+  }
+}, 400)
+
+watch(query, (q) => {
+  search(q)
+})
+
+onUnmounted(() => {
+  search.cancel()
+})
 
 const goToHomePage = () => {
   router.push('/')
@@ -34,41 +64,76 @@ async function handleLogout() {
     class="px-16"
   >
 
-    <v-app-bar-title class="display-inline">
+    <template v-slot:title>
 
-      <v-responsive
-        max-width="333"
-        max-height="39"
+      <!--        <v-responsive-->
+
+      <!--            max-width="333"-->
+
+      <!--            max-height="39"-->
+
+      <!--        >-->
+
+      <h2
+        class="cursor-pointer"
+        @click="goToHomePage"
+      >
+         BookShelf
+      </h2>
+
+      <!-- <v-img
+            src="https://theme.hstatic.net/200000845405/1001223012/14/logo.png?v=471"
+            class="cursor-pointer"
+            @click="goToHomePage"
+          ></v-img> -->
+
+      <!--        </v-responsive>-->
+
+    </template>
+
+    <template v-slot:default>
+
+      <v-autocomplete
+        placeholder="Tìm kiếm sách"
+        variant="outlined"
+        rounded
+        density="comfortable"
+        class="custom-search mr-10"
+        prepend-inner-icon="mdi-magnify"
+        :menu-icon="null"
+        hide-details
+        :items="searchResults"
+        :menu="true"
+        :no-filter="true"
+        no-data-text="Không có kết quả trùng khớp"
+        hide-no-data
+        v-model:search="query"
       >
 
-        <h2
-          class="cursor-pointer"
-          @click="goToHomePage"
-        >
-           BookShelf
-        </h2>
+        <template v-slot:item="{ props, item }">
 
-        <!-- <v-img
-          src="https://theme.hstatic.net/200000845405/1001223012/14/logo.png?v=471"
-          class="cursor-pointer"
-          @click="goToHomePage"
-        ></v-img> -->
+          <v-list-item
+            v-bind="props"
+            :title="item.raw.title"
+            :to="{ name: 'book-detail', params: { id: item.raw.id, slug: item.raw.urlSlug } }"
+          >
 
-      </v-responsive>
+            <template v-slot:prepend>
 
-    </v-app-bar-title>
+              <v-img
+                :src="item.raw.imageUrl"
+                width="100"
+              ></v-img>
 
-    <v-text-field
-      max-width="666"
-      placeholder="Search"
-      variant="outlined"
-      rounded
-      density="comfortable"
-      class="custom-search mr-10"
-      clearable
-      prepend-inner-icon="mdi-magnify"
-      hide-details
-    />
+            </template>
+
+          </v-list-item>
+
+        </template>
+
+      </v-autocomplete>
+
+    </template>
 
     <template v-slot:append>
 
@@ -104,7 +169,7 @@ async function handleLogout() {
             v-bind="props"
             prepend-icon="mdi-account"
           >
-             {{ userProfileStore.userInfo.lastName }} {{ userProfileStore.userInfo.firstName }}
+             {{ userProfileStore.userInfo.name }}
           </v-btn>
 
         </template>
@@ -200,4 +265,3 @@ async function handleLogout() {
   </v-app-bar> -->
 
 </template>
-

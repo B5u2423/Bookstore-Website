@@ -90,8 +90,7 @@ public class ApplicationUserService implements UserDetailsService {
   }
 
   public String updateUserProfileInfo(ApplicationUser user, UpdateProfileRequest payload) {
-    user.setFirstName(payload.firstName());
-    user.setLastName(payload.lastName());
+    user.setName(payload.name());
     user.setPhoneNumber(payload.phoneNumber());
     user.setEmail(payload.email());
     user.setCreateTimeStamp(Instant.now());
@@ -152,8 +151,7 @@ public class ApplicationUserService implements UserDetailsService {
     return AccountDetailDTO.builder()
         .email(user.getEmail())
         .phoneNumber(user.getPhoneNumber())
-        .firstName(user.getFirstName())
-        .lastName(user.getLastName())
+        .name(user.getName())
         .addressList(
             user.getAddressList().stream()
                 .map(
@@ -189,6 +187,10 @@ public class ApplicationUserService implements UserDetailsService {
     } catch (RuntimeException e) {
       log.error("[{}] Error in forget password flow", INSTANCE_NAME);
     }
+  }
+
+  public boolean isUserExistByEmail(String email) {
+    return userRepo.findByEmail(email).isPresent();
   }
 
   private ApplicationUser readUserByEmailOrThrowException(String email) {
