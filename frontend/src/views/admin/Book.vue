@@ -205,7 +205,7 @@ async function fetchCollections() {
     const res = await CollectionService.getAllCollections()
     collections.value = res
   } catch (error) {
-    console.error('Error fetching collections')
+    console.error('Error fetching collections', error)
   }
 }
 

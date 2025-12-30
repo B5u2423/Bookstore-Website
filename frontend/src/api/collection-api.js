@@ -3,9 +3,7 @@ import api, { adminApi } from './api-config'
 export const CollectionService = {
   async getAllCollections() {
     try {
-      const res = await adminApi.get('/collections/get-all', {
-        params: params,
-      })
+      const res = await adminApi.get('/collections/get-all')
       return res.data
     } catch (error) {
       console.error('Error fetching all collections', error)
