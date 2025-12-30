@@ -32,4 +32,10 @@ public class ApplicationUser extends BaseEntity {
   @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonManagedReference
   private List<CustomerAddressInfo> addressList;
+
+  @Column(name = "google_id")
+  private String googleId;
+
+  @Column(name = "facebook_id")
+  private String facebookId;
 }

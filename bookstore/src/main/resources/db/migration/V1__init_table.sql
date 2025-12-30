@@ -121,6 +121,8 @@ CREATE TABLE users
     name   VARCHAR(255),
     password     VARCHAR(255),
     phone_number VARCHAR(255),
+    google_id VARCHAR(255),
+    facebook_id VARCHAR(255),
     CONSTRAINT pk_users PRIMARY KEY (id)
 );
 

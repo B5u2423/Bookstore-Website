@@ -189,6 +189,10 @@ public class ApplicationUserService implements UserDetailsService {
     }
   }
 
+  public boolean isUserExistByEmail(String email) {
+    return userRepo.findByEmail(email).isPresent();
+  }
+
   private ApplicationUser readUserByEmailOrThrowException(String email) {
     return userRepo.findByEmail(email).orElseThrow(UserDoesNotExistException::new);
   }
