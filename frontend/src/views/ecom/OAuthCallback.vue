@@ -13,7 +13,6 @@ const authStore = useAuthStore()
   }
 
   function extract() {
-    debugger
     const access = getCookie('access_token')
     const refresh = getCookie('refresh_token')
 
