@@ -57,7 +57,7 @@ function enableFieldsForUpdate() {
 
 function discardChanges() {
   // restore snapshot
-  currentUserProfileSnapshot.value.name= userProfileStore.userInfo.name
+  currentUserProfileSnapshot.value.name = userProfileStore.userInfo.name
   currentUserProfileSnapshot.value.email = userProfileStore.userInfo.email
   currentUserProfileSnapshot.value.phoneNumber = userProfileStore.userInfo.phone
 
