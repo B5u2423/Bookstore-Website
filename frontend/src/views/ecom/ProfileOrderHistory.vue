@@ -1,4 +1,7 @@
 <script setup>
+import { OrderService } from '@/api/cart-api';
+import { onMounted } from 'vue';
+
 const headers = [
   { title: 'Tiêu đề', key: 'voucherTitle' },
   { title: 'Mã', key: 'voucherCode' },
@@ -6,7 +9,21 @@ const headers = [
   { title: 'Giá trị', key: 'value' },
   { title: 'Thời gian hết hạn', key: 'expiration' },
 ]
-const items = []
+const items = ref([])
+
+// fetch previous orders
+async function fetchOrderHistory() {
+  try {
+    const res = await OrderService.getAllOrdersByEmail()
+    items.value = res
+  } catch (error) {
+    console.error('Error fetching user order history', error)
+  }
+}
+
+onMounted(() => {
+  fetchOrderHistory()
+})
 </script>
 
 <template>
