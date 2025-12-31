@@ -12,7 +12,6 @@ function getCookie(name) {
 }
 
 function extract() {
-  debugger
   const access = getCookie('access_token')
   const refresh = getCookie('refresh_token')
 
