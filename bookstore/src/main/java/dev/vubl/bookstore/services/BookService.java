@@ -85,7 +85,8 @@ public class BookService {
     }
   }
 
-  public BookResponseDTO updateBookById(BookResponseDTO bookResponseDTO, Integer id) {
+  public BookResponseDTO updateBookById(
+      BookResponseDTO bookResponseDTO, MultipartFile image, Integer id) {
     try {
       Book b =
           bookRepo
@@ -103,7 +104,12 @@ public class BookService {
       b.setPageCount(bookResponseDTO.pageCount());
       b.setIsbn(bookResponseDTO.isbn());
       b.setAuthor(bookResponseDTO.author());
-      b.setImageUrl(bookResponseDTO.imageUrl());
+      if (image != null) {
+        String returnedUrl = cloudinaryService.uploadImage(image);
+        b.setImageUrl(returnedUrl);
+      } else if (!b.getImageUrl().equals(bookResponseDTO.imageUrl())) {
+        b.setImageUrl(bookResponseDTO.imageUrl());
+      }
       b.setInStock(bookResponseDTO.inStock());
       b.setUrlSlug(SlugUtils.convertStringToSlug(bookResponseDTO.title()));
       b.setPrice(bookResponseDTO.price());
@@ -128,6 +134,8 @@ public class BookService {
 
     } catch (DataIntegrityViolationException e) {
       throw new DataIntegrityViolationException("Error adding or updating new book!", e);
+    } catch (IOException e) {
+      throw new RuntimeException("Error uploading image when updating book");
     }
   }
 
