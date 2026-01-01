@@ -138,7 +138,17 @@ public class ApplicationUserService implements UserDetailsService {
     if (addressId == null) {
       throw new IllegalArgumentException("Address ID should not be null");
     }
-    user.getAddressList().removeIf(item -> item.getId().equals(addressId));
+    CustomerAddressInfo addr =
+        customerAddressInfoRepo
+            .findById(addressId)
+            .orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        "Address with id: %d does not exist".formatted(addressId)));
+    if (!user.getAddressList().contains(addr)) {
+      throw new IllegalArgumentException("This user does no correlate with this address");
+    }
+    user.removeAddress(addr);
     try {
       userRepo.save(user);
       return "Address with id %d removed".formatted(addressId);

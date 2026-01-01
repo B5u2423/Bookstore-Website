@@ -35,4 +35,14 @@ export const CustomerService = {
       return res.data
     } catch (error) {}
   },
+
+  async deleteAddress(id) {
+    try {
+      const res = await customerApi.delete('customers/remove-address', {
+        params: { id }
+      })
+    } catch (error) {
+      console.error("Error deleting address", error)
+    }
+  }
 }
