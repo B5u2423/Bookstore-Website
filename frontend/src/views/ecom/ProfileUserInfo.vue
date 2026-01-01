@@ -113,8 +113,12 @@ async function fetchCommunes() {
 // add address
 async function save() {
   try {
-    const addrObj = 
-      { city: cities.value.find((obj) => obj.code === address.value.cityId)?.name, commune: communes.value.find((obj) => obj.code === address.value.communeId)?.name, street: address.value.street}
+    const addrObj = { 
+      cityId: address.value.cityId,
+      city: cities.value.find((obj) => obj.code === address.value.cityId)?.name, 
+      communeId: address.value.communeId,
+      commune: communes.value.find((obj) => obj.code === address.value.communeId)?.name, 
+      street: address.value.street}
     const res = CustomerService.setAddress(
       addrObj,
       authStore.accessToken,

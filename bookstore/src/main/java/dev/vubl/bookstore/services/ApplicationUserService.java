@@ -107,7 +107,9 @@ public class ApplicationUserService implements UserDetailsService {
   public CustomerAddressInfo addAddressInfo(ApplicationUser user, AddressDTO payload) {
     CustomerAddressInfo addressInfo =
         CustomerAddressInfo.builder()
+            .cityId(payload.cityId())
             .city(payload.city())
+            .communeId(payload.communeId())
             .commune(payload.commune())
             .street(payload.street())
             .customer(user)
@@ -124,7 +126,9 @@ public class ApplicationUserService implements UserDetailsService {
 
   public CustomerAddressInfo updateAddressInfo(Integer addressId, AddressDTO payload) {
     CustomerAddressInfo address = customerAddressInfoRepo.findById(addressId).orElseThrow();
+    address.setCityId(payload.cityId());
     address.setCity(payload.city());
+    address.setCommuneId(payload.communeId());
     address.setCommune(payload.commune());
     address.setStreet(payload.street());
     try {
@@ -168,7 +172,9 @@ public class ApplicationUserService implements UserDetailsService {
                     item ->
                         AddressDTO.builder()
                             .id(item.getId())
+                            .cityId(item.getCityId())
                             .city(item.getCity())
+                            .communeId(item.getCommuneId())
                             .commune(item.getCommune())
                             .street(item.getStreet())
                             .build())
