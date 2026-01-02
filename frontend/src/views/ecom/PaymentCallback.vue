@@ -87,7 +87,7 @@ const responseCodeMessage = computed(() => {
                     <v-list-item-title>Tổng số tiền:</v-list-item-title>
 
                     <v-list-item-subtitle>
-                      {{ formatPriceVNLocale(route.query.vnp_Amount) }} VND
+                       {{ formatPriceVNLocale(route.query.vnp_Amount) }} VND
                     </v-list-item-subtitle>
 
                   </v-list-item>
@@ -148,7 +148,7 @@ const responseCodeMessage = computed(() => {
                 color="primary"
                 :to="{ name: 'landing' }"
               >
-                Tiếp tục mua sắm
+                 Tiếp tục mua sắm
               </v-btn>
 
             </v-card-actions>

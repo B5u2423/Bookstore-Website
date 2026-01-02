@@ -1,6 +1,6 @@
 <script setup>
 import { BookService } from '@/api/book-api'
-import VerticalBookCard from '@/components/books/VerticalBookCard.vue'
+import BookCardShowcase from '@/components/books/BookCardShowcase.vue'
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -33,7 +33,7 @@ onMounted(() => {
       v-for="book in books"
     >
 
-      <vertical-book-card :book="book" />
+      <book-card-showcase :book="book" />
 
     </v-col>
 
