@@ -9,6 +9,7 @@ const CATEGORY_ENDPOINT = {
   PUT_UPDATE: '/categories/update',
   POST_ADD: '/categories/add',
   DELETE: `/categories/delete`,
+  GET_NAME: '/categories/name',
 }
 
 export const CategoryService = {
@@ -93,6 +94,16 @@ export const CategoryService = {
       return res.data
     } catch (error) {
       console.error('Error deleting category')
+      throw error
+    }
+  },
+
+  async fetchCategoryName(params = {}) {
+    try {
+      const res = await api.get(CATEGORY_ENDPOINT.GET_NAME, { params })
+      return res.data
+    } catch (error) {
+      console.error(`Error fetching category with slug ${slug}`)
       throw error
     }
   },
