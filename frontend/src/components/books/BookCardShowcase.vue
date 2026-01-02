@@ -11,11 +11,12 @@ const props = defineProps({
   <v-card
     variant="outlined"
     elevation="4"
-    class="custom ma-2"
+    class="custom bg-white pa-1"
     hover
     :to="{ name: 'book-detail', params: { id: book.id, slug: book.urlSlug } }"
     :ripple="false"
-    width="180"
+    width="100%"
+    height="100%"
   >
 
     <!-- `cover` prop to crop the image to fill the parent size -->
@@ -23,7 +24,7 @@ const props = defineProps({
     <v-img
       cover
       :src="book.imageUrl"
-      height="200px"
+      height="300"
     >
 
     </v-img>
@@ -39,8 +40,8 @@ const props = defineProps({
         <template v-slot:activator="{ props }">
 
           <h3
-            v-bind="props"
             class="mb-3 text-truncate"
+            v-bind="props"
           >
              {{ book.title }}
           </h3>
