@@ -1,6 +1,7 @@
 <script setup>
 import { useRoute } from 'vue-router'
 import { ref, computed } from 'vue'
+import { formatPriceVNLocale } from '@/utils/utils'
 
 const route = useRoute()
 
@@ -68,13 +69,9 @@ const responseCodeMessage = computed(() => {
 
                   <v-list-item>
 
-                    <v-list-item-content>
+                      <v-list-item-title>Mã giao dịch:</v-list-item-title>
 
-                      <v-list-item-title>ID thanh toán:</v-list-item-title>
-
-                      <v-list-item-subtitle>{{ transactionId }}</v-list-item-subtitle>
-
-                    </v-list-item-content>
+                      <v-list-item-subtitle>{{ route.query.vnp_BankTranNo }}</v-list-item-subtitle>
 
                   </v-list-item>
 
@@ -87,13 +84,9 @@ const responseCodeMessage = computed(() => {
 
                   <v-list-item>
 
-                    <v-list-item-content>
-
                       <v-list-item-title>Tổng số tiền:</v-list-item-title>
 
-                      <v-list-item-subtitle>{{ amount }} VND</v-list-item-subtitle>
-
-                    </v-list-item-content>
+                      <v-list-item-subtitle>{{ formatPriceVNLocale(route.query.vnp_Amount) }} VND</v-list-item-subtitle>
 
                   </v-list-item>
 
