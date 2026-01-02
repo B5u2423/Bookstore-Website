@@ -87,8 +87,8 @@ const routes = [
       {
         path: 'oauth/callback',
         name: 'oauth-callback',
-        component: () => import('@/views/ecom/OAuthCallback.vue')
-      }
+        component: () => import('@/views/ecom/OAuthCallback.vue'),
+      },
     ],
   },
   {
