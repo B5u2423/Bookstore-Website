@@ -1,6 +1,5 @@
 <script setup>
 import { AdminService } from '@/api/admin-api'
-import AdminNavDrawer from '@/components/admin/AdminNavDrawer.vue'
 import { computed, onMounted, toRef, ref, shallowRef } from 'vue'
 
 // table
@@ -25,7 +24,7 @@ async function loadItems({ page, itemsPerPage }) {
     serverItems.value = payload.content
     totalItems.value = payload.page.totalElements
   } catch (error) {
-    console.error('Error loading books from server', error)
+    console.error('Error loading customer users from server', error)
   } finally {
     loading.value = false
   }
@@ -61,17 +60,8 @@ onMounted(() => {
             size="x-small"
             start
           ></v-icon>
-           Thông tin sách
+           Thông tin khách hàng
         </v-toolbar-title>
-
-        <v-btn
-          class="me-2"
-          prepend-icon="mdi-plus"
-          rounded="lg"
-          text="Thêm sách"
-          variant="outlined"
-          @click="add"
-        ></v-btn>
 
       </v-toolbar>
 
