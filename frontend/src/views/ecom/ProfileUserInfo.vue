@@ -113,18 +113,16 @@ async function fetchCommunes() {
 // add address
 async function save() {
   try {
-    const addrObj = { 
+    const addrObj = {
       cityId: address.value.cityId,
-      city: cities.value.find((obj) => obj.code === address.value.cityId)?.name, 
+      city: cities.value.find((obj) => obj.code === address.value.cityId)?.name,
       communeId: address.value.communeId,
-      commune: communes.value.find((obj) => obj.code === address.value.communeId)?.name, 
-      street: address.value.street}
-    const res = CustomerService.setAddress(
-      addrObj,
-      authStore.accessToken,
-    )
+      commune: communes.value.find((obj) => obj.code === address.value.communeId)?.name,
+      street: address.value.street,
+    }
+    const res = CustomerService.setAddress(addrObj, authStore.accessToken)
     // update immediate view
-    userProfileStore.userInfo.addressList.push(addrObj) 
+    userProfileStore.userInfo.addressList.push(addrObj)
     isSuccess.value = true
     message.value = 'Thêm địa chỉ thành công!'
   } catch (error) {
@@ -141,11 +139,13 @@ async function deleteAddress(id) {
   try {
     const res = await CustomerService.deleteAddress(id)
     // update immediate view
-    userProfileStore.userInfo.addressList = userProfileStore.userInfo.addressList.filter(addr => addr.id != id) 
+    userProfileStore.userInfo.addressList = userProfileStore.userInfo.addressList.filter(
+      (addr) => addr.id != id,
+    )
     isSuccess.value = true
     message.value = 'Xóa địa chỉ thành công'
-    } catch (error) {
-    console.error("Error deleting address", error)
+  } catch (error) {
+    console.error('Error deleting address', error)
     isError.value = true
     message.value = 'Lỗi xảy khi xóa địa chỉ'
   }
@@ -311,20 +311,22 @@ onMounted(() => {
             :items="userProfileStore.userInfo.addressList"
             hide-default-footer
           >
-    <template v-slot:item.actions="{ item }">
 
-      <div class="d-flex ga-2 justify-center">
+            <template v-slot:item.actions="{ item }">
 
-        <v-icon
-          color="medium-emphasis"
-          icon="mdi-delete"
-          size="small"
-          @click="deleteAddress(item.id)"
-        ></v-icon>
+              <div class="d-flex ga-2 justify-center">
 
-      </div>
+                <v-icon
+                  color="medium-emphasis"
+                  icon="mdi-delete"
+                  size="small"
+                  @click="deleteAddress(item.id)"
+                ></v-icon>
 
-    </template>
+              </div>
+
+            </template>
+
           </v-data-table>
 
         </template>
