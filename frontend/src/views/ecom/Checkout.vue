@@ -119,17 +119,15 @@ const tmpOrderTotal = computed(() => {
 })
 
 const selectedAddrId = ref(null)
-watch(() => selectedAddrId.value, (id) => {
-  const item = userProfileStore.userInfo.addressList.find(
-    addr => addr.id === id
-  )
+watch(selectedAddrId, async (id) => {
+  const item = userProfileStore.userInfo.addressList.find((addr) => addr.id === id)
 
   if (!item) return
 
   shippingInfo.value.cityId = item.cityId
   shippingInfo.value.cityName = item.city
+  await fetchCommunes()
   shippingInfo.value.communeId = item.communeId
-  fetchCommunes()
   shippingInfo.value.communeName = item.commune
   shippingInfo.value.street = item.street
 })
@@ -212,9 +210,7 @@ onMounted(() => {
               "
             ></v-text-field>
 
-            <div class="text-subtitle-1 text-high-emphasis">
-              Sổ địa chỉ
-            </div>
+            <div class="text-subtitle-1 text-high-emphasis"> Sổ địa chỉ </div>
 
             <v-select
               density="compact"
@@ -225,17 +221,19 @@ onMounted(() => {
               variant="outlined"
               v-model="selectedAddrId"
             >
-        <template v-slot:item="{ props, item }">
-          <v-list-item
-            v-bind="props"
-            :title="item.raw.street + ', ' + item.raw.commune + ', ' + item.raw.city"
-          >
-          </v-list-item>
 
-        </template>
+              <template v-slot:item="{ props, item }">
 
-          </v-select>
+                <v-list-item
+                  v-bind="props"
+                  :title="item.raw.street + ', ' + item.raw.commune + ', ' + item.raw.city"
+                >
 
+                </v-list-item>
+
+              </template>
+
+            </v-select>
 
             <div class="text-subtitle-1 text-high-emphasis">
                Tỉnh thành
