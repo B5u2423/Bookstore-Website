@@ -74,4 +74,9 @@ public class CategoryController {
       @RequestParam(value = "order", defaultValue = "asc") String order) {
     return new PagedModel<>(bookService.getBookByCategory(category, page, size, sortBy, order));
   }
+
+  @GetMapping("/name")
+  public String getCategoryName(@RequestParam(value = "slug") String slug) {
+    return categoryService.getCategoryName(slug);
+  }
 }

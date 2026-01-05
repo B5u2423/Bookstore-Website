@@ -105,6 +105,12 @@ public class CategoryService {
     categoryRepo.deleteById(id);
   }
 
+  public String getCategoryName(String slug) {
+    Category c =
+        categoryRepo.findByCategorySlug(slug).orElseThrow(CategoryDoesNotExistException::new);
+    return c.getCategoryName();
+  }
+
   private Category getCategoryByIdOrThrowException(Integer id) {
     return categoryRepo
         .findById(id)
