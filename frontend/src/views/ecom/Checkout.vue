@@ -119,7 +119,7 @@ const tmpOrderTotal = computed(() => {
 })
 
 const selectedAddrId = ref(null)
-watch(selectedAddrId, (id) => {
+watch(() => selectedAddrId.value, (id) => {
   const item = userProfileStore.userInfo.addressList.find(
     addr => addr.id === id
   )
@@ -129,6 +129,7 @@ watch(selectedAddrId, (id) => {
   shippingInfo.value.cityId = item.cityId
   shippingInfo.value.cityName = item.city
   shippingInfo.value.communeId = item.communeId
+  fetchCommunes()
   shippingInfo.value.communeName = item.commune
   shippingInfo.value.street = item.street
 })
