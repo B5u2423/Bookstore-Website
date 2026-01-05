@@ -31,8 +31,7 @@ const isSuccess = ref(false)
 const message = ref('')
 
 const currentUserProfileSnapshot = ref({
-  firstName: userProfileStore.userInfo.firstName,
-  lastName: userProfileStore.userInfo.lastName,
+  name: userProfileStore.userInfo.name,
   email: userProfileStore.userInfo.email,
   phoneNumber: userProfileStore.userInfo.phone,
 })
@@ -58,8 +57,7 @@ function enableFieldsForUpdate() {
 
 function discardChanges() {
   // restore snapshot
-  currentUserProfileSnapshot.value.firstName = userProfileStore.userInfo.firstName
-  currentUserProfileSnapshot.value.lastName = userProfileStore.userInfo.lastName
+  currentUserProfileSnapshot.value.name = userProfileStore.userInfo.name
   currentUserProfileSnapshot.value.email = userProfileStore.userInfo.email
   currentUserProfileSnapshot.value.phoneNumber = userProfileStore.userInfo.phone
 
@@ -161,25 +159,7 @@ onMounted(() => {
           <v-col class="py-0">
 
             <div class="text-subtitle-1 text-medium-emphasis">
-               Họ
-              <span class="text-red">*</span>
-
-            </div>
-
-            <v-text-field
-              variant="outlined"
-              density="compact"
-              placeholder="Họ"
-              :disabled="!isFieldsEnabled"
-              v-model="currentUserProfileSnapshot.lastName"
-            ></v-text-field>
-
-          </v-col>
-
-          <v-col class="py-0">
-
-            <div class="text-subtitle-1 text-medium-emphasis">
-               Tên
+               Họ và tên
               <span class="text-red">*</span>
 
             </div>
@@ -189,7 +169,7 @@ onMounted(() => {
               density="compact"
               placeholder="Tên"
               :disabled="!isFieldsEnabled"
-              v-model="currentUserProfileSnapshot.firstName"
+              v-model="currentUserProfileSnapshot.name"
             ></v-text-field>
 
           </v-col>
@@ -301,13 +281,21 @@ onMounted(() => {
 
       <v-card-text>
 
-        <v-data-table
-          :headers="headers"
-          :items="userProfileStore.userInfo.addressList"
-          hide-default-footer
-        >
+        <template v-if="userProfileStore.userInfo.addressList.length === 0">
+           Không có địa chỉ mới
+        </template>
 
-        </v-data-table>
+        <template v-else>
+
+          <v-data-table
+            :headers="headers"
+            :items="userProfileStore.userInfo.addressList"
+            hide-default-footer
+          >
+
+          </v-data-table>
+
+        </template>
 
       </v-card-text>
 

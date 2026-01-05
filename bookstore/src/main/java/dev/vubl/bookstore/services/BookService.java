@@ -8,9 +8,14 @@ import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
 import dev.vubl.bookstore.exceptions.CategoryDoesNotExistException;
 import dev.vubl.bookstore.repos.BookRepo;
 import dev.vubl.bookstore.repos.CategoryRepo;
+import dev.vubl.bookstore.repos.CollectionRepo;
 import dev.vubl.bookstore.utils.SlugUtils;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -28,9 +33,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @Slf4j
 public class BookService {
+  @PersistenceContext private final EntityManager em;
   private final BookRepo bookRepo;
   private final CategoryRepo categoryRepo;
   private final CloudinaryService cloudinaryService;
+  private final CollectionRepo collectionRepo;
 
   public List<BookResponseDTO> getAllBooks() {
     return bookRepo.findAll().stream().map(this::mapToBookResponseDTO).toList();
@@ -78,7 +85,8 @@ public class BookService {
     }
   }
 
-  public BookResponseDTO updateBookById(BookResponseDTO bookResponseDTO, Integer id) {
+  public BookResponseDTO updateBookById(
+      BookResponseDTO bookResponseDTO, MultipartFile image, Integer id) {
     try {
       Book b =
           bookRepo
@@ -96,10 +104,16 @@ public class BookService {
       b.setPageCount(bookResponseDTO.pageCount());
       b.setIsbn(bookResponseDTO.isbn());
       b.setAuthor(bookResponseDTO.author());
-      b.setImageUrl(bookResponseDTO.imageUrl());
+      if (image != null) {
+        String returnedUrl = cloudinaryService.uploadImage(image);
+        b.setImageUrl(returnedUrl);
+      } else if (!b.getImageUrl().equals(bookResponseDTO.imageUrl())) {
+        b.setImageUrl(bookResponseDTO.imageUrl());
+      }
       b.setInStock(bookResponseDTO.inStock());
       b.setUrlSlug(SlugUtils.convertStringToSlug(bookResponseDTO.title()));
       b.setPrice(bookResponseDTO.price());
+      b.setUpdateTimeStamp(Instant.now());
       if (bookResponseDTO.categoryId() != null) {
 
         b.setCategory(
@@ -107,12 +121,21 @@ public class BookService {
                 .findById(bookResponseDTO.categoryId())
                 .orElseThrow(CategoryDoesNotExistException::new));
       }
+      if (bookResponseDTO.collectionId() != null) {
+
+        b.setCollection(
+            collectionRepo
+                .findById(bookResponseDTO.collectionId())
+                .orElseThrow(() -> new IllegalArgumentException("Collection ID does not exist!")));
+      }
 
       Book savedBook = bookRepo.save(b);
       return mapToBookResponseDTO(savedBook);
 
     } catch (DataIntegrityViolationException e) {
       throw new DataIntegrityViolationException("Error adding or updating new book!", e);
+    } catch (IOException e) {
+      throw new RuntimeException("Error uploading image when updating book");
     }
   }
 
@@ -142,6 +165,35 @@ public class BookService {
     return bookPage.map(this::mapToBookResponseDTO);
   }
 
+  @Deprecated
+  public List<BookResponseDTO> searchBookV2(String keyword) {
+    String[] tokens = keyword.toLowerCase().split("\\s+");
+
+    StringBuilder jpql = new StringBuilder("SELECT b FROM Book b WHERE 1=1");
+
+    for (int i = 0; i < tokens.length; i++) {
+      jpql.append(
+          """
+        AND (
+          LOWER(b.title) LIKE :t%1$d
+          OR LOWER(b.urlSlug) LIKE :t%1$d
+        )
+      """
+              .formatted(i));
+    }
+
+    TypedQuery<Book> query = em.createQuery(jpql.toString(), Book.class);
+
+    for (int i = 0; i < tokens.length; i++) {
+      query.setParameter("t" + i, "%" + tokens[i] + "%");
+    }
+    return query.getResultList().stream().map(this::mapToBookResponseDTO).toList();
+  }
+
+  public List<BookResponseDTO> searchBookV3(String keyword) {
+    return bookRepo.searchBookV3(keyword).stream().map(this::mapToBookResponseDTO).toList();
+  }
+
   private boolean isIsbnNotUnique(String isbn) {
     if (isbn != null) {
       return bookRepo.findByIsbn(isbn).isPresent();
@@ -165,6 +217,9 @@ public class BookService {
         .author(book.getAuthor())
         .categoryId(book.getCategory() == null ? null : book.getCategory().getId())
         .categoryName(book.getCategory() == null ? null : book.getCategory().getCategoryName())
+        .collectionId(book.getCollection() == null ? null : book.getCollection().getId())
+        .collectionName(
+            book.getCollection() == null ? null : book.getCollection().getCollectionName())
         .build();
   }
 
@@ -187,6 +242,16 @@ public class BookService {
                 : categoryRepo
                     .findById(bookResponseDTO.categoryId())
                     .orElseThrow(CategoryDoesNotExistException::new))
+        .collection(
+            bookResponseDTO.collectionId() == null
+                ? null
+                : collectionRepo
+                    .findById(bookResponseDTO.collectionId())
+                    .orElseThrow(
+                        () ->
+                            new IllegalArgumentException(
+                                "Collection ID %d does not exist"
+                                    .formatted(bookResponseDTO.collectionId()))))
         .build();
   }
 }

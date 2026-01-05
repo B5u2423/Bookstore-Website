@@ -4,6 +4,7 @@ const inventory = [
   { title: 'Thông tin sách', icon: 'mdi-book', nameRoute: 'i-books' },
   { title: 'Danh mục', icon: 'mdi-shape', nameRoute: 'i-categories' },
   { title: 'Bộ sưu tập', icon: 'mdi-view-dashboard', nameRoute: 'i-collections' },
+  { title: 'Mã giảm giá', icon: 'mdi-ticket-percent', nameRoute: 'i-coupons' },
 ]
 
 const accounts = [

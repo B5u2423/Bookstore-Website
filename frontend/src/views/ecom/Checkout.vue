@@ -15,11 +15,13 @@ function bootStrapValues() {
     cityName: '',
     communeName: '',
     street: '',
-    amount: cartStore.totalAmount,
+    itemsTotal: cartStore.totalAmount,
+    shippingFee: 0,
+    orderTotal: 0,
+    couponCode: '',
     email: userProfileStore.userInfo.email,
     phone: userProfileStore.userInfo.phone,
-    firstName: userProfileStore.userInfo.firstName,
-    lastName: userProfileStore.userInfo.lastName,
+    name: userProfileStore.userInfo.name,
     paymentMethod: 'COD',
     info: '',
   }
@@ -69,6 +71,8 @@ async function confirmCheckout() {
     shippingInfo.value.cityName = selectedCity.name
     const selectedCommune = communes.value.find((obj) => obj?.code === shippingInfo.value.communeId)
     shippingInfo.value.communeName = selectedCommune.name
+    // update total order value
+    shippingInfo.value.orderTotal = tmpOrderTotal
 
     // create order in db
     const orderResponse = await OrderService.createOrder(shippingInfo.value, authStore.accessToken)
@@ -110,6 +114,10 @@ const isShippingValid = computed(() => {
   )
 })
 
+const tmpOrderTotal = computed(() => {
+  return shippingInfo.value.shippingFee + shippingInfo.value.itemsTotal
+})
+
 onMounted(() => {
   fetchCities()
 })
@@ -142,7 +150,7 @@ onMounted(() => {
 
             <div class="text-subtitle-1 text-high-emphasis">Email</div>
 
-            <!-- Fist name, last name and email get from user profile so no change -->
+            <!-- Full name and email get from user profile so no change -->
 
             <v-text-field
               variant="outlined"
@@ -152,21 +160,11 @@ onMounted(() => {
               :disabled="true"
             ></v-text-field>
 
-            <div class="text-subtitle-1 text-high-emphasis">Họ</div>
-
-            <v-text-field
-              variant="outlined"
-              v-model="shippingInfo.lastName"
-              density="compact"
-              hide-details="true"
-              :disabled="true"
-            ></v-text-field>
-
             <div class="text-subtitle-1 text-high-emphasis">Tên</div>
 
             <v-text-field
               variant="outlined"
-              v-model="shippingInfo.firstName"
+              v-model="shippingInfo.name"
               density="compact"
               hide-details="true"
               :disabled="true"
@@ -261,7 +259,7 @@ onMounted(() => {
             <v-radio-group v-model="shipping">
 
               <v-radio
-                :disabled="!(shippingInfo.amount >= 500000)"
+                :disabled="!(shippingInfo.itemsTotal >= 500000)"
                 label="Miễn phí cho đơn trên 500K"
                 value="MORE500"
               ></v-radio>
@@ -304,7 +302,7 @@ onMounted(() => {
 
               <v-radio
                 label="Thanh toán qua VNPAY (QR, Banking)"
-                value="ONLINE"
+                value="VNPAY"
               ></v-radio>
 
             </v-radio-group>
@@ -350,6 +348,39 @@ onMounted(() => {
 
           <v-col cols="12">
 
+            <v-row class="mb-3">
+
+              <v-col md="8">
+
+                <v-text-field
+                  variant="outlined"
+                  v-model="shippingInfo.couponCode"
+                  density="compact"
+                  hide-details="true"
+                  label="Mã giảm giá"
+                ></v-text-field>
+
+              </v-col>
+
+              <v-col
+                md="4"
+                class="text-end justify-end"
+              >
+
+                <v-btn
+                  width="100%"
+                  color="primary"
+                  @click="confirmCheckout"
+                >
+                   ÁP DỤNG
+                </v-btn>
+
+              </v-col>
+
+            </v-row>
+
+            <v-divider></v-divider>
+
             <v-row>
 
               <v-col md="6">
@@ -362,7 +393,7 @@ onMounted(() => {
                 md="6"
                 class="text-end"
               >
-                 {{ formatPriceVNLocale(shippingInfo.amount) }} VND
+                 {{ formatPriceVNLocale(shippingInfo.itemsTotal) }} VND
               </v-col>
 
             </v-row>
@@ -379,7 +410,13 @@ onMounted(() => {
                 md="6"
                 class="text-end"
               >
-                 -
+
+                <template v-if="shippingInfo.shippingFee > 0">
+                   {{ formatPriceVNLocale(shippingInfo.value.shippingFee) }}
+                </template>
+
+                <template v-else>-</template>
+
               </v-col>
 
             </v-row>
@@ -396,7 +433,7 @@ onMounted(() => {
                 md="6"
                 class="text-end"
               >
-                 {{ formatPriceVNLocale(shippingInfo.amount) }} VND
+                 {{ formatPriceVNLocale(tmpOrderTotal) }} VND
               </v-col>
 
             </v-row>

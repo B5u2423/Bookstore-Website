@@ -7,6 +7,7 @@ import { VFileUpload } from 'vuetify/labs/VFileUpload'
 import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
 import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 import { CategoryService } from '@/api/category-api'
+import { CollectionService } from '@/api/collection-api'
 
 const adminAuthStore = useAdminAuthStore()
 
@@ -25,6 +26,8 @@ function createNewRecord() {
     price: '',
     categoryId: '',
     categoryName: '',
+    collectionId: '',
+    collectionName: '',
   }
 }
 
@@ -44,6 +47,7 @@ const loading = ref(false)
 const serverItems = ref([])
 const totalItems = ref(0)
 const candidates = ref([])
+const collections = ref([])
 
 // edit-add dialog
 const formModel = ref(createNewRecord())
@@ -99,6 +103,8 @@ async function edit(id) {
     price: found.price,
     categoryId: found.categoryId,
     categoryName: found.categoryName,
+    collectionId: found.collectionId,
+    collectionName: found.collectionName,
   }
 
   dialog.value = true
@@ -194,6 +200,15 @@ async function fetchCategoryCandidates() {
   }
 }
 
+async function fetchCollections() {
+  try {
+    const res = await CollectionService.getAllCollections()
+    collections.value = res
+  } catch (error) {
+    console.error('Error fetching collections', error)
+  }
+}
+
 // auto capitalize
 function capitalizeVietnamese(str) {
   return str
@@ -228,6 +243,7 @@ const publisherCaps = computed({
 onMounted(() => {
   loadItems()
   fetchCategoryCandidates()
+  fetchCollections()
 })
 </script>
 
@@ -373,7 +389,7 @@ onMounted(() => {
           >
 
             <div class="text-subtitle-1 text-high-emphasis">
-              Tên sách
+               Tên sách
               <span class="text-red">(*)</span>
 
             </div>
@@ -393,7 +409,7 @@ onMounted(() => {
           >
 
             <div class="text-subtitle-1 text-high-emphasis">
-              Tác giả
+               Tác giả
               <span class="text-red">(*)</span>
 
             </div>
@@ -531,7 +547,7 @@ onMounted(() => {
           >
 
             <div class="text-subtitle-1 text-high-emphasis">
-              Thể loại
+               Thể loại
               <span class="text-red">(*)</span>
 
             </div>
@@ -544,6 +560,25 @@ onMounted(() => {
               item-title="categoryName"
               hide-details
               :items="candidates"
+            ></v-autocomplete>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="6"
+          >
+
+            <div class="text-subtitle-1 text-high-emphasis"> Bộ sưu tập </div>
+
+            <v-autocomplete
+              v-model="formModel.collectionId"
+              variant="outlined"
+              density="compact"
+              item-value="id"
+              item-title="collectionName"
+              hide-details
+              :items="collections"
             ></v-autocomplete>
 
           </v-col>

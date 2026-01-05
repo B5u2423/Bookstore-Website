@@ -22,11 +22,8 @@ public class Order extends BaseEntity {
   @Column(name = "phone_number")
   private String phoneNumber;
 
-  @Column(name = "first_name")
-  private String firstName;
-
-  @Column(name = "last_name")
-  private String lastName;
+  @Column(name = "name")
+  private String name;
 
   @Column(name = "note")
   private String note;
@@ -41,8 +38,17 @@ public class Order extends BaseEntity {
   @Enumerated(EnumType.STRING)
   private PaymentMethod paymentMethod;
 
-  @Column(name = "total_amount")
-  private BigDecimal totalAmount;
+  @Column(name = "items_total")
+  private BigDecimal itemsTotal;
+
+  @Column(name = "shipping_fee")
+  private BigDecimal shippingFee;
+
+  @Column(name = "order_total")
+  private BigDecimal orderTotal;
+
+  @Column(name = "coupon_code")
+  private String couponCode;
 
   @Column(name = "order_date")
   private LocalDate orderDate;

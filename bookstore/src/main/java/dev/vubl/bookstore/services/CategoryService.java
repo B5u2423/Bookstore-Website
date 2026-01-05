@@ -8,6 +8,7 @@ import dev.vubl.bookstore.exceptions.CategoryDoesNotExistException;
 import dev.vubl.bookstore.repos.CategoryRepo;
 import dev.vubl.bookstore.utils.SlugUtils;
 import jakarta.transaction.Transactional;
+import java.time.Instant;
 import java.util.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -78,6 +79,7 @@ public class CategoryService {
     for (Integer childId : payload.children()) {
       c.addChild(getCategoryByIdOrThrowException(childId));
     }
+    c.setUpdateTimeStamp(Instant.now());
     categoryRepo.save(c);
   }
 
@@ -101,6 +103,12 @@ public class CategoryService {
     }
     c.removeAllChildren();
     categoryRepo.deleteById(id);
+  }
+
+  public String getCategoryName(String slug) {
+    Category c =
+        categoryRepo.findByCategorySlug(slug).orElseThrow(CategoryDoesNotExistException::new);
+    return c.getCategoryName();
   }
 
   private Category getCategoryByIdOrThrowException(Integer id) {

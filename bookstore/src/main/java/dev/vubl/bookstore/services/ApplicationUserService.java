@@ -1,20 +1,23 @@
 package dev.vubl.bookstore.services;
 
-import dev.vubl.bookstore.dtos.AccountDetailDTO;
-import dev.vubl.bookstore.dtos.AddressDTO;
-import dev.vubl.bookstore.dtos.ResetPasswordRequest;
-import dev.vubl.bookstore.dtos.UpdateProfileRequest;
+import dev.vubl.bookstore.dtos.*;
 import dev.vubl.bookstore.entities.ApplicationUser;
 import dev.vubl.bookstore.entities.CustomerAddressInfo;
+import dev.vubl.bookstore.entities.UserType;
 import dev.vubl.bookstore.exceptions.UnableToRegisterApplicationUserException;
 import dev.vubl.bookstore.exceptions.UserDoesNotExistException;
 import dev.vubl.bookstore.repos.ApplicationUserRepo;
 import dev.vubl.bookstore.repos.CustomerAddressInfoRepo;
 import jakarta.transaction.Transactional;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -61,6 +64,22 @@ public class ApplicationUserService implements UserDetailsService {
     return userRepo.findAll();
   }
 
+  public Page<ApplicationUser> getAllUsersPaginated(
+      int page, int size, String sortBy, String order, String type) {
+    List<String> allowed = List.of("id");
+    if (!allowed.contains(sortBy)) {
+      throw new IllegalArgumentException("Invalid sort field: %s".formatted(sortBy));
+    }
+
+    Sort sort = order.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+    Pageable pageable = PageRequest.of(page, size, sort);
+    return switch (type) {
+      case "staff" -> userRepo.findByUserTypeIn(List.of(UserType.ADMIN, UserType.STAFF), pageable);
+      case "customers" -> userRepo.findByUserTypeIn(List.of(UserType.CUSTOMER), pageable);
+      default -> userRepo.findAll(pageable);
+    };
+  }
+
   public ApplicationUser readUserByEmail(String email) {
     return readUserByEmailOrThrowException(email);
   }
@@ -71,10 +90,10 @@ public class ApplicationUserService implements UserDetailsService {
   }
 
   public String updateUserProfileInfo(ApplicationUser user, UpdateProfileRequest payload) {
-    user.setFirstName(payload.firstName());
-    user.setLastName(payload.lastName());
+    user.setName(payload.name());
     user.setPhoneNumber(payload.phoneNumber());
     user.setEmail(payload.email());
+    user.setCreateTimeStamp(Instant.now());
 
     try {
       this.createOrUpdateUser(user);
@@ -132,8 +151,7 @@ public class ApplicationUserService implements UserDetailsService {
     return AccountDetailDTO.builder()
         .email(user.getEmail())
         .phoneNumber(user.getPhoneNumber())
-        .firstName(user.getFirstName())
-        .lastName(user.getLastName())
+        .name(user.getName())
         .addressList(
             user.getAddressList().stream()
                 .map(
@@ -169,6 +187,10 @@ public class ApplicationUserService implements UserDetailsService {
     } catch (RuntimeException e) {
       log.error("[{}] Error in forget password flow", INSTANCE_NAME);
     }
+  }
+
+  public boolean isUserExistByEmail(String email) {
+    return userRepo.findByEmail(email).isPresent();
   }
 
   private ApplicationUser readUserByEmailOrThrowException(String email) {

@@ -6,6 +6,7 @@ import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth-store'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
+import { compile } from 'vue'
 
 const routes = [
   {
@@ -83,6 +84,11 @@ const routes = [
         name: 'category-page',
         component: () => import('@/views/ecom/CategoryShowcase.vue'),
       },
+      {
+        path: 'oauth/callback',
+        name: 'oauth-callback',
+        component: () => import('@/views/ecom/OAuthCallback.vue'),
+      },
     ],
   },
   {
@@ -132,6 +138,11 @@ const routes = [
             name: 'i-orders',
             component: () => import('@/views/admin/Order.vue'),
           },
+          {
+            path: 'coupons',
+            name: 'i-coupons',
+            component: () => import('@/views/admin/Coupon.vue'),
+          },
         ],
       },
       {
@@ -142,12 +153,12 @@ const routes = [
           {
             path: 'customers',
             name: 'man-customers',
-            component: () => import('@/views/admin/Book.vue'),
+            component: () => import('@/views/admin/Customer.vue'),
           },
           {
             path: 'staffs',
             name: 'man-staffs',
-            component: () => import('@/views/admin/Book.vue'),
+            component: () => import('@/views/admin/Staff.vue'),
           },
         ],
       },

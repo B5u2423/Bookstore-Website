@@ -1,10 +1,10 @@
-import api from './api-config'
+import api, { adminApi } from './api-config'
 
 const API_ENDPOINTS = {
-  NEW_ARRIVAL: '/api/v1/books/new',
-  BEST_SELLERS: '/api/v1/books/best-sellers',
-  ADD_NEW_BOOK: '/api/v1/books/add',
-  UPDATE_BOOK: '/api/v1/books/update',
+  NEW_ARRIVAL: '/books/new',
+  BEST_SELLERS: '/books/best-sellers',
+  ADD_NEW_BOOK: '/books/add',
+  UPDATE_BOOK: '/books/update',
 }
 
 export const BookService = {
@@ -46,7 +46,7 @@ export const BookService = {
    */
   async fetchBookById(id) {
     try {
-      const res = await api.get(`/api/v1/books/${id}`)
+      const res = await api.get(`/books/${id}`)
       return res.data
     } catch (error) {
       console.error(`Error fetching book with id: ${id}`, error)
@@ -62,7 +62,7 @@ export const BookService = {
    */
   async fetchAllBooks(params = {}) {
     try {
-      const res = await api.get('/api/v1/books', { params })
+      const res = await api.get('/books', { params })
       return res.data
     } catch (error) {
       console.error('Error fetching all books', error)
@@ -79,9 +79,8 @@ export const BookService = {
    */
   async deleteBookById(id, token) {
     try {
-      const res = await api.delete('/api/v1/books/delete', {
+      const res = await adminApi.delete('/books/delete', {
         params: { id },
-        headers: { Authorization: `Bearer ${token}` },
       })
       return res.data
     } catch (error) {
@@ -100,11 +99,10 @@ export const BookService = {
    */
   async updateBookById(body, id, token) {
     try {
-      const res = await api.put(API_ENDPOINTS.UPDATE_BOOK, body, {
+      const res = await adminApi.put(API_ENDPOINTS.UPDATE_BOOK, body, {
         params: { id },
         headers: {
           'Content-Type': `multipart/form-data`,
-          Authorization: `Bearer ${token}`,
         },
       })
       return res.data
@@ -123,15 +121,24 @@ export const BookService = {
    */
   async addNewBook(body, token) {
     try {
-      const res = await api.post(API_ENDPOINTS.ADD_NEW_BOOK, body, {
+      const res = await adminApi.post(API_ENDPOINTS.ADD_NEW_BOOK, body, {
         headers: {
           'Content-Type': `multipart/form-data`,
-          Authorization: `Bearer ${token}`,
         },
       })
       return res.data
     } catch (error) {
       console.error('Error creating new book', error)
+      throw error
+    }
+  },
+
+  async searchBook(params = {}) {
+    try {
+      const res = await api.get('/books/search', { params })
+      return res.data
+    } catch (error) {
+      console.error('Error searching book', error)
       throw error
     }
   },
