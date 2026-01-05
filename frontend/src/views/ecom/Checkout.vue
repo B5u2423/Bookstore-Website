@@ -352,7 +352,7 @@ onMounted(() => {
 
               <v-radio
                 label="Thanh toán qua VNPAY (QR, Banking)"
-                value="ONLINE"
+                value="VNPAY"
               ></v-radio>
 
             </v-radio-group>
