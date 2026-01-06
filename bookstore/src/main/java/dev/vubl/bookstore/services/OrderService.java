@@ -2,6 +2,7 @@ package dev.vubl.bookstore.services;
 
 import dev.vubl.bookstore.dtos.ShippingInfoDTO;
 import dev.vubl.bookstore.dtos.dashboard.OrderMetricsDTO;
+import dev.vubl.bookstore.dtos.dashboard.RevenueMetricsDTO;
 import dev.vubl.bookstore.entities.*;
 import dev.vubl.bookstore.exceptions.BookDoesNotExistException;
 import dev.vubl.bookstore.repos.BookRepo;
@@ -119,5 +120,9 @@ public class OrderService {
 
   public OrderMetricsDTO getOrderMetrics() {
     return orderRepo.getOrderMetrics();
+  }
+
+  public RevenueMetricsDTO getRevenueMetrics() {
+    return orderRepo.getRevenueMetrics();
   }
 }
