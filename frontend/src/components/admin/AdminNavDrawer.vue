@@ -18,7 +18,7 @@ const orders = [{ title: 'Đơn trực tuyến', icon: 'mdi-truck', nameRoute: '
 <template>
 
   <v-navigation-drawer
-    color="blue"
+    color="primary"
     class="pa-4"
   >
 
