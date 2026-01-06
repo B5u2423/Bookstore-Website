@@ -14,17 +14,17 @@ public class AdminService {
 
   public AdminDashboardDTO getDashboardData() {
     OrderMetricsDTO orderMetricsDTO = orderService.getOrderMetrics();
-    RevenueMetricsDTO revenueMetricsDTO = null;
+    RevenueMetricsDTO revenueMetricsDTO = orderService.getRevenueMetrics();
     UserMetricsDTO userMetricsDTO = userService.getUserMetrics();
     InventoryMetricsDTO inventoryMetricsDTO = null;
-    CatalogHealthDTO catalogHealthDTO = null;
+    CatalogHealthDTO catalogHealthDTO = bookService.getCatalogHealthMetrics();
     EngagementMetricsDTO engagementMetricsDTO = null;
     return AdminDashboardDTO.builder()
         .orderMetricsDTO(orderMetricsDTO)
-        //            .revenueMetricsDTO(revenueMetricsDTO)
+        .revenueMetricsDTO(revenueMetricsDTO)
         .userMetricsDTO(userMetricsDTO)
-        //            .inventoryMetricsDTO(inventoryMetricsDTO)
-        //            .catalogHealthDTO(catalogHealthDTO)
+        //                    .inventoryMetricsDTO(inventoryMetricsDTO)
+        .catalogHealthDTO(catalogHealthDTO)
         //            .engagementMetricsDTO(engagementMetricsDTO)
         .build();
   }

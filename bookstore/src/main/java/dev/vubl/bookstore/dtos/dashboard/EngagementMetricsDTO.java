@@ -4,8 +4,4 @@ import lombok.Builder;
 
 @Builder
 public record EngagementMetricsDTO(
-    Long activeCarts,
-    Long abandonedCarts,
-    Double cartAbandonmentRate,
-    Long repeatCustomers,
-    Double ordersPerCustomer) {}
+    Long activeCarts, Double cartAbandonmentRate, Double ordersPerCustomer) {}

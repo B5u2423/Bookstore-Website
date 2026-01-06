@@ -1,9 +1,6 @@
 package dev.vubl.bookstore.dtos.dashboard;
 
-import lombok.Builder;
-
-@Builder
-public record CatalogHealthDTO(
+public record CatalogHealthCountDTO(
     Long booksWithoutCategories,
     Long booksWithoutCollections,
     Long booksWithoutStock,
@@ -12,7 +9,4 @@ public record CatalogHealthDTO(
     Long inactiveBooks,
     Long totalCategories,
     Long totalCollections,
-    Long booksPerCategory
-    //    String topCategoryBySales,
-    //    String topCollectionBySales
-    ) {}
+    Long booksPerCategory) {}
