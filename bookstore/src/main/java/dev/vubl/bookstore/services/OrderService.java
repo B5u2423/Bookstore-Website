@@ -15,7 +15,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -46,7 +45,10 @@ public class OrderService {
 
     for (CartItem ci : cart.getItems()) {
       // get book to update
-      Book b = bookRepo.findByIdForUpdate(ci.getBook().getId()).orElseThrow(BookDoesNotExistException::new);
+      Book b =
+          bookRepo
+              .findByIdForUpdate(ci.getBook().getId())
+              .orElseThrow(BookDoesNotExistException::new);
       OrderItem oi =
           OrderItem.builder()
               .order(order)
@@ -59,7 +61,8 @@ public class OrderService {
 
       // update in stock
       if (b.getInStock() < ci.getQuantity()) {
-        throw new OutOfStockException("Book with id::%d is not enough in stock".formatted(b.getId()));
+        throw new OutOfStockException(
+            "Book with id::%d is not enough in stock".formatted(b.getId()));
       }
       Integer inStock = b.getInStock() - ci.getQuantity();
       b.setInStock(inStock);
