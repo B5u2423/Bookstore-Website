@@ -1,6 +1,7 @@
 package dev.vubl.bookstore.services;
 
 import dev.vubl.bookstore.dtos.ShippingInfoDTO;
+import dev.vubl.bookstore.dtos.dashboard.OrderMetricsDTO;
 import dev.vubl.bookstore.entities.*;
 import dev.vubl.bookstore.exceptions.BookDoesNotExistException;
 import dev.vubl.bookstore.repos.BookRepo;
@@ -113,7 +114,10 @@ public class OrderService {
 
     Sort sort = order.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
     Pageable pageable = PageRequest.of(page, size, sort);
-    Page<Order> orders = orderRepo.findAll(pageable);
-    return orders;
+    return orderRepo.findAll(pageable);
+  }
+
+  public OrderMetricsDTO getOrderMetrics() {
+    return orderRepo.getOrderMetrics();
   }
 }
