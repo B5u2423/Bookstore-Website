@@ -1,6 +1,8 @@
 package dev.vubl.bookstore.controllers;
 
+import dev.vubl.bookstore.dtos.AdminDashboardDTO;
 import dev.vubl.bookstore.entities.ApplicationUser;
+import dev.vubl.bookstore.services.AdminService;
 import dev.vubl.bookstore.services.ApplicationUserService;
 import dev.vubl.bookstore.services.BookService;
 import java.util.List;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
   private final ApplicationUserService userService;
   private final BookService bookService;
+  private final AdminService adminService;
 
   @GetMapping
   public ResponseEntity<List<ApplicationUser>> getAllUsers() {
@@ -39,5 +42,10 @@ public class AdminController {
       @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
       @RequestParam(value = "order", defaultValue = "asc") String order) {
     return new PagedModel<>(userService.getAllUsersPaginated(page, size, sortBy, order, "staff"));
+  }
+
+  @GetMapping("/get-metrics")
+  public AdminDashboardDTO test() {
+    return adminService.getDashboardData();
   }
 }
