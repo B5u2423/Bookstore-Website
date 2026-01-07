@@ -1,12 +1,25 @@
 <script setup>
+import { AdminService } from '@/api/admin-api';
+import { onMounted } from 'vue';
 
+
+const metrics = ref(null)
+
+async function getMetrics() {
+  metrics.value = await AdminService.getDashboardMetrics()
+}
+
+onMounted(() => {
+  getMetrics
+})
 </script>
 
 <template>
 
+  <p>{{ metrics }}</p>
   <v-row>
 
-    <v-col cols="4">
+    <v-col cols="3">
 
       <v-card>
 
@@ -18,7 +31,7 @@
 
     </v-col>
 
-    <v-col cols="4">
+    <v-col cols="3">
 
       <v-card>
 
@@ -30,7 +43,7 @@
 
     </v-col>
 
-    <v-col cols="4">
+    <v-col cols="3">
 
       <v-card>
 
