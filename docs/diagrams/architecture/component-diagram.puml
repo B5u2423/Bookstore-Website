@@ -1,0 +1,38 @@
+@startuml
+package "Frontend (Vue 3 + Vite + Vuetify)" as FE {
+  component "Vue Router" as FE_Router
+  component "Pinia Stores" as FE_Stores
+  component "Axios API Client" as FE_API
+}
+
+package "Backend (Spring Boot 3)" as BE {
+  component "Spring Security\n(JWT Resource Server)" as Security
+  component "REST Controllers" as Controllers
+  interface HTTPS as Endpoint
+  component "Application Services" as Services
+  component "Repositories\n(Spring Data JPA)" as Repos
+  component "Mail (Spring Mail)" as Mail
+}
+
+database "PostgreSQL" as PG
+rectangle "SMTP Server" as SMTP
+
+FE_Router --> FE_Stores
+FE_Router --> FE_API
+
+' Frontend to Backend
+FE_API --> Endpoint
+Controllers -right- Endpoint
+
+' Security enforcement
+Security ..> Controllers : FilterChain/JWT validation
+
+' Backend layering
+Controllers --> Services
+Services --> Repos : CRUD
+Repos --> PG : JDBC / JPA
+
+' Outbound integrations
+Services --> Mail : Compose & send mail
+Mail --> SMTP : SMTP
+@enduml
