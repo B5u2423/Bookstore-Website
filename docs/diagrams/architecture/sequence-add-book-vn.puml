@@ -1,4 +1,4 @@
-@startuml seq_add_book
+@startuml seq_addbook
 skinparam ArrowColor #4a4a4a
 skinparam ParticipantBorderColor #4a4a4a
 skinparam ParticipantBackgroundColor #f9f9f9
@@ -12,8 +12,6 @@ actor "Quản trị viên" as Admin
 participant "FrontEnd\n(Trang thêm sách - Admin)" as FE
 participant "BookController\n(/api/v1/books/add)" as Ctrl
 participant "BookService" as Service
-participant "CategoryRepository" as CategoryRepo
-participant "BookRepository" as BookRepo
 participant "CloudinaryService" as Cloudinary
 database "PostgreSQL" as PG
 
@@ -25,7 +23,7 @@ end
 
 FE -> Ctrl: POST /api/v1/books/add (multipart)\nAuthorization: Bearer <token>
 Ctrl -> Service: Thêm sách (thông tin sách + file ảnh)
-Service -> CategoryRepo: Tìm thông tin danh mục
+Service -> PG: Kiểm tra danh mục
 alt Không tìm thấy danh mục
   Service --> Ctrl: Trả về thông điệp lỗi
   Ctrl --> FE: 400/404 + thông điệp
@@ -33,15 +31,12 @@ alt Không tìm thấy danh mục
 else Danh mục hợp lệ
   Service -> Cloudinary: Upload ảnh lên Cloudinary
   Cloudinary --> Service: URL ảnh
-  Service -> BookRepo: Lưu thông tin sách + URL ảnh
-  BookRepo -> PG: Thêm sách (INSERT)
-  PG --> BookRepo: ok (id)
-  BookRepo --> Service: Sách đã lưu
+  Service -> PG: Thêm sách (INSERT + URL ảnh)
+  PG --> Service: ok (id)
   Service --> Ctrl: Trả về kết quả đã tạo sách mới
   Ctrl --> FE: 201 Created
   FE -> FE: Hiển thị thành công; điều hướng "/admin/books"
 end
 
-FE --> User
-
-@endum
+FE --> Admin
+@enduml
