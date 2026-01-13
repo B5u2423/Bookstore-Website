@@ -1,7 +1,6 @@
 <script setup>
-import { AdminService } from '@/api/admin-api';
-import { onMounted } from 'vue';
-
+import { AdminService } from '@/api/admin-api'
+import { onMounted } from 'vue'
 
 const metrics = ref(null)
 
@@ -17,6 +16,7 @@ onMounted(() => {
 <template>
 
   <p>{{ metrics }}</p>
+
   <v-row>
 
     <v-col cols="3">

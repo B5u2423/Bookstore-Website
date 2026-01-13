@@ -24,5 +24,5 @@ export const AdminService = {
     } catch (error) {
       console.error('Error fetching dashboard metrics')
     }
-  }
+  },
 }
