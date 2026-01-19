@@ -32,4 +32,14 @@ public class OrderController {
       @RequestParam(value = "order", defaultValue = "asc") String order) {
     return new PagedModel<>(orderService.getAllOrdersPaginated(page, size, sortBy, order));
   }
+
+  @GetMapping("/user")
+  public PagedModel<Order> getOrdersByEmail(
+      @RequestParam(value = "page", defaultValue = "0") int page,
+      @RequestParam(value = "size", defaultValue = "10") int size,
+      @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
+      @RequestParam(value = "order", defaultValue = "asc") String order,
+      @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+    return new PagedModel<>(orderService.getOrdersByEmail(page, size, sortBy, order, token));
+  }
 }

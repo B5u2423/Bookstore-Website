@@ -49,7 +49,6 @@ const dialog = ref(false)
 
 function showMoreDetails(id) {
   const found = serverItems.value.find((order) => order.id === id)
-  console.log(found)
 
   detailDialog.value = {
     id: found.id,

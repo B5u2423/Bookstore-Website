@@ -113,7 +113,19 @@ public class OrderService {
 
     Sort sort = order.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
     Pageable pageable = PageRequest.of(page, size, sort);
-    Page<Order> orders = orderRepo.findAll(pageable);
-    return orders;
+    return orderRepo.findAll(pageable);
+  }
+
+  public Page<Order> getOrdersByEmail(
+      int page, int size, String sortBy, String order, String token) {
+    ApplicationUser u = authService.readUserFromToken(token);
+    List<String> allowed = List.of("id");
+    if (!allowed.contains(sortBy)) {
+      throw new IllegalArgumentException("Invalid sort field: %s".formatted(sortBy));
+    }
+
+    Sort sort = order.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+    Pageable pageable = PageRequest.of(page, size, sort);
+    return orderRepo.findAllByEmail(u.getEmail(), pageable);
   }
 }
