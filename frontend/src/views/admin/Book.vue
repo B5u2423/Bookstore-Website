@@ -615,8 +615,6 @@ onMounted(() => {
 
             </v-file-upload>
 
-            <p>{{ imageFile }}</p>
-
             <v-text-field
               class="mt-3"
               variant="outlined"

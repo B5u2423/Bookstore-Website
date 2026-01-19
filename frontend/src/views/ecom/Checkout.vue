@@ -1,6 +1,6 @@
 <script setup>
 import { useCartStore } from '@/stores/cart-store'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { PaymentService, OrderService, AddressInfoService } from '@/api/cart-api'
 import { useAuthStore } from '@/stores/auth-store'
 import { useUserProfileStore } from '@/stores/user-profile-store'
@@ -118,8 +118,23 @@ const tmpOrderTotal = computed(() => {
   return shippingInfo.value.shippingFee + shippingInfo.value.itemsTotal
 })
 
+const selectedAddrId = ref(null)
+watch(selectedAddrId, async (id) => {
+  const item = userProfileStore.userInfo.addressList.find((addr) => addr.id === id)
+
+  if (!item) return
+
+  shippingInfo.value.cityId = item.cityId
+  shippingInfo.value.cityName = item.city
+  await fetchCommunes()
+  shippingInfo.value.communeId = item.communeId
+  shippingInfo.value.communeName = item.commune
+  shippingInfo.value.street = item.street
+})
+
 onMounted(() => {
   fetchCities()
+  userProfileStore.getUserInfo()
 })
 </script>
 
@@ -160,7 +175,7 @@ onMounted(() => {
               :disabled="true"
             ></v-text-field>
 
-            <div class="text-subtitle-1 text-high-emphasis">Tên</div>
+            <div class="text-subtitle-1 text-high-emphasis">Họ và Tên</div>
 
             <v-text-field
               variant="outlined"
@@ -185,6 +200,31 @@ onMounted(() => {
                 userProfileStore.userInfo.phone !== '' && userProfileStore.userInfo.phone !== null
               "
             ></v-text-field>
+
+            <div class="text-subtitle-1 text-high-emphasis"> Sổ địa chỉ </div>
+
+            <v-select
+              density="compact"
+              hide-details="true"
+              :items="userProfileStore.userInfo.addressList"
+              item-value="id"
+              no-data-text="Không có địa chỉ"
+              variant="outlined"
+              v-model="selectedAddrId"
+            >
+
+              <template v-slot:item="{ props, item }">
+
+                <v-list-item
+                  v-bind="props"
+                  :title="item.raw.street + ', ' + item.raw.commune + ', ' + item.raw.city"
+                >
+
+                </v-list-item>
+
+              </template>
+
+            </v-select>
 
             <div class="text-subtitle-1 text-high-emphasis">
                Tỉnh thành

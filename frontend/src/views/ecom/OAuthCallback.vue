@@ -5,7 +5,6 @@ import { onMounted } from 'vue'
 
 const authStore = useAuthStore()
 function getCookie(name) {
-  console.log(document.cookie)
   return document.cookie
     .split('; ')
     .find((c) => c.startsWith(name + '='))

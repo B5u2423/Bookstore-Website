@@ -38,4 +38,9 @@ public class ApplicationUser extends BaseEntity {
 
   @Column(name = "facebook_id")
   private String facebookId;
+
+  public void removeAddress(CustomerAddressInfo addressInfo) {
+    addressList.remove(addressInfo);
+    addressInfo.setCustomer(null);
+  }
 }

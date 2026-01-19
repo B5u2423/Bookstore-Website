@@ -3,6 +3,8 @@ package dev.vubl.bookstore.repos;
 import dev.vubl.bookstore.dtos.dashboard.OrderMetricsDTO;
 import dev.vubl.bookstore.dtos.dashboard.RevenueMetricsDTO;
 import dev.vubl.bookstore.entities.Order;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -38,4 +40,6 @@ public interface OrderRepo extends JpaRepository<Order, Integer> {
     FROM Order o
 """)
   RevenueMetricsDTO getRevenueMetrics();
+    
+  Page<Order> findAllByEmail(String email, Pageable pageable);
 }

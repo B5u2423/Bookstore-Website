@@ -37,11 +37,12 @@ const currentUserProfileSnapshot = ref({
 })
 
 // address data table headers
-const headers = ref(
-  { title: 'Tỉnh thành', key: 'city', align: 'start' },
+const headers = ref([
+  { title: 'Địa chỉ', key: 'street', align: 'start' },
   { title: 'Xã phường', key: 'commune', align: 'start' },
-  { title: 'Địa chỉ cụ thể (số nhà, đường, ngõ,...)', key: 'street', align: 'start' },
-)
+  { title: 'Tỉnh thành', key: 'city', align: 'start' },
+  { title: 'Thao tác', key: 'actions', align: 'center', sortable: false },
+])
 
 watch(
   currentUserProfileSnapshot,
@@ -112,16 +113,18 @@ async function fetchCommunes() {
 // add address
 async function save() {
   try {
-    const res = CustomerService.setAddress(
-      {
-        city: cities.value.find((obj) => obj.code === address.value.cityId)?.name,
-        commune: communes.value.find((obj) => obj.code === address.value.communeId)?.name,
-        street: address.value.street,
-      },
-      authStore.accessToken,
-    )
+    const addrObj = {
+      cityId: address.value.cityId,
+      city: cities.value.find((obj) => obj.code === address.value.cityId)?.name,
+      communeId: address.value.communeId,
+      commune: communes.value.find((obj) => obj.code === address.value.communeId)?.name,
+      street: address.value.street,
+    }
+    const res = CustomerService.setAddress(addrObj, authStore.accessToken)
+    // update immediate view
+    userProfileStore.userInfo.addressList.push(addrObj)
     isSuccess.value = true
-    message.value = 'Thêm địa chỉ thành công! Vui lòng tải lại trang'
+    message.value = 'Thêm địa chỉ thành công!'
   } catch (error) {
     isError.value = true
     message.value = 'Lỗi xảy khi thêm địa chỉ'
@@ -129,6 +132,22 @@ async function save() {
   } finally {
     // close dialog box
     dialog.value = false
+  }
+}
+
+async function deleteAddress(id) {
+  try {
+    const res = await CustomerService.deleteAddress(id)
+    // update immediate view
+    userProfileStore.userInfo.addressList = userProfileStore.userInfo.addressList.filter(
+      (addr) => addr.id != id,
+    )
+    isSuccess.value = true
+    message.value = 'Xóa địa chỉ thành công'
+  } catch (error) {
+    console.error('Error deleting address', error)
+    isError.value = true
+    message.value = 'Lỗi xảy khi xóa địa chỉ'
   }
 }
 
@@ -292,6 +311,21 @@ onMounted(() => {
             :items="userProfileStore.userInfo.addressList"
             hide-default-footer
           >
+
+            <template v-slot:item.actions="{ item }">
+
+              <div class="d-flex ga-2 justify-center">
+
+                <v-icon
+                  color="medium-emphasis"
+                  icon="mdi-delete"
+                  size="small"
+                  @click="deleteAddress(item.id)"
+                ></v-icon>
+
+              </div>
+
+            </template>
 
           </v-data-table>
 
