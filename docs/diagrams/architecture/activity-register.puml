@@ -1,0 +1,58 @@
+@startuml
+' Register Activity Diagram with Swimlanes
+
+skinparam ArrowColor #4a4a4a
+skinparam ActivityBorderColor #4a4a4a
+skinparam ActivityBackgroundColor #f9f9f9
+skinparam shadowing false
+
+Title Register Activity (Create Account)
+
+start
+partition "User" {
+  :Enter name, email, password, userType;
+}
+partition "Frontend (Vue App)" {
+  :Validate form;
+  if (Invalid?) then (yes)
+    :Show validation errors;
+    stop
+  else (no)
+  endif
+  :Send POST /api/auth/register;
+}
+partition "AuthenticationController" {
+  :Receive register request;
+}
+partition "AuthService" {
+  :Check if email exists;
+}
+partition "Database (PostgreSQL)" {
+  :Query user by email;
+}
+partition "AuthService" {
+  if (Email exists?) then (yes)
+    :Return 409 Conflict;
+    detach
+  else (no)
+  endif
+  :Encode password;
+  :Save new user;
+}
+partition "Database (PostgreSQL)" {
+  :INSERT user;
+}
+partition "EmailService" {
+  :Send welcome/verification email;
+}
+partition "AuthenticationController" {
+  :Return 201 Created + message;
+}
+partition "Frontend (Vue App)" {
+  :Show success;
+  :Navigate to login;
+}
+stop
+
+note right: Route is anonymous; JWT applies to protected endpoints only.
+@enduml

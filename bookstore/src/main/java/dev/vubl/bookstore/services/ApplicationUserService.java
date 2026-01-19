@@ -1,6 +1,7 @@
 package dev.vubl.bookstore.services;
 
 import dev.vubl.bookstore.dtos.*;
+import dev.vubl.bookstore.dtos.dashboard.UserMetricsDTO;
 import dev.vubl.bookstore.entities.ApplicationUser;
 import dev.vubl.bookstore.entities.CustomerAddressInfo;
 import dev.vubl.bookstore.entities.UserType;
@@ -211,5 +212,9 @@ public class ApplicationUserService implements UserDetailsService {
 
   private ApplicationUser readUserByEmailOrThrowException(String email) {
     return userRepo.findByEmail(email).orElseThrow(UserDoesNotExistException::new);
+  }
+
+  public UserMetricsDTO getUserMetrics() {
+    return userRepo.getUserMetrics();
   }
 }

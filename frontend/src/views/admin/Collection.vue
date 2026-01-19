@@ -173,7 +173,7 @@ onMounted(() => {
           class="me-2"
           prepend-icon="mdi-plus"
           rounded="lg"
-          text="Thêm mã"
+          text="Thêm bộ sưu tập"
           variant="outlined"
           @click="add"
         ></v-btn>
