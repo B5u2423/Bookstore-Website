@@ -1,0 +1,56 @@
+@startuml
+' Login Activity Diagram with Swimlanes
+
+skinparam ArrowColor #4a4a4a
+skinparam ActivityBorderColor #4a4a4a
+skinparam ActivityBackgroundColor #f9f9f9
+skinparam shadowing false
+
+Title Login Activity (JWT)
+
+start
+partition "User" {
+  :Enter email & password;
+}
+partition "Frontend (Vue App)" {
+  :Validate form;
+  if (Invalid?) then (yes)
+    :Show validation errors;
+    stop
+  else (no)
+  endif
+  :Send POST /api/auth/login;
+}
+partition "AuthController" {
+  :Receive login request;
+}
+partition "AuthService" {
+  :Load user by email;
+}
+partition "Database (PostgreSQL)" {
+  :Fetch user record;
+}
+partition "AuthService" {
+  :Verify password;
+  if (Credentials invalid?) then (yes)
+    :Return 401 Unauthorized;
+    detach
+  else (no)
+  endif
+  :Generate access & refresh tokens;
+}
+partition "TokenService" {
+  :Persist refresh token;
+}
+partition "AuthController" {
+  :Return 200 OK + tokens + profile;
+}
+partition "Frontend (Vue App)" {
+  :Store tokens & profile;
+  :Set Authorization header;
+  :Navigate to dashboard;
+}
+stop
+
+note right: Route is anonymous; JWT filter applies to protected endpoints.
+@enduml

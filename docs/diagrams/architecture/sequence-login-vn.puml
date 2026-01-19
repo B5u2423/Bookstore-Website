@@ -1,0 +1,53 @@
+@startuml seq_login
+skinparam ArrowColor #4a4a4a
+skinparam ParticipantBorderColor #4a4a4a
+skinparam ParticipantBackgroundColor #f9f9f9
+skinparam sequenceArrowThickness 1
+skinparam lifelineStrategy solid
+skinparam shadowing false
+
+title Luồng Đăng Nhập (Tài khoản/Mật khẩu với JWT)
+
+actor "Người dùng" as User
+participant "Ứng dụng Vue\n(Màn hình đăng nhập)" as FE
+participant "AuthenticationController\n(/api/auth/login)" as Ctrl
+participant "AuthService" as Service
+participant "UserRepository" as UserRepo
+participant "TokenService\n(JWT / Refresh)" as TokenSvc
+database "PostgreSQL" as PG
+
+User -> FE: Nhập email và mật khẩu
+FE -> FE: Kiểm tra hợp lệ biểu mẫu
+alt Biểu mẫu không hợp lệ
+  FE -> User: Hiển thị lỗi kiểm tra
+  return
+end
+
+FE -> Ctrl: POST /api/auth/login
+Ctrl -> Service: authenticate(email, password)
+Service -> UserRepo: loadUserByEmail(email)
+UserRepo -> PG: Truy vấn người dùng theo email
+PG --> UserRepo: user + hash + roles
+UserRepo --> Service: UserDetails
+Service -> Service: Xác thực mật khẩu
+alt Thông tin đăng nhập không hợp lệ
+  Service --> Ctrl: throw BadCredentials
+  Ctrl --> FE: 401 Không được phép + lỗi
+  FE -> FE: Hiển thị thông báo lỗi
+else Hợp lệ
+  Service -> TokenSvc: generateAccessToken(user)
+  Service -> TokenSvc: generateRefreshToken(user)
+  TokenSvc -> PG: Lưu refresh token
+  TokenSvc --> Service: accessToken, refreshToken
+  Service --> Ctrl: AuthResponse(tokens, profile)
+  Ctrl --> FE: 200 OK + token + hồ sơ
+  FE -> FE: Lưu token và hồ sơ
+  FE -> FE: Thiết lập header Authorization
+  FE -> FE: Điều hướng đến "/dashboard"
+end
+
+note over Ctrl
+  Endpoint cho phép truy cập ẩn danh. Bộ lọc JWT
+  chỉ áp dụng cho các endpoint được bảo vệ.
+end note
+@enduml
