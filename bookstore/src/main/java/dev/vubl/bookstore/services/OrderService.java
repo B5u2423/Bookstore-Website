@@ -132,7 +132,7 @@ public class OrderService {
   public RevenueMetricsDTO getRevenueMetrics() {
     return orderRepo.getRevenueMetrics();
   }
-  
+
   public Page<Order> getOrdersByEmail(
       int page, int size, String sortBy, String order, String token) {
     ApplicationUser u = authService.readUserFromToken(token);

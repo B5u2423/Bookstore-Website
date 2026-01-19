@@ -40,6 +40,6 @@ public interface OrderRepo extends JpaRepository<Order, Integer> {
     FROM Order o
 """)
   RevenueMetricsDTO getRevenueMetrics();
-    
+
   Page<Order> findAllByEmail(String email, Pageable pageable);
 }
