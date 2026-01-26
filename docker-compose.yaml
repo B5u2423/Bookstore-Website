@@ -6,9 +6,9 @@ services:
     ports:
       - "54320:5432"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      TZ: Asia/Ho_Chi_Minh
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - TZ=GMT+7
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./seeds:/docker-entrypoint-initdb.d/seeds
