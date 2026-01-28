@@ -114,8 +114,9 @@ const formatCurrency = (value) =>
             <v-card-text>
 
               <div>
-                Tổng:
+                 Tổng:
                 <strong>{{ formatCurrency(revenue.totalRevenue) }}</strong>
+
               </div>
 
               <div>Hôm nay: {{ formatCurrency(revenue.revenueToday) }}</div>
@@ -142,8 +143,9 @@ const formatCurrency = (value) =>
             <v-card-text>
 
               <div>
-                Tổng:
+                 Tổng:
                 <strong>{{ orders.totalOrders }}</strong>
+
               </div>
 
               <div>Hôm nay: {{ orders.ordersToday }}</div>
@@ -170,8 +172,9 @@ const formatCurrency = (value) =>
             <v-card-text>
 
               <div>
-                Tổng:
+                 Tổng:
                 <strong>{{ users.totalUsers }}</strong>
+
               </div>
 
               <div>Khách hàng: {{ users.customersCount }}</div>
@@ -200,8 +203,9 @@ const formatCurrency = (value) =>
             <v-card-text>
 
               <div>
-                Tổng sách:
+                 Tổng sách:
                 <strong>{{ inventory.totalBooks }}</strong>
+
               </div>
 
               <div>Đang bán: {{ inventory.activeBooks }}</div>
@@ -236,56 +240,56 @@ const formatCurrency = (value) =>
                   cols="6"
                   md="3"
                 >
-                  Không danh mục: {{ catalog.booksWithoutCategories }}
+                   Không danh mục: {{ catalog.booksWithoutCategories }}
                 </v-col>
 
                 <v-col
                   cols="6"
                   md="3"
                 >
-                  Không bộ sưu tập: {{ catalog.booksWithoutCollections }}
+                   Không bộ sưu tập: {{ catalog.booksWithoutCollections }}
                 </v-col>
 
                 <v-col
                   cols="6"
                   md="3"
                 >
-                  Không tồn kho: {{ catalog.booksWithoutStock }}
+                   Không tồn kho: {{ catalog.booksWithoutStock }}
                 </v-col>
 
                 <v-col
                   cols="6"
                   md="3"
                 >
-                  Không ảnh bìa: {{ catalog.booksWithoutCoverImage }}
+                   Không ảnh bìa: {{ catalog.booksWithoutCoverImage }}
                 </v-col>
 
                 <v-col
                   cols="6"
                   md="3"
                 >
-                  Sách mới tháng này: {{ catalog.booksAddedThisMonth }}
+                   Sách mới tháng này: {{ catalog.booksAddedThisMonth }}
                 </v-col>
 
                 <v-col
                   cols="6"
                   md="3"
                 >
-                  Sách ngưng bán: {{ catalog.inactiveBooks }}
+                   Sách ngưng bán: {{ catalog.inactiveBooks }}
                 </v-col>
 
                 <v-col
                   cols="6"
                   md="3"
                 >
-                  Danh mục: {{ catalog.totalCategories }}
+                   Danh mục: {{ catalog.totalCategories }}
                 </v-col>
 
                 <v-col
                   cols="6"
                   md="3"
                 >
-                  Bộ sưu tập: {{ catalog.totalCollections }}
+                   Bộ sưu tập: {{ catalog.totalCollections }}
                 </v-col>
 
               </v-row>
