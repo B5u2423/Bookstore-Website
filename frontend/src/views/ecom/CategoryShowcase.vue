@@ -32,11 +32,29 @@ async function fetchCategoryName(slug) {
   }
 }
 
+async function fetchBookByCategory(category, { page: paramPage, size: paramSize }) {
+  try {
+    const res = await CategoryService.fetchBookByCategory(category, {
+      page: paramPage,
+      size: paramSize,
+    })
+    paginationLength.value = res.page
+    books.value = res.content
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 watchEffect(() => {
   const slug = route.params.slug
   if (slug) {
-    fetchCategoryName(slug)
-    fetchAllBooks({ page: 0, size: 24 })
+    if (slug === 'tat-ca') {
+      categoryName.value = 'Tất Cả Sách'
+      fetchAllBooks({ page: 0, size: 24 })
+    } else {
+      fetchCategoryName(slug)
+      fetchBookByCategory(slug, { page: 0, size: 24 })
+    }
   }
 })
 </script>
@@ -66,7 +84,11 @@ watchEffect(() => {
   <v-pagination
     :length="paginationLength.totalPages"
     v-model="currentPage"
-    @update:model-value="fetchAllBooks({ page: currentPage - 1, size: currentSize })"
+    @update:model-value="
+      route.params.slug === 'tat-ca'
+        ? fetchAllBooks({ page: currentPage - 1, size: currentSize })
+        : fetchBookByCategory(route.params.slug, { page: currentPage - 1, size: currentSize })
+    "
   ></v-pagination>
 
 </template>
