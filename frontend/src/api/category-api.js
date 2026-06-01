@@ -107,4 +107,14 @@ export const CategoryService = {
       throw error
     }
   },
+
+  async fetchBookByCategory(category, params = {}) {
+    try {
+      const res = await api.get(`/categories/${category}`, { params })
+      return res.data
+    } catch (error) {
+      console.error('Error fetching all books', error)
+      throw error
+    }
+  },
 }

@@ -7,7 +7,8 @@ const userInfoStore = useUserProfileStore()
 const tab = ref('Thông tin cá nhân')
 const items = [
   { tab: 'Thông tin', nameRoute: 'user-info' },
-  { tab: 'Mã giảm giá', nameRoute: 'vouchers' },
+  // remove this later
+  // { tab: 'Mã giảm giá', nameRoute: 'vouchers' },
   { tab: 'Lịch sử đơn hàng', nameRoute: 'history' },
 ]
 

@@ -109,8 +109,8 @@ const isShippingValid = computed(() => {
     !!shippingInfo.value.communeId &&
     !!shippingInfo.value.cityId &&
     !!shippingInfo.value.street &&
-    !!shippingInfo.value.phone &&
-    !!shipping.value
+    !!shippingInfo.value.phone
+    // TODO: look into this later for enable order condition
   )
 })
 
