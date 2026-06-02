@@ -3,7 +3,6 @@ import api, { adminApi } from './api-config'
 export const CollectionService = {
   async getAllCollections() {
     try {
-//      const res = await adminApi.get('/collections/get-all')
       const res = await adminApi.get('/collections/get-all', {
         params: params,
       })
