@@ -81,7 +81,7 @@ public class OrderService {
       itemsTotal = couponService.applyCoupon(shippingInfo.couponCode(), itemsTotal);
     }
 
-    BigDecimal orderTotal = itemsTotal.add(shippingInfo.shippingFee());
+    orderTotal = itemsTotal.add(shippingInfo.shippingFee());
     // order meta data
     order.setPaymentMethod(shippingInfo.paymentMethod());
     order.setOrderDate(LocalDate.now());
