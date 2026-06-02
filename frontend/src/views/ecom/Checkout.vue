@@ -1,6 +1,6 @@
 <script setup>
 import { useCartStore } from '@/stores/cart-store'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { PaymentService, OrderService, AddressInfoService } from '@/api/cart-api'
 import { useAuthStore } from '@/stores/auth-store'
 import { useUserProfileStore } from '@/stores/user-profile-store'
@@ -21,8 +21,7 @@ function bootStrapValues() {
     couponCode: '',
     email: userProfileStore.userInfo.email,
     phone: userProfileStore.userInfo.phone,
-    firstName: userProfileStore.userInfo.firstName,
-    lastName: userProfileStore.userInfo.lastName,
+    name: userProfileStore.userInfo.name,
     paymentMethod: 'COD',
     info: '',
   }
@@ -110,8 +109,8 @@ const isShippingValid = computed(() => {
     !!shippingInfo.value.communeId &&
     !!shippingInfo.value.cityId &&
     !!shippingInfo.value.street &&
-    !!shippingInfo.value.phone &&
-    !!shipping.value
+    !!shippingInfo.value.phone
+    // TODO: look into this later for enable order condition
   )
 })
 
@@ -119,8 +118,23 @@ const tmpOrderTotal = computed(() => {
   return shippingInfo.value.shippingFee + shippingInfo.value.itemsTotal
 })
 
+const selectedAddrId = ref(null)
+watch(selectedAddrId, async (id) => {
+  const item = userProfileStore.userInfo.addressList.find((addr) => addr.id === id)
+
+  if (!item) return
+
+  shippingInfo.value.cityId = item.cityId
+  shippingInfo.value.cityName = item.city
+  await fetchCommunes()
+  shippingInfo.value.communeId = item.communeId
+  shippingInfo.value.communeName = item.commune
+  shippingInfo.value.street = item.street
+})
+
 onMounted(() => {
   fetchCities()
+  userProfileStore.getUserInfo()
 })
 </script>
 
@@ -151,7 +165,7 @@ onMounted(() => {
 
             <div class="text-subtitle-1 text-high-emphasis">Email</div>
 
-            <!-- Fist name, last name and email get from user profile so no change -->
+            <!-- Full name and email get from user profile so no change -->
 
             <v-text-field
               variant="outlined"
@@ -161,21 +175,11 @@ onMounted(() => {
               :disabled="true"
             ></v-text-field>
 
-            <div class="text-subtitle-1 text-high-emphasis">Họ</div>
+            <div class="text-subtitle-1 text-high-emphasis">Họ và Tên</div>
 
             <v-text-field
               variant="outlined"
-              v-model="shippingInfo.lastName"
-              density="compact"
-              hide-details="true"
-              :disabled="true"
-            ></v-text-field>
-
-            <div class="text-subtitle-1 text-high-emphasis">Tên</div>
-
-            <v-text-field
-              variant="outlined"
-              v-model="shippingInfo.firstName"
+              v-model="shippingInfo.name"
               density="compact"
               hide-details="true"
               :disabled="true"
@@ -196,6 +200,31 @@ onMounted(() => {
                 userProfileStore.userInfo.phone !== '' && userProfileStore.userInfo.phone !== null
               "
             ></v-text-field>
+
+            <div class="text-subtitle-1 text-high-emphasis"> Sổ địa chỉ </div>
+
+            <v-select
+              density="compact"
+              hide-details="true"
+              :items="userProfileStore.userInfo.addressList"
+              item-value="id"
+              no-data-text="Không có địa chỉ"
+              variant="outlined"
+              v-model="selectedAddrId"
+            >
+
+              <template v-slot:item="{ props, item }">
+
+                <v-list-item
+                  v-bind="props"
+                  :title="item.raw.street + ', ' + item.raw.commune + ', ' + item.raw.city"
+                >
+
+                </v-list-item>
+
+              </template>
+
+            </v-select>
 
             <div class="text-subtitle-1 text-high-emphasis">
                Tỉnh thành
@@ -313,7 +342,7 @@ onMounted(() => {
 
               <v-radio
                 label="Thanh toán qua VNPAY (QR, Banking)"
-                value="ONLINE"
+                value="VNPAY"
               ></v-radio>
 
             </v-radio-group>

@@ -4,14 +4,15 @@ import { ref } from 'vue'
 import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
 import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 
+// TODO: Add google auth to the register page
+
 const authStore = useAuthStore()
 
 const visible = ref(false)
 const visibleRetype = ref(false)
 
 const formData = ref({
-  firstName: '',
-  lastName: '',
+  name: '',
   email: '',
   password: '',
   userType: 'CUSTOMER',
@@ -57,19 +58,12 @@ async function handleRegister() {
 
         <v-text-field
           class="my-3"
+          width="500"
           density="compact"
-          min-width="400"
-          label="Họ"
+          label="Họ và tên"
           variant="outlined"
-          v-model="formData.lastName"
-        ></v-text-field>
-
-        <v-text-field
-          class="my-3"
-          density="compact"
-          label="Tên"
-          variant="outlined"
-          v-model="formData.firstName"
+          :rules="[rules.required]"
+          v-model="formData.name"
         ></v-text-field>
 
         <v-text-field
@@ -118,18 +112,19 @@ async function handleRegister() {
 
         <p class="text-black"> Hoặc đăng nhập bằng</p>
 
-        <v-btn
+        <!-- <v-btn
           color="blue"
           class="ma-2 pa-2"
           prepend-icon="mdi-facebook"
         >
            Facebook
-        </v-btn>
+        </v-btn> -->
 
         <v-btn
           color="red"
           class="ma-2 pa-2"
           prepend-icon="mdi-google"
+          width="100%"
         >
            Google
         </v-btn>

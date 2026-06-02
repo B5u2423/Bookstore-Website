@@ -43,7 +43,8 @@ public class AuthenticationController {
   @PostMapping("/register")
   public ResponseEntity<RegistrationResponse> userRegister(
       @RequestBody @Valid RegistrationRequest request) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(authService.registerUser(request));
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(authService.registerUser(request, "", ""));
   }
 
   @PostMapping("/refresh")

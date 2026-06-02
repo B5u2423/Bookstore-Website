@@ -53,6 +53,11 @@ public class BookController {
     return ResponseEntity.ok().body(bookService.getBookById(id));
   }
 
+  @GetMapping("/search")
+  public List<BookResponseDTO> searchBook(@RequestParam String keyword) {
+    return bookService.searchBookV3(keyword);
+  }
+
   // ADMIN
   @PostMapping(path = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<BookResponseDTO> addNewBook(
@@ -62,10 +67,12 @@ public class BookController {
     return ResponseEntity.status(HttpStatus.OK).body(bookService.addNewBook(payload, image));
   }
 
-  @PutMapping("/update")
+  @PutMapping(path = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<BookResponseDTO> updateBookById(
-      @RequestBody BookResponseDTO payload, @RequestParam(value = "id") Integer id) {
-    return ResponseEntity.ok().body(bookService.updateBookById(payload, id));
+      @RequestPart("book") BookResponseDTO payload,
+      @RequestPart(value = "image", required = false) MultipartFile image,
+      @RequestParam(value = "id") Integer id) {
+    return ResponseEntity.ok().body(bookService.updateBookById(payload, image, id));
   }
 
   @DeleteMapping("/delete")

@@ -65,7 +65,7 @@ async function add() {
   try {
     candidates.value = await CategoryService.fetchAllCategories()
   } catch (error) {
-    console.log('Error fetching all candidates for new record')
+    console.error('Error fetching all candidates for new record')
   }
   dialog.value = true
 }

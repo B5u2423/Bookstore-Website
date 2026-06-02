@@ -69,9 +69,14 @@ public class CategoryController {
   public PagedModel<BookResponseDTO> getAllBooksWithCategory(
       @PathVariable(name = "category") String category,
       @RequestParam(value = "page", defaultValue = "0") int page,
-      @RequestParam(value = "size", defaultValue = "5") int size,
+      @RequestParam(value = "size", defaultValue = "24") int size,
       @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
       @RequestParam(value = "order", defaultValue = "asc") String order) {
     return new PagedModel<>(bookService.getBookByCategory(category, page, size, sortBy, order));
+  }
+
+  @GetMapping("/name")
+  public String getCategoryName(@RequestParam(value = "slug") String slug) {
+    return categoryService.getCategoryName(slug);
   }
 }

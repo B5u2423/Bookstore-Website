@@ -1,6 +1,8 @@
 package dev.vubl.bookstore.services;
 
 import dev.vubl.bookstore.dtos.*;
+import dev.vubl.bookstore.dtos.dashboard.UserMetricsDTO;
+import dev.vubl.bookstore.dtos.*;
 import dev.vubl.bookstore.entities.ApplicationUser;
 import dev.vubl.bookstore.entities.CustomerAddressInfo;
 import dev.vubl.bookstore.entities.UserType;
@@ -90,8 +92,7 @@ public class ApplicationUserService implements UserDetailsService {
   }
 
   public String updateUserProfileInfo(ApplicationUser user, UpdateProfileRequest payload) {
-    user.setFirstName(payload.firstName());
-    user.setLastName(payload.lastName());
+    user.setName(payload.name());
     user.setPhoneNumber(payload.phoneNumber());
     user.setEmail(payload.email());
     user.setCreateTimeStamp(Instant.now());
@@ -108,7 +109,9 @@ public class ApplicationUserService implements UserDetailsService {
   public CustomerAddressInfo addAddressInfo(ApplicationUser user, AddressDTO payload) {
     CustomerAddressInfo addressInfo =
         CustomerAddressInfo.builder()
+            .cityId(payload.cityId())
             .city(payload.city())
+            .communeId(payload.communeId())
             .commune(payload.commune())
             .street(payload.street())
             .customer(user)
@@ -125,7 +128,9 @@ public class ApplicationUserService implements UserDetailsService {
 
   public CustomerAddressInfo updateAddressInfo(Integer addressId, AddressDTO payload) {
     CustomerAddressInfo address = customerAddressInfoRepo.findById(addressId).orElseThrow();
+    address.setCityId(payload.cityId());
     address.setCity(payload.city());
+    address.setCommuneId(payload.communeId());
     address.setCommune(payload.commune());
     address.setStreet(payload.street());
     try {
@@ -139,7 +144,17 @@ public class ApplicationUserService implements UserDetailsService {
     if (addressId == null) {
       throw new IllegalArgumentException("Address ID should not be null");
     }
-    user.getAddressList().removeIf(item -> item.getId().equals(addressId));
+    CustomerAddressInfo addr =
+        customerAddressInfoRepo
+            .findById(addressId)
+            .orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        "Address with id: %d does not exist".formatted(addressId)));
+    if (!user.getAddressList().contains(addr)) {
+      throw new IllegalArgumentException("This user does no correlate with this address");
+    }
+    user.removeAddress(addr);
     try {
       userRepo.save(user);
       return "Address with id %d removed".formatted(addressId);
@@ -152,15 +167,16 @@ public class ApplicationUserService implements UserDetailsService {
     return AccountDetailDTO.builder()
         .email(user.getEmail())
         .phoneNumber(user.getPhoneNumber())
-        .firstName(user.getFirstName())
-        .lastName(user.getLastName())
+        .name(user.getName())
         .addressList(
             user.getAddressList().stream()
                 .map(
                     item ->
                         AddressDTO.builder()
                             .id(item.getId())
+                            .cityId(item.getCityId())
                             .city(item.getCity())
+                            .communeId(item.getCommuneId())
                             .commune(item.getCommune())
                             .street(item.getStreet())
                             .build())
@@ -191,7 +207,15 @@ public class ApplicationUserService implements UserDetailsService {
     }
   }
 
+  public boolean isUserExistByEmail(String email) {
+    return userRepo.findByEmail(email).isPresent();
+  }
+
   private ApplicationUser readUserByEmailOrThrowException(String email) {
     return userRepo.findByEmail(email).orElseThrow(UserDoesNotExistException::new);
+  }
+
+  public UserMetricsDTO getUserMetrics() {
+    return userRepo.getUserMetrics();
   }
 }

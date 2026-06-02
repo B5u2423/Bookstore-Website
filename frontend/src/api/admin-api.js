@@ -17,4 +17,12 @@ export const AdminService = {
       console.error('Error fetching staff')
     }
   },
+  async getDashboardMetrics() {
+    try {
+      const res = await adminApi.get('/admin/get-metrics')
+      return res.data
+    } catch (error) {
+      console.error('Error fetching dashboard metrics')
+    }
+  },
 }

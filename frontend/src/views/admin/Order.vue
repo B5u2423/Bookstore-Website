@@ -11,8 +11,7 @@ function createNew() {
     id: null,
     email: '',
     phoneNumber: '',
-    firstName: '',
-    lastName: '',
+    name: '',
     note: '',
     orderStatus: '',
     items: [],
@@ -50,14 +49,12 @@ const dialog = ref(false)
 
 function showMoreDetails(id) {
   const found = serverItems.value.find((order) => order.id === id)
-  console.log(found)
 
   detailDialog.value = {
     id: found.id,
     email: found.email,
     phoneNumber: found.phoneNumber,
-    firstName: found.firstName,
-    lastName: found.lastName,
+    name: found.name,
     note: found.note,
     orderStatus: found.orderStatus,
     items: found.items,
@@ -156,7 +153,7 @@ async function loadItems({ page, itemsPerPage }) {
 
     <template v-slot:item.fullname="{ item }">
 
-      <div class="d-flex ga-2 justify-start"> {{ item.lastName }} {{ item.firstName }} </div>
+      <div class="d-flex ga-2 justify-start"> {{ item.name }} </div>
 
     </template>
 
@@ -216,7 +213,7 @@ async function loadItems({ page, itemsPerPage }) {
             md="8"
             class="border-md pa-2"
           >
-             {{ detailDialog.lastName + ' ' + detailDialog.firstName }}
+             {{ detailDialog.name }}
           </v-col>
 
           <v-col

@@ -59,6 +59,17 @@ export const OrderService = {
       console.error('Error fetch paginated orders', error)
     }
   },
+
+  async getAllOrdersByEmail(params = {}) {
+    try {
+      const res = await customerApi.get('/orders/user', {
+        params: params,
+      })
+      return res.data
+    } catch (error) {
+      console.error('Error get all orders by email', error)
+    }
+  },
 }
 
 export const AddressInfoService = {

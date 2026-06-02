@@ -1,0 +1,62 @@
+@startuml seq_checkout
+skinparam ArrowColor #4a4a4a
+skinparam ParticipantBorderColor #4a4a4a
+skinparam ParticipantBackgroundColor #f9f9f9
+skinparam sequenceArrowThickness 1
+skinparam lifelineStrategy solid
+skinparam shadowing false
+
+title Luồng Thanh Toán (Checkout)
+
+actor "Khách hàng" as User
+participant "Ứng dụng Vue\n(Màn hình Thanh toán)" as FE
+participant "OrderController\n(/api/v1/orders/create-order)" as OrderCtrl
+participant "PaymentController\n(/api/v1/payment/create-payment)" as PayCtrl
+participant "OrderService" as OrderSvc
+participant "CartService" as CartSvc
+participant "VnPayService" as VnPaySvc
+participant "OrderRepository" as OrderRepo
+database "PostgreSQL" as PG
+participant "Cổng VNPAY" as VNPAY
+
+User -> FE: Xem giỏ hàng, nhập địa chỉ, chọn thanh toán
+
+== Tạo đơn hàng ==
+FE -> OrderCtrl: POST /api/v1/orders/create-order\nAuthorization: Bearer <token>
+OrderCtrl -> OrderSvc: Tạo đơn hàng 
+OrderSvc -> CartSvc: Lấy thông tin đơn hàng
+CartSvc -> PG: SELECT giỏ hàng + sản phẩm
+PG --> CartSvc: dữ liệu giỏ hàng
+CartSvc --> OrderSvc: giỏ hàng hiện tại
+OrderSvc -> OrderSvc: Tính tổng, phí, áp mã giảm giá?
+OrderSvc -> OrderRepo: Lưu đơn hàng + item + địa chỉ
+OrderRepo -> PG: INSERT orders, order_items
+PG --> OrderRepo: ok (id)
+OrderRepo --> OrderSvc: đơn hàng đã lưu
+OrderSvc --> OrderCtrl: CreatedOrder(orderId, total)
+OrderCtrl --> FE: 201 Đã tạo + orderId + tổng tiền
+
+== Tạo thông tin thanh toán VNPAY ==
+FE -> PayCtrl: POST /api/v1/payment/create-payment\nAuthorization: Bearer <token>
+PayCtrl -> VnPaySvc: Tạo thông tin thanh toán (tổng số tiền, mã đơn)
+VnPaySvc -> PG: Lưu giao dịch (pending)
+VnPaySvc --> PayCtrl: Trả về link VNPAY paymentUrl
+PayCtrl --> FE: 200 OK + paymentUrl
+FE -> VNPAY: Chuyển hướng sang VNPAY (redirect)
+
+== Callback từ VNPAY ==
+VNPAY -> PayCtrl: GET /payment/callback?params
+PayCtrl -> VnPaySvc: verifyCallback(params)
+VnPaySvc -> PG: Cập nhật trạng thái giao dịch (success/fail)
+alt Thanh toán thành công
+  VnPaySvc -> OrderSvc: Cập nhật trạng thái PAID
+  OrderSvc -> PG: UPDATE trạng thái đơn hàng = PAID
+  PayCtrl --> FE: 302 Redirect về trang thành công
+  FE -> FE: Điều hướng "/orders" + hiển thị thành công
+else Thanh toán thất bại
+  PayCtrl --> FE: 302 Redirect về trang thất bại
+  FE -> FE: Hiển thị lỗi thanh toán
+end
+
+FE --> User
+@enduml

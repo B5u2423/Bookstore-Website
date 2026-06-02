@@ -132,4 +132,14 @@ export const BookService = {
       throw error
     }
   },
+
+  async searchBook(params = {}) {
+    try {
+      const res = await api.get('/books/search', { params })
+      return res.data
+    } catch (error) {
+      console.error('Error searching book', error)
+      throw error
+    }
+  },
 }

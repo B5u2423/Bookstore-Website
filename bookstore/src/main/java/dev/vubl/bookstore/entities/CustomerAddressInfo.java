@@ -13,9 +13,14 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomerAddressInfo extends BaseEntity {
-  // new VN address structure
+  @Column(name = "city_id")
+  private Integer cityId;
+
   @Column(name = "city")
   private String city; // tỉnh/thành
+
+  @Column(name = "commune_id")
+  private Integer communeId; // tỉnh/thành
 
   @Column(name = "commune")
   private String commune; // xã/phường

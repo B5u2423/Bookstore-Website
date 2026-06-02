@@ -6,8 +6,7 @@ import lombok.Builder;
 
 @Builder
 public record ShippingInfoDTO(
-    String firstName,
-    String lastName,
+    String name,
     String email,
     String phone,
     PaymentMethod paymentMethod,

@@ -30,7 +30,24 @@ const props = defineProps({
 
     <v-card-text>
 
-      <h3 class="mb-3"> {{ book.title }} </h3>
+      <v-tooltip
+        :text="book.title"
+        target="cursor"
+        location="bottom"
+      >
+
+        <template v-slot:activator="{ props }">
+
+          <h3
+            v-bind="props"
+            class="mb-3 text-truncate"
+          >
+             {{ book.title }}
+          </h3>
+
+        </template>
+
+      </v-tooltip>
 
       <div> {{ book.author }} </div>
 

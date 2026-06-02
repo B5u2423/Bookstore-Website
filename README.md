@@ -8,3 +8,19 @@ On Windows, open `C:\Windows\System32\drivers\etc\host` file, add the following 
 127.0.0.1 localhost
 127.0.0.1 admin.localhost
 ```
+
+## References
+
+- https://vuasachcu.com/
+- https://www.vinabook.com/
+- https://gacxepbookstore.vn/
+- https://www.fahasa.com/
+
+## TODO
+
+- [ ] show coupon codes
+- [ ] save coupons
+- [ ] apply address
+- [ ] collection view
+- [ ] disable on out of stock
+- build jar and push to vps

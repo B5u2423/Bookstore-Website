@@ -1,6 +1,8 @@
 package dev.vubl.bookstore.services;
 
 import dev.vubl.bookstore.dtos.BookResponseDTO;
+import dev.vubl.bookstore.dtos.dashboard.CatalogHealthCountDTO;
+import dev.vubl.bookstore.dtos.dashboard.CatalogHealthDTO;
 import dev.vubl.bookstore.entities.Book;
 import dev.vubl.bookstore.entities.Category;
 import dev.vubl.bookstore.exceptions.BookDoesNotExistException;
@@ -10,6 +12,9 @@ import dev.vubl.bookstore.repos.BookRepo;
 import dev.vubl.bookstore.repos.CategoryRepo;
 import dev.vubl.bookstore.repos.CollectionRepo;
 import dev.vubl.bookstore.utils.SlugUtils;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.time.Instant;
@@ -30,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @Slf4j
 public class BookService {
+  @PersistenceContext private final EntityManager em;
   private final BookRepo bookRepo;
   private final CategoryRepo categoryRepo;
   private final CloudinaryService cloudinaryService;
@@ -81,7 +87,8 @@ public class BookService {
     }
   }
 
-  public BookResponseDTO updateBookById(BookResponseDTO bookResponseDTO, Integer id) {
+  public BookResponseDTO updateBookById(
+      BookResponseDTO bookResponseDTO, MultipartFile image, Integer id) {
     try {
       Book b =
           bookRepo
@@ -99,7 +106,12 @@ public class BookService {
       b.setPageCount(bookResponseDTO.pageCount());
       b.setIsbn(bookResponseDTO.isbn());
       b.setAuthor(bookResponseDTO.author());
-      b.setImageUrl(bookResponseDTO.imageUrl());
+      if (image != null) {
+        String returnedUrl = cloudinaryService.uploadImage(image);
+        b.setImageUrl(returnedUrl);
+      } else if (!b.getImageUrl().equals(bookResponseDTO.imageUrl())) {
+        b.setImageUrl(bookResponseDTO.imageUrl());
+      }
       b.setInStock(bookResponseDTO.inStock());
       b.setUrlSlug(SlugUtils.convertStringToSlug(bookResponseDTO.title()));
       b.setPrice(bookResponseDTO.price());
@@ -124,6 +136,8 @@ public class BookService {
 
     } catch (DataIntegrityViolationException e) {
       throw new DataIntegrityViolationException("Error adding or updating new book!", e);
+    } catch (IOException e) {
+      throw new RuntimeException("Error uploading image when updating book");
     }
   }
 
@@ -151,6 +165,50 @@ public class BookService {
     Pageable pageable = PageRequest.of(page, size, sort);
     Page<Book> bookPage = bookRepo.findAllByCategoryIn(categories, pageable);
     return bookPage.map(this::mapToBookResponseDTO);
+  }
+
+  @Deprecated
+  public List<BookResponseDTO> searchBookV2(String keyword) {
+    String[] tokens = keyword.toLowerCase().split("\\s+");
+
+    StringBuilder jpql = new StringBuilder("SELECT b FROM Book b WHERE 1=1");
+
+    for (int i = 0; i < tokens.length; i++) {
+      jpql.append(
+          """
+        AND (
+          LOWER(b.title) LIKE :t%1$d
+          OR LOWER(b.urlSlug) LIKE :t%1$d
+        )
+      """
+              .formatted(i));
+    }
+
+    TypedQuery<Book> query = em.createQuery(jpql.toString(), Book.class);
+
+    for (int i = 0; i < tokens.length; i++) {
+      query.setParameter("t" + i, "%" + tokens[i] + "%");
+    }
+    return query.getResultList().stream().map(this::mapToBookResponseDTO).toList();
+  }
+
+  public List<BookResponseDTO> searchBookV3(String keyword) {
+    return bookRepo.searchBookV3(keyword).stream().map(this::mapToBookResponseDTO).toList();
+  }
+
+  public CatalogHealthDTO getCatalogHealthMetrics() {
+    CatalogHealthCountDTO c = bookRepo.getCatalogHealthCounts();
+    return CatalogHealthDTO.builder()
+        .booksWithoutCategories(c.booksWithoutCategories())
+        .booksWithoutCollections(c.booksWithoutCollections())
+        .booksWithoutStock(c.booksWithoutStock())
+        .booksWithoutCoverImage(c.booksWithoutCoverImage())
+        .booksAddedThisMonth(c.booksAddedThisMonth())
+        .inactiveBooks(c.inactiveBooks())
+        .totalCategories(c.totalCategories())
+        .totalCollections(c.totalCollections())
+        .booksPerCategory(c.booksPerCategory())
+        .build();
   }
 
   private boolean isIsbnNotUnique(String isbn) {
