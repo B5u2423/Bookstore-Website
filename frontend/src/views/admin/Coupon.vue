@@ -130,6 +130,23 @@ async function save() {
     }
   }
 }
+
+async function remove() {
+  isDelLoading.value = true
+  try {
+    const res = await CouponService.deleteCoupon(itemId.value, adminAuthStore.accessToken)
+    // update on frontend, just for immediate view
+    const index = serverItems.value.findIndex((coupon) => coupon.id === itemId.value)
+    serverItems.value.splice(index, 1)
+    totalItems.value--
+  } catch (error) {
+    console.error(`Error deleting coupon with id ${id}`, error)
+  } finally {
+    isDelLoading.value = false
+    confirmationDialog.value = false
+  }
+}
+
 onMounted(() => {
   loadItems()
 })
@@ -363,7 +380,7 @@ onMounted(() => {
             <v-date-input
               clearable
               variant="outlined"
-              :v-model="formModel.validFrom"
+              v-model="formModel.validFrom"
             ></v-date-input>
 
           </v-col>
@@ -382,10 +399,8 @@ onMounted(() => {
             <v-date-input
               clearable
               variant="outlined"
-              :v-model="formModel.validUntil"
+              v-model="formModel.validUntil"
             ></v-date-input>
-
-            <p>{{ formModel.value.validUntil }}</p>
 
           </v-col>
 
@@ -440,7 +455,7 @@ onMounted(() => {
           variant="elevated"
           color="green-darken-1"
           :loading="isDelLoading"
-          @click="remove()"
+          @click="remove"
         >
            Đồng ý
         </v-btn>
