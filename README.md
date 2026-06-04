@@ -18,9 +18,5 @@ On Windows, open `C:\Windows\System32\drivers\etc\host` file, add the following 
 
 ## TODO
 
-- [ ] show coupon codes
-- [ ] save coupons
-- [ ] apply address
 - [ ] collection view
-- [ ] disable on out of stock
-- build jar and push to vps
+- [ ] build jar and push to vps
