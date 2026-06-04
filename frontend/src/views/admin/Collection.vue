@@ -90,6 +90,8 @@ async function save() {
       serverItems.value[index] = formModel.value
     } catch (error) {
       console.error('Error editing collection')
+    } finally {
+      dialog.value = false
     }
   } else {
     try {
@@ -100,6 +102,8 @@ async function save() {
       )
     } catch (error) {
       console.error('Error adding new collection')
+    } finally {
+      dialog.value = false
     }
   }
 }
@@ -216,8 +220,6 @@ onMounted(() => {
 
     <template v-slot:item.actions="{ item }">
 
-      <div class="d-flex ga-2 justify-center">
-
         <v-icon
           color="medium-emphasis"
           icon="mdi-pencil"
@@ -231,8 +233,6 @@ onMounted(() => {
           size="small"
           @click="confirm(item.id)"
         ></v-icon>
-
-      </div>
 
     </template>
 

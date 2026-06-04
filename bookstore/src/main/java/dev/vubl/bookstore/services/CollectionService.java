@@ -2,6 +2,7 @@ package dev.vubl.bookstore.services;
 
 import dev.vubl.bookstore.dtos.CollectionDTO;
 import dev.vubl.bookstore.entities.Collection;
+import dev.vubl.bookstore.repos.BookRepo;
 import dev.vubl.bookstore.repos.CollectionRepo;
 import dev.vubl.bookstore.utils.SlugUtils;
 import jakarta.transaction.Transactional;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CollectionService {
   private final CollectionRepo collectionRepo;
+  private final BookRepo bookRepo;
 
   public List<Collection> getAllCollections() {
     return collectionRepo.findAll();
@@ -59,5 +61,6 @@ public class CollectionService {
 
   public void deleteCollectionById(Integer id) {
     collectionRepo.deleteById(id);
+    bookRepo.nullifyCollectionReference(id);
   }
 }
