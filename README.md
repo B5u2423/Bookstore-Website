@@ -20,3 +20,7 @@ On Windows, open `C:\Windows\System32\drivers\etc\host` file, add the following 
 
 - [ ] collection view
 - [ ] build jar and push to vps
+
+## Local LaTeX Compile
+
+https://www.youtube.com/watch?v=Mty0vHb0knI
