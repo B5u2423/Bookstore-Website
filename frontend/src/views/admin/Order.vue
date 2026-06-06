@@ -416,7 +416,7 @@ async function loadItems({ page, itemsPerPage }) {
             class="border-md pa-2"
           >
 
-            <v-col v-for="item in detailDialog.items">
+            <!-- <v-col v-for="item in detailDialog.items">
 
               <v-card variant="flat">
 
@@ -432,7 +432,7 @@ async function loadItems({ page, itemsPerPage }) {
 
               </v-card>
 
-            </v-col>
+            </v-col> -->
 
           </v-col>
 
