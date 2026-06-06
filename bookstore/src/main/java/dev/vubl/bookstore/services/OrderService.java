@@ -53,7 +53,6 @@ public class OrderService {
       OrderItem oi =
           OrderItem.builder()
               .order(order)
-              .book(b)
               .titleAtPurchase(b.getTitle())
               .isbn(b.getIsbn())
               .quantity(ci.getQuantity())
