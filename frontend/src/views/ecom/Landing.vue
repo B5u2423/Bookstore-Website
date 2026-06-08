@@ -47,6 +47,18 @@ onMounted(() => {
         route-to="login"
       />
 
+      <BookSlideGroup
+        group-header="Sách mới về"
+        :books="newbooks.slice(0, 10)"
+        route-to="login"
+      />
+
+      <BookSlideGroup
+        group-header="Sách mới về"
+        :books="newbooks.slice(0, 10)"
+        route-to="login"
+      />
+
     </div>
 
   </v-sheet>
