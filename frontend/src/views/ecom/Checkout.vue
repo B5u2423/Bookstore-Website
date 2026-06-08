@@ -100,7 +100,7 @@ async function confirmCheckout() {
 }
 
 const isPhoneValid = computed(() => {
-  return /^\d{10,11}$/.test(shippingInfo.value.phone)
+  return /^\d+$/.test(shippingInfo.value.phone)
 })
 
 const isShippingValid = computed(() => {
