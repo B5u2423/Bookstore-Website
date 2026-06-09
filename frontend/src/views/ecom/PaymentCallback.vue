@@ -31,23 +31,18 @@ const responseCodeMessage = computed(() => {
 async function updateStatus() {
   try {
     const isCancelled = responseCode.value !== '00'
-    const res = await OrderService.updateStatus(
-      {
-        vnpTxnRef: vnpTxnRef.value,
-        isCancelled: isCancelled
-      }
-    )
+    const res = await OrderService.updateStatus({
+      vnpTxnRef: vnpTxnRef.value,
+      isCancelled: isCancelled,
+    })
   } catch (error) {
     console.error('Error update order status', error)
   }
 }
 
-onMounted(
-  async () => {
-    await updateStatus()
-  }
-)
-
+onMounted(async () => {
+  await updateStatus()
+})
 </script>
 
 <template>
