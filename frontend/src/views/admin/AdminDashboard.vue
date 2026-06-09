@@ -1,6 +1,9 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { AdminService } from '@/api/admin-api'
+import BarChart from '@/components/charts/BarChart.vue'
+import DoughnutChart from '@/components/charts/DoughnutChart.vue'
+import LineChart from '@/components/charts/LineChart.vue'
 
 const metrics = ref(null)
 const loading = ref(true)
@@ -84,6 +87,29 @@ const orders = computed(() => metrics.value?.orderMetricsDTO ?? defaultOrders)
 
 const formatCurrency = (value) =>
   value ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value) : '0'
+
+const chartData = {
+  labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+  datasets: [
+    {
+      label: 'Revenue',
+      data: [1200, 1900, 1500, 2400],
+    },
+  ],
+}
+
+const chartOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'top',
+    },
+    title: {
+      display: true,
+      text: 'Monthly Revenue',
+    },
+  },
+}
 </script>
 
 <template>
@@ -302,7 +328,7 @@ const formatCurrency = (value) =>
 
       </v-row>
 
-      <!-- ===== ENGAGEMENT ===== -->
+      <!-- ===== ENGAGEMENT =====
 
       <v-row>
 
@@ -385,9 +411,143 @@ const formatCurrency = (value) =>
 
         </v-col>
 
+      </v-row> -->
+
+      <v-row>
+
+        <v-col cols="6">
+
+          <v-card>
+
+            <v-card-title>Doughnut Chart</v-card-title>
+
+            <v-card-text>
+
+              <div style="height: 400px">
+
+                <doughnut-chart
+                  :data="chartData"
+                  :options="chartOptions"
+                />
+
+              </div>
+
+            </v-card-text>
+
+          </v-card>
+
+        </v-col>
+
+        <v-col cols="6">
+
+          <v-card>
+
+            <v-card-title>Doughnut Chart</v-card-title>
+
+            <v-card-text>
+
+              <div style="height: 400px">
+
+                <doughnut-chart
+                  :data="chartData"
+                  :options="chartOptions"
+                />
+
+              </div>
+
+            </v-card-text>
+
+          </v-card>
+
+        </v-col>
+
       </v-row>
 
     </template>
+
+    <v-card>
+
+      <v-card-title>Bar Chart</v-card-title>
+
+      <v-card-text>
+
+        <div style="height: 400px">
+
+          <bar-chart
+            :data="chartData"
+            :options="chartOptions"
+          />
+
+        </div>
+
+      </v-card-text>
+
+    </v-card>
+
+    <v-card>
+
+      <v-card-title>Line Chart</v-card-title>
+
+      <v-card-text>
+
+        <div style="height: 400px">
+
+          <line-chart
+            :data="chartData"
+            :options="chartOptions"
+          />
+
+        </div>
+
+      </v-card-text>
+
+    </v-card>
+
+    <v-card>
+
+      <v-card-title>Statistics</v-card-title>
+
+      <v-card-text>
+
+        <v-row>
+
+          <v-col
+            cols="12"
+            md="6"
+          >
+
+            <div style="height: 300px">
+
+              <DoughnutChart
+                :data="chartData"
+                :options="chartOptions"
+              />
+
+            </div>
+
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="6"
+          >
+
+            <div style="height: 300px">
+
+              <BarChart
+                :data="chartData"
+                :options="chartOptions"
+              />
+
+            </div>
+
+          </v-col>
+
+        </v-row>
+
+      </v-card-text>
+
+    </v-card>
 
   </v-container>
 
