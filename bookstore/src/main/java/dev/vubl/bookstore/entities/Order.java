@@ -61,4 +61,7 @@ public class Order extends BaseEntity {
 
   @Column(name = "street")
   private String street;
+
+  @Column(name = "vnp_txnref")
+  private String vnpTxnRef;
 }

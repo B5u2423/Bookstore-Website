@@ -1,30 +1,53 @@
 <script setup>
 import { useRoute } from 'vue-router'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { formatPriceVNLocale } from '@/utils/utils'
+import { OrderService } from '@/api/cart-api'
 
 const route = useRoute()
 
 const responseCode = ref(route.query.vnp_ResponseCode)
+const vnpTxnRef = ref(route.query.vnp_TxnRef)
 const responseCodeMessage = computed(() => {
   const responseCodes = {
     '07': 'Trừ tiền thành công. Giao dịch bị nghi ngờ (liên quan tới lừa đảo, giao dịch bất thường).',
     '09': 'Thẻ/Tài khoản của khách hàng chưa đăng ký dịch vụ InternetBanking tại ngân hàng.',
-    10: 'Khách hàng xác thực thông tin thẻ/tài khoản không đúng quá 3 lần.',
-    11: 'Đã hết hạn chờ thanh toán. Xin quý khách vui lòng thực hiện lại giao dịch.',
-    12: 'Thẻ/Tài khoản của khách hàng bị khóa.',
-    13: 'Quý khách nhập sai mật khẩu xác thực giao dịch (OTP). Xin quý khách vui lòng thực hiện lại giao dịch.',
-    24: 'Khách hàng hủy giao dịch.',
-    51: 'Tài khoản của quý khách không đủ số dư để thực hiện giao dịch.',
-    65: 'Tài khoản của Quý khách đã vượt quá hạn mức giao dịch trong ngày.',
-    75: 'Ngân hàng thanh toán đang bảo trì.',
-    79: 'KH nhập sai mật khẩu thanh toán quá số lần quy định. Xin quý khách vui lòng thực hiện lại giao dịch.',
-    99: 'Lỗi không xác định.',
+    '10': 'Khách hàng xác thực thông tin thẻ/tài khoản không đúng quá 3 lần.',
+    '11': 'Đã hết hạn chờ thanh toán. Xin quý khách vui lòng thực hiện lại giao dịch.',
+    '12': 'Thẻ/Tài khoản của khách hàng bị khóa.',
+    '13': 'Quý khách nhập sai mật khẩu xác thực giao dịch (OTP). Xin quý khách vui lòng thực hiện lại giao dịch.',
+    '24': 'Khách hàng hủy giao dịch.',
+    '51': 'Tài khoản của quý khách không đủ số dư để thực hiện giao dịch.',
+    '65': 'Tài khoản của Quý khách đã vượt quá hạn mức giao dịch trong ngày.',
+    '75': 'Ngân hàng thanh toán đang bảo trì.',
+    '79': 'KH nhập sai mật khẩu thanh toán quá số lần quy định. Xin quý khách vui lòng thực hiện lại giao dịch.',
+    '99': 'Lỗi không xác định.',
   }
 
   // Return the corresponding message from the dictionary
-  return responseCodes[this.responseCode] || null // Return null if code not found
+  return responseCodes[String(responseCode.value)] || 'Không xác định'
 })
+
+async function updateStatus() {
+  try {
+    const isCancelled = responseCode.value !== '00'
+    const res = await OrderService.updateStatus(
+      {
+        vnpTxnRef: vnpTxnRef.value,
+        isCancelled: isCancelled
+      }
+    )
+  } catch (error) {
+    console.error('Error update order status', error)
+  }
+}
+
+onMounted(
+  async () => {
+    await updateStatus()
+  }
+)
+
 </script>
 
 <template>
@@ -87,7 +110,7 @@ const responseCodeMessage = computed(() => {
                     <v-list-item-title>Tổng số tiền:</v-list-item-title>
 
                     <v-list-item-subtitle>
-                       {{ formatPriceVNLocale(route.query.vnp_Amount) }} VND
+                       {{ formatPriceVNLocale(route.query.vnp_Amount / 100) }} VND
                     </v-list-item-subtitle>
 
                   </v-list-item>

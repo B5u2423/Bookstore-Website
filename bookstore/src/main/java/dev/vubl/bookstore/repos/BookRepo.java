@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -54,4 +55,8 @@ public interface BookRepo extends JpaRepository<Book, Integer> {
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @Query("SELECT b FROM Book b WHERE b.id = :id")
   Optional<Book> findByIdForUpdate(@Param("id") Integer id);
+
+  @Modifying
+  @Query("UPDATE Book b SET b.collection = null WHERE b.collection.id = :collectionId")
+  void nullifyCollectionReference(@Param("collectionId") Integer collectionId);
 }

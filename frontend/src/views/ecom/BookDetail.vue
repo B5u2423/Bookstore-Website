@@ -2,13 +2,18 @@
 import { BookService } from '@/api/book-api'
 import { useCartStore } from '@/stores/cart-store'
 import { formatPriceVNLocale } from '@/utils/utils'
-import { onMounted, ref } from 'vue'
+import { onMounted, computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth-store.js'
 import { CartService } from '@/api/cart-api.js'
 
 const cartStore = useCartStore()
 const authStore = useAuthStore()
+
+// button text
+const isOutOfStock = computed(() => book.value.inStock < 1)
+
+const buttonText = computed(() => (isOutOfStock.value ? 'Hết hàng' : 'Thêm vào giỏ hàng'))
 
 const route = useRoute()
 const quantity = ref(1)
@@ -188,9 +193,10 @@ function handleAddToCart() {
 
                 <v-btn
                   class="bg-red"
+                  :disabled="isOutOfStock"
                   @click="handleAddToCart"
                 >
-                   Thêm vào giỏ hàng
+                   {{ buttonText }}
                 </v-btn>
 
               </v-card-actions>

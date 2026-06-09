@@ -40,6 +40,15 @@ export const PaymentService = {
 }
 
 export const OrderService = {
+  async updateStatus(body, token) {
+    try {
+      const res = await customerApi.post('/orders/update-status', body)
+      return res.data
+    } catch (error) {
+      console.error('Error making order', error)
+    }
+  },
+
   async createOrder(body, token) {
     try {
       const res = await customerApi.post('/orders/create-order', body)

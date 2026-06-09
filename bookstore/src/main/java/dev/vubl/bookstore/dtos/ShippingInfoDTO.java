@@ -19,4 +19,5 @@ public record ShippingInfoDTO(
     String communeName,
     String street,
     String info,
-    String couponCode) {}
+    String couponCode,
+    String vnpTxnRef) {}
