@@ -24,6 +24,7 @@ function bootStrapValues() {
     name: userProfileStore.userInfo.name,
     paymentMethod: 'COD',
     info: '',
+    vnpTxnRef: '',
   }
 }
 
@@ -72,10 +73,12 @@ async function confirmCheckout() {
     // update total order value
     shippingInfo.value.orderTotal = tmpOrderTotal
 
-    // create order in db
-    const orderResponse = await OrderService.createOrder(shippingInfo.value, authStore.accessToken)
-
     if (shippingInfo.value.paymentMethod === 'COD') {
+      // create order in db
+      const orderResponse = await OrderService.createOrder(
+        shippingInfo.value,
+        authStore.accessToken,
+      )
       cartStore.reset()
       router.push('/')
     } else {
@@ -85,6 +88,14 @@ async function confirmCheckout() {
           amount: cartStore.totalAmount,
           info: shippingInfo.value.info,
         },
+        authStore.accessToken,
+      )
+      // parse transaction reference 
+      const urlObj = new URL(res.paymentUrl);
+      shippingInfo.value.vnpTxnRef = urlObj.searchParams.get('vnp_TxnRef');
+      // create order in db
+      const orderResponse = await OrderService.createOrder(
+        shippingInfo.value,
         authStore.accessToken,
       )
       // redirect
