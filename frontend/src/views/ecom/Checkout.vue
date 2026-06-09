@@ -34,9 +34,7 @@ const shipping = ref('')
 
 const rules = {
   required: (v) => !!v || 'Không được bỏ trống trường',
-  phone: (v) =>
-    /^\d+$/.test(v) ||
-    'Số điện thoại không được chứa chữ cái hay kí tự',
+  phone: (v) => /^\d+$/.test(v) || 'Số điện thoại không được chứa chữ cái hay kí tự',
 }
 // select box data for input shipping info
 const cities = ref([])

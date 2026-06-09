@@ -220,19 +220,19 @@ onMounted(() => {
 
     <template v-slot:item.actions="{ item }">
 
-        <v-icon
-          color="medium-emphasis"
-          icon="mdi-pencil"
-          size="small"
-          @click="edit(item.id)"
-        ></v-icon>
+      <v-icon
+        color="medium-emphasis"
+        icon="mdi-pencil"
+        size="small"
+        @click="edit(item.id)"
+      ></v-icon>
 
-        <v-icon
-          color="medium-emphasis"
-          icon="mdi-delete"
-          size="small"
-          @click="confirm(item.id)"
-        ></v-icon>
+      <v-icon
+        color="medium-emphasis"
+        icon="mdi-delete"
+        size="small"
+        @click="confirm(item.id)"
+      ></v-icon>
 
     </template>
 

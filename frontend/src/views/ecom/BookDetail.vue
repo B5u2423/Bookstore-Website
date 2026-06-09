@@ -13,9 +13,7 @@ const authStore = useAuthStore()
 // button text
 const isOutOfStock = computed(() => book.value.inStock < 1)
 
-const buttonText = computed(() =>
-  isOutOfStock.value ? 'Hết hàng' : 'Thêm vào giỏ hàng'
-)
+const buttonText = computed(() => (isOutOfStock.value ? 'Hết hàng' : 'Thêm vào giỏ hàng'))
 
 const route = useRoute()
 const quantity = ref(1)
@@ -198,7 +196,7 @@ function handleAddToCart() {
                   :disabled="isOutOfStock"
                   @click="handleAddToCart"
                 >
-                    {{ buttonText }}
+                   {{ buttonText }}
                 </v-btn>
 
               </v-card-actions>

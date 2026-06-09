@@ -10,7 +10,8 @@ export default defineConfig({
   plugins: [
     vue({ template: { transformAssetUrls } }),
     vuetify({ autoImport: true }),
-    vueDevTools()],
+    vueDevTools(),
+  ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
