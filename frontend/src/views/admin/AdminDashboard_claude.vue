@@ -305,7 +305,7 @@ onMounted(() => fetchAll())
             size="small"
             @click="applyQuickRange(r)"
           >
-            {{ r.label }}
+             {{ r.label }}
           </v-btn>
 
         </v-btn-group>
@@ -379,7 +379,7 @@ onMounted(() => fetchAll())
               <v-card-text class="d-flex flex-column justify-space-between h-100 pa-4">
 
                 <span class="text-caption text-medium-emphasis text-uppercase tracking-wide">
-                  {{ kpi.label }}
+                   {{ kpi.label }}
                 </span>
 
                 <span class="text-h5 font-weight-medium">
@@ -410,7 +410,7 @@ onMounted(() => fetchAll())
             >
 
               <v-card-title class="text-body-1 font-weight-medium pa-4 pb-0">
-                Revenue over time
+                 Revenue over time
               </v-card-title>
 
               <v-card-text>
@@ -461,7 +461,7 @@ onMounted(() => fetchAll())
             >
 
               <v-card-title class="text-body-1 font-weight-medium pa-4 pb-0">
-                Sales by category
+                 Sales by category
               </v-card-title>
 
               <v-card-text>
@@ -508,13 +508,13 @@ onMounted(() => fetchAll())
                         class="text-body-2 text-truncate"
                         style="flex: 1"
                       >
-                        {{ item.label }}
+                         {{ item.label }}
                       </span>
 
                       <span class="text-body-2 text-medium-emphasis">{{ fmt(item.value) }}</span>
 
                       <span class="text-caption text-medium-emphasis">
-                        {{ pct(item.value, categoryTotal) }}
+                         {{ pct(item.value, categoryTotal) }}
                       </span>
 
                     </div>
@@ -541,7 +541,7 @@ onMounted(() => fetchAll())
             >
 
               <v-card-title class="text-body-1 font-weight-medium pa-4 pb-0">
-                Order status breakdown
+                 Order status breakdown
               </v-card-title>
 
               <v-card-text>
@@ -588,13 +588,13 @@ onMounted(() => fetchAll())
                         class="text-body-2 text-truncate"
                         style="flex: 1"
                       >
-                        {{ item.label }}
+                         {{ item.label }}
                       </span>
 
                       <span class="text-body-2 text-medium-emphasis">{{ item.count }} orders</span>
 
                       <span class="text-caption text-medium-emphasis">
-                        {{ pct(item.count, statusTotal) }}
+                         {{ pct(item.count, statusTotal) }}
                       </span>
 
                     </div>

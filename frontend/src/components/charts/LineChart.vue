@@ -8,5 +8,11 @@ const props = defineProps({
 </script>
 
 <template>
-    <Line :data="data" :options="options" />
+
+  <Line
+    :data="data"
+    :options="options"
+  />
+
 </template>
+

@@ -8,5 +8,11 @@ const props = defineProps({
 </script>
 
 <template>
-    <Doughnut :data="data" :options="options" />
+
+  <Doughnut
+    :data="data"
+    :options="options"
+  />
+
 </template>
+
