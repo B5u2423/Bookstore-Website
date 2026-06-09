@@ -169,7 +169,7 @@ async function loadItems({ page, itemsPerPage }) {
 
     <template v-slot:item.actions="{ item }">
 
-      <div class="d-flex ga-2 justify-center">
+      <div class="d-flex ga-2">
 
         <v-icon
           color="medium-emphasis"
@@ -416,11 +416,19 @@ async function loadItems({ page, itemsPerPage }) {
             class="border-md pa-2"
           >
 
-            <!-- <v-col v-for="item in detailDialog.items">
+            <v-col v-for="item in detailDialog.items">
 
               <v-card variant="flat">
 
-                <v-card-title> {{ item.book.title }} </v-card-title>
+                <v-card-title>
+                   {{ item.titleAtPurchase }}
+                  <v-tooltip
+                    activator="parent"
+                    location="top"
+                    :text="item.titleAtPurchase"
+                  />
+
+                </v-card-title>
 
                 <v-card-subtitle>
 
@@ -432,7 +440,7 @@ async function loadItems({ page, itemsPerPage }) {
 
               </v-card>
 
-            </v-col> -->
+            </v-col>
 
           </v-col>
 
