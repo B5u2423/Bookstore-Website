@@ -1,5 +1,6 @@
 package dev.vubl.bookstore.controllers;
 
+import dev.vubl.bookstore.dtos.CallBackDTO;
 import dev.vubl.bookstore.dtos.ShippingInfoDTO;
 import dev.vubl.bookstore.entities.Order;
 import dev.vubl.bookstore.services.OrderService;
@@ -22,6 +23,17 @@ public class OrderController {
       @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
       @RequestBody ShippingInfoDTO shippingInfo) {
     return ResponseEntity.ok().body(orderService.checkout(token, shippingInfo));
+  }
+
+  @PostMapping("/update-status")
+  @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+  public ResponseEntity<String> updateOrderStatus(
+      @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+      @RequestBody CallBackDTO callBackDTO) {
+    return ResponseEntity.ok()
+        .body(
+            orderService.updateOrderStatus(
+                token, callBackDTO.vnpTxnRef(), callBackDTO.isCancelled()));
   }
 
   @GetMapping

@@ -1,11 +1,13 @@
 <script setup>
 import { useRoute } from 'vue-router'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { formatPriceVNLocale } from '@/utils/utils'
+import { OrderService } from '@/api/cart-api'
 
 const route = useRoute()
 
 const responseCode = ref(route.query.vnp_ResponseCode)
+const vnpTxnRef = ref(route.query.vnp_TxnRef)
 const responseCodeMessage = computed(() => {
   const responseCodes = {
     '07': 'Trừ tiền thành công. Giao dịch bị nghi ngờ (liên quan tới lừa đảo, giao dịch bất thường).',
@@ -25,6 +27,27 @@ const responseCodeMessage = computed(() => {
   // Return the corresponding message from the dictionary
   return responseCodes[String(responseCode.value)] || 'Không xác định'
 })
+
+async function updateStatus() {
+  try {
+    const isCancelled = responseCode.value !== '00'
+    const res = await OrderService.updateStatus(
+      {
+        vnpTxnRef: vnpTxnRef.value,
+        isCancelled: isCancelled
+      }
+    )
+  } catch (error) {
+    console.error('Error update order status', error)
+  }
+}
+
+onMounted(
+  async () => {
+    await updateStatus()
+  }
+)
+
 </script>
 
 <template>

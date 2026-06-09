@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -86,6 +87,7 @@ public class OrderService {
     order.setNote(shippingInfo.info());
     order.setOrderStatus(OrderStatus.PENDING);
     order.setShippingFee(shippingInfo.shippingFee());
+    order.setVnpTxnRef(shippingInfo.vnpTxnRef());
     if (shippingInfo.itemsTotal().compareTo(itemsTotal) != 0) {
       throw new IllegalStateException("Item totals is not the same");
     }
@@ -144,5 +146,20 @@ public class OrderService {
     Sort sort = order.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
     Pageable pageable = PageRequest.of(page, size, sort);
     return orderRepo.findAllByEmail(u.getEmail(), pageable);
+  }
+
+  public String updateOrderStatus(String token, String vnpTxnRef, Boolean isCancelled) {
+    Optional<Order> o = orderRepo.findByVnpTxnRef(vnpTxnRef);
+    if (o.isEmpty()) {
+      return "Order with transaction ID does not exist";
+    }
+    ApplicationUser u = authService.readUserFromToken(token);
+    if (!u.getEmail().equalsIgnoreCase(o.get().getEmail())) {
+      return "Order does not match user";
+    }
+    if (isCancelled) {
+      o.get().setOrderStatus(OrderStatus.CANCELLED);
+    }
+    return "Status updated";
   }
 }
