@@ -17,12 +17,14 @@ export const AdminService = {
       console.error('Error fetching staff')
     }
   },
-  async getDashboardMetrics() {
+  async getDashboardAnalytics(params = {}) {
     try {
-      const res = await adminApi.get('/admin/get-metrics')
+      const res = await adminApi.get('/admin/analytics', {
+        params: params,
+      })
       return res.data
     } catch (error) {
-      console.error('Error fetching dashboard metrics')
+      console.error('Error fetching dashboard metrics', error)
     }
   },
 }

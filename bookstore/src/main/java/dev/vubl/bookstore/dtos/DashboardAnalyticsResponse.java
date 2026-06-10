@@ -5,4 +5,11 @@ import lombok.Builder;
 
 @Builder
 public record DashboardAnalyticsResponse(
-    BigDecimal totalRevenue, BigDecimal aov, Long totalItemsSold, Long totalOrdersCount) {}
+    BigDecimal totalRevenue,
+    BigDecimal aov,
+    Long totalItemsSold,
+    Long totalOrdersCount,
+    BigDecimal prevTotalRevenue,
+    BigDecimal prevAov,
+    Long prevTotalItemsSold,
+    Long prevTotalOrdersCount) {}

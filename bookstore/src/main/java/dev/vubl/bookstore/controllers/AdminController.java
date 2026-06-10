@@ -55,7 +55,7 @@ public class AdminController {
       @RequestParam(value = "endDate", required = false)
           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
           LocalDate endDate,
-      @RequestParam(value = "range", defaultValue = "NONE") DateRange range) {
+      @RequestParam(value = "range", defaultValue = "CUSTOM") DateRange range) {
     return dashboardAnalyticsService.getAnalytics(range, startDate, endDate);
   }
 }
