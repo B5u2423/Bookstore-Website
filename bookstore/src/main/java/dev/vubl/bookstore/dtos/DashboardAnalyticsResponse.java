@@ -1,0 +1,8 @@
+package dev.vubl.bookstore.dtos;
+
+import java.math.BigDecimal;
+import lombok.Builder;
+
+@Builder
+public record DashboardAnalyticsResponse(
+    BigDecimal totalRevenue, BigDecimal aov, Long totalItemsSold, Long totalOrdersCount) {}
