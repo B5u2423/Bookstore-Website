@@ -1,6 +1,5 @@
 package dev.vubl.bookstore.controllers;
 
-import dev.vubl.bookstore.dtos.AdminDashboardDTO;
 import dev.vubl.bookstore.entities.ApplicationUser;
 import dev.vubl.bookstore.services.AdminService;
 import dev.vubl.bookstore.services.ApplicationUserService;
@@ -45,7 +44,7 @@ public class AdminController {
   }
 
   @GetMapping("/get-metrics")
-  public AdminDashboardDTO test() {
-    return adminService.getDashboardData();
+  public void test() {
+    return;
   }
 }

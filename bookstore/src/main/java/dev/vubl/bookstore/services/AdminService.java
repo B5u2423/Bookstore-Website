@@ -1,7 +1,5 @@
 package dev.vubl.bookstore.services;
 
-import dev.vubl.bookstore.dtos.AdminDashboardDTO;
-import dev.vubl.bookstore.dtos.dashboard.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,20 +10,5 @@ public class AdminService {
   private final ApplicationUserService userService;
   private final BookService bookService;
 
-  public AdminDashboardDTO getDashboardData() {
-    OrderMetricsDTO orderMetricsDTO = orderService.getOrderMetrics();
-    RevenueMetricsDTO revenueMetricsDTO = orderService.getRevenueMetrics();
-    UserMetricsDTO userMetricsDTO = userService.getUserMetrics();
-    InventoryMetricsDTO inventoryMetricsDTO = null;
-    CatalogHealthDTO catalogHealthDTO = bookService.getCatalogHealthMetrics();
-    EngagementMetricsDTO engagementMetricsDTO = null;
-    return AdminDashboardDTO.builder()
-        .orderMetricsDTO(orderMetricsDTO)
-        .revenueMetricsDTO(revenueMetricsDTO)
-        .userMetricsDTO(userMetricsDTO)
-        //                    .inventoryMetricsDTO(inventoryMetricsDTO)
-        .catalogHealthDTO(catalogHealthDTO)
-        //            .engagementMetricsDTO(engagementMetricsDTO)
-        .build();
-  }
+  public void getDashboardData() {}
 }

@@ -1,6 +1,5 @@
 package dev.vubl.bookstore.repos;
 
-import dev.vubl.bookstore.dtos.dashboard.CatalogHealthCountDTO;
 import dev.vubl.bookstore.entities.Book;
 import dev.vubl.bookstore.entities.Category;
 import jakarta.persistence.LockModeType;
@@ -32,25 +31,6 @@ public interface BookRepo extends JpaRepository<Book, Integer> {
   """,
       nativeQuery = true)
   List<Book> searchBookV3(String keyword);
-
-  @Query(
-      """
-        SELECT new dev.vubl.bookstore.dtos.dashboard.CatalogHealthCountDTO(
-            SUM(CASE WHEN b.category IS NULL THEN 1 ELSE 0 END),
-            SUM(CASE WHEN b.collection IS NULL THEN 1 ELSE 0 END),
-            SUM(CASE WHEN b.inStock IS NULL OR b.inStock = 0 THEN 1 ELSE 0 END),
-            SUM(CASE WHEN b.imageUrl IS NULL OR b.imageUrl = '' THEN 1 ELSE 0 END),
-            SUM(CASE WHEN EXTRACT(YEAR FROM b.createTimeStamp) = EXTRACT(YEAR FROM CURRENT_DATE)
-                      AND EXTRACT(MONTH FROM b.createTimeStamp) = EXTRACT(MONTH FROM CURRENT_DATE)
-                THEN 1 ELSE 0 END),
-            SUM(CASE WHEN b.inStock = 0 THEN 1 ELSE 0 END),
-            (SELECT COUNT(c) FROM Category c),
-            (SELECT COUNT(col) FROM Collection col),
-            COUNT(b) / NULLIF((SELECT COUNT(c) FROM Category c), 0)
-        )
-        FROM Book b
-    """)
-  CatalogHealthCountDTO getCatalogHealthCounts();
 
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @Query("SELECT b FROM Book b WHERE b.id = :id")
