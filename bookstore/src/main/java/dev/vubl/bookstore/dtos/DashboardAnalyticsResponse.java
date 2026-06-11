@@ -12,4 +12,8 @@ public record DashboardAnalyticsResponse(
     BigDecimal prevTotalRevenue,
     BigDecimal prevAov,
     Long prevTotalItemsSold,
-    Long prevTotalOrdersCount) {}
+    Long prevTotalOrdersCount,
+    Long cancelledOrders,
+    Long pendingOrders,
+    Long paidOrders
+) {}

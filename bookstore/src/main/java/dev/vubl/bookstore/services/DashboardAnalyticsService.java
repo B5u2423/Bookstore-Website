@@ -26,17 +26,21 @@ public class DashboardAnalyticsService {
       String sql =
           """
               SELECT
-                  COALESCE(SUM(revenue), 0) AS total_revenue,
+                  COALESCE(SUM(revenue) FILTER (WHERE order_status IN ('PENDING', 'PAID')), 0) AS total_revenue,
                   ROUND (COALESCE(
-                      SUM(revenue)::numeric /
-                      NULLIF(SUM(order_count), 0),
+                      (SUM(revenue)
+                      FILTER (WHERE order_status IN ('PENDING', 'PAID'))
+                      )::numeric /
+                      NULLIF(SUM(order_count) FILTER (WHERE order_status IN ('PENDING', 'PAID')), 0),
                       0
                   ), 0) AS aov,
-                  COALESCE(SUM(total_items_sold), 0) AS total_items_sold,
-                  COALESCE(SUM(order_count), 0) AS total_orders_count
+                  COALESCE(SUM(total_items_sold) FILTER (WHERE order_status IN ('PENDING', 'PAID')), 0) AS total_items_sold,
+                  COALESCE(SUM(order_count) FILTER (WHERE order_status IN ('PENDING', 'PAID')), 0) AS total_orders_count,
+                  COALESCE(SUM(order_count) FILTER (WHERE order_status IN ('CANCELLED')), 0) AS cancelled_orders,
+                  COALESCE(SUM(order_count) FILTER (WHERE order_status IN ('PENDING')), 0) AS pending_orders,
+                  COALESCE(SUM(order_count) FILTER (WHERE order_status IN ('PAID')), 0) AS paid_orders
               FROM mv_order_dashboard
               WHERE order_date BETWEEN ? AND ?
-              AND order_status IN ('PENDING', 'PAID')
               """;
       return jdbcTemplate.queryForObject(
           sql,
@@ -46,6 +50,9 @@ public class DashboardAnalyticsService {
                   .aov(rs.getBigDecimal("aov"))
                   .totalItemsSold(rs.getLong("total_items_sold"))
                   .totalOrdersCount(rs.getLong("total_orders_count"))
+                      .paidOrders(rs.getLong("paid_orders"))
+                      .cancelledOrders(rs.getLong("cancelled_orders"))
+                      .pendingOrders(rs.getLong("pending_orders"))
                   .build(),
           resolvedStartDate,
           resolvedEndDate);
@@ -56,36 +63,102 @@ public class DashboardAnalyticsService {
                 WITH current_period AS (
                     SELECT *
                     FROM mv_order_dashboard
-                    WHERE order_status IN ('PENDING', 'PAID')
-                      AND order_date BETWEEN ? AND ?
+                    WHERE order_date BETWEEN ? AND ?
                 ),
                 previous_period AS (
                     SELECT *
                     FROM mv_order_dashboard
-                    WHERE order_status IN ('PENDING', 'PAID')
-                      AND order_date BETWEEN ? AND ?
+                    WHERE order_date BETWEEN ? AND ?
                 )
                 SELECT
                     -- CURRENT
-                    (SELECT COALESCE(SUM(revenue), 0) FROM current_period) AS total_revenue,
-                    (SELECT COALESCE(SUM(order_count), 0) FROM current_period) AS total_orders_count,
+                    (
+                        SELECT COALESCE(
+                            SUM(revenue) FILTER (WHERE order_status IN ('PENDING', 'PAID')),
+                            0
+                        )
+                        FROM current_period
+                    ) AS total_revenue,
+                    (
+                        SELECT COALESCE(
+                            SUM(order_count) FILTER (WHERE order_status IN ('PENDING', 'PAID')),
+                            0
+                        )
+                        FROM current_period
+                    ) AS total_orders_count,
                     ROUND(
                         COALESCE(
-                            (SELECT SUM(revenue) FROM current_period)::numeric /
-                            NULLIF((SELECT SUM(order_count) FROM current_period), 0),
-                        0),
-                    0) AS aov,
-                    (SELECT COALESCE(SUM(total_items_sold), 0) FROM current_period) AS total_items_sold,
+                            (
+                                SELECT
+                                    SUM(revenue) FILTER (WHERE order_status IN ('PENDING', 'PAID'))::numeric
+                                    /
+                                    NULLIF(
+                                        SUM(order_count) FILTER (WHERE order_status IN ('PENDING', 'PAID')),
+                                        0
+                                    )
+                                FROM current_period
+                            ),
+                            0
+                        ),
+                        0
+                    ) AS aov,
+                    (
+                        SELECT COALESCE(
+                            SUM(total_items_sold) FILTER (WHERE order_status IN ('PENDING', 'PAID')),
+                            0
+                        )
+                        FROM current_period
+                    ) AS total_items_sold,
+                    (
+                      SELECT COALESCE(SUM(order_count) FILTER (WHERE order_status IN ('CANCELLED')), 0)
+                      FROM current_period
+                    ) AS cancelled_orders,
+                    (
+                      SELECT COALESCE(SUM(order_count) FILTER (WHERE order_status IN ('PENDING')), 0)
+                      FROM current_period
+                    ) AS pending_orders,
+                    (
+                      SELECT COALESCE(SUM(order_count) FILTER (WHERE order_status IN ('PAID')), 0)
+                      FROM current_period
+                    ) AS paid_orders,
                     -- PREVIOUS
-                    (SELECT COALESCE(SUM(revenue), 0) FROM previous_period) AS previous_total_revenue,
-                    (SELECT COALESCE(SUM(order_count), 0) FROM previous_period) AS previous_total_orders_count,
+                    (
+                        SELECT COALESCE(
+                            SUM(revenue) FILTER (WHERE order_status IN ('PENDING', 'PAID')),
+                            0
+                        )
+                        FROM previous_period
+                    ) AS previous_total_revenue,
+                    (
+                        SELECT COALESCE(
+                            SUM(order_count) FILTER (WHERE order_status IN ('PENDING', 'PAID')),
+                            0
+                        )
+                        FROM previous_period
+                    ) AS previous_total_orders_count,
                     ROUND(
                         COALESCE(
-                            (SELECT SUM(revenue) FROM previous_period)::numeric /
-                            NULLIF((SELECT SUM(order_count) FROM previous_period), 0),
-                        0),
-                    0) AS previous_aov,
-                    (SELECT COALESCE(SUM(total_items_sold), 0) FROM previous_period) AS previous_total_items_sold;
+                            (
+                                SELECT
+                                    SUM(revenue) FILTER (WHERE order_status IN ('PENDING', 'PAID'))::numeric
+                                    /
+                                    NULLIF(
+                                        SUM(order_count) FILTER (WHERE order_status IN ('PENDING', 'PAID')),
+                                        0
+                                    )
+                                FROM previous_period
+                            ),
+                            0
+                        ),
+                        0
+                    ) AS previous_aov,
+                    (
+                        SELECT COALESCE(
+                            SUM(total_items_sold) FILTER (WHERE order_status IN ('PENDING', 'PAID')),
+                            0
+                        )
+                        FROM previous_period
+                    ) AS previous_total_items_sold;
         """;
     return jdbcTemplate.queryForObject(
         sql,
@@ -99,6 +172,9 @@ public class DashboardAnalyticsService {
                 .prevAov(rs.getBigDecimal("previous_aov"))
                 .prevTotalItemsSold(rs.getLong("previous_total_items_sold"))
                 .prevTotalOrdersCount(rs.getLong("previous_total_orders_count"))
+                    .paidOrders(rs.getLong("paid_orders"))
+                    .cancelledOrders(rs.getLong("cancelled_orders"))
+                    .pendingOrders(rs.getLong("pending_orders"))
                 .build(),
         resolvedStartDate,
         resolvedEndDate,
@@ -114,8 +190,7 @@ public class DashboardAnalyticsService {
       LocalDate today = LocalDate.now();
 
       return switch (range) {
-        case TODAY ->
-            new DateRangeResult(today, today, today.minusDays(1), today.minusDays(1));
+        case TODAY -> new DateRangeResult(today, today, today.minusDays(1), today.minusDays(1));
         case LAST_7_DAYS ->
             new DateRangeResult(today.minusDays(6), today, LocalDate.MIN, LocalDate.MIN);
         case LAST_30_DAYS ->
