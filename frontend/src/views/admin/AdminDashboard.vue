@@ -152,29 +152,26 @@ function deltaClass(kpi) {
 }
 
 // line chart - revenue
-const revenueLineData = computed(
-() => {
+const revenueLineData = computed(() => {
   const a = analytics.value
   return {
-  labels: a?.revenueChartData?.labels ?? ['N/A'],
-  datasets: [
-    {
-      type: 'line',
-      label: 'Doanh thu',
-      data: a?.revenueChartData?.revenue ?? [0],
-      yAxisID: 'y',
-    },
-    {
-      type: 'bar',
-      label: 'Số đơn hàng',
-      data: a?.revenueChartData.orders ?? [0],
-      yAxisID: 'y1',
-    },
-  ],
-}
-}
-)
-
+    labels: a?.revenueChartData?.labels ?? ['N/A'],
+    datasets: [
+      {
+        type: 'line',
+        label: 'Doanh thu',
+        data: a?.revenueChartData?.revenue ?? [0],
+        yAxisID: 'y',
+      },
+      {
+        type: 'bar',
+        label: 'Số đơn hàng',
+        data: a?.revenueChartData.orders ?? [0],
+        yAxisID: 'y1',
+      },
+    ],
+  }
+})
 
 const revenueLineOptions = {
   responsive: true,
@@ -383,18 +380,21 @@ const orderDoughOptions = {
         </v-row>
 
         <!-- Line Revenue -->
+
         <v-row>
-          <v-col cols="12" md="12">
+
+          <v-col
+            cols="12"
+            md="12"
+          >
+
             <v-card flat>
 
               <v-card-title class="text-subtitle-1 font-weight-medium pt-4 px-4">
-                Biểu đồ Doanh thu - Đơn hàng
+                 Biểu đồ Doanh thu - Đơn hàng
               </v-card-title>
 
-              <v-card-subtitle class="px-4">
-                Phân phối trong khoảng thời gian
-              </v-card-subtitle>
-
+              <v-card-subtitle class="px-4"> Phân phối trong khoảng thời gian </v-card-subtitle>
 
               <div
                 style="
@@ -405,6 +405,7 @@ const orderDoughOptions = {
                   justify-content: center;
                 "
               >
+
                 <line-chart
                   :data="revenueLineData"
                   :option="revenueLineOptions"
@@ -413,10 +414,13 @@ const orderDoughOptions = {
               </div>
 
             </v-card>
+
           </v-col>
+
         </v-row>
 
         <!-- Doughnut Order Status and Bar Categories Trend -->
+
         <v-row>
 
           <v-col

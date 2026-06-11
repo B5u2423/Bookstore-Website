@@ -4,12 +4,10 @@ import dev.vubl.bookstore.dtos.DashboardAnalyticsResponse;
 import dev.vubl.bookstore.dtos.DateRangeResult;
 import dev.vubl.bookstore.dtos.RevenueChartDTO;
 import dev.vubl.bookstore.entities.DateRange;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -59,7 +57,7 @@ public class DashboardAnalyticsService {
                   .paidOrders(rs.getLong("paid_orders"))
                   .cancelledOrders(rs.getLong("cancelled_orders"))
                   .pendingOrders(rs.getLong("pending_orders"))
-                      .revenueChartData(getRevenueChartData(resolvedStartDate, resolvedEndDate))
+                  .revenueChartData(getRevenueChartData(resolvedStartDate, resolvedEndDate))
                   .build(),
           resolvedStartDate,
           resolvedEndDate);
@@ -182,7 +180,7 @@ public class DashboardAnalyticsService {
                 .paidOrders(rs.getLong("paid_orders"))
                 .cancelledOrders(rs.getLong("cancelled_orders"))
                 .pendingOrders(rs.getLong("pending_orders"))
-                    .revenueChartData(getRevenueChartData(resolvedStartDate, resolvedEndDate))
+                .revenueChartData(getRevenueChartData(resolvedStartDate, resolvedEndDate))
                 .build(),
         resolvedStartDate,
         resolvedEndDate,
@@ -233,9 +231,9 @@ public class DashboardAnalyticsService {
     return new DateRangeResult(startDate, endDate, LocalDate.MIN, LocalDate.MIN);
   }
 
-  private RevenueChartDTO getRevenueChartData (LocalDate startDate, LocalDate endDate) {
+  private RevenueChartDTO getRevenueChartData(LocalDate startDate, LocalDate endDate) {
     String sql =
-            """
+        """
                     WITH dates AS (
                         SELECT generate_series(
                             ?::date,
@@ -259,20 +257,15 @@ public class DashboardAnalyticsService {
     List<Long> orders = new ArrayList<>();
 
     jdbcTemplate.query(
-            sql,
-            rs -> {
-              labels.add(rs.getDate("order_date").toLocalDate().toString());
-              revenue.add(rs.getBigDecimal("revenue"));
-              orders.add(rs.getLong("orders"));
-            },
-            startDate,
-            endDate
-    );
+        sql,
+        rs -> {
+          labels.add(rs.getDate("order_date").toLocalDate().toString());
+          revenue.add(rs.getBigDecimal("revenue"));
+          orders.add(rs.getLong("orders"));
+        },
+        startDate,
+        endDate);
 
-    return RevenueChartDTO.builder()
-            .labels(labels)
-            .revenue(revenue)
-            .orders(orders)
-            .build();
+    return RevenueChartDTO.builder().labels(labels).revenue(revenue).orders(orders).build();
   }
 }
