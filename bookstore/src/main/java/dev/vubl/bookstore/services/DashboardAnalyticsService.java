@@ -10,13 +10,32 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DashboardAnalyticsService {
+  private static final List<String> materializedViews =
+      List.of("mv_books_sold_by_category", "mv_order_dashboard");
   private final JdbcTemplate jdbcTemplate;
+
+  public void refreshMultipleMaterializedViews() {
+    // TODO: add button to trigger on FE
+    for (String view : materializedViews) {
+      try {
+        log.info("Start refreshing view: {}", view);
+        String sql = "REFRESH MATERIALIZED VIEW CONCURRENTLY %s;".formatted(view);
+        jdbcTemplate.execute(sql);
+        log.info("Update successfully: {}", view);
+      } catch (DataAccessException e) {
+        log.error("Failed to refresh materialized view {}. Reason {}", view, e.getMessage(), e);
+      }
+    }
+  }
 
   public DashboardAnalyticsResponse getAnalytics(
       DateRange range, LocalDate startDate, LocalDate endDate) {

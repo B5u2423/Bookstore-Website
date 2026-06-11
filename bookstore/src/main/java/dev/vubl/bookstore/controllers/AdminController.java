@@ -58,4 +58,9 @@ public class AdminController {
       @RequestParam(value = "range", defaultValue = "CUSTOM") DateRange range) {
     return dashboardAnalyticsService.getAnalytics(range, startDate, endDate);
   }
+
+  @PostMapping("/refresh-analytics")
+  public void refreshDashboard() {
+    dashboardAnalyticsService.refreshMultipleMaterializedViews();
+  }
 }
