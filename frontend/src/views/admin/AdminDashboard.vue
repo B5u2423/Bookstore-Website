@@ -3,7 +3,7 @@ import { ref, onMounted, computed, watch } from 'vue'
 import { AdminService } from '@/api/admin-api'
 import DoughnutChart from '@/components/charts/DoughnutChart.vue'
 import LineChart from '@/components/charts/LineChart.vue'
-import { ca } from 'vuetify/locale'
+import BarChart from '@/components/charts/BarChart.vue'
 
 const analytics = ref(null)
 const loading = ref(false)
@@ -272,6 +272,39 @@ const orderDoughOptions = {
   maintainAspectRatio: false,
   cutout: '68%',
   plugins: { legend: { display: true } },
+}
+
+// bar chart: horizontal - categories trend
+const cateBarData = computed(() => {
+  const a = analytics.value
+  return {
+    labels: a?.categoryTrendChartData?.labels ?? ['N/A'],
+    datasets: [
+      {
+        label: 'Số lượng đã bán',
+        data: a?.categoryTrendChartData?.soldCount ?? [0],
+        backgroundColor: '#185FA5',
+        hoverBackgroundColor: '#378ADD',
+        borderRadius: 5,
+        borderSkipped: false,
+      },
+    ],
+  }
+})
+
+const cateBarOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  indexAxis: 'y',
+  plugins: { legend: { display: false } },
+  scales: {
+    x: {
+      grid: { color: 'rgba(0,0,0,0.07)' },
+      ticks: { font: { size: 11 } },
+      border: { display: false },
+    },
+    y: { grid: { display: false }, ticks: { font: { size: 12 } }, border: { display: false } },
+  },
 }
 </script>
 
@@ -546,6 +579,32 @@ const orderDoughOptions = {
             md="6"
             sm="12"
           >
+
+            <v-card
+              rounded="lg"
+              flat
+            >
+
+              <v-card-title class="text-subtitle-1 font-weight-medium pt-4 px-4">
+                 Biểu đồ Danh mục Nổi bật
+              </v-card-title>
+
+              <v-card-subtitle class="px-4">Số sách bán theo danh mục</v-card-subtitle>
+
+              <v-card-text>
+
+                <div style="height: 400px">
+
+                  <bar-chart
+                    :data="cateBarData"
+                    :options="cateBarOptions"
+                  />
+
+                </div>
+
+              </v-card-text>
+
+            </v-card>
 
           </v-col>
 

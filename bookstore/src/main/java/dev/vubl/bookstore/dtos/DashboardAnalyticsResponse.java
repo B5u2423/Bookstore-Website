@@ -16,4 +16,5 @@ public record DashboardAnalyticsResponse(
     Long cancelledOrders,
     Long pendingOrders,
     Long paidOrders,
-    RevenueChartDTO revenueChartData) {}
+    RevenueChartDTO revenueChartData,
+    CategoryTrendChartDTO categoryTrendChartData) {}

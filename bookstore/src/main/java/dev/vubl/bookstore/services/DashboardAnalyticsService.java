@@ -1,5 +1,6 @@
 package dev.vubl.bookstore.services;
 
+import dev.vubl.bookstore.dtos.CategoryTrendChartDTO;
 import dev.vubl.bookstore.dtos.DashboardAnalyticsResponse;
 import dev.vubl.bookstore.dtos.DateRangeResult;
 import dev.vubl.bookstore.dtos.RevenueChartDTO;
@@ -58,6 +59,8 @@ public class DashboardAnalyticsService {
                   .cancelledOrders(rs.getLong("cancelled_orders"))
                   .pendingOrders(rs.getLong("pending_orders"))
                   .revenueChartData(getRevenueChartData(resolvedStartDate, resolvedEndDate))
+                  .categoryTrendChartData(
+                      getCategoryTrendChartData(resolvedStartDate, resolvedEndDate))
                   .build(),
           resolvedStartDate,
           resolvedEndDate);
@@ -181,6 +184,8 @@ public class DashboardAnalyticsService {
                 .cancelledOrders(rs.getLong("cancelled_orders"))
                 .pendingOrders(rs.getLong("pending_orders"))
                 .revenueChartData(getRevenueChartData(resolvedStartDate, resolvedEndDate))
+                .categoryTrendChartData(
+                    getCategoryTrendChartData(resolvedStartDate, resolvedEndDate))
                 .build(),
         resolvedStartDate,
         resolvedEndDate,
@@ -267,5 +272,32 @@ public class DashboardAnalyticsService {
         endDate);
 
     return RevenueChartDTO.builder().labels(labels).revenue(revenue).orders(orders).build();
+  }
+
+  private CategoryTrendChartDTO getCategoryTrendChartData(LocalDate startDate, LocalDate endDate) {
+    String sql =
+        """
+            SELECT
+                category_name,
+                SUM(books_sold) AS books_sold
+            FROM mv_books_sold_by_category
+            WHERE order_date BETWEEN ? AND ?
+            GROUP BY category_name
+            ORDER BY books_sold DESC;
+            """;
+
+    List<String> labels = new ArrayList<>();
+    List<Long> soldCount = new ArrayList<>();
+
+    jdbcTemplate.query(
+        sql,
+        rs -> {
+          labels.add(rs.getString("category_name"));
+          soldCount.add(rs.getLong("books_sold"));
+        },
+        startDate,
+        endDate);
+
+    return CategoryTrendChartDTO.builder().labels(labels).soldCount(soldCount).build();
   }
 }
