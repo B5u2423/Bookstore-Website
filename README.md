@@ -24,9 +24,3 @@ On Windows, open `C:\Windows\System32\drivers\etc\host` file, add the following 
 ## Local LaTeX Compile
 
 https://www.youtube.com/watch?v=Mty0vHb0knI
-
-Charts
-Revenue by month
-Orders by day
-Top 10 categories
-Top 10 books
