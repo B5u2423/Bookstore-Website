@@ -50,9 +50,9 @@ public class DashboardAnalyticsService {
                   .aov(rs.getBigDecimal("aov"))
                   .totalItemsSold(rs.getLong("total_items_sold"))
                   .totalOrdersCount(rs.getLong("total_orders_count"))
-                      .paidOrders(rs.getLong("paid_orders"))
-                      .cancelledOrders(rs.getLong("cancelled_orders"))
-                      .pendingOrders(rs.getLong("pending_orders"))
+                  .paidOrders(rs.getLong("paid_orders"))
+                  .cancelledOrders(rs.getLong("cancelled_orders"))
+                  .pendingOrders(rs.getLong("pending_orders"))
                   .build(),
           resolvedStartDate,
           resolvedEndDate);
@@ -172,9 +172,9 @@ public class DashboardAnalyticsService {
                 .prevAov(rs.getBigDecimal("previous_aov"))
                 .prevTotalItemsSold(rs.getLong("previous_total_items_sold"))
                 .prevTotalOrdersCount(rs.getLong("previous_total_orders_count"))
-                    .paidOrders(rs.getLong("paid_orders"))
-                    .cancelledOrders(rs.getLong("cancelled_orders"))
-                    .pendingOrders(rs.getLong("pending_orders"))
+                .paidOrders(rs.getLong("paid_orders"))
+                .cancelledOrders(rs.getLong("cancelled_orders"))
+                .pendingOrders(rs.getLong("pending_orders"))
                 .build(),
         resolvedStartDate,
         resolvedEndDate,

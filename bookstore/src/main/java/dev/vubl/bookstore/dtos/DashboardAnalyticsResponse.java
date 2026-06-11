@@ -15,5 +15,4 @@ public record DashboardAnalyticsResponse(
     Long prevTotalOrdersCount,
     Long cancelledOrders,
     Long pendingOrders,
-    Long paidOrders
-) {}
+    Long paidOrders) {}

@@ -153,24 +153,19 @@ function deltaClass(kpi) {
 // doughnut chart
 const orderDoughData = computed(() => {
   const a = analytics.value
-return {
-
-  labels: ['Đã thanh toán', 'Chờ xử lý', 'Đã hủy'],
-  datasets: [
-    {
-      data: [ a?.paidOrders ?? 0, 
-      a?.pendingOrders ?? 0, 
-      a?.cancelledOrders ?? 0],
-      backgroundColor: ['#185FA5', '#EF9F27', '#E24B4A'],
-      borderColor: '#ffffff',
-      borderWidth: 3,
-      hoverOffset: 6,
-    },
-  ]
-}
-}
-
-)
+  return {
+    labels: ['Đã thanh toán', 'Chờ xử lý', 'Đã hủy'],
+    datasets: [
+      {
+        data: [a?.paidOrders ?? 0, a?.pendingOrders ?? 0, a?.cancelledOrders ?? 0],
+        backgroundColor: ['#185FA5', '#EF9F27', '#E24B4A'],
+        borderColor: '#ffffff',
+        borderWidth: 3,
+        hoverOffset: 6,
+      },
+    ],
+  }
+})
 
 const orderDoughOptions = {
   responsive: true,
@@ -270,7 +265,7 @@ const orderDoughOptions = {
                     block
                     @click="applyCustomRange"
                   >
-                    Áp dụng
+                     Áp dụng
                   </v-btn>
 
                 </div>
@@ -326,32 +321,50 @@ const orderDoughOptions = {
         </v-row>
 
         <v-row>
-          <v-col cols="12" md="6" sm="12">
+
+          <v-col
+            cols="12"
+            md="6"
+            sm="12"
+          >
+
             <v-card>
-            <v-card-title class="text-subtitle-1 font-weight-medium pt-4 px-4">
-              Trạng thái đơn hàng
-            </v-card-title>
-            <v-card-subtitle class="px-4">Phân phối các đơn theo trạng thái</v-card-subtitle>
-            <div
-            style="height: 400px;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            ">
 
+              <v-card-title class="text-subtitle-1 font-weight-medium pt-4 px-4">
+                 Trạng thái đơn hàng
+              </v-card-title>
 
-            <doughnut-chart
-            :data="orderDoughData"
-            :option="orderDoughOptions"
-            />
+              <v-card-subtitle class="px-4">Phân phối các đơn theo trạng thái</v-card-subtitle>
 
-            </div>
+              <div
+                style="
+                  height: 400px;
+                  position: relative;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+
+                <doughnut-chart
+                  :data="orderDoughData"
+                  :option="orderDoughOptions"
+                />
+
+              </div>
+
             </v-card>
-          </v-col>
-          <v-col cols="12" md="6" sm="12">
 
           </v-col>
+
+          <v-col
+            cols="12"
+            md="6"
+            sm="12"
+          >
+
+          </v-col>
+
         </v-row>
 
       </div>
