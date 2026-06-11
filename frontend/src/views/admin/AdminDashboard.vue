@@ -3,6 +3,7 @@ import { ref, onMounted, computed, watch } from 'vue'
 import { AdminService } from '@/api/admin-api'
 import DoughnutChart from '@/components/charts/DoughnutChart.vue'
 import LineChart from '@/components/charts/LineChart.vue'
+import { ca } from 'vuetify/locale'
 
 const analytics = ref(null)
 const loading = ref(false)
@@ -210,14 +211,54 @@ const revenueLineOptions = {
 }
 
 // doughnut chart - order status
+const orderStatuses = [
+  {
+    key: 'paidOrders',
+    label: 'Đã thanh toán',
+    color: '#185FA5',
+  },
+  {
+    key: 'pendingOrders',
+    label: 'Chờ xử lý',
+    color: '#EF9F27',
+  },
+  {
+    key: 'cancelledOrders',
+    label: 'Đã hủy',
+    color: '#E24B4A',
+  },
+]
+
+const ordersTotalCount = computed(() => {
+  const a = analytics.value
+
+  return orderStatuses.reduce((sum, status) => sum + (a?.[status.key] ?? 0), 0)
+})
+
+const orderLegend = computed(() => {
+  const a = analytics.value
+
+  const total = ordersTotalCount.value
+  return orderStatuses.map((status) => {
+    const count = a?.[status.key] ?? 0
+
+    return {
+      ...status,
+      count,
+      pct: total ? (count / total) * 100 : 0,
+    }
+  })
+})
+
 const orderDoughData = computed(() => {
   const a = analytics.value
+
   return {
-    labels: ['Đã thanh toán', 'Chờ xử lý', 'Đã hủy'],
+    labels: orderStatuses.map((s) => s.label),
     datasets: [
       {
-        data: [a?.paidOrders ?? 0, a?.pendingOrders ?? 0, a?.cancelledOrders ?? 0],
-        backgroundColor: ['#185FA5', '#EF9F27', '#E24B4A'],
+        data: orderStatuses.map((s) => a?.[s.key] ?? 0),
+        backgroundColor: orderStatuses.map((s) => s.color),
         borderColor: '#ffffff',
         borderWidth: 3,
         hoverOffset: 6,
@@ -452,7 +493,49 @@ const orderDoughOptions = {
                   :option="orderDoughOptions"
                 />
 
+                <!-- total orders (in the ring of the donut) -->
+
+                <div style="position: absolute; text-align: center; pointer-events: none">
+
+                  <div class="text-h6 font-weight-medium">{{ ordersTotalCount }}</div>
+
+                  <div class="text-caption text-medium-emphasis">total orders</div>
+
+                </div>
+
               </div>
+
+              <!-- status stats -->
+
+              <v-row
+                dense
+                class="mt-2"
+              >
+
+                <v-col
+                  v-for="item in orderLegend"
+                  :key="item.label"
+                  cols="4"
+                >
+
+                  <div class="text-center pa-2 rounded border-md">
+
+                    <div
+                      class="text-subtitle-1 font-weight-medium"
+                      :style="{ color: item.color }"
+                    >
+                       {{ item.pct }}%
+                    </div>
+
+                    <div class="text-caption text-medium-emphasis">
+                       {{ item.label.toLowerCase() }}
+                    </div>
+
+                  </div>
+
+                </v-col>
+
+              </v-row>
 
             </v-card>
 
