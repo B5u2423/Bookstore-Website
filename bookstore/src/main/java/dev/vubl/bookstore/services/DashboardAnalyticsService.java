@@ -114,7 +114,8 @@ public class DashboardAnalyticsService {
       LocalDate today = LocalDate.now();
 
       return switch (range) {
-        case TODAY -> new DateRangeResult(today, today, LocalDate.MIN, LocalDate.MIN);
+        case TODAY ->
+            new DateRangeResult(today, today, today.minusDays(1), today.minusDays(1));
         case LAST_7_DAYS ->
             new DateRangeResult(today.minusDays(6), today, LocalDate.MIN, LocalDate.MIN);
         case LAST_30_DAYS ->

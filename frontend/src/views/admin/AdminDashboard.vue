@@ -77,11 +77,11 @@ async function applyCustomRange() {
 
 const periodsMeta = {
   today: { compareLabel: 'so với hôm qua', range: 'TODAY' },
-  last7:  { compareLabel: '--', range: 'LAST_7_DAYS' },
-  last30: { compareLabel: '--', range: 'LAST_30_DAYS' },
+  last7:  { compareLabel: '', range: 'LAST_7_DAYS' },
+  last30: { compareLabel: '', range: 'LAST_30_DAYS' },
   this_week: { compareLabel: 'so với tuần trước', range: 'LAST_7_DAYS' },
   this_month: { compareLabel: 'so với tháng trước', range: 'LAST_30_DAYS' },
-  custom: { compareLabel: '--', range: 'CUSTOM' },
+  custom: { compareLabel: '', range: 'CUSTOM' },
 }
 
 async function getAnalytics(params) {
