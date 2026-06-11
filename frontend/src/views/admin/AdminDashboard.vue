@@ -245,7 +245,7 @@ const orderLegend = computed(() => {
     return {
       ...status,
       count,
-      pct: total ? (count / total) * 100 : 0,
+      pct: total ? Number(((count / total) * 100).toFixed(2)) : 0, // 2 digit after decimal point
     }
   })
 })
@@ -306,6 +306,13 @@ const cateBarOptions = {
     y: { grid: { display: false }, ticks: { font: { size: 12 } }, border: { display: false } },
   },
 }
+
+// refresh button
+async function refreshAnalytics() {
+  await AdminService.refreshDashboardAnalytics()
+  // reload
+  await selectPeriod('today')
+}
 </script>
 
 <template>
@@ -326,88 +333,101 @@ const cateBarOptions = {
 
         <div class="d-flex align-center justify-space-between flex-wrap ga-2 mb-4">
 
-          <span class="text-caption text-medium-emphasis">Xem theo</span>
+          <span class="text-caption text-medium-emphasis"></span>
 
-          <v-menu
-            v-model="showDropdown"
-            :close-on-content-click="false"
-            location="bottom start"
-          >
+          <div>
 
-            <template #activator="{ props }">
+            <v-btn
+              size="small"
+              variant="outlined"
+              class="mr-2"
+              @click="refreshAnalytics"
+            >
+              Làm mới dữ liệu
+            </v-btn>
 
-              <v-btn
-                v-bind="props"
-                variant="outlined"
-                size="small"
-                append-icon="mdi-chevron-down"
-              >
-                 {{ selectedLabel }}
-              </v-btn>
-
-            </template>
-
-            <v-list
-              density="compact"
-              min-width="220"
+            <v-menu
+              v-model="showDropdown"
+              :close-on-content-click="false"
+              location="bottom start"
             >
 
-              <v-list-item
-                v-for="opt in periodOptions.filter((p) => p.value !== 'custom')"
-                :key="opt.value"
-                :active="selectedPeriod === opt.value"
-                @click="selectPeriod(opt.value)"
-              >
-                 {{ opt.label }}
-              </v-list-item>
+              <template #activator="{ props }">
 
-              <v-divider />
-
-              <!-- Custom range -->
-
-              <v-list-item
-                :active="selectedPeriod === 'custom'"
-                @click="selectedPeriod = 'custom'"
-              >
-                 Tùy chọn ngày
-              </v-list-item>
-
-              <template v-if="selectedPeriod === 'custom'">
-
-                <div class="pa-3 d-flex flex-column ga-2">
-
-                  <v-text-field
-                    v-model="customStart"
-                    label="Từ ngày"
-                    type="date"
-                    density="compact"
-                    hide-details
-                  />
-
-                  <v-text-field
-                    v-model="customEnd"
-                    label="Đến ngày"
-                    type="date"
-                    density="compact"
-                    hide-details
-                  />
-
-                  <v-btn
-                    size="small"
-                    color="primary"
-                    block
-                    @click="applyCustomRange"
-                  >
-                     Áp dụng
-                  </v-btn>
-
-                </div>
+                <v-btn
+                  v-bind="props"
+                  variant="outlined"
+                  size="small"
+                  append-icon="mdi-chevron-down"
+                >
+                   {{ selectedLabel }}
+                </v-btn>
 
               </template>
 
-            </v-list>
+              <v-list
+                density="compact"
+                min-width="220"
+              >
 
-          </v-menu>
+                <v-list-item
+                  v-for="opt in periodOptions.filter((p) => p.value !== 'custom')"
+                  :key="opt.value"
+                  :active="selectedPeriod === opt.value"
+                  @click="selectPeriod(opt.value)"
+                >
+                   {{ opt.label }}
+                </v-list-item>
+
+                <v-divider />
+
+                <!-- Custom range -->
+
+                <v-list-item
+                  :active="selectedPeriod === 'custom'"
+                  @click="selectedPeriod = 'custom'"
+                >
+                   Tùy chọn ngày
+                </v-list-item>
+
+                <template v-if="selectedPeriod === 'custom'">
+
+                  <div class="pa-3 d-flex flex-column ga-2">
+
+                    <v-text-field
+                      v-model="customStart"
+                      label="Từ ngày"
+                      type="date"
+                      density="compact"
+                      hide-details
+                    />
+
+                    <v-text-field
+                      v-model="customEnd"
+                      label="Đến ngày"
+                      type="date"
+                      density="compact"
+                      hide-details
+                    />
+
+                    <v-btn
+                      size="small"
+                      color="primary"
+                      block
+                      @click="applyCustomRange"
+                    >
+                       Áp dụng
+                    </v-btn>
+
+                  </div>
+
+                </template>
+
+              </v-list>
+
+            </v-menu>
+
+          </div>
 
         </div>
 

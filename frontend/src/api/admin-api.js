@@ -24,7 +24,14 @@ export const AdminService = {
       })
       return res.data
     } catch (error) {
-      console.error('Error fetching dashboard metrics', error)
+      console.error('Error fetching dashboard analytics', error)
+    }
+  },
+  async refreshDashboardAnalytics() {
+    try {
+      const res = await adminApi.post('/admin/refresh-analytics')
+    } catch (error) {
+      console.error('Error refreshing dashboard analytics', error)
     }
   },
 }
