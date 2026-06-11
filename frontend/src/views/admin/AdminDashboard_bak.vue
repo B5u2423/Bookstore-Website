@@ -196,21 +196,21 @@ const cateBarOptions = {
               value="today"
               size="small"
             >
-              Hôm nay
+               Hôm nay
             </v-btn>
 
             <v-btn
               value="week"
               size="small"
             >
-              Tuần này
+               Tuần này
             </v-btn>
 
             <v-btn
               value="month"
               size="small"
             >
-              Tháng này
+               Tháng này
             </v-btn>
 
           </v-btn-toggle>
@@ -349,7 +349,7 @@ const cateBarOptions = {
                   />
 
                   <span class="text-caption text-medium-emphasis">
-                    {{ item.label }} — {{ item.count }}
+                     {{ item.label }} — {{ item.count }}
                   </span>
 
                 </div>
@@ -373,11 +373,11 @@ const cateBarOptions = {
                       class="text-subtitle-1 font-weight-medium"
                       :style="{ color: item.color }"
                     >
-                      {{ item.pct }}%
+                       {{ item.pct }}%
                     </div>
 
                     <div class="text-caption text-medium-emphasis">
-                      {{ item.label.toLowerCase() }}
+                       {{ item.label.toLowerCase() }}
                     </div>
 
                   </div>

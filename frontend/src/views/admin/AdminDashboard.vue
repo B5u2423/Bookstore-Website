@@ -11,19 +11,19 @@ const customEnd = ref('')
 const showDropdown = ref(false)
 
 const periodOptions = [
-  { value: 'today',      label: 'Hôm nay',       range: 'TODAY',        days: 1 },
-  { value: 'last7',      label: '7 ngày qua',     range: 'LAST_7_DAYS',  days: 7 },
-  { value: 'last30',     label: '30 ngày qua',    range: 'LAST_30_DAYS', days: 30 },
-  { value: 'this_week',  label: 'Tuần này',       range: 'THIS_WEEK' },
-  { value: 'this_month', label: 'Tháng này',      range: 'THIS_MONTH' },
-  { value: 'custom',     label: 'Tùy chọn ngày',  range: 'CUSTOM' },
+  { value: 'today', label: 'Hôm nay', range: 'TODAY', days: 1 },
+  { value: 'last7', label: '7 ngày qua', range: 'LAST_7_DAYS', days: 7 },
+  { value: 'last30', label: '30 ngày qua', range: 'LAST_30_DAYS', days: 30 },
+  { value: 'this_week', label: 'Tuần này', range: 'THIS_WEEK' },
+  { value: 'this_month', label: 'Tháng này', range: 'THIS_MONTH' },
+  { value: 'custom', label: 'Tùy chọn ngày', range: 'CUSTOM' },
 ]
 
 const selectedLabel = computed(() => {
   if (selectedPeriod.value === 'custom' && customStart.value && customEnd.value) {
     return `${customStart.value} → ${customEnd.value}`
   }
-  return periodOptions.find(p => p.value === selectedPeriod.value)?.label ?? ''
+  return periodOptions.find((p) => p.value === selectedPeriod.value)?.label ?? ''
 })
 
 function toVNDate(d) {
@@ -38,7 +38,7 @@ async function selectPeriod(value) {
   selectedPeriod.value = value
   if (value !== 'custom') {
     showDropdown.value = false
-    const res = await getAnalytics(buildParams(value)) 
+    const res = await getAnalytics(buildParams(value))
   }
 }
 
@@ -46,18 +46,21 @@ function buildParams(value) {
   const now = new Date()
   const today = toVNDate(now)
 
-  if (value === 'today')     return { range: 'TODAY', startDate: today, endDate: today }
+  if (value === 'today') return { range: 'TODAY', startDate: today, endDate: today }
   if (value === 'last7') {
-    const s = new Date(now); s.setDate(s.getDate() - 6)
+    const s = new Date(now)
+    s.setDate(s.getDate() - 6)
     return { range: 'LAST_7_DAYS', startDate: toVNDate(s), endDate: today }
   }
   if (value === 'last30') {
-    const s = new Date(now); s.setDate(s.getDate() - 29)
+    const s = new Date(now)
+    s.setDate(s.getDate() - 29)
     return { range: 'LAST_30_DAYS', startDate: toVNDate(s), endDate: today }
   }
   if (value === 'this_week') {
     const day = now.getDay() || 7
-    const s = new Date(now); s.setDate(s.getDate() - day + 1)
+    const s = new Date(now)
+    s.setDate(s.getDate() - day + 1)
     return { range: 'THIS_WEEK', startDate: toVNDate(s), endDate: today }
   }
   if (value === 'this_month') {
@@ -77,7 +80,7 @@ async function applyCustomRange() {
 
 const periodsMeta = {
   today: { compareLabel: 'so với hôm qua', range: 'TODAY' },
-  last7:  { compareLabel: '', range: 'LAST_7_DAYS' },
+  last7: { compareLabel: '', range: 'LAST_7_DAYS' },
   last30: { compareLabel: '', range: 'LAST_30_DAYS' },
   this_week: { compareLabel: 'so với tuần trước', range: 'LAST_7_DAYS' },
   this_month: { compareLabel: 'so với tháng trước', range: 'LAST_30_DAYS' },
@@ -146,7 +149,6 @@ function deltaClass(kpi) {
   const d = deltaPercent(kpi)
   return d > 0 ? 'text-success' : d < 0 ? 'text-error' : 'text-medium-emphasis'
 }
-
 </script>
 
 <template>
@@ -166,42 +168,91 @@ function deltaClass(kpi) {
         <!-- Period selector -->
 
         <div class="d-flex align-center justify-space-between flex-wrap ga-2 mb-4">
-  <span class="text-caption text-medium-emphasis">Xem theo</span>
 
-  <v-menu v-model="showDropdown" :close-on-content-click="false" location="bottom start">
-    <template #activator="{ props }">
-      <v-btn v-bind="props" variant="outlined" size="small" append-icon="mdi-chevron-down">
-        {{ selectedLabel }}
-      </v-btn>
-    </template>
+          <span class="text-caption text-medium-emphasis">Xem theo</span>
 
-    <v-list density="compact" min-width="220">
-      <v-list-item
-        v-for="opt in periodOptions.filter(p => p.value !== 'custom')"
-        :key="opt.value"
-        :active="selectedPeriod === opt.value"
-        @click="selectPeriod(opt.value)"
-      >
-        {{ opt.label }}
-      </v-list-item>
+          <v-menu
+            v-model="showDropdown"
+            :close-on-content-click="false"
+            location="bottom start"
+          >
 
-      <v-divider />
+            <template #activator="{ props }">
 
-      <!-- Custom range -->
-      <v-list-item :active="selectedPeriod === 'custom'" @click="selectedPeriod = 'custom'">
-        Tùy chọn ngày
-      </v-list-item>
+              <v-btn
+                v-bind="props"
+                variant="outlined"
+                size="small"
+                append-icon="mdi-chevron-down"
+              >
+                 {{ selectedLabel }}
+              </v-btn>
 
-      <template v-if="selectedPeriod === 'custom'">
-        <div class="pa-3 d-flex flex-column ga-2">
-          <v-text-field v-model="customStart" label="Từ ngày" type="date" density="compact" hide-details />
-          <v-text-field v-model="customEnd"   label="Đến ngày" type="date" density="compact" hide-details />
-          <v-btn size="small" color="primary" block @click="applyCustomRange">Áp dụng</v-btn>
+            </template>
+
+            <v-list
+              density="compact"
+              min-width="220"
+            >
+
+              <v-list-item
+                v-for="opt in periodOptions.filter((p) => p.value !== 'custom')"
+                :key="opt.value"
+                :active="selectedPeriod === opt.value"
+                @click="selectPeriod(opt.value)"
+              >
+                 {{ opt.label }}
+              </v-list-item>
+
+              <v-divider />
+
+              <!-- Custom range -->
+
+              <v-list-item
+                :active="selectedPeriod === 'custom'"
+                @click="selectedPeriod = 'custom'"
+              >
+                 Tùy chọn ngày
+              </v-list-item>
+
+              <template v-if="selectedPeriod === 'custom'">
+
+                <div class="pa-3 d-flex flex-column ga-2">
+
+                  <v-text-field
+                    v-model="customStart"
+                    label="Từ ngày"
+                    type="date"
+                    density="compact"
+                    hide-details
+                  />
+
+                  <v-text-field
+                    v-model="customEnd"
+                    label="Đến ngày"
+                    type="date"
+                    density="compact"
+                    hide-details
+                  />
+
+                  <v-btn
+                    size="small"
+                    color="primary"
+                    block
+                    @click="applyCustomRange"
+                  >
+                    Áp dụng
+                  </v-btn>
+
+                </div>
+
+              </template>
+
+            </v-list>
+
+          </v-menu>
+
         </div>
-      </template>
-    </v-list>
-  </v-menu>
-</div>
 
         <!-- KPI cards -->
 
