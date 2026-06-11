@@ -6,7 +6,6 @@ import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth-store'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
-import { compile } from 'vue'
 
 const routes = [
   {
@@ -201,6 +200,9 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
+  if (!to.meta.requiresAuth && !to.meta.requiresAdminAuth && !to.meta.entrypoint) {
+    return true
+  }
   const auth = useAuthStore()
   const adminAuth = useAdminAuthStore()
 

@@ -3,19 +3,29 @@ import { formatPriceVNLocale } from '@/utils/utils'
 
 const props = defineProps({
   book: Object,
+  loading: Boolean,
 })
 </script>
 
 <template>
 
+  <v-skeleton-loader
+    v-if="loading"
+    :elevation="1"
+    type="image, article"
+    width="180"
+    class="ma-2"
+  />
+
   <v-card
-    variant="outlined"
+    v-else
+    variant="flat"
     elevation="4"
-    class="custom ma-2"
+    class="custom"
     hover
     :to="{ name: 'book-detail', params: { id: book.id, slug: book.urlSlug } }"
     :ripple="false"
-    width="180"
+    width="186"
   >
 
     <!-- `cover` prop to crop the image to fill the parent size -->
@@ -23,7 +33,8 @@ const props = defineProps({
     <v-img
       cover
       :src="book.imageUrl"
-      height="200px"
+      :aspect-ratio="3 / 4"
+      style="background-color: #f5f5f5"
     >
 
     </v-img>
