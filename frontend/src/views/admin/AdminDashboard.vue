@@ -1,89 +1,318 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { AdminService } from '@/api/admin-api'
+import DoughnutChart from '@/components/charts/DoughnutChart.vue'
+import LineChart from '@/components/charts/LineChart.vue'
+import BarChart from '@/components/charts/BarChart.vue'
 
-const metrics = ref(null)
-const loading = ref(true)
+const analytics = ref(null)
+const loading = ref(false)
+const selectedPeriod = ref('today')
+const customStart = ref('')
+const customEnd = ref('')
+const showDropdown = ref(false)
 
-async function getMetrics() {
+const periodOptions = [
+  { value: 'today', label: 'Hôm nay', range: 'TODAY', days: 1 },
+  { value: 'last7', label: '7 ngày qua', range: 'LAST_7_DAYS', days: 7 },
+  { value: 'last30', label: '30 ngày qua', range: 'LAST_30_DAYS', days: 30 },
+  { value: 'this_week', label: 'Tuần này', range: 'THIS_WEEK' },
+  { value: 'this_month', label: 'Tháng này', range: 'THIS_MONTH' },
+  { value: 'custom', label: 'Tùy chọn ngày', range: 'CUSTOM' },
+]
+
+const selectedLabel = computed(() => {
+  if (selectedPeriod.value === 'custom' && customStart.value && customEnd.value) {
+    return `${customStart.value} → ${customEnd.value}`
+  }
+  return periodOptions.find((p) => p.value === selectedPeriod.value)?.label ?? ''
+})
+
+function toVNDate(d) {
+  return d.toLocaleDateString('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' })
+}
+
+// watch(selectedPeriod, () => {
+//   getAnalytics()
+// })
+
+async function selectPeriod(value) {
+  selectedPeriod.value = value
+  if (value !== 'custom') {
+    showDropdown.value = false
+    const res = await getAnalytics(buildParams(value))
+  }
+}
+
+function buildParams(value) {
+  const now = new Date()
+  const today = toVNDate(now)
+
+  if (value === 'today') return { range: 'TODAY', startDate: today, endDate: today }
+  if (value === 'last7') {
+    const s = new Date(now)
+    s.setDate(s.getDate() - 6)
+    return { range: 'LAST_7_DAYS', startDate: toVNDate(s), endDate: today }
+  }
+  if (value === 'last30') {
+    const s = new Date(now)
+    s.setDate(s.getDate() - 29)
+    return { range: 'LAST_30_DAYS', startDate: toVNDate(s), endDate: today }
+  }
+  if (value === 'this_week') {
+    const day = now.getDay() || 7
+    const s = new Date(now)
+    s.setDate(s.getDate() - day + 1)
+    return { range: 'THIS_WEEK', startDate: toVNDate(s), endDate: today }
+  }
+  if (value === 'this_month') {
+    const s = new Date(now.getFullYear(), now.getMonth(), 1)
+    return { range: 'THIS_MONTH', startDate: toVNDate(s), endDate: today }
+  }
+  if (value === 'custom') {
+    return { range: 'CUSTOM', startDate: customStart.value, endDate: customEnd.value }
+  }
+}
+
+async function applyCustomRange() {
+  if (!customStart.value || !customEnd.value) return
+  showDropdown.value = false
+  await getAnalytics(buildParams('custom'))
+}
+
+const periodsMeta = {
+  today: { compareLabel: 'so với hôm qua', range: 'TODAY' },
+  last7: { compareLabel: '', range: 'LAST_7_DAYS' },
+  last30: { compareLabel: '', range: 'LAST_30_DAYS' },
+  this_week: { compareLabel: 'so với tuần trước', range: 'LAST_7_DAYS' },
+  this_month: { compareLabel: 'so với tháng trước', range: 'LAST_30_DAYS' },
+  custom: { compareLabel: '', range: 'CUSTOM' },
+}
+
+async function getAnalytics(params) {
   try {
     loading.value = true
-    metrics.value = await AdminService.getDashboardMetrics()
+    analytics.value = await AdminService.getDashboardAnalytics(params)
   } finally {
     loading.value = false
   }
 }
 
-onMounted(() => {
-  getMetrics()
+// and update onMounted:
+onMounted(() => getAnalytics(buildParams('today')))
+
+const compareLabel = computed(() => periodsMeta[selectedPeriod.value].compareLabel)
+
+const currentCards = computed(() => {
+  const a = analytics.value
+  return [
+    {
+      key: 'revenue',
+      label: 'Tổng doanh thu',
+      value: a?.totalRevenue ? `₫${a.totalRevenue.toLocaleString('vi-VN')}` : '--',
+      raw: a?.totalRevenue ?? 0,
+      prev: a?.prevTotalRevenue ?? 0,
+    },
+    {
+      key: 'orders',
+      label: 'Tổng đơn hàng',
+      value: a?.totalOrdersCount?.toLocaleString('vi-VN') ?? '--',
+      raw: a?.totalOrdersCount ?? 0,
+      prev: a?.prevTotalOrdersCount ?? 0,
+    },
+    {
+      key: 'aov',
+      label: 'Giá trị TB đơn hàng',
+      value: a?.aov ? `₫${a.aov.toLocaleString('vi-VN')}` : '--',
+      raw: a?.aov ?? 0,
+      prev: a?.prevAov ?? 0,
+    },
+    {
+      key: 'products',
+      label: 'Sản phẩm đã bán',
+      value: a?.totalItemsSold?.toLocaleString('vi-VN') ?? '--',
+      raw: a?.totalItemsSold ?? 0,
+      prev: a?.prevTotalItemsSold ?? 0,
+    },
+  ]
 })
 
-const defaultRevenue = {
-  totalRevenue: 0,
-  revenueToday: 0,
-  revenueThisMonth: 0,
-  averageOrderValue: 0,
+function deltaPercent(kpi) {
+  if (!kpi.prev) return 0
+  return Math.round(((kpi.raw - kpi.prev) / kpi.prev) * 100)
 }
 
-const defaultUsers = {
-  totalUsers: 0,
-  customersCount: 0,
-  staffCount: 0,
-  adminsCount: 0,
-  newUsersToday: 0,
-  newUsersThisMonth: 0,
+function deltaIcon(kpi) {
+  const d = deltaPercent(kpi)
+  return d > 0 ? 'mdi-trending-up' : d < 0 ? 'mdi-trending-down' : 'mdi-minus'
 }
 
-const defaultInventory = {
-  totalBooks: 0,
-  activeBooks: 0,
-  outOfStockBooks: 0,
-  lowStockBooks: 0,
-  topSellingBooks: [],
-  leastSellingBooks: [],
+function deltaClass(kpi) {
+  const d = deltaPercent(kpi)
+  return d > 0 ? 'text-success' : d < 0 ? 'text-error' : 'text-medium-emphasis'
 }
 
-const defaultCatalog = {
-  booksWithoutCategories: 0,
-  booksWithoutCollections: 0,
-  booksWithoutStock: 0,
-  booksWithoutCoverImage: 0,
-  booksAddedThisMonth: 0,
-  inactiveBooks: 0,
-  totalCategories: 0,
-  totalCollections: 0,
-  booksPerCategory: 0,
+// line chart - revenue
+const revenueLineData = computed(() => {
+  const a = analytics.value
+  return {
+    labels: a?.revenueChartData?.labels ?? ['N/A'],
+    datasets: [
+      {
+        type: 'line',
+        label: 'Doanh thu',
+        data: a?.revenueChartData?.revenue ?? [0],
+        yAxisID: 'y',
+      },
+      {
+        type: 'bar',
+        label: 'Số đơn hàng',
+        data: a?.revenueChartData.orders ?? [0],
+        yAxisID: 'y1',
+      },
+    ],
+  }
+})
+
+const revenueLineOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: 'top',
+    },
+    title: {
+      display: true,
+      text: 'Monthly Revenue',
+    },
+  },
+  scales: {
+    x: {
+      ticks: {
+        maxTicksLimit: 6,
+      },
+    },
+    y: {
+      type: 'linear',
+      position: 'left',
+      beginAtZero: true,
+    },
+
+    y1: {
+      type: 'linear',
+      position: 'right',
+      // prevents duplicate grid lines
+      grid: {
+        drawOnChartArea: false,
+      },
+      beginAtZero: true,
+    },
+  },
 }
 
-const defaultEngagement = {
-  activeCarts: 0,
-  cartAbandonmentRate: 0,
-  ordersPerCustomer: 0,
+// doughnut chart - order status
+const orderStatuses = [
+  {
+    key: 'paidOrders',
+    label: 'Đã thanh toán',
+    color: '#185FA5',
+  },
+  {
+    key: 'pendingOrders',
+    label: 'Chờ xử lý',
+    color: '#EF9F27',
+  },
+  {
+    key: 'cancelledOrders',
+    label: 'Đã hủy',
+    color: '#E24B4A',
+  },
+]
+
+const ordersTotalCount = computed(() => {
+  const a = analytics.value
+
+  return orderStatuses.reduce((sum, status) => sum + (a?.[status.key] ?? 0), 0)
+})
+
+const orderLegend = computed(() => {
+  const a = analytics.value
+
+  const total = ordersTotalCount.value
+  return orderStatuses.map((status) => {
+    const count = a?.[status.key] ?? 0
+
+    return {
+      ...status,
+      count,
+      pct: total ? Number(((count / total) * 100).toFixed(2)) : 0, // 2 digit after decimal point
+    }
+  })
+})
+
+const orderDoughData = computed(() => {
+  const a = analytics.value
+
+  return {
+    labels: orderStatuses.map((s) => s.label),
+    datasets: [
+      {
+        data: orderStatuses.map((s) => a?.[s.key] ?? 0),
+        backgroundColor: orderStatuses.map((s) => s.color),
+        borderColor: '#ffffff',
+        borderWidth: 3,
+        hoverOffset: 6,
+      },
+    ],
+  }
+})
+
+const orderDoughOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  cutout: '68%',
+  plugins: { legend: { display: true } },
 }
 
-const defaultOrders = {
-  totalOrders: 0,
-  ordersToday: 0,
-  ordersThisMonth: 0,
-  pendingOrders: 0,
-  completedOrders: 0,
-  cancelledOrders: 0,
+// bar chart: horizontal - categories trend
+const cateBarData = computed(() => {
+  const a = analytics.value
+  return {
+    labels: a?.categoryTrendChartData?.labels ?? ['N/A'],
+    datasets: [
+      {
+        label: 'Số lượng đã bán',
+        data: a?.categoryTrendChartData?.soldCount ?? [0],
+        backgroundColor: '#185FA5',
+        hoverBackgroundColor: '#378ADD',
+        borderRadius: 5,
+        borderSkipped: false,
+      },
+    ],
+  }
+})
+
+const cateBarOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  indexAxis: 'y',
+  plugins: { legend: { display: false } },
+  scales: {
+    x: {
+      grid: { color: 'rgba(0,0,0,0.07)' },
+      ticks: { font: { size: 11 } },
+      border: { display: false },
+    },
+    y: { grid: { display: false }, ticks: { font: { size: 12 } }, border: { display: false } },
+  },
 }
 
-const revenue = computed(() => metrics.value?.revenueMetricsDTO ?? defaultRevenue)
-
-const users = computed(() => metrics.value?.userMetricsDTO ?? defaultUsers)
-
-const inventory = computed(() => metrics.value?.inventoryMetricsDTO ?? defaultInventory)
-
-const catalog = computed(() => metrics.value?.catalogHealthDTO ?? defaultCatalog)
-
-const engagement = computed(() => metrics.value?.engagementMetricsDTO ?? defaultEngagement)
-
-const orders = computed(() => metrics.value?.orderMetricsDTO ?? defaultOrders)
-
-const formatCurrency = (value) =>
-  value ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value) : '0'
+// refresh button
+async function refreshAnalytics() {
+  await AdminService.refreshDashboardAnalytics()
+  // reload
+  await selectPeriod('today')
+}
 </script>
 
 <template>
@@ -96,296 +325,312 @@ const formatCurrency = (value) =>
       color="primary"
     />
 
-    <template v-if="metrics">
+    <template v-if="analytics">
 
-      <!-- ===== SUMMARY CARDS ===== -->
+      <div>
 
-      <v-row>
+        <!-- Period selector -->
 
-        <v-col
-          cols="12"
-          md="3"
-        >
+        <div class="d-flex align-center justify-space-between flex-wrap ga-2 mb-4">
 
-          <v-card height="100%">
+          <span class="text-caption text-medium-emphasis"></span>
 
-            <v-card-title>💰 Doanh thu</v-card-title>
+          <div>
 
-            <v-card-text>
+            <v-btn
+              size="small"
+              variant="outlined"
+              class="mr-2"
+              @click="refreshAnalytics"
+            >
+               Làm mới dữ liệu
+            </v-btn>
 
-              <div>
-                 Tổng:
-                <strong>{{ formatCurrency(revenue.totalRevenue) }}</strong>
+            <v-menu
+              v-model="showDropdown"
+              :close-on-content-click="false"
+              location="bottom start"
+            >
+
+              <template #activator="{ props }">
+
+                <v-btn
+                  v-bind="props"
+                  variant="outlined"
+                  size="small"
+                  append-icon="mdi-chevron-down"
+                >
+                   {{ selectedLabel }}
+                </v-btn>
+
+              </template>
+
+              <v-list
+                density="compact"
+                min-width="220"
+              >
+
+                <v-list-item
+                  v-for="opt in periodOptions.filter((p) => p.value !== 'custom')"
+                  :key="opt.value"
+                  :active="selectedPeriod === opt.value"
+                  @click="selectPeriod(opt.value)"
+                >
+                   {{ opt.label }}
+                </v-list-item>
+
+                <v-divider />
+
+                <!-- Custom range -->
+
+                <v-list-item
+                  :active="selectedPeriod === 'custom'"
+                  @click="selectedPeriod = 'custom'"
+                >
+                   Tùy chọn ngày
+                </v-list-item>
+
+                <template v-if="selectedPeriod === 'custom'">
+
+                  <div class="pa-3 d-flex flex-column ga-2">
+
+                    <v-text-field
+                      v-model="customStart"
+                      label="Từ ngày"
+                      type="date"
+                      density="compact"
+                      hide-details
+                    />
+
+                    <v-text-field
+                      v-model="customEnd"
+                      label="Đến ngày"
+                      type="date"
+                      density="compact"
+                      hide-details
+                    />
+
+                    <v-btn
+                      size="small"
+                      color="primary"
+                      block
+                      @click="applyCustomRange"
+                    >
+                       Áp dụng
+                    </v-btn>
+
+                  </div>
+
+                </template>
+
+              </v-list>
+
+            </v-menu>
+
+          </div>
+
+        </div>
+
+        <!-- KPI cards -->
+
+        <v-row dense>
+
+          <v-col
+            v-for="kpi in currentCards"
+            :key="kpi.key"
+            cols="12"
+            sm="6"
+            md="3"
+          >
+
+            <v-card
+              flat
+              rounded="lg"
+              variant="outlined"
+              class="pa-4"
+            >
+
+              <div class="text-caption text-medium-emphasis font-weight-medium text-uppercase mb-2">
+                 {{ kpi.label }}
+              </div>
+
+              <div class="text-h5 font-weight-medium text-high-emphasis"> {{ kpi.value }} </div>
+
+              <div
+                class="d-flex align-center ga-1 mt-2 text-caption font-weight-medium"
+                :class="deltaClass(kpi)"
+              >
+
+                <v-icon size="14">{{ deltaIcon(kpi) }}</v-icon>
+                 {{ Math.abs(deltaPercent(kpi)) }}%
+              </div>
+
+              <div class="text-caption text-disabled mt-1"> {{ compareLabel }} </div>
+
+            </v-card>
+
+          </v-col>
+
+        </v-row>
+
+        <!-- Line Revenue -->
+
+        <v-row>
+
+          <v-col
+            cols="12"
+            md="12"
+          >
+
+            <v-card flat>
+
+              <v-card-title class="text-subtitle-1 font-weight-medium pt-4 px-4">
+                 Biểu đồ Doanh thu - Đơn hàng
+              </v-card-title>
+
+              <v-card-subtitle class="px-4"> Phân phối trong khoảng thời gian </v-card-subtitle>
+
+              <div
+                style="
+                  height: 400px;
+                  position: relative;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+
+                <line-chart
+                  :data="revenueLineData"
+                  :option="revenueLineOptions"
+                />
 
               </div>
 
-              <div>Hôm nay: {{ formatCurrency(revenue.revenueToday) }}</div>
+            </v-card>
 
-              <div>Tháng này: {{ formatCurrency(revenue.revenueThisMonth) }}</div>
+          </v-col>
 
-              <div>AOV: {{ formatCurrency(revenue.averageOrderValue) }}</div>
+        </v-row>
 
-            </v-card-text>
+        <!-- Doughnut Order Status and Bar Categories Trend -->
 
-          </v-card>
+        <v-row>
 
-        </v-col>
+          <v-col
+            cols="12"
+            md="6"
+            sm="12"
+          >
 
-        <v-col
-          cols="12"
-          md="3"
-        >
+            <v-card flat>
 
-          <v-card height="100%">
+              <v-card-title class="text-subtitle-1 font-weight-medium pt-4 px-4">
+                 Biểu đồ Trạng thái
+              </v-card-title>
 
-            <v-card-title>📦 Đơn hàng</v-card-title>
+              <v-card-subtitle class="px-4">Phân phối các đơn theo trạng thái</v-card-subtitle>
 
-            <v-card-text>
+              <div
+                style="
+                  height: 400px;
+                  position: relative;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
 
-              <div>
-                 Tổng:
-                <strong>{{ orders.totalOrders }}</strong>
+                <doughnut-chart
+                  :data="orderDoughData"
+                  :option="orderDoughOptions"
+                />
 
-              </div>
+                <!-- total orders (in the ring of the donut) -->
 
-              <div>Hôm nay: {{ orders.ordersToday }}</div>
+                <div style="position: absolute; text-align: center; pointer-events: none">
 
-              <div>Tháng này: {{ orders.ordersThisMonth }}</div>
+                  <div class="text-h6 font-weight-medium">{{ ordersTotalCount }}</div>
 
-              <div>Chờ xử lý: {{ orders.pendingOrders }}</div>
+                  <div class="text-caption text-medium-emphasis">total orders</div>
 
-            </v-card-text>
-
-          </v-card>
-
-        </v-col>
-
-        <v-col
-          cols="12"
-          md="3"
-        >
-
-          <v-card height="100%">
-
-            <v-card-title>👥 Người dùng</v-card-title>
-
-            <v-card-text>
-
-              <div>
-                 Tổng:
-                <strong>{{ users.totalUsers }}</strong>
+                </div>
 
               </div>
 
-              <div>Khách hàng: {{ users.customersCount }}</div>
+              <!-- status stats -->
 
-              <div>Nhân viên: {{ users.staffCount }}</div>
-
-              <div>Admin: {{ users.adminsCount }}</div>
-
-              <div>Mới hôm nay: {{ users.newUsersToday }}</div>
-
-            </v-card-text>
-
-          </v-card>
-
-        </v-col>
-
-        <v-col
-          cols="12"
-          md="3"
-        >
-
-          <v-card height="100%">
-
-            <v-card-title>📚 Kho sách</v-card-title>
-
-            <v-card-text>
-
-              <div>
-                 Tổng sách:
-                <strong>{{ inventory.totalBooks }}</strong>
-
-              </div>
-
-              <div>Đang bán: {{ inventory.activeBooks }}</div>
-
-              <div>Hết hàng: {{ inventory.outOfStockBooks }}</div>
-
-              <div>Sắp hết: {{ inventory.lowStockBooks }}</div>
-
-            </v-card-text>
-
-          </v-card>
-
-        </v-col>
-
-      </v-row>
-
-      <!-- ===== CATALOG HEALTH ===== -->
-
-      <v-row>
-
-        <v-col cols="12">
-
-          <v-card>
-
-            <v-card-title>🧩 Tình trạng danh mục</v-card-title>
-
-            <v-card-text>
-
-              <v-row>
+              <v-row
+                dense
+                class="mt-2"
+              >
 
                 <v-col
-                  cols="6"
-                  md="3"
+                  v-for="item in orderLegend"
+                  :key="item.label"
+                  cols="4"
                 >
-                   Không danh mục: {{ catalog.booksWithoutCategories }}
-                </v-col>
 
-                <v-col
-                  cols="6"
-                  md="3"
-                >
-                   Không bộ sưu tập: {{ catalog.booksWithoutCollections }}
-                </v-col>
+                  <div class="text-center pa-2 rounded border-md">
 
-                <v-col
-                  cols="6"
-                  md="3"
-                >
-                   Không tồn kho: {{ catalog.booksWithoutStock }}
-                </v-col>
+                    <div
+                      class="text-subtitle-1 font-weight-medium"
+                      :style="{ color: item.color }"
+                    >
+                       {{ item.pct }}%
+                    </div>
 
-                <v-col
-                  cols="6"
-                  md="3"
-                >
-                   Không ảnh bìa: {{ catalog.booksWithoutCoverImage }}
-                </v-col>
+                    <div class="text-caption text-medium-emphasis">
+                       {{ item.label.toLowerCase() }}
+                    </div>
 
-                <v-col
-                  cols="6"
-                  md="3"
-                >
-                   Sách mới tháng này: {{ catalog.booksAddedThisMonth }}
-                </v-col>
+                  </div>
 
-                <v-col
-                  cols="6"
-                  md="3"
-                >
-                   Sách ngưng bán: {{ catalog.inactiveBooks }}
-                </v-col>
-
-                <v-col
-                  cols="6"
-                  md="3"
-                >
-                   Danh mục: {{ catalog.totalCategories }}
-                </v-col>
-
-                <v-col
-                  cols="6"
-                  md="3"
-                >
-                   Bộ sưu tập: {{ catalog.totalCollections }}
                 </v-col>
 
               </v-row>
 
-            </v-card-text>
+            </v-card>
 
-          </v-card>
+          </v-col>
 
-        </v-col>
+          <v-col
+            cols="12"
+            md="6"
+            sm="12"
+          >
 
-      </v-row>
+            <v-card
+              rounded="lg"
+              flat
+            >
 
-      <!-- ===== ENGAGEMENT ===== -->
+              <v-card-title class="text-subtitle-1 font-weight-medium pt-4 px-4">
+                 Biểu đồ Danh mục Nổi bật
+              </v-card-title>
 
-      <v-row>
+              <v-card-subtitle class="px-4">Số sách bán theo danh mục</v-card-subtitle>
 
-        <v-col
-          cols="12"
-          md="4"
-        >
+              <v-card-text>
 
-          <v-card height="100%">
+                <div style="height: 400px">
 
-            <v-card-title>🛒 Tương tác</v-card-title>
+                  <bar-chart
+                    :data="cateBarData"
+                    :options="cateBarOptions"
+                  />
 
-            <v-card-text>
+                </div>
 
-              <div>Giỏ hàng đang hoạt động: {{ engagement.activeCarts }}</div>
+              </v-card-text>
 
-              <div>Tỷ lệ bỏ giỏ: {{ (engagement.cartAbandonmentRate * 100).toFixed(2) }}%</div>
+            </v-card>
 
-              <div>Đơn / khách: {{ engagement.ordersPerCustomer.toFixed(2) }}</div>
+          </v-col>
 
-            </v-card-text>
+        </v-row>
 
-          </v-card>
-
-        </v-col>
-
-        <v-col
-          cols="12"
-          md="4"
-        >
-
-          <v-card height="100%">
-
-            <v-card-title>🔥 Bán chạy</v-card-title>
-
-            <v-card-text>
-
-              <v-list density="compact">
-
-                <v-list-item
-                  v-for="book in inventory.topSellingBooks"
-                  :key="book"
-                >
-                   {{ book }}
-                </v-list-item>
-
-              </v-list>
-
-            </v-card-text>
-
-          </v-card>
-
-        </v-col>
-
-        <v-col
-          cols="12"
-          md="4"
-        >
-
-          <v-card height="100%">
-
-            <v-card-title>❄️ Bán chậm</v-card-title>
-
-            <v-card-text>
-
-              <v-list density="compact">
-
-                <v-list-item
-                  v-for="book in inventory.leastSellingBooks"
-                  :key="book"
-                >
-                   {{ book }}
-                </v-list-item>
-
-              </v-list>
-
-            </v-card-text>
-
-          </v-card>
-
-        </v-col>
-
-      </v-row>
+      </div>
 
     </template>
 

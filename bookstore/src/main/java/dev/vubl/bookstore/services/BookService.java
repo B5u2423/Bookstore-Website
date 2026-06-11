@@ -1,8 +1,6 @@
 package dev.vubl.bookstore.services;
 
 import dev.vubl.bookstore.dtos.BookResponseDTO;
-import dev.vubl.bookstore.dtos.dashboard.CatalogHealthCountDTO;
-import dev.vubl.bookstore.dtos.dashboard.CatalogHealthDTO;
 import dev.vubl.bookstore.entities.Book;
 import dev.vubl.bookstore.entities.Category;
 import dev.vubl.bookstore.exceptions.BookDoesNotExistException;
@@ -194,21 +192,6 @@ public class BookService {
 
   public List<BookResponseDTO> searchBookV3(String keyword) {
     return bookRepo.searchBookV3(keyword).stream().map(this::mapToBookResponseDTO).toList();
-  }
-
-  public CatalogHealthDTO getCatalogHealthMetrics() {
-    CatalogHealthCountDTO c = bookRepo.getCatalogHealthCounts();
-    return CatalogHealthDTO.builder()
-        .booksWithoutCategories(c.booksWithoutCategories())
-        .booksWithoutCollections(c.booksWithoutCollections())
-        .booksWithoutStock(c.booksWithoutStock())
-        .booksWithoutCoverImage(c.booksWithoutCoverImage())
-        .booksAddedThisMonth(c.booksAddedThisMonth())
-        .inactiveBooks(c.inactiveBooks())
-        .totalCategories(c.totalCategories())
-        .totalCollections(c.totalCollections())
-        .booksPerCategory(c.booksPerCategory())
-        .build();
   }
 
   private boolean isIsbnNotUnique(String isbn) {

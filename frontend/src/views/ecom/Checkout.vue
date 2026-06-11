@@ -90,9 +90,9 @@ async function confirmCheckout() {
         },
         authStore.accessToken,
       )
-      // parse transaction reference 
-      const urlObj = new URL(res.paymentUrl);
-      shippingInfo.value.vnpTxnRef = urlObj.searchParams.get('vnp_TxnRef');
+      // parse transaction reference
+      const urlObj = new URL(res.paymentUrl)
+      shippingInfo.value.vnpTxnRef = urlObj.searchParams.get('vnp_TxnRef')
       // create order in db
       const orderResponse = await OrderService.createOrder(
         shippingInfo.value,

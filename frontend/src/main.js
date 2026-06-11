@@ -9,6 +9,7 @@ import { createVuetify } from 'vuetify'
 
 import App from './App.vue'
 import router from './router'
+import 'chart.js/auto'
 
 const app = createApp(App)
 

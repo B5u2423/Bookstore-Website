@@ -33,4 +33,7 @@ public class OrderItem extends BaseEntity {
   private String productCode;
 
   @ManyToOne @JsonBackReference private Order order;
+
+  @Column(name = "book_id")
+  private Integer bookId;
 }

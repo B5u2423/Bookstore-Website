@@ -1,13 +1,16 @@
 package dev.vubl.bookstore.controllers;
 
-import dev.vubl.bookstore.dtos.AdminDashboardDTO;
+import dev.vubl.bookstore.dtos.DashboardAnalyticsResponse;
 import dev.vubl.bookstore.entities.ApplicationUser;
-import dev.vubl.bookstore.services.AdminService;
+import dev.vubl.bookstore.entities.DateRange;
 import dev.vubl.bookstore.services.ApplicationUserService;
 import dev.vubl.bookstore.services.BookService;
+import dev.vubl.bookstore.services.DashboardAnalyticsService;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
   private final ApplicationUserService userService;
   private final BookService bookService;
-  private final AdminService adminService;
+  private final DashboardAnalyticsService dashboardAnalyticsService;
 
   @GetMapping
   public ResponseEntity<List<ApplicationUser>> getAllUsers() {
@@ -44,8 +47,20 @@ public class AdminController {
     return new PagedModel<>(userService.getAllUsersPaginated(page, size, sortBy, order, "staff"));
   }
 
-  @GetMapping("/get-metrics")
-  public AdminDashboardDTO test() {
-    return adminService.getDashboardData();
+  @GetMapping("/analytics")
+  public DashboardAnalyticsResponse getDashboardAnalytics(
+      @RequestParam(value = "startDate", required = false)
+          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+          LocalDate startDate,
+      @RequestParam(value = "endDate", required = false)
+          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+          LocalDate endDate,
+      @RequestParam(value = "range", defaultValue = "CUSTOM") DateRange range) {
+    return dashboardAnalyticsService.getAnalytics(range, startDate, endDate);
+  }
+
+  @PostMapping("/refresh-analytics")
+  public void refreshDashboard() {
+    dashboardAnalyticsService.refreshMultipleMaterializedViews();
   }
 }
