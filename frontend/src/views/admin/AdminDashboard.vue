@@ -2,6 +2,7 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import { AdminService } from '@/api/admin-api'
 import DoughnutChart from '@/components/charts/DoughnutChart.vue'
+import LineChart from '@/components/charts/LineChart.vue'
 
 const analytics = ref(null)
 const loading = ref(false)
@@ -150,7 +151,68 @@ function deltaClass(kpi) {
   return d > 0 ? 'text-success' : d < 0 ? 'text-error' : 'text-medium-emphasis'
 }
 
-// doughnut chart
+// line chart - revenue
+const revenueLineData = computed(
+() => {
+  const a = analytics.value
+  return {
+  labels: a?.revenueChartData?.labels ?? ['N/A'],
+  datasets: [
+    {
+      type: 'line',
+      label: 'Doanh thu',
+      data: a?.revenueChartData?.revenue ?? [0],
+      yAxisID: 'y',
+    },
+    {
+      type: 'bar',
+      label: 'Số đơn hàng',
+      data: a?.revenueChartData.orders ?? [0],
+      yAxisID: 'y1',
+    },
+  ],
+}
+}
+)
+
+
+const revenueLineOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: 'top',
+    },
+    title: {
+      display: true,
+      text: 'Monthly Revenue',
+    },
+  },
+  scales: {
+    x: {
+      ticks: {
+        maxTicksLimit: 6,
+      },
+    },
+    y: {
+      type: 'linear',
+      position: 'left',
+      beginAtZero: true,
+    },
+
+    y1: {
+      type: 'linear',
+      position: 'right',
+      // prevents duplicate grid lines
+      grid: {
+        drawOnChartArea: false,
+      },
+      beginAtZero: true,
+    },
+  },
+}
+
+// doughnut chart - order status
 const orderDoughData = computed(() => {
   const a = analytics.value
   return {
@@ -320,6 +382,41 @@ const orderDoughOptions = {
 
         </v-row>
 
+        <!-- Line Revenue -->
+        <v-row>
+          <v-col cols="12" md="12">
+            <v-card flat>
+
+              <v-card-title class="text-subtitle-1 font-weight-medium pt-4 px-4">
+                Biểu đồ Doanh thu - Đơn hàng
+              </v-card-title>
+
+              <v-card-subtitle class="px-4">
+                Phân phối trong khoảng thời gian
+              </v-card-subtitle>
+
+
+              <div
+                style="
+                  height: 400px;
+                  position: relative;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <line-chart
+                  :data="revenueLineData"
+                  :option="revenueLineOptions"
+                />
+
+              </div>
+
+            </v-card>
+          </v-col>
+        </v-row>
+
+        <!-- Doughnut Order Status and Bar Categories Trend -->
         <v-row>
 
           <v-col
@@ -328,10 +425,10 @@ const orderDoughOptions = {
             sm="12"
           >
 
-            <v-card>
+            <v-card flat>
 
               <v-card-title class="text-subtitle-1 font-weight-medium pt-4 px-4">
-                 Trạng thái đơn hàng
+                 Biểu đồ Trạng thái
               </v-card-title>
 
               <v-card-subtitle class="px-4">Phân phối các đơn theo trạng thái</v-card-subtitle>
