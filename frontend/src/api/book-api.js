@@ -142,4 +142,14 @@ export const BookService = {
       throw error
     }
   },
+
+  async getBooksInCollectionBySlug(params = {}) {
+    try {
+      const res = await api.get('/books/get-books', { params })
+      return res.data
+    } catch (error) {
+      console.error('Error get books in collection', error)
+      throw error
+    }
+  },
 }

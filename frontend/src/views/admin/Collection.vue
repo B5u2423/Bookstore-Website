@@ -1,10 +1,10 @@
 <script setup>
+import { BookService } from '@/api/book-api'
 import { CollectionService } from '@/api/collection-api'
 import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
 import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
 import { ref, computed, onMounted, toRef, shallowRef } from 'vue'
-SnackBarOnSuccess
 
 const adminAuthStore = useAdminAuthStore()
 
@@ -20,6 +20,7 @@ function createNewRecord() {
 const headers = ref([
   { title: 'ID', key: 'id', align: 'start' },
   { title: 'Tên bộ sưu tập', key: 'collectionName', align: 'start' },
+  { title: 'Sách trong BST', key: 'books', align: 'start' },
   { title: 'Thao tác', key: 'actions', align: 'start' },
 ])
 const itemsPerPage = ref(10)
@@ -46,7 +47,7 @@ async function loadItems({ page = 1, itemsPerPage: size = itemsPerPage.value } =
   loading.value = true
   try {
     // page on BE start with index 0
-    const payload = await CollectionService.getAllCollectionsPaginated(adminAuthStore.accessToken, {
+    const payload = await CollectionService.getAllCollectionsPaginated({
       page: page - 1,
       size,
     })
@@ -167,6 +168,11 @@ const collectionNameCaps = computed({
     formModel.value.collectionName = capitalizeVietnamese(val || '')
   },
 })
+
+async function getBooksInCollection(collection) {
+  BookService.getBooksInCollectionBySlug({ collection })
+}
+
 onMounted(() => {
   loadItems()
 })
@@ -243,6 +249,19 @@ onMounted(() => {
 
     </template>
 
+    <!-- books in collection -->
+
+    <template v-slot:item.books="{ item }">
+
+      <v-btn
+        variant="outlined"
+        size="small"
+      >
+        Xem thông tin
+      </v-btn>
+
+    </template>
+
     <!-- action buttons -->
 
     <template v-slot:item.actions="{ item }">
@@ -264,6 +283,8 @@ onMounted(() => {
     </template>
 
   </v-data-table-server>
+
+  <!-- edit/add dialg -->
 
   <v-dialog
     v-model="dialog"
@@ -380,6 +401,10 @@ onMounted(() => {
     :show="isSuccess"
     :message="message"
   />
+
+  <!-- view books dialog -->
+
+  <v-dialog> </v-dialog>
 
 </template>
 
