@@ -1,7 +1,10 @@
 <script setup>
 import { CollectionService } from '@/api/collection-api'
+import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
+import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
 import { ref, computed, onMounted, toRef, shallowRef } from 'vue'
+SnackBarOnSuccess
 
 const adminAuthStore = useAdminAuthStore()
 
@@ -30,10 +33,14 @@ const dialog = shallowRef(false)
 const isEditing = toRef(() => !!formModel.value.id)
 
 // confirmation dialog
-// TODO: add snackbar to collection and coupon
 const confirmationDialog = shallowRef(false)
 const itemId = ref('')
 const isDelLoading = ref(false)
+
+// snackbars
+const isError = ref(false)
+const isSuccess = ref(false)
+const message = ref('')
 
 async function loadItems({ page = 1, itemsPerPage: size = itemsPerPage.value } = {}) {
   loading.value = true
@@ -88,8 +95,14 @@ async function save() {
         (collection) => collection.id === formModel.value.id,
       )
       serverItems.value[index] = formModel.value
+      // success snack
+      isSuccess.value = true
+      message.value = 'Cập nhật thành công'
     } catch (error) {
       console.error('Error editing collection')
+      // error snack
+      isError.value = true
+      message.value = 'Lỗi xảy ra khi cập nhật thông tin'
     } finally {
       dialog.value = false
     }
@@ -100,8 +113,16 @@ async function save() {
         formModel.value,
         adminAuthStore.accessToken,
       )
+      // reload items
+      await loadItems()
+      // success snack
+      isSuccess.value = true
+      message.value = 'Thêm bộ sưu tập thành công'
     } catch (error) {
       console.error('Error adding new collection')
+      // error snack
+      isError.value = true
+      message.value = 'Lỗi xảy ra khi thêm bộ sưu tập'
     } finally {
       dialog.value = false
     }
@@ -116,8 +137,14 @@ async function remove() {
     const index = serverItems.value.findIndex((book) => book.id === itemId.value)
     serverItems.value.splice(index, 1)
     totalItems.value--
+    // success snackbar
+    isSuccess.value = true
+    message.value = 'Xóa bộ sưu tập thành công'
   } catch (error) {
     console.error(`Error deleting collection with id ${id}`, error)
+    // error snack bar
+    isError.value = true
+    message.value = 'Lỗi xảy ra khi xóa bộ sưu tập'
   } finally {
     isDelLoading.value = false
     confirmationDialog.value = false
@@ -341,6 +368,18 @@ onMounted(() => {
     </v-card>
 
   </v-dialog>
+
+  <!-- snackbars -->
+
+  <SnackBarOnFailure
+    :show="isError"
+    :message="message"
+  />
+
+  <SnackBarOnSuccess
+    :show="isSuccess"
+    :message="message"
+  />
 
 </template>
 

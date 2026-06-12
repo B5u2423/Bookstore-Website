@@ -6,6 +6,7 @@ import { VDateInput } from 'vuetify/labs/VDateInput'
 
 const adminAuthStore = useAdminAuthStore()
 
+// TODO: add snackbar
 function createNewRecord() {
   return {
     id: null,
