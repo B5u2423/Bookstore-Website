@@ -66,7 +66,6 @@ export const AuthService = {
   },
 }
 
-// TODO: remove token param from funcs
 // admin req interceptors
 adminApi.interceptors.request.use(
   (config) => {

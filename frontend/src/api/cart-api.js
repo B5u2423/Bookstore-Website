@@ -1,7 +1,7 @@
 import api, { adminApi, customerApi, provinceApi } from './api-config'
 
 export const CartService = {
-  async addToCart(token, body) {
+  async addToCart(body) {
     try {
       const res = await customerApi.post('/carts/add', body)
       return res.data
@@ -10,7 +10,7 @@ export const CartService = {
     }
   },
 
-  async getUsersActiveCart(token) {
+  async getUsersActiveCart() {
     try {
       const res = await customerApi.get('/carts')
       return res.data
@@ -18,7 +18,7 @@ export const CartService = {
       console.error('Error get user active cart')
     }
   },
-  async removeAllItemsFromCart(token) {
+  async removeAllItemsFromCart() {
     try {
       const res = await customerApi.delete('/carts/remove-all')
       return res.data
@@ -29,7 +29,7 @@ export const CartService = {
 }
 
 export const PaymentService = {
-  async createPaymentPage(body, token) {
+  async createPaymentPage(body) {
     try {
       const res = await customerApi.post('/payment/create-payment', body)
       return res.data
@@ -40,7 +40,7 @@ export const PaymentService = {
 }
 
 export const OrderService = {
-  async updateStatus(body, token) {
+  async updateStatus(body) {
     try {
       const res = await customerApi.post('/orders/update-status', body)
       return res.data
@@ -49,7 +49,7 @@ export const OrderService = {
     }
   },
 
-  async createOrder(body, token) {
+  async createOrder(body) {
     try {
       const res = await customerApi.post('/orders/create-order', body)
       return res.data
@@ -58,7 +58,7 @@ export const OrderService = {
     }
   },
 
-  async getAllOrdersPaginated(token, params = {}) {
+  async getAllOrdersPaginated(params = {}) {
     try {
       const res = await adminApi.get('/orders', {
         params: params,

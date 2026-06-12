@@ -24,7 +24,6 @@ public class DashboardAnalyticsService {
   private final JdbcTemplate jdbcTemplate;
 
   public void refreshMultipleMaterializedViews() {
-    // TODO: add button to trigger on FE
     for (String view : materializedViews) {
       try {
         log.info("Start refreshing view: {}", view);

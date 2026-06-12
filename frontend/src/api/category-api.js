@@ -66,7 +66,7 @@ export const CategoryService = {
     }
   },
 
-  async updateCategory(body, token) {
+  async updateCategory(body) {
     try {
       const res = await adminApi.put(CATEGORY_ENDPOINT.PUT_UPDATE, body)
       return res.data
@@ -76,7 +76,7 @@ export const CategoryService = {
     }
   },
 
-  async addCategory(body, token) {
+  async addCategory(body) {
     try {
       const res = await adminApi.post(CATEGORY_ENDPOINT.POST_ADD, body)
       return res.data
@@ -86,7 +86,7 @@ export const CategoryService = {
     }
   },
 
-  async deleteCategoryById(id, token) {
+  async deleteCategoryById(id) {
     try {
       const res = await adminApi.delete(CATEGORY_ENDPOINT.DELETE, {
         params: { id },

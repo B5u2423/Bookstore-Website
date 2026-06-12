@@ -1,7 +1,7 @@
 import api, { adminApi } from './api-config'
 
 export const CouponService = {
-  async getAllCouponsPaginated(token, params = {}) {
+  async getAllCouponsPaginated(params = {}) {
     try {
       const res = await adminApi.get('/coupons', {
         params: params,
@@ -12,7 +12,7 @@ export const CouponService = {
       throw error
     }
   },
-  async updateCoupon(id, body, token) {
+  async updateCoupon(id, body) {
     try {
       const res = await adminApi.put('/coupons/update', body, {
         params: { id },
@@ -24,7 +24,7 @@ export const CouponService = {
     }
   },
 
-  async addNewCoupon(body, token) {
+  async addNewCoupon(body) {
     try {
       const res = await adminApi.post('/coupons/add', body)
       return res.data
@@ -34,7 +34,7 @@ export const CouponService = {
     }
   },
 
-  async deleteCoupon(id, token) {
+  async deleteCoupon(id) {
     try {
       const res = adminApi.delete('/coupons/delete', {
         params: { id },

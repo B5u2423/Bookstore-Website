@@ -1,7 +1,7 @@
 import api, { adminApi } from './api-config'
 
 export const AdminService = {
-  async getAllCustomersPaginated(token) {
+  async getAllCustomersPaginated() {
     try {
       const res = await adminApi.get('/admin/get-customers')
       return res.data
@@ -9,7 +9,7 @@ export const AdminService = {
       console.error('Error fetching customers')
     }
   },
-  async getAllStaffPaginated(token) {
+  async getAllStaffPaginated() {
     try {
       const res = await adminApi.get('/admin/get-staff')
       return res.data

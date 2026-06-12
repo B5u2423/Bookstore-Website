@@ -77,7 +77,7 @@ export const BookService = {
    * @returns {Promise<Object>} A promise resolves to the API response data
    * @throws {Error} if API call fails
    */
-  async deleteBookById(id, token) {
+  async deleteBookById(id) {
     try {
       const res = await adminApi.delete('/books/delete', {
         params: { id },
@@ -97,7 +97,7 @@ export const BookService = {
    * @returns {Promise<Object>} A promise resolves to the API response data
    * @throws {Error} if API call fails
    */
-  async updateBookById(body, id, token) {
+  async updateBookById(body, id) {
     try {
       const res = await adminApi.put(API_ENDPOINTS.UPDATE_BOOK, body, {
         params: { id },
@@ -119,7 +119,7 @@ export const BookService = {
    * @returns {Promise<Object>} A promise resolves to the created book data
    * @throws {Error} if API call fails
    */
-  async addNewBook(body, token) {
+  async addNewBook(body) {
     try {
       const res = await adminApi.post(API_ENDPOINTS.ADD_NEW_BOOK, body, {
         headers: {

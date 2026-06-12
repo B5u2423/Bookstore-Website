@@ -5,13 +5,9 @@ const USER_ENDPOINTS = {
 }
 
 export const UserService = {
-  async updateUserProfile(token, body) {
+  async updateUserProfile(body) {
     try {
-      const res = api.put(USER_ENDPOINTS.UPDATE_PROFILE, body, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      const res = await customerApi.put(USER_ENDPOINTS.UPDATE_PROFILE, body)
     } catch (error) {
       console.error('Error updating user profile', error)
       throw error
@@ -20,7 +16,7 @@ export const UserService = {
 }
 
 export const CustomerService = {
-  async setAddress(body, token) {
+  async setAddress(body) {
     try {
       const res = await customerApi.post('/customers/add-address', body)
       return res.data
@@ -29,7 +25,7 @@ export const CustomerService = {
     }
   },
 
-  async getCustomerAccount(token) {
+  async getCustomerAccount() {
     try {
       const res = await customerApi.get('/customers/account')
       return res.data
