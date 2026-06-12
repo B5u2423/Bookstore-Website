@@ -81,6 +81,12 @@ public class BookController {
     return ResponseEntity.ok().body("Thành công xóa sản phẩm với id %d!".formatted(id));
   }
 
+  @GetMapping("/get-books")
+  public ResponseEntity<List<BookResponseDTO>> getAllBookInCollection(
+      @RequestParam(value = "collection") String collection) {
+    return ResponseEntity.ok().body(bookService.getAllBooksInCollection(collection));
+  }
+
   @ExceptionHandler({BookWithIsbnAlreadyExists.class})
   public ResponseEntity<String> handleBookWithExistingIsbn(BookWithIsbnAlreadyExists ex) {
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());

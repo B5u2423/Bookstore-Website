@@ -3,6 +3,7 @@ package dev.vubl.bookstore.services;
 import dev.vubl.bookstore.dtos.BookResponseDTO;
 import dev.vubl.bookstore.entities.Book;
 import dev.vubl.bookstore.entities.Category;
+import dev.vubl.bookstore.entities.Collection;
 import dev.vubl.bookstore.exceptions.BookDoesNotExistException;
 import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
 import dev.vubl.bookstore.exceptions.CategoryDoesNotExistException;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -192,6 +194,16 @@ public class BookService {
 
   public List<BookResponseDTO> searchBookV3(String keyword) {
     return bookRepo.searchBookV3(keyword).stream().map(this::mapToBookResponseDTO).toList();
+  }
+
+  public List<BookResponseDTO> getAllBooksInCollection(String collectionSlug) {
+    Optional<Collection> res = collectionRepo.findByCollectionSlug(collectionSlug);
+    if (res.isEmpty()) {
+      log.error("Collection with slug {} does not exist", collectionSlug);
+      throw new RuntimeException("Collection slug does not exist");
+    }
+    List<Book> booksWithCollection = bookRepo.findAllByCollection(res.get());
+    return booksWithCollection.stream().map(this::mapToBookResponseDTO).toList();
   }
 
   private boolean isIsbnNotUnique(String isbn) {

@@ -2,6 +2,7 @@ package dev.vubl.bookstore.repos;
 
 import dev.vubl.bookstore.entities.Book;
 import dev.vubl.bookstore.entities.Category;
+import dev.vubl.bookstore.entities.Collection;
 import jakarta.persistence.LockModeType;
 import java.util.List;
 import java.util.Optional;
@@ -39,4 +40,6 @@ public interface BookRepo extends JpaRepository<Book, Integer> {
   @Modifying
   @Query("UPDATE Book b SET b.collection = null WHERE b.collection.id = :collectionId")
   void nullifyCollectionReference(@Param("collectionId") Integer collectionId);
+
+  List<Book> findAllByCollection(Collection c);
 }
