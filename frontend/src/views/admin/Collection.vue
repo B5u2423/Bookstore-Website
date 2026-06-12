@@ -6,6 +6,7 @@ import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
 import { ref, computed, onMounted, toRef, shallowRef } from 'vue'
 
+// TODO: v-dialog in this file is a good example
 const adminAuthStore = useAdminAuthStore()
 
 function createNewRecord() {
@@ -169,6 +170,7 @@ const collectionNameCaps = computed({
   },
 })
 
+// books dialog stuff
 async function getBooksInCollection(collection) {
   BookService.getBooksInCollectionBySlug({ collection })
 }
@@ -253,12 +255,70 @@ onMounted(() => {
 
     <template v-slot:item.books="{ item }">
 
-      <v-btn
-        variant="outlined"
-        size="small"
-      >
-        Xem thông tin
-      </v-btn>
+      <v-dialog max-width="500">
+
+        <template v-slot:activator="{ props: activatorProps }">
+
+          <v-btn
+            v-bind="activatorProps"
+            variant="outlined"
+          >
+             Xem thông tin
+          </v-btn>
+
+        </template>
+
+        <template v-slot:default="{ isActive }">
+
+          <v-card title="Sách trong BST">
+
+            <v-card-text>
+
+              <v-table
+                height="300px"
+                striped="even"
+                fixed-header
+              >
+
+                <thead>
+
+                  <tr>
+
+                    <th class="text-left"> ID </th>
+
+                    <th class="text-left"> Tên sách </th>
+
+                  </tr>
+
+                </thead>
+
+                <tbody>
+
+                  <tr>
+
+                    <td>1</td>
+
+                    <td>Name</td>
+
+                  </tr>
+
+                </tbody>
+
+              </v-table>
+
+            </v-card-text>
+
+            <v-card-actions>
+
+              <v-btn @click="isActive.value = false">Đóng</v-btn>
+
+            </v-card-actions>
+
+          </v-card>
+
+        </template>
+
+      </v-dialog>
 
     </template>
 
@@ -284,7 +344,7 @@ onMounted(() => {
 
   </v-data-table-server>
 
-  <!-- edit/add dialg -->
+  <!-- edit/add dialog -->
 
   <v-dialog
     v-model="dialog"
@@ -401,10 +461,6 @@ onMounted(() => {
     :show="isSuccess"
     :message="message"
   />
-
-  <!-- view books dialog -->
-
-  <v-dialog> </v-dialog>
 
 </template>
 
