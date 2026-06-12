@@ -66,11 +66,11 @@ const isError = ref(false)
 const isSuccess = ref(false)
 const message = ref('')
 
-async function loadItems({ page, itemsPerPage }) {
+async function loadItems({ page = 1, itemsPerPage: size = itemsPerPage.value } = {}) {
   loading.value = true
   try {
     // page on BE start with index 0
-    const payload = await BookService.fetchAllBooks({ page: page - 1, size: itemsPerPage })
+    const payload = await BookService.fetchAllBooks({ page: page - 1, size: size })
     serverItems.value = payload.content
     totalItems.value = payload.page.totalElements
   } catch (error) {

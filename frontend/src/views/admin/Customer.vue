@@ -13,13 +13,13 @@ const loading = ref(false)
 const serverItems = ref([])
 const totalItems = ref(0)
 
-async function loadItems({ page, itemsPerPage }) {
+async function loadItems({ page = 1, itemsPerPage: size = itemsPerPage.value } = {}) {
   loading.value = true
   try {
     // page on BE start with index 0
     const payload = await AdminService.getAllCustomersPaginated({
       page: page - 1,
-      size: itemsPerPage,
+      size,
     })
     serverItems.value = payload.content
     totalItems.value = payload.page.totalElements

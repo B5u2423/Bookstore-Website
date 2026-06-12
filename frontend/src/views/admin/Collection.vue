@@ -35,13 +35,13 @@ const confirmationDialog = shallowRef(false)
 const itemId = ref('')
 const isDelLoading = ref(false)
 
-async function loadItems({ page, itemsPerPage }) {
+async function loadItems({ page = 1, itemsPerPage: size = itemsPerPage.value } = {}) {
   loading.value = true
   try {
     // page on BE start with index 0
     const payload = await CollectionService.getAllCollectionsPaginated(adminAuthStore.accessToken, {
       page: page - 1,
-      size: itemsPerPage,
+      size,
     })
     serverItems.value = payload.content
     totalItems.value = payload.page.totalElements
