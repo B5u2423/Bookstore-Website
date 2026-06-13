@@ -33,21 +33,6 @@ public class BookController {
     return new PagedModel<>(bookService.getAllBooksPaginated(page, size, sortBy, order));
   }
 
-  @GetMapping("/featured")
-  public List<BookResponseDTO> getFeaturedBooks() {
-    return bookService.getAllBooks();
-  }
-
-  @GetMapping("/best-sellers")
-  public List<BookResponseDTO> getBestSellerBooks() {
-    return bookService.getAllBooks();
-  }
-
-  @GetMapping("/new")
-  public List<BookResponseDTO> getNewArrivalBooks() {
-    return bookService.getAllBooks();
-  }
-
   @GetMapping("/{id}")
   public ResponseEntity<BookResponseDTO> getBookById(@PathVariable Integer id) {
     return ResponseEntity.ok().body(bookService.getBookById(id));
@@ -85,6 +70,18 @@ public class BookController {
   public ResponseEntity<List<BookResponseDTO>> getAllBookInCollection(
       @RequestParam(value = "collection") String collection) {
     return ResponseEntity.ok().body(bookService.getAllBooksInCollection(collection));
+  }
+
+  @GetMapping("/landing")
+  public ResponseEntity<List<BookResponseDTO>> getBooksInCollectionForLanding(
+      @RequestParam(value = "collection") String collection) {
+    // just get book in collection but a nice wrapper for view
+    List<BookResponseDTO> list = bookService.getAllBooksInCollection(collection);
+    if (!list.isEmpty()) {
+      return ResponseEntity.ok().body(list);
+    }
+    // fetch 12 items
+    return ResponseEntity.ok().body(bookService.getAllBooks().subList(0, 12));
   }
 
   @ExceptionHandler({BookWithIsbnAlreadyExists.class})

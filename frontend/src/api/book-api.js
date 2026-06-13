@@ -1,39 +1,22 @@
 import api, { adminApi } from './api-config'
 
 const API_ENDPOINTS = {
-  NEW_ARRIVAL: '/books/new',
-  BEST_SELLERS: '/books/best-sellers',
   ADD_NEW_BOOK: '/books/add',
   UPDATE_BOOK: '/books/update',
 }
 
 export const BookService = {
   /**
-   * Fetch best seller books from API
-   * @returns {Promise<Book[]>} A promise resolves to an array of best seller books
+   * Fetch books in a collection for landing page from API
+   * @returns {Promise<Book[]>} A promise resolves to an array of books in a collection
    * @throws {Error} if API call fails
    */
-  async fetchBestSellersBooks() {
+  async getBooksInCollectionForLandingPage(params = {}) {
     try {
-      const res = await api.get(API_ENDPOINTS.BEST_SELLERS)
+      const res = await api.get('/books/landing', { params })
       return res.data
     } catch (error) {
       console.error('Error fetching best sellers: ', error)
-      throw error
-    }
-  },
-
-  /**
-   * Fetch new arrival books from API
-   * @returns {Promise<Book[]>} A promise resolves to an array of new arrival books
-   * @throws {Error} if API call fails
-   */
-  async fetchNewArrivalBooks() {
-    try {
-      const res = await api.get(API_ENDPOINTS.NEW_ARRIVAL)
-      return res.data
-    } catch (error) {
-      console.error('Error fetching new arrival books: ', error)
       throw error
     }
   },

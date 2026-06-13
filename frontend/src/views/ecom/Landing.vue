@@ -9,8 +9,10 @@ const loading = ref(true)
 
 const fetchBooks = async () => {
   try {
-    bestsellers.value = await BookService.fetchBestSellersBooks()
-    newbooks.value = await BookService.fetchNewArrivalBooks()
+    bestsellers.value = await BookService.getBooksInCollectionForLandingPage({
+      collection: 'best-sellers',
+    })
+    newbooks.value = await BookService.getBooksInCollectionForLandingPage({ collection: 'new' })
   } catch (error) {
     console.error('Error fetching books:', error)
   } finally {
@@ -55,14 +57,14 @@ onMounted(() => {
 
       <BookSlideGroup
         group-header="Bán chạy"
-        :books="bestsellers.slice(0, 10)"
+        :books="bestsellers"
         :loading="loading"
         route-to="login"
       />
 
       <BookSlideGroup
         group-header="Sách mới về"
-        :books="newbooks.slice(0, 10)"
+        :books="newbooks"
         :loading="loading"
         route-to="login"
       />
