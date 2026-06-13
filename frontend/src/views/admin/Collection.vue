@@ -44,6 +44,9 @@ const isError = ref(false)
 const isSuccess = ref(false)
 const message = ref('')
 
+// books dialog
+const books = ref([])
+
 async function loadItems({ page = 1, itemsPerPage: size = itemsPerPage.value } = {}) {
   loading.value = true
   try {
@@ -171,8 +174,9 @@ const collectionNameCaps = computed({
 })
 
 // books dialog stuff
-async function getBooksInCollection(collection) {
-  BookService.getBooksInCollectionBySlug({ collection })
+async function getBooksInCollection(slug) {
+  const resp = await BookService.getBooksInCollectionBySlug({ collection: slug })
+  books.value = resp ?? []
 }
 
 onMounted(() => {
@@ -262,6 +266,8 @@ onMounted(() => {
           <v-btn
             v-bind="activatorProps"
             variant="outlined"
+            size="small"
+            @click="getBooksInCollection(item.collectionSlug)"
           >
              Xem thông tin
           </v-btn>
@@ -284,9 +290,11 @@ onMounted(() => {
 
                   <tr>
 
-                    <th class="text-left"> ID </th>
+                    <th class="text-left font-weight-bold"> ID </th>
 
-                    <th class="text-left"> Tên sách </th>
+                    <th class="text-left font-weight-bold">ISBN</th>
+
+                    <th class="text-left font-weight-bold"> Tên sách </th>
 
                   </tr>
 
@@ -294,11 +302,16 @@ onMounted(() => {
 
                 <tbody>
 
-                  <tr>
+                  <tr
+                    v-for="(book, i) in books"
+                    :key="i"
+                  >
 
-                    <td>1</td>
+                    <td>{{ book.id }}</td>
 
-                    <td>Name</td>
+                    <td>{{ book.isbn }}</td>
+
+                    <td>{{ book.title }}</td>
 
                   </tr>
 
