@@ -15,6 +15,7 @@ const items = ref([])
 async function fetchOrderHistory() {
   try {
     const res = await OrderService.getAllOrdersByEmail()
+    console.log(res)
     items.value = res.content
   } catch (error) {
     console.error('Error fetching user order history', error)
@@ -33,17 +34,18 @@ onMounted(() => {
     <v-data-table
       :headers="headers"
       :items="items"
+      show-expand
     >
 
       <template v-slot:item.data-table-expand="{ internalItem, isExpanded, toggleExpand }">
 
         <v-btn
           :append-icon="isExpanded(internalItem) ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-          :text="isExpanded(internalItem) ? 'Thu gọn' : 'Thêm thông tin'"
+          :text="isExpanded(internalItem) ? 'Thu gọn' : 'Xem thêm'"
           class="text-none"
           color="medium-emphasis"
           size="small"
-          variant="text"
+          variant="outlined"
           width="105"
           slim
           @click="toggleExpand(internalItem)"
@@ -174,9 +176,11 @@ onMounted(() => {
 
                     <v-card variant="flat">
 
-                      <v-card-title> {{ i.book.title }} </v-card-title>
+                      <v-card-title class="text-wrap"> {{ i.titleAtPurchase }} </v-card-title>
 
                       <v-card-subtitle>
+
+                        <p> ISBN: {{ i.isbn }} </p>
 
                         <p> Giá thành: {{ formatPriceVNLocale(i.priceAtPurchase) }} VNĐ </p>
 
