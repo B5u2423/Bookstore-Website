@@ -15,11 +15,28 @@ const items = ref([])
 async function fetchOrderHistory() {
   try {
     const res = await OrderService.getAllOrdersByEmail()
-    console.log(res)
     items.value = res.content
   } catch (error) {
     console.error('Error fetching user order history', error)
   }
+}
+
+function computeStatusLabel(status) {
+  const labelsMap = {
+    PENDING: 'Đang xử lý',
+    PAID: 'Đã thanh toán',
+    CANCELLED: 'Đơn hủy',
+  }
+  return labelsMap[String(status)]
+}
+
+function computeStatusColor(status) {
+  const labelsMap = {
+    PENDING: 'pink',
+    PAID: 'green',
+    CANCELLED: 'red hủy',
+  }
+  return labelsMap[String(status)]
 }
 
 onMounted(() => {
@@ -36,6 +53,17 @@ onMounted(() => {
       :items="items"
       show-expand
     >
+
+      <template v-slot:item.orderStatus="{ item }">
+
+        <v-chip
+          :color="computeStatusColor(item.orderStatus)"
+          variant="text"
+        >
+          {{ computeStatusLabel(item.orderStatus) }}
+        </v-chip>
+
+      </template>
 
       <template v-slot:item.data-table-expand="{ internalItem, isExpanded, toggleExpand }">
 
