@@ -140,6 +140,7 @@ public class OrderService {
   }
 
   public String updateOrderStatus(String token, String vnpTxnRef, Boolean isCancelled) {
+    // service method only for online order update.
     Optional<Order> o = orderRepo.findByVnpTxnRef(vnpTxnRef);
     if (o.isEmpty()) {
       return "Order with transaction ID does not exist";
@@ -150,6 +151,9 @@ public class OrderService {
     }
     if (isCancelled) {
       o.get().setOrderStatus(OrderStatus.CANCELLED);
+    } else {
+      // online banking success
+      o.get().setOrderStatus(OrderStatus.PAID);
     }
     return "Status updated";
   }
