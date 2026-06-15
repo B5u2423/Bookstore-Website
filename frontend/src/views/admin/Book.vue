@@ -154,6 +154,11 @@ async function save() {
       isError.value = true
       message.value = `Lỗi cập nhật sản phẩm ${error.message}`
       console.error('Error editing book')
+    } finally {
+      setTimeout(() => {
+        isSuccess.value = false
+        isError.value = false
+      }, 2000)
     }
   } else {
     try {
@@ -181,6 +186,11 @@ async function save() {
         ? `Lỗi thêm mới sản phẩm: ${errorData[errorField]}`
         : 'Lỗi thêm mới sản phẩm: Đã xảy ra lỗi không xác định'
       console.error('Error adding new book')
+    } finally {
+      setTimeout(() => {
+        isSuccess.value = false
+        isError.value = false
+      }, 2000)
     }
   }
 

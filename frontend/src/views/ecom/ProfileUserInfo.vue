@@ -85,6 +85,10 @@ async function updateChanges() {
     // return to original state
     isUpdated.value = false
     isFieldsEnabled.value = false
+    setTimeout(() => {
+      isSuccess.value = false
+      isError.value = false
+    }, 2000)
   }
 }
 
@@ -129,6 +133,10 @@ async function save() {
   } finally {
     // close dialog box
     dialog.value = false
+    setTimeout(() => {
+      isSuccess.value = false
+      isError.value = false
+    }, 2000)
   }
 }
 
@@ -145,6 +153,11 @@ async function deleteAddress(id) {
     console.error('Error deleting address', error)
     isError.value = true
     message.value = 'Lỗi xảy khi xóa địa chỉ'
+  } finally {
+    setTimeout(() => {
+      isSuccess.value = false
+      isError.value = false
+    }, 2000)
   }
 }
 

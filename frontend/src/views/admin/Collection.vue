@@ -106,6 +106,10 @@ async function save() {
       message.value = 'Lỗi xảy ra khi cập nhật thông tin'
     } finally {
       dialog.value = false
+      setTimeout(() => {
+        isSuccess.value = false
+        isError.value = false
+      }, 2000)
     }
   } else {
     try {
@@ -123,6 +127,10 @@ async function save() {
       message.value = 'Lỗi xảy ra khi thêm bộ sưu tập'
     } finally {
       dialog.value = false
+      setTimeout(() => {
+        isSuccess.value = false
+        isError.value = false
+      }, 2000)
     }
   }
 }
@@ -146,6 +154,10 @@ async function remove() {
   } finally {
     isDelLoading.value = false
     confirmationDialog.value = false
+    setTimeout(() => {
+      isSuccess.value = false
+      isError.value = false
+    }, 2000)
   }
 }
 

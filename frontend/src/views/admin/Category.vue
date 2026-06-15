@@ -120,6 +120,11 @@ async function save() {
       console.error('Error editing category')
       isError.value = true
       message.value = 'Lỗi xảy ra khi cập nhật danh mục'
+    } finally {
+      setTimeout(() => {
+        isSuccess.value = false
+        isError.value = false
+      }, 2000)
     }
   } else {
     try {
@@ -131,6 +136,11 @@ async function save() {
       isError.value = true
       message.value = 'Lỗi xảy ra khi thêm danh mục'
       console.error('Error adding new category')
+    } finally {
+      setTimeout(() => {
+        isSuccess.value = false
+        isError.value = false
+      }, 2000)
     }
   }
 
@@ -386,6 +396,18 @@ async function save() {
     </v-card>
 
   </v-dialog>
+
+  <!-- snack bars -->
+
+  <SnackBarOnFailure
+    :show="isError"
+    :message="message"
+  />
+
+  <SnackBarOnSuccess
+    :show="isSuccess"
+    :message="message"
+  />
 
 </template>
 
