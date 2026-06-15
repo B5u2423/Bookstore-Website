@@ -90,11 +90,7 @@ async function save() {
   if (isEditing.value) {
     try {
       // API call
-      const res = await CollectionService.updateCollection(
-        formModel.value.id,
-        formModel.value,
-        adminAuthStore.accessToken,
-      )
+      const res = await CollectionService.updateCollection(formModel.value.id, formModel.value)
       // edit immediate view
       const index = serverItems.value.findIndex(
         (collection) => collection.id === formModel.value.id,
@@ -114,10 +110,7 @@ async function save() {
   } else {
     try {
       // API call
-      const res = await CollectionService.addNewCollection(
-        formModel.value,
-        adminAuthStore.accessToken,
-      )
+      const res = await CollectionService.addNewCollection(formModel.value)
       // reload items
       await loadItems()
       // success snack
@@ -137,7 +130,7 @@ async function save() {
 async function remove() {
   isDelLoading.value = true
   try {
-    const res = await CollectionService.deleteCollection(itemId.value, adminAuthStore.accessToken)
+    const res = await CollectionService.deleteCollection(itemId.value)
     // update on frontend, just for immediate view
     const index = serverItems.value.findIndex((book) => book.id === itemId.value)
     serverItems.value.splice(index, 1)

@@ -63,7 +63,7 @@ function handleAddToCart() {
   // call the endpoint directly
   if (authStore.isAuthenticated) {
     try {
-      const res = CartService.addToCart(authStore.accessToken, {
+      const res = CartService.addToCart({
         bookId: book.value.id,
         quantity: quantity.value,
       })

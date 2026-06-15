@@ -56,7 +56,6 @@ export const BookService = {
   /**
    * Delete a book by its ID
    * @param {String} id - The ID of the book to delete
-   * @param {String} token - Authorization token for the request
    * @returns {Promise<Object>} A promise resolves to the API response data
    * @throws {Error} if API call fails
    */
@@ -76,7 +75,6 @@ export const BookService = {
    * Update a book by its ID
    * @param {Object} body - The book data to update
    * @param {String} id - The ID of the book to update
-   * @param {String} token - Authorization token for the request
    * @returns {Promise<Object>} A promise resolves to the API response data
    * @throws {Error} if API call fails
    */
@@ -98,7 +96,6 @@ export const BookService = {
   /**
    * Add a new book to the system
    * @param {Object} body - The book data to create
-   * @param {String} token - Authorization token for the request
    * @returns {Promise<Object>} A promise resolves to the created book data
    * @throws {Error} if API call fails
    */

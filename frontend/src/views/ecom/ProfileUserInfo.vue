@@ -70,10 +70,7 @@ function discardChanges() {
 async function updateChanges() {
   try {
     // API call
-    const res = await UserService.updateUserProfile(
-      authStore.accessToken,
-      currentUserProfileSnapshot.value,
-    )
+    const res = await UserService.updateUserProfile(currentUserProfileSnapshot.value)
     // update immediate view
     userProfileStore.updateUserInfo(currentUserProfileSnapshot.value)
     isSuccess.value = true
@@ -120,7 +117,7 @@ async function save() {
       commune: communes.value.find((obj) => obj.code === address.value.communeId)?.name,
       street: address.value.street,
     }
-    const res = CustomerService.setAddress(addrObj, authStore.accessToken)
+    const res = CustomerService.setAddress(addrObj)
     // update immediate view
     userProfileStore.userInfo.addressList.push(addrObj)
     isSuccess.value = true
@@ -153,7 +150,7 @@ async function deleteAddress(id) {
 
 // sync cart on load
 onMounted(() => {
-  cartStore.syncCartWithBackEnd({ token: authStore.accessToken })
+  cartStore.syncCartWithBackEnd()
   fetchCities()
 })
 </script>

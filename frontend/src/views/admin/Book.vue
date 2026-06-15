@@ -118,7 +118,7 @@ function confirm(id) {
 async function remove() {
   isDelLoading.value = true
   try {
-    const res = await BookService.deleteBookById(itemId.value, adminAuthStore.accessToken)
+    const res = await BookService.deleteBookById(itemId.value)
     // update on frontend, just for immediate view
     const index = serverItems.value.findIndex((book) => book.id === itemId.value)
     serverItems.value.splice(index, 1)
@@ -142,11 +142,7 @@ async function save() {
       )
       formData.append('image', imageFile.value)
       // API call
-      const res = await BookService.updateBookById(
-        formData,
-        formModel.value.id,
-        adminAuthStore.accessToken,
-      )
+      const res = await BookService.updateBookById(formData, formModel.value.id)
       // success snack bar
       isSuccess.value = true
       message.value = 'Cập nhật sản phẩm thành công'
@@ -169,7 +165,7 @@ async function save() {
       )
       formData.append('image', imageFile.value)
       // API call
-      const res = await BookService.addNewBook(formData, adminAuthStore.accessToken)
+      const res = await BookService.addNewBook(formData)
       isSuccess.value = true
       message.value = 'Thêm sản phẩm thành công'
     } catch (error) {

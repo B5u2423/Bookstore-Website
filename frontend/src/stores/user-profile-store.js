@@ -15,7 +15,7 @@ export const useUserProfileStore = defineStore(
 
     async function getUserInfo() {
       const authStore = useAuthStore()
-      const res = await CustomerService.getCustomerAccount(authStore.accessToken)
+      const res = await CustomerService.getCustomerAccount()
 
       userInfo.value.name = res.name
       userInfo.value.email = res.email

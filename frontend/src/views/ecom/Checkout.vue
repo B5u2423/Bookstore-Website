@@ -75,29 +75,20 @@ async function confirmCheckout() {
 
     if (shippingInfo.value.paymentMethod === 'COD') {
       // create order in db
-      const orderResponse = await OrderService.createOrder(
-        shippingInfo.value,
-        authStore.accessToken,
-      )
+      const orderResponse = await OrderService.createOrder(shippingInfo.value)
       cartStore.reset()
       router.push('/')
     } else {
       // create payment url
-      const res = await PaymentService.createPaymentPage(
-        {
-          amount: cartStore.totalAmount,
-          info: shippingInfo.value.info,
-        },
-        authStore.accessToken,
-      )
+      const res = await PaymentService.createPaymentPage({
+        amount: cartStore.totalAmount,
+        info: shippingInfo.value.info,
+      })
       // parse transaction reference
       const urlObj = new URL(res.paymentUrl)
       shippingInfo.value.vnpTxnRef = urlObj.searchParams.get('vnp_TxnRef')
       // create order in db
-      const orderResponse = await OrderService.createOrder(
-        shippingInfo.value,
-        authStore.accessToken,
-      )
+      const orderResponse = await OrderService.createOrder(shippingInfo.value)
       // redirect
       window.location.href = res?.paymentUrl
       // call back to page after

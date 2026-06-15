@@ -75,7 +75,7 @@ async function loadItems({ page = 1, itemsPerPage: size = itemsPerPage.value } =
   loading.value = true
   try {
     // page on BE start with index 0
-    const payload = await OrderService.getAllOrdersPaginated(adminAuthStore.accessToken, {
+    const payload = await OrderService.getAllOrdersPaginated({
       page: page - 1,
       size,
     })

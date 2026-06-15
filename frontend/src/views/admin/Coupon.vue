@@ -65,7 +65,7 @@ async function loadItems({ page = 1, itemsPerPage: size = itemsPerPage.value } =
   loading.value = true
   try {
     // page on BE start with index 0
-    const payload = await CouponService.getAllCouponsPaginated(adminAuthStore.accessToken, {
+    const payload = await CouponService.getAllCouponsPaginated({
       page: page - 1,
       size,
     })
@@ -111,11 +111,7 @@ async function save() {
   if (isEditing.value) {
     try {
       // API call
-      const res = await CouponService.updateCoupon(
-        formModel.value.id,
-        formModel.value,
-        adminAuthStore.accessToken,
-      )
+      const res = await CouponService.updateCoupon(formModel.value.id, formModel.value)
       // edit immediate view
       const index = serverItems.value.findIndex((coupon) => coupon.id === formModel.value.id)
       serverItems.value[index] = formModel.value
@@ -125,7 +121,7 @@ async function save() {
   } else {
     try {
       // API call
-      const res = await CouponService.addNewCoupon(formModel.value, adminAuthStore.accessToken)
+      const res = await CouponService.addNewCoupon(formModel.value)
     } catch (error) {
       console.error('Error adding new coupon')
     }
@@ -135,7 +131,7 @@ async function save() {
 async function remove() {
   isDelLoading.value = true
   try {
-    const res = await CouponService.deleteCoupon(itemId.value, adminAuthStore.accessToken)
+    const res = await CouponService.deleteCoupon(itemId.value)
     // update on frontend, just for immediate view
     const index = serverItems.value.findIndex((coupon) => coupon.id === itemId.value)
     serverItems.value.splice(index, 1)

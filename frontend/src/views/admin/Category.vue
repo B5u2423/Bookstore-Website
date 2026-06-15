@@ -96,7 +96,7 @@ function confirm(id) {
 
 function remove() {
   try {
-    const res = CategoryService.deleteCategoryById(itemId.value, adminAuthStore.accessToken)
+    const res = CategoryService.deleteCategoryById(itemId.value)
     isSuccess.value = true
     message.value = 'Xóa danh mục thành công!'
   } catch (error) {
@@ -113,7 +113,7 @@ async function save() {
   if (isEditing.value) {
     try {
       // API call
-      const res = await CategoryService.updateCategory(formModel.value, adminAuthStore.accessToken)
+      const res = await CategoryService.updateCategory(formModel.value)
       isSuccess.value = true
       message.value = 'Cập nhật thông tin danh mục thành công!'
     } catch (error) {
@@ -124,7 +124,7 @@ async function save() {
   } else {
     try {
       // API call
-      const res = await CategoryService.addCategory(formModel.value, adminAuthStore.accessToken)
+      const res = await CategoryService.addCategory(formModel.value)
       isSuccess.value = true
       message.value = 'Cập nhật thông tin danh mục thành công!'
     } catch (error) {
