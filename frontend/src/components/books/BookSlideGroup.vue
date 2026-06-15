@@ -1,6 +1,6 @@
 <script setup>
-import VerticalBookCard from './VerticalBookCard.vue'
 import { ref } from 'vue'
+import VerticalBookCard from './VerticalBookCard.vue'
 
 const props = defineProps({
   routeTo: String,
@@ -23,18 +23,15 @@ function scrollByOneItem(direction) {
 </script>
 
 <template>
-
   <div class="d-flex align-center justify-space-between flex-wrap ga-2 mb-4">
-
     <router-link
       class="text-h6 custom-link"
       :to="{ name: routeTo }"
     >
-       {{ groupHeader }}
+      {{ groupHeader }}
     </router-link>
 
     <div>
-
       <v-btn
         density="comfortable"
         size="auto"
@@ -50,47 +47,36 @@ function scrollByOneItem(direction) {
         variant="text"
         @click="scrollByOneItem(1)"
       />
-
     </div>
-
   </div>
 
   <div class="slider-wrapper">
-
     <div
       class="slider-track"
       ref="track"
     >
-
       <!-- loading: show N skeleton placeholders -->
 
       <template v-if="loading">
-
-        <VerticalBookCard
+        <vertical-book-card
           v-for="n in 5"
           :key="n"
           :loading="true"
         />
-
       </template>
 
       <!-- loaded: show real cards -->
 
       <template v-else>
-
-        <VerticalBookCard
+        <vertical-book-card
           v-for="book in books"
           :key="book.id"
           :book="book"
           class="slider-item"
         />
-
       </template>
-
     </div>
-
   </div>
-
 </template>
 
 <style scoped>
@@ -120,4 +106,3 @@ function scrollByOneItem(direction) {
   text-decoration: underline;
 }
 </style>
-

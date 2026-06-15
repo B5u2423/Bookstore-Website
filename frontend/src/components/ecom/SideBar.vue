@@ -1,6 +1,6 @@
 <script setup>
 import { CategoryService } from '@/api/category-api'
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const categories = ref([])
@@ -35,18 +35,14 @@ onMounted(() => {
 </script>
 
 <template>
-
   <v-card
     elevation="4"
     class="pa-0 align-center justify-center text-center mx-auto mb-6"
   >
-
     <v-card-title> Danh mục </v-card-title>
 
     <v-card-text class="pa-0">
-
       <v-list>
-
         <v-list-item
           density="compact"
           class="text-left"
@@ -55,28 +51,23 @@ onMounted(() => {
           :active="false"
           title="Tất Cả Sách"
         >
-
         </v-list-item>
 
         <v-list-group
           v-for="c in categories"
           :value="c.categoryName"
         >
-
           <template v-slot:activator="{ props, isOpen }">
-
             <v-list-item
               class="text-start"
               density="compact"
               :active="false"
             >
-
               <v-list-item-title @click="reRoute(c.categorySlug)">
-                 {{ c.categoryName }}
+                {{ c.categoryName }}
               </v-list-item-title>
 
               <template v-slot:append>
-
                 <v-icon
                   class="pa-3"
                   v-show="isOpen == false"
@@ -90,11 +81,8 @@ onMounted(() => {
                   v-bind="props"
                   icon="mdi-chevron-up"
                 ></v-icon>
-
               </template>
-
             </v-list-item>
-
           </template>
 
           <v-list-item
@@ -104,14 +92,8 @@ onMounted(() => {
             class="text-start"
             density="compact"
           ></v-list-item>
-
         </v-list-group>
-
       </v-list>
-
     </v-card-text>
-
   </v-card>
-
 </template>
-

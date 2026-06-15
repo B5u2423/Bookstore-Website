@@ -1,11 +1,11 @@
-import StandardLayout from '@/layouts/StandardLayout.vue'
-import EComLayout from '@/layouts/EComLayout.vue'
-import EComNoSidebar from '@/layouts/EComNoSidebar.vue'
 import SideBar from '@/components/ecom/SideBar.vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
-import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '@/stores/auth-store'
+import EComLayout from '@/layouts/EComLayout.vue'
+import EComNoSidebar from '@/layouts/EComNoSidebar.vue'
+import StandardLayout from '@/layouts/StandardLayout.vue'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
+import { useAuthStore } from '@/stores/auth-store'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
   {

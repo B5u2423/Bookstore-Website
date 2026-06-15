@@ -21,7 +21,6 @@ async function handleResetPassword() {
 </script>
 
 <template>
-
   <v-sheet
     class="d-flex align-center justify-center mx-auto pa-5 mb-6"
     elevation="4"
@@ -29,19 +28,15 @@ async function handleResetPassword() {
     width="100%"
     rounded
   >
-
     <div>
-
       <p class="text-center text-h5 text-black">Khôi phục mật khẩu</p>
 
       <div class="my-2">
-
         <v-form
           ref="form"
           v-model="isValidForm"
           @submit.prevent="handleResetPassword"
         >
-
           <div class="text-subtitle-1 text-medium-emphasis">Email</div>
 
           <v-text-field
@@ -60,16 +55,10 @@ async function handleResetPassword() {
             :disabled="!isValidForm"
             :loading="isLoading"
           >
-             Gửi thông tin
+            Gửi thông tin
           </v-btn>
-
         </v-form>
-
       </div>
-
     </div>
-
   </v-sheet>
-
 </template>
-

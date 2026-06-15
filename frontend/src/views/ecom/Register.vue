@@ -1,8 +1,8 @@
 <script setup>
-import { useAuthStore } from '@/stores/auth-store'
-import { ref } from 'vue'
 import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
 import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
+import { useAuthStore } from '@/stores/auth-store'
+import { ref } from 'vue'
 
 // TODO: Add google auth to the register page
 
@@ -41,7 +41,6 @@ async function handleRegister() {
 </script>
 
 <template>
-
   <v-sheet
     class="d-flex align-center justify-center mx-auto pa-5 mb-6"
     elevation="4"
@@ -49,13 +48,10 @@ async function handleRegister() {
     width="100%"
     rounded
   >
-
     <div>
-
       <h2 class="text-h5 text-black text-center">Đăng ký tài khoản</h2>
 
       <div class="my-2">
-
         <v-text-field
           class="my-3"
           width="500"
@@ -96,7 +92,6 @@ async function handleRegister() {
           :append-inner-icon="visibleRetype ? 'mdi-eye-off' : 'mdi-eye'"
           @click:append-inner="visibleRetype = !visibleRetype"
         ></v-text-field>
-
       </div>
 
       <v-btn
@@ -105,12 +100,11 @@ async function handleRegister() {
         width="100%"
         @click="handleRegister"
       >
-         ĐĂNG KÝ
+        ĐĂNG KÝ
       </v-btn>
 
       <div class="text-center">
-
-        <p class="text-black"> Hoặc đăng nhập bằng</p>
+        <p class="text-black">Hoặc đăng nhập bằng</p>
 
         <!-- <v-btn
           color="blue"
@@ -126,24 +120,19 @@ async function handleRegister() {
           prepend-icon="mdi-google"
           width="100%"
         >
-           Google
+          Google
         </v-btn>
-
       </div>
-
     </div>
 
-    <SnackBarOnFailure
+    <snack-bar-on-failure
       :show="isError"
       :message="message"
     />
 
-    <SnackBarOnSuccess
+    <snack-bar-on-success
       :show="isSuccess"
       :message="message"
     />
-
   </v-sheet>
-
 </template>
-

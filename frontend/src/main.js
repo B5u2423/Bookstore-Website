@@ -1,6 +1,6 @@
-import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import { createApp } from 'vue'
 
 import 'vuetify/styles'
 import '@mdi/font/css/materialdesignicons.css'

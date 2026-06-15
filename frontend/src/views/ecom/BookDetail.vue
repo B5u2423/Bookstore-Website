@@ -1,11 +1,11 @@
 <script setup>
 import { BookService } from '@/api/book-api'
+import { CartService } from '@/api/cart-api.js'
+import { useAuthStore } from '@/stores/auth-store.js'
 import { useCartStore } from '@/stores/cart-store'
 import { formatPriceVNLocale } from '@/utils/utils'
-import { onMounted, computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { useAuthStore } from '@/stores/auth-store.js'
-import { CartService } from '@/api/cart-api.js'
 
 const cartStore = useCartStore()
 const authStore = useAuthStore()
@@ -114,7 +114,13 @@ async function handleAddToCart() {
     <!-- loading skeleton -->
     <v-row v-if="loading" class="mt-4">
       <v-col cols="12" md="5" class="d-flex justify-center">
-        <v-skeleton-loader type="image" width="100%" max-width="320" height="420" class="rounded-lg" />
+        <v-skeleton-loader
+          type="image"
+          width="100%"
+          max-width="320"
+          height="420"
+          class="rounded-lg"
+        />
       </v-col>
       <v-col cols="12" md="7">
         <v-skeleton-loader type="article, divider, list-item-three-line, actions" />
@@ -172,7 +178,10 @@ async function handleAddToCart() {
               <dd>{{ book.publishYear }}</dd>
             </div>
             <div class="spec-item" v-if="book.pageCount">
-              <dt><v-icon icon="mdi-book-open-page-variant-outline" size="16" class="mr-1" />Số trang</dt>
+              <dt>
+                <v-icon icon="mdi-book-open-page-variant-outline" size="16" class="mr-1" />Số
+                trang
+              </dt>
               <dd>{{ book.pageCount }}</dd>
             </div>
           </dl>

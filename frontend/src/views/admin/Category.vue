@@ -1,9 +1,9 @@
 <script setup>
 import { CategoryService } from '@/api/category-api'
-import { useAdminAuthStore } from '@/stores/admin-auth-store'
-import { toRef, shallowRef, ref } from 'vue'
 import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
 import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
+import { useAdminAuthStore } from '@/stores/admin-auth-store'
+import { ref, shallowRef, toRef } from 'vue'
 
 const adminAuthStore = useAdminAuthStore()
 // table
@@ -156,7 +156,6 @@ async function save() {
 </script>
 
 <template>
-
   <v-data-table-server
     v-model:items-per-page="itemsPerPage"
     :headers="headers"
@@ -167,20 +166,16 @@ async function save() {
     items-per-page-text="Số danh mục hiển thị"
     @update:options="loadItems"
   >
-
     <template v-slot:top>
-
       <v-toolbar flat>
-
         <v-toolbar-title>
-
           <v-icon
             color="medium-emphasis"
             icon="mdi-book-multiple"
             size="x-small"
             start
           ></v-icon>
-           Thông tin danh mục
+          Thông tin danh mục
         </v-toolbar-title>
 
         <v-btn
@@ -191,17 +186,13 @@ async function save() {
           variant="outlined"
           @click="add"
         ></v-btn>
-
       </v-toolbar>
-
     </template>
 
     <!-- action buttons -->
 
     <template v-slot:item.actions="{ item }">
-
       <div class="d-flex ga-2 justify-end">
-
         <v-icon
           color="medium-emphasis"
           icon="mdi-pencil"
@@ -215,112 +206,80 @@ async function save() {
           size="small"
           @click="confirm(item.id)"
         ></v-icon>
-
       </div>
-
     </template>
 
     <!-- parent category -->
 
     <template v-slot:item.parentName="{ item }">
-
       <template v-if="item.parentName == null">
-
         <v-chip
           color="red-lighten-1"
           variant="outlined"
         >
-           Không có
+          Không có
         </v-chip>
-
       </template>
 
       <template v-else>
-
         <v-chip>{{ item.parentName }}</v-chip>
-
       </template>
-
     </template>
 
     <!-- children categories -->
 
     <template v-slot:item.children="{ item }">
-
       <template v-if="!item.children.length">
-
         <v-chip
           color="red-lighten-1"
           variant="outlined"
         >
-           Không có
+          Không có
         </v-chip>
-
       </template>
 
       <template v-else>
-
         <v-dialog max-width="600">
-
           <template v-slot:activator="{ props: activatorProps }">
-
             <v-chip v-bind="activatorProps">Xem thêm</v-chip>
-
           </template>
 
           <template v-slot:default="{ isActive }">
-
             <v-card title="Danh mục con">
-
               <v-card-text>
-
                 <v-chip
                   v-for="child in item.children"
                   class="ma-1"
                   color="green-darken-1"
                 >
-                   {{ child.categoryName }}
+                  {{ child.categoryName }}
                 </v-chip>
-
               </v-card-text>
 
               <template v-slot:actions>
-
                 <v-btn @click="isActive.value = false">Đóng</v-btn>
-
               </template>
-
             </v-card>
-
           </template>
-
         </v-dialog>
-
       </template>
-
     </template>
-
   </v-data-table-server>
 
   <v-dialog
     v-model="dialog"
     max-width="800"
   >
-
     <v-card
       :title="`${isEditing ? 'Thay đổi thông tin' : 'Tạo bản ghi mới'}`"
       :subtitle="`${isEditing ? 'Cập nhật' : 'Thêm'} danh mục`"
     >
-
       <v-card-text>
-
         <v-row>
-
           <v-col
             cols="12"
             md="6"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">Tên danh mục</div>
 
             <v-text-field
@@ -329,14 +288,12 @@ async function save() {
               density="compact"
               hide-details="true"
             ></v-text-field>
-
           </v-col>
 
           <v-col
             cols="12"
             md="6"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">Danh mục cha</div>
 
             <v-text-field
@@ -346,11 +303,9 @@ async function save() {
               density="compact"
               hide-details="true"
             ></v-text-field>
-
           </v-col>
 
           <v-col cols="12">
-
             <div class="text-subtitle-1 text-high-emphasis">Các danh mục con</div>
 
             <v-autocomplete
@@ -365,21 +320,17 @@ async function save() {
               chips
               closable-chips
             ></v-autocomplete>
-
           </v-col>
-
         </v-row>
-
       </v-card-text>
 
       <v-card-actions>
-
         <v-btn
           color="green-darken-1"
           variant="elevated"
           @click="save"
         >
-           Lưu
+          Lưu
         </v-btn>
 
         <v-btn
@@ -387,13 +338,10 @@ async function save() {
           variant="elevated"
           @click="dialog = !dialog"
         >
-           Hủy
+          Hủy
         </v-btn>
-
       </v-card-actions>
-
     </v-card>
-
   </v-dialog>
 
   <!-- confirmation dialog -->
@@ -402,20 +350,17 @@ async function save() {
     v-model="confirmationDialog"
     max-width="500"
   >
-
     <v-card title="Xác nhận">
-
       <v-card-text>Bạn có chắc chắn muốn xóa danh mục?</v-card-text>
 
       <v-card-actions>
-
         <v-btn
           variant="elevated"
           color="green-darken-1"
           :loading="isDelLoading"
           @click="remove"
         >
-           Đồng ý
+          Đồng ý
         </v-btn>
 
         <v-btn
@@ -423,26 +368,21 @@ async function save() {
           color="red-lighten-1"
           @click="confirmationDialog = !confirmationDialog"
         >
-           Hủy
+          Hủy
         </v-btn>
-
       </v-card-actions>
-
     </v-card>
-
   </v-dialog>
 
   <!-- snack bars -->
 
-  <SnackBarOnFailure
+  <snack-bar-on-failure
     :show="isError"
     :message="message"
   />
 
-  <SnackBarOnSuccess
+  <snack-bar-on-success
     :show="isSuccess"
     :message="message"
   />
-
 </template>
-

@@ -4,13 +4,15 @@
     "quoteStyle": "preferSingle",
     "semiColons": "asi"
   },
-  "html": {
+  "markup": {
     "indentWidth": 2,
     "printWidth": 100,
-    "blankLines": "never" 
+    "vSlotStyle": "long",
+    "vOnStyle": "short",
+    "vueComponentCase": "kebabCase"
   },
   "plugins": [
-    "https://plugins.dprint.dev/typescript-0.93.3.wasm",
-    "https://plugins.dprint.dev/html-0.6.2.wasm"
+    "https://plugins.dprint.dev/g-plane/markup_fmt-v0.27.3.wasm",
+    "https://plugins.dprint.dev/typescript-0.96.1.wasm"
   ]
 }

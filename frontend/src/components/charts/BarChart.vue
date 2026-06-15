@@ -8,11 +8,8 @@ const props = defineProps({
 </script>
 
 <template>
-
   <Bar
     :data="data"
     :options="options"
   />
-
 </template>
-

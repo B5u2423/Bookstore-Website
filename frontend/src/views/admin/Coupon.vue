@@ -1,7 +1,7 @@
 <script setup>
 import { CouponService } from '@/api/coupon-api'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
-import { ref, onMounted, toRef, shallowRef } from 'vue'
+import { onMounted, ref, shallowRef, toRef } from 'vue'
 import { VDateInput } from 'vuetify/labs/VDateInput'
 
 const adminAuthStore = useAdminAuthStore()
@@ -150,7 +150,6 @@ onMounted(() => {
 </script>
 
 <template>
-
   <v-data-table-server
     v-model:items-per-page="itemsPerPage"
     :headers="headers"
@@ -161,20 +160,16 @@ onMounted(() => {
     items-per-page-text="Số sản phẩm hiển thị"
     @update:options="loadItems"
   >
-
     <template v-slot:top>
-
       <v-toolbar flat>
-
         <v-toolbar-title>
-
           <v-icon
             color="medium-emphasis"
             icon="mdi-ticket-percent"
             size="x-small"
             start
           ></v-icon>
-           Thông tin mã giảm giá
+          Thông tin mã giảm giá
         </v-toolbar-title>
 
         <v-btn
@@ -185,47 +180,33 @@ onMounted(() => {
           variant="outlined"
           @click="add"
         ></v-btn>
-
       </v-toolbar>
-
     </template>
 
     <!-- style the header -->
 
     <template v-slot:headers="{ columns }">
-
       <tr>
-
         <template
           v-for="column in columns"
           :key="column.key"
         >
-
           <th>
-
             <div class="d-flex align-center">
-
               <span
                 class="me-2 cursor-pointer font-weight-bold"
                 v-text="column.title"
               ></span>
-
             </div>
-
           </th>
-
         </template>
-
       </tr>
-
     </template>
 
     <!-- action buttons -->
 
     <template v-slot:item.actions="{ item }">
-
       <div class="d-flex ga-2 justify-center">
-
         <v-icon
           color="medium-emphasis"
           icon="mdi-pencil"
@@ -239,36 +220,27 @@ onMounted(() => {
           size="small"
           @click="confirm(item.id)"
         ></v-icon>
-
       </div>
-
     </template>
-
   </v-data-table-server>
 
   <v-dialog
     v-model="dialog"
     max-width="800"
   >
-
     <v-card
       :title="`${isEditing ? 'Thay đổi thông tin' : 'Tạo bản ghi mới'}`"
       :subtitle="`${isEditing ? 'Cập nhật' : 'Thêm'} mã giảm giá`"
     >
-
       <template v-slot:text>
-
         <v-row class="px-3">
-
           <v-col
             cols="12"
             md="4"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">
-               Mã giảm giá
+              Mã giảm giá
               <span class="text-red">(*)</span>
-
             </div>
 
             <v-text-field
@@ -277,18 +249,15 @@ onMounted(() => {
               density="compact"
               hide-details="true"
             ></v-text-field>
-
           </v-col>
 
           <v-col
             cols="12"
             md="4"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">
-               Mức giảm
+              Mức giảm
               <span class="text-red">(*)</span>
-
             </div>
 
             <v-text-field
@@ -297,18 +266,15 @@ onMounted(() => {
               density="compact"
               hide-details="true"
             ></v-text-field>
-
           </v-col>
 
           <v-col
             cols="12"
             md="4"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">
-               Phương thức
+              Phương thức
               <span class="text-red">(*)</span>
-
             </div>
 
             <v-autocomplete
@@ -320,18 +286,15 @@ onMounted(() => {
               hide-details
               :items="types"
             ></v-autocomplete>
-
           </v-col>
 
           <v-col
             cols="12"
             md="4"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">
-               Đơn hàng tối thiểu
+              Đơn hàng tối thiểu
               <span class="text-red">(*)</span>
-
             </div>
 
             <v-text-field
@@ -340,18 +303,15 @@ onMounted(() => {
               density="compact"
               hide-details="true"
             ></v-text-field>
-
           </v-col>
 
           <v-col
             cols="12"
             md="4"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">
-               Số lượng tối đa
+              Số lượng tối đa
               <span class="text-red">(*)</span>
-
             </div>
 
             <v-text-field
@@ -360,18 +320,15 @@ onMounted(() => {
               density="compact"
               hide-details="true"
             ></v-text-field>
-
           </v-col>
 
           <v-col
             cols="12"
             md="4"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">
-               Ngày bắt đầu
+              Ngày bắt đầu
               <span class="text-red">(*)</span>
-
             </div>
 
             <v-date-input
@@ -379,18 +336,15 @@ onMounted(() => {
               variant="outlined"
               v-model="formModel.validFrom"
             ></v-date-input>
-
           </v-col>
 
           <v-col
             cols="12"
             md="4"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">
-               Ngày kết thúc
+              Ngày kết thúc
               <span class="text-red">(*)</span>
-
             </div>
 
             <v-date-input
@@ -398,41 +352,32 @@ onMounted(() => {
               variant="outlined"
               v-model="formModel.validUntil"
             ></v-date-input>
-
           </v-col>
-
         </v-row>
-
       </template>
 
       <v-divider></v-divider>
 
       <v-card-actions class="bg-surface-light">
-
         <v-btn
           color="green-darken-1"
           @click="save"
           variant="elevated"
         >
-           Lưu
+          Lưu
         </v-btn>
 
         <v-btn
           color="red-lighten-1"
-          @click="
-            () => {
-              dialog = false
-            }
-          "
+          @click="() => {
+            dialog = false
+          }"
           variant="elevated"
         >
-           Hủy
+          Hủy
         </v-btn>
-
       </v-card-actions>
-
     </v-card>
-
   </v-dialog>
 
   <!-- confirmation dialog -->
@@ -441,20 +386,17 @@ onMounted(() => {
     v-model="confirmationDialog"
     max-width="500"
   >
-
     <v-card title="Xác nhận">
-
       <v-card-text>Bạn có chắc chắn muốn xóa mã?</v-card-text>
 
       <v-card-actions>
-
         <v-btn
           variant="elevated"
           color="green-darken-1"
           :loading="isDelLoading"
           @click="remove"
         >
-           Đồng ý
+          Đồng ý
         </v-btn>
 
         <v-btn
@@ -462,14 +404,9 @@ onMounted(() => {
           color="red-lighten-1"
           @click="confirmationDialog = !confirmationDialog"
         >
-           Hủy
+          Hủy
         </v-btn>
-
       </v-card-actions>
-
     </v-card>
-
   </v-dialog>
-
 </template>
-

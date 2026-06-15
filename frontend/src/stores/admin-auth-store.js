@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
 import { loginUser, logoutUser } from '@/api/auth-api'
+import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
 
 export const useAdminAuthStore = defineStore(
   'admin-auth',

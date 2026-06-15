@@ -16,20 +16,15 @@ const orders = [{ title: 'Đơn trực tuyến', icon: 'mdi-truck', nameRoute: '
 </script>
 
 <template>
-
   <v-navigation-drawer
     color="primary"
     class="pa-4"
   >
-
     <div>
-
       <h4>Trang chủ</h4>
-
     </div>
 
     <v-list>
-
       <v-list-item
         v-for="(item, i) in homepage"
         :key="i"
@@ -39,19 +34,15 @@ const orders = [{ title: 'Đơn trực tuyến', icon: 'mdi-truck', nameRoute: '
         :prepend-icon="item.icon"
         density="compact"
       ></v-list-item>
-
     </v-list>
 
     <v-divider></v-divider>
 
     <div>
-
       <h4>Quản lý kho</h4>
-
     </div>
 
     <v-list>
-
       <v-list-item
         v-for="(item, i) in inventory"
         :key="i"
@@ -61,19 +52,15 @@ const orders = [{ title: 'Đơn trực tuyến', icon: 'mdi-truck', nameRoute: '
         :prepend-icon="item.icon"
         density="compact"
       ></v-list-item>
-
     </v-list>
 
     <v-divider></v-divider>
 
     <div>
-
       <h4>Quản lý tài khoản</h4>
-
     </div>
 
     <v-list>
-
       <v-list-item
         v-for="(item, i) in accounts"
         :key="i"
@@ -83,19 +70,15 @@ const orders = [{ title: 'Đơn trực tuyến', icon: 'mdi-truck', nameRoute: '
         :prepend-icon="item.icon"
         density="compact"
       ></v-list-item>
-
     </v-list>
 
     <v-divider></v-divider>
 
     <div>
-
       <h4>Quản lý đơn hàng</h4>
-
     </div>
 
     <v-list>
-
       <v-list-item
         v-for="(item, i) in orders"
         :key="i"
@@ -105,10 +88,6 @@ const orders = [{ title: 'Đơn trực tuyến', icon: 'mdi-truck', nameRoute: '
         :prepend-icon="item.icon"
         density="compact"
       ></v-list-item>
-
     </v-list>
-
   </v-navigation-drawer>
-
 </template>
-

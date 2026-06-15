@@ -6,15 +6,12 @@ const props = defineProps({
 </script>
 
 <template>
-
   <v-snackbar
     :model-value="show"
     color="error"
     timeout="3000"
     location="top"
   >
-     {{ message }}
+    {{ message }}
   </v-snackbar>
-
 </template>
-

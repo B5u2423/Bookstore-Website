@@ -4,7 +4,7 @@ import { CollectionService } from '@/api/collection-api'
 import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
 import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
-import { ref, computed, onMounted, toRef, shallowRef } from 'vue'
+import { computed, onMounted, ref, shallowRef, toRef } from 'vue'
 
 // TODO: v-dialog in this file is a good example
 const adminAuthStore = useAdminAuthStore()
@@ -190,7 +190,6 @@ onMounted(() => {
 </script>
 
 <template>
-
   <v-data-table-server
     v-model:items-per-page="itemsPerPage"
     :headers="headers"
@@ -201,20 +200,16 @@ onMounted(() => {
     items-per-page-text="Số bộ sưu tập hiển thị"
     @update:options="loadItems"
   >
-
     <template v-slot:top>
-
       <v-toolbar flat>
-
         <v-toolbar-title>
-
           <v-icon
             color="medium-emphasis"
             icon="mdi-ticket-percent"
             size="x-small"
             start
           ></v-icon>
-           Thông tin bộ sưu tập
+          Thông tin bộ sưu tập
         </v-toolbar-title>
 
         <v-btn
@@ -225,125 +220,88 @@ onMounted(() => {
           variant="outlined"
           @click="add"
         ></v-btn>
-
       </v-toolbar>
-
     </template>
 
     <!-- style the header -->
 
     <template v-slot:headers="{ columns }">
-
       <tr>
-
         <template
           v-for="column in columns"
           :key="column.key"
         >
-
           <th>
-
             <div class="d-flex align-center">
-
               <span
                 class="me-2 cursor-pointer font-weight-bold"
                 v-text="column.title"
               ></span>
-
             </div>
-
           </th>
-
         </template>
-
       </tr>
-
     </template>
 
     <!-- books in collection -->
 
     <template v-slot:item.books="{ item }">
-
       <v-dialog max-width="500">
-
         <template v-slot:activator="{ props: activatorProps }">
-
           <v-btn
             v-bind="activatorProps"
             variant="outlined"
             size="small"
             @click="getBooksInCollection(item.collectionSlug)"
           >
-             Xem thông tin
+            Xem thông tin
           </v-btn>
-
         </template>
 
         <template v-slot:default="{ isActive }">
-
           <v-card title="Sách trong BST">
-
             <v-card-text>
-
               <v-table
                 height="300px"
                 striped="even"
                 fixed-header
               >
-
                 <thead>
-
                   <tr>
-
-                    <th class="text-left font-weight-bold"> ID </th>
+                    <th class="text-left font-weight-bold">ID</th>
 
                     <th class="text-left font-weight-bold">ISBN</th>
 
-                    <th class="text-left font-weight-bold"> Tên sách </th>
-
+                    <th class="text-left font-weight-bold">Tên sách</th>
                   </tr>
-
                 </thead>
 
                 <tbody>
-
                   <tr
                     v-for="(book, i) in books"
                     :key="i"
                   >
-
                     <td>{{ book.id }}</td>
 
                     <td>{{ book.isbn }}</td>
 
                     <td>{{ book.title }}</td>
-
                   </tr>
-
                 </tbody>
-
               </v-table>
-
             </v-card-text>
 
             <v-card-actions>
-
               <v-btn @click="isActive.value = false">Đóng</v-btn>
-
             </v-card-actions>
-
           </v-card>
-
         </template>
-
       </v-dialog>
-
     </template>
 
     <!-- action buttons -->
 
     <template v-slot:item.actions="{ item }">
-
       <v-icon
         color="medium-emphasis"
         icon="mdi-pencil"
@@ -357,9 +315,7 @@ onMounted(() => {
         size="small"
         @click="confirm(item.id)"
       ></v-icon>
-
     </template>
-
   </v-data-table-server>
 
   <!-- edit/add dialog -->
@@ -368,25 +324,19 @@ onMounted(() => {
     v-model="dialog"
     max-width="500"
   >
-
     <v-card
       :title="`${isEditing ? 'Thay đổi thông tin' : 'Tạo bản ghi mới'}`"
       :subtitle="`${isEditing ? 'Cập nhật' : 'Thêm'} bộ sưu tập`"
     >
-
       <template v-slot:text>
-
         <v-row class="px-3">
-
           <v-col
             cols="12"
             md="12"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">
-               Tên bộ sưu tập
+              Tên bộ sưu tập
               <span class="text-red">(*)</span>
-
             </div>
 
             <v-text-field
@@ -395,41 +345,32 @@ onMounted(() => {
               density="compact"
               hide-details="true"
             ></v-text-field>
-
           </v-col>
-
         </v-row>
-
       </template>
 
       <v-divider></v-divider>
 
       <v-card-actions class="bg-surface-light">
-
         <v-btn
           color="green-darken-1"
           @click="save"
           variant="elevated"
         >
-           Lưu
+          Lưu
         </v-btn>
 
         <v-btn
           color="red-lighten-1"
-          @click="
-            () => {
-              dialog = false
-            }
-          "
+          @click="() => {
+            dialog = false
+          }"
           variant="elevated"
         >
-           Hủy
+          Hủy
         </v-btn>
-
       </v-card-actions>
-
     </v-card>
-
   </v-dialog>
 
   <!-- confirmation dialog -->
@@ -438,20 +379,17 @@ onMounted(() => {
     v-model="confirmationDialog"
     max-width="500"
   >
-
     <v-card title="Xác nhận">
-
       <v-card-text>Bạn có chắc chắn muốn xóa bộ sưu tập?</v-card-text>
 
       <v-card-actions>
-
         <v-btn
           variant="elevated"
           color="green-darken-1"
           :loading="isDelLoading"
           @click="remove()"
         >
-           Đồng ý
+          Đồng ý
         </v-btn>
 
         <v-btn
@@ -459,26 +397,21 @@ onMounted(() => {
           color="red-lighten-1"
           @click="confirmationDialog = !confirmationDialog"
         >
-           Hủy
+          Hủy
         </v-btn>
-
       </v-card-actions>
-
     </v-card>
-
   </v-dialog>
 
   <!-- snackbars -->
 
-  <SnackBarOnFailure
+  <snack-bar-on-failure
     :show="isError"
     :message="message"
   />
 
-  <SnackBarOnSuccess
+  <snack-bar-on-success
     :show="isSuccess"
     :message="message"
   />
-
 </template>
-

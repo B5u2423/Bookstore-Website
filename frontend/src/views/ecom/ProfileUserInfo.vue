@@ -1,12 +1,12 @@
 <script setup>
+import { AddressInfoService } from '@/api/cart-api.js'
 import { CustomerService, UserService } from '@/api/customer-api'
+import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
+import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 import { useAuthStore } from '@/stores/auth-store'
 import { useCartStore } from '@/stores/cart-store'
 import { useUserProfileStore } from '@/stores/user-profile-store'
 import { onBeforeMount, onMounted, ref, watch } from 'vue'
-import { AddressInfoService } from '@/api/cart-api.js'
-import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
-import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 
 const userProfileStore = useUserProfileStore()
 const cartStore = useCartStore()
@@ -169,28 +169,21 @@ onMounted(() => {
 </script>
 
 <template>
-
   <v-sheet class="pa-3 justify-center align-center mb-6">
-
     <v-card
       variant="flat"
       class="pa-2"
     >
-
       <v-card-title><h4>Thông tin cá nhân</h4></v-card-title>
 
       <v-divider></v-divider>
 
       <v-container>
-
         <v-row>
-
           <v-col class="py-0">
-
             <div class="text-subtitle-1 text-medium-emphasis">
-               Họ và tên
+              Họ và tên
               <span class="text-red">*</span>
-
             </div>
 
             <v-text-field
@@ -200,19 +193,14 @@ onMounted(() => {
               :disabled="!isFieldsEnabled"
               v-model="currentUserProfileSnapshot.name"
             ></v-text-field>
-
           </v-col>
-
         </v-row>
 
         <v-row>
-
           <v-col class="py-0">
-
             <div class="text-subtitle-1 text-medium-emphasis">
-               Email
+              Email
               <span class="text-red">*</span>
-
             </div>
 
             <v-text-field
@@ -222,11 +210,9 @@ onMounted(() => {
               :disabled="!isFieldsEnabled"
               v-model="currentUserProfileSnapshot.email"
             ></v-text-field>
-
           </v-col>
 
           <v-col class="py-0">
-
             <div class="text-subtitle-1 text-medium-emphasis">Số điện thoại</div>
 
             <v-text-field
@@ -236,63 +222,49 @@ onMounted(() => {
               :disabled="!isFieldsEnabled"
               v-model="currentUserProfileSnapshot.phoneNumber"
             ></v-text-field>
-
           </v-col>
-
         </v-row>
 
         <v-row>
-
           <v-col class="py-0">
-
             <v-btn
               class="my-3"
               color="primary"
               :disabled="isFieldsEnabled"
               @click="enableFieldsForUpdate()"
             >
-               Thay đổi thông tin
+              Thay đổi thông tin
             </v-btn>
-
           </v-col>
 
           <v-col>
-
             <div v-show="isFieldsEnabled">
-
               <v-btn
                 :disabled="!isUpdated"
                 class="mr-3"
                 color="success"
                 @click="updateChanges"
               >
-                 Lưu
+                Lưu
               </v-btn>
 
               <v-btn
                 color="warning"
                 @click="discardChanges"
               >
-                 Hủy
+                Hủy
               </v-btn>
-
             </div>
-
           </v-col>
-
         </v-row>
-
       </v-container>
-
     </v-card>
 
     <v-card
       variant="flat"
       class="pa-2"
     >
-
       <v-card-title class="d-inline-block">
-
         <h4>Địa chỉ</h4>
 
         <v-btn
@@ -301,68 +273,50 @@ onMounted(() => {
           color="primary"
           @click="dialog = !dialog"
         >
-           Thêm địa chỉ
+          Thêm địa chỉ
         </v-btn>
-
       </v-card-title>
 
       <v-divider></v-divider>
 
       <v-card-text>
-
         <template v-if="userProfileStore.userInfo.addressList.length === 0">
-           Không có địa chỉ mới
+          Không có địa chỉ mới
         </template>
 
         <template v-else>
-
           <v-data-table
             :headers="headers"
             :items="userProfileStore.userInfo.addressList"
             hide-default-footer
           >
-
             <template v-slot:item.actions="{ item }">
-
               <div class="d-flex ga-2 justify-center">
-
                 <v-icon
                   color="medium-emphasis"
                   icon="mdi-delete"
                   size="small"
                   @click="deleteAddress(item.id)"
                 ></v-icon>
-
               </div>
-
             </template>
-
           </v-data-table>
-
         </template>
-
       </v-card-text>
-
     </v-card>
-
   </v-sheet>
 
   <v-dialog
     v-model="dialog"
     max-width="500"
   >
-
     <v-card
       title="Tạo địa chỉ"
       subtitle="Thêm mới địa chỉ giao hàng"
     >
-
       <v-card-text>
-
         <v-row class="px-3">
-
           <v-col cols="12">
-
             <div class="text-subtitle-1 text-high-emphasis">Tỉnh thành</div>
 
             <v-autocomplete
@@ -375,11 +329,9 @@ onMounted(() => {
               variant="outlined"
               @update:modelValue="fetchCommunes"
             ></v-autocomplete>
-
           </v-col>
 
           <v-col cols="12">
-
             <div class="text-subtitle-1 text-high-emphasis">Xã phường</div>
 
             <v-autocomplete
@@ -392,13 +344,11 @@ onMounted(() => {
               variant="outlined"
               :disabled="!address.cityId"
             ></v-autocomplete>
-
           </v-col>
 
           <v-col cols="12">
-
             <div class="text-subtitle-1 text-high-emphasis">
-               Địa chỉ (số nhà, đường, thôn, ngõ,...)
+              Địa chỉ (số nhà, đường, thôn, ngõ,...)
             </div>
 
             <v-text-field
@@ -407,21 +357,17 @@ onMounted(() => {
               density="compact"
               hide-details="true"
             ></v-text-field>
-
           </v-col>
-
         </v-row>
-
       </v-card-text>
 
       <v-card-actions>
-
         <v-btn
           color="green-darken-1"
           variant="elevated"
           @click="save"
         >
-           Lưu
+          Lưu
         </v-btn>
 
         <v-btn
@@ -429,24 +375,19 @@ onMounted(() => {
           variant="elevated"
           @click="dialog = !dialog"
         >
-           Hủy
+          Hủy
         </v-btn>
-
       </v-card-actions>
-
     </v-card>
-
   </v-dialog>
 
-  <SnackBarOnFailure
+  <snack-bar-on-failure
     :show="isError"
     :mesasge="message"
   />
 
-  <SnackBarOnSuccess
+  <snack-bar-on-success
     :show="isSuccess"
     :message="message"
   />
-
 </template>
-

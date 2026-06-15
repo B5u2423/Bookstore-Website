@@ -20,14 +20,11 @@ const accounts = [
 </script>
 
 <template>
-
   <v-container
     fluid
     class="pa-0"
   >
-
     <v-row class="align-center justify-center py-5 px-16">
-
       <v-card
         title="Đăng ký nhận thông tin"
         color="transparent"
@@ -44,59 +41,45 @@ const accounts = [
       ></v-text-field>
 
       <v-btn variant="outlined">ĐĂNG KÝ</v-btn>
-
     </v-row>
 
     <v-row>
-
       <v-col sm="4"></v-col>
 
       <v-col>
-
         <v-row offset="2">
-
           <v-col>
-
             <h3>THÔNG TIN CHI TIẾT</h3>
 
             <v-list density="compact">
-
               <v-list-item
                 class="cursor-pointer"
                 v-for="item in services"
                 :key="item"
                 :title="item.name"
               ></v-list-item>
-
             </v-list>
 
             <v-sheet> </v-sheet>
-
           </v-col>
 
           <v-col>
-
             <h3>CHÍNH SÁCH</h3>
 
             <v-list density="compact">
-
               <v-list-item
                 class="cursor-pointer"
                 v-for="item in supports"
                 :key="item"
                 :title="item.name"
               ></v-list-item>
-
             </v-list>
-
           </v-col>
 
           <v-col>
-
             <h3>TÀI KHOẢN CỦA TÔI</h3>
 
             <v-list density="compact">
-
               <v-list-item
                 class="cursor-pointer"
                 v-for="item in accounts"
@@ -105,18 +88,10 @@ const accounts = [
                 :to="{ name: item.route }"
                 :title="item.name"
               ></v-list-item>
-
             </v-list>
-
           </v-col>
-
         </v-row>
-
       </v-col>
-
     </v-row>
-
   </v-container>
-
 </template>
-

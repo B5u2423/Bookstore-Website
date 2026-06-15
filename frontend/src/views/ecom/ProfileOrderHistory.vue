@@ -1,7 +1,7 @@
 <script setup>
 import { OrderService } from '@/api/cart-api'
-import { onMounted, ref } from 'vue'
 import { formatPriceVNLocale } from '@/utils/utils'
+import { onMounted, ref } from 'vue'
 
 const headers = ref([
   { title: 'Tình Trạng Đơn Hàng', key: 'orderStatus', align: 'start' },
@@ -45,28 +45,22 @@ onMounted(() => {
 </script>
 
 <template>
-
   <v-sheet class="pa-3 justify-center align-center">
-
     <v-data-table
       :headers="headers"
       :items="items"
       show-expand
     >
-
       <template v-slot:item.orderStatus="{ item }">
-
         <v-chip
           :color="computeStatusColor(item.orderStatus)"
           variant="text"
         >
-           {{ computeStatusLabel(item.orderStatus) }}
+          {{ computeStatusLabel(item.orderStatus) }}
         </v-chip>
-
       </template>
 
       <template v-slot:item.data-table-expand="{ internalItem, isExpanded, toggleExpand }">
-
         <v-btn
           :append-icon="isExpanded(internalItem) ? 'mdi-chevron-up' : 'mdi-chevron-down'"
           :text="isExpanded(internalItem) ? 'Thu gọn' : 'Xem thêm'"
@@ -78,30 +72,22 @@ onMounted(() => {
           slim
           @click="toggleExpand(internalItem)"
         ></v-btn>
-
       </template>
 
       <template v-slot:expanded-row="{ columns, item }">
-
         <tr>
-
           <td
             :colspan="columns.length"
             class="py-2"
           >
-
             <v-sheet rounded="lg">
-
               <v-row class="ma-4">
-
                 <v-col
                   cols="12"
                   md="4"
                   class="border-md pa-2"
                 >
-
                   <b> Họ và tên người mua </b>
-
                 </v-col>
 
                 <v-col
@@ -109,7 +95,7 @@ onMounted(() => {
                   md="8"
                   class="border-md pa-2"
                 >
-                   {{ item.name }}
+                  {{ item.name }}
                 </v-col>
 
                 <v-col
@@ -117,9 +103,7 @@ onMounted(() => {
                   md="4"
                   class="border-md pa-2"
                 >
-
                   <b> Địa chỉ giao hàng </b>
-
                 </v-col>
 
                 <v-col
@@ -127,7 +111,7 @@ onMounted(() => {
                   md="8"
                   class="border-md pa-2"
                 >
-                   {{ item.street + ' ' + item.commune + ' ' + item.city }}
+                  {{ item.street + ' ' + item.commune + ' ' + item.city }}
                 </v-col>
 
                 <v-col
@@ -135,9 +119,7 @@ onMounted(() => {
                   md="4"
                   class="border-md pa-2"
                 >
-
                   <b>Tổng giá tiền sản phẩm</b>
-
                 </v-col>
 
                 <v-col
@@ -145,7 +127,7 @@ onMounted(() => {
                   md="8"
                   class="border-md pa-2"
                 >
-                   {{ formatPriceVNLocale(item.itemsTotal) }} VNĐ
+                  {{ formatPriceVNLocale(item.itemsTotal) }} VNĐ
                 </v-col>
 
                 <v-col
@@ -153,9 +135,7 @@ onMounted(() => {
                   md="4"
                   class="border-md pa-2"
                 >
-
                   <b>Chi phí giao hàng</b>
-
                 </v-col>
 
                 <v-col
@@ -163,7 +143,7 @@ onMounted(() => {
                   md="8"
                   class="border-md pa-2"
                 >
-                   {{ formatPriceVNLocale(item.shippingFee) }} VNĐ
+                  {{ formatPriceVNLocale(item.shippingFee) }} VNĐ
                 </v-col>
 
                 <v-col
@@ -171,9 +151,7 @@ onMounted(() => {
                   md="4"
                   class="border-md pa-2"
                 >
-
                   <b>Tổng giá tiền đơn hàng</b>
-
                 </v-col>
 
                 <v-col
@@ -181,7 +159,7 @@ onMounted(() => {
                   md="8"
                   class="border-md pa-2"
                 >
-                   {{ formatPriceVNLocale(item.orderTotal) }} VNĐ
+                  {{ formatPriceVNLocale(item.orderTotal) }} VNĐ
                 </v-col>
 
                 <v-col
@@ -189,9 +167,7 @@ onMounted(() => {
                   md="4"
                   class="border-md pa-2"
                 >
-
                   <b>Sản phẩm</b>
-
                 </v-col>
 
                 <v-col
@@ -199,42 +175,25 @@ onMounted(() => {
                   md="8"
                   class="border-md pa-2"
                 >
-
                   <v-col v-for="i in item.items">
-
                     <v-card variant="flat">
-
                       <v-card-title class="text-wrap"> {{ i.titleAtPurchase }} </v-card-title>
 
                       <v-card-subtitle>
+                        <p>ISBN: {{ i.isbn }}</p>
 
-                        <p> ISBN: {{ i.isbn }} </p>
+                        <p>Giá thành: {{ formatPriceVNLocale(i.priceAtPurchase) }} VNĐ</p>
 
-                        <p> Giá thành: {{ formatPriceVNLocale(i.priceAtPurchase) }} VNĐ </p>
-
-                        <p> Số lượng: {{ i.quantity }} </p>
-
+                        <p>Số lượng: {{ i.quantity }}</p>
                       </v-card-subtitle>
-
                     </v-card>
-
                   </v-col>
-
                 </v-col>
-
               </v-row>
-
             </v-sheet>
-
           </td>
-
         </tr>
-
       </template>
-
     </v-data-table>
-
   </v-sheet>
-
 </template>
-

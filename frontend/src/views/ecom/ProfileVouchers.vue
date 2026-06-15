@@ -40,9 +40,7 @@ const headers = [
 </script>
 
 <template>
-
   <v-sheet class="pa-3 justify-center align-center">
-
     <v-data-table
       class="custom-header-color"
       hide-default-footer=""
@@ -50,11 +48,8 @@ const headers = [
       :items="items"
       item-key="voucherTitle"
     >
-
     </v-data-table>
-
   </v-sheet>
-
 </template>
 
 <style>
@@ -71,4 +66,3 @@ const headers = [
   font-weight: bolder;
 }
 </style>
-

@@ -1,7 +1,7 @@
 <script setup>
-import BookSlideGroup from '@/components/books/BookSlideGroup.vue'
-import { ref, onMounted } from 'vue'
 import { BookService } from '@/api/book-api'
+import BookSlideGroup from '@/components/books/BookSlideGroup.vue'
+import { onMounted, ref } from 'vue'
 
 const bestsellers = ref([])
 const newbooks = ref([])
@@ -32,48 +32,38 @@ onMounted(() => {
 </script>
 
 <template>
-
   <v-sheet>
-
     <v-carousel
       hide-delimiters
       transition-duration="700"
       crossfade
       show-arrows="hover"
     >
-
       <v-carousel-item
         v-for="(item, i) in carouselItems"
         :key="i"
         :src="item"
         cover
       ></v-carousel-item>
-
     </v-carousel>
 
     <div class="ma-4">
-
-      <BookSlideGroup
+      <book-slide-group
         group-header="Bán chạy"
         :books="bestsellers"
         :loading="loading"
         route-to="login"
       />
 
-      <BookSlideGroup
+      <book-slide-group
         group-header="Sách mới về"
         :books="newbooks"
         :loading="loading"
         route-to="login"
       />
-
     </div>
-
   </v-sheet>
-
 </template>
 
 <style>
-
 </style>
-

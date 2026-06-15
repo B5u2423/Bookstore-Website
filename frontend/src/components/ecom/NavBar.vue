@@ -1,12 +1,12 @@
 <script setup>
-import { useRouter } from 'vue-router'
+import { BookService } from '@/api/book-api'
+import HorizontalBookCard from '@/components/books/HorizontalBookCard.vue'
 import { useAuthStore } from '@/stores/auth-store'
 import { useCartStore } from '@/stores/cart-store'
 import { useUserProfileStore } from '@/stores/user-profile-store'
-import { ref, watch, onUnmounted, onMounted } from 'vue'
 import debounce from 'lodash.debounce'
-import { BookService } from '@/api/book-api'
-import HorizontalBookCard from '@/components/books/HorizontalBookCard.vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -58,14 +58,11 @@ async function handleLogout() {
 </script>
 
 <template>
-
   <v-app-bar
     density="default"
     class="px-16"
   >
-
     <template v-slot:title>
-
       <!--        <v-responsive-->
 
       <!--            max-width="333"-->
@@ -78,7 +75,7 @@ async function handleLogout() {
         class="cursor-pointer"
         @click="goToHomePage"
       >
-         BookShelf
+        BookShelf
       </h2>
 
       <!-- <v-img
@@ -88,11 +85,9 @@ async function handleLogout() {
           ></v-img> -->
 
       <!--        </v-responsive>-->
-
     </template>
 
     <template v-slot:default>
-
       <v-autocomplete
         placeholder="Tìm kiếm sách"
         variant="outlined"
@@ -109,50 +104,38 @@ async function handleLogout() {
         hide-no-data
         v-model:search="query"
       >
-
         <template v-slot:item="{ props, item }">
-
           <v-list-item
             v-bind="props"
             :title="item.raw.title"
             :to="{ name: 'book-detail', params: { id: item.raw.id, slug: item.raw.urlSlug } }"
           >
-
             <template v-slot:prepend>
-
               <v-img
                 :src="item.raw.imageUrl"
                 width="100"
               ></v-img>
-
             </template>
-
           </v-list-item>
-
         </template>
-
       </v-autocomplete>
-
     </template>
 
     <template v-slot:append>
-
       <template v-if="!authStore.isAuthenticated">
-
         <v-btn
           :active="false"
           :to="{ name: 'register' }"
         >
-           Đăng ký
+          Đăng ký
         </v-btn>
 
         <v-btn
           :active="false"
           :to="{ name: 'login' }"
         >
-           Đăng nhập
+          Đăng nhập
         </v-btn>
-
       </template>
 
       <!-- IF LOGGED IN: AVATAR + MENU -->
@@ -161,49 +144,37 @@ async function handleLogout() {
         location="bottom"
         v-else
       >
-
         <template v-slot:activator="{ props }">
-
           <v-btn
             color="primary"
             v-bind="props"
             prepend-icon="mdi-account"
           >
-             {{ userProfileStore.userInfo.name }}
+            {{ userProfileStore.userInfo.name }}
           </v-btn>
-
         </template>
 
         <v-list>
-
           <v-list-item :to="{ name: 'user-info' }">
-
             <v-list-item-title>
-
               <v-icon
                 class="mx-2"
                 icon="mdi-account"
               ></v-icon>
-               Thông tin cá nhân
+              Thông tin cá nhân
             </v-list-item-title>
-
           </v-list-item>
 
           <v-list-item @click="handleLogout">
-
             <v-list-item-title>
-
               <v-icon
                 class="mx-2"
                 icon="mdi-logout"
               ></v-icon>
-               Đăng xuất
+              Đăng xuất
             </v-list-item-title>
-
           </v-list-item>
-
         </v-list>
-
       </v-menu>
 
       <v-badge
@@ -214,22 +185,18 @@ async function handleLogout() {
         color="primary"
         :content="cartStore.cartItemsCount"
       >
-
         <v-btn
           :to="{ name: 'cart' }"
           icon="mdi-cart"
           :active="false"
         ></v-btn>
-
       </v-badge>
 
       <v-btn
         icon="mdi-bell"
         :active="false"
       ></v-btn>
-
     </template>
-
   </v-app-bar>
 
   <!-- <v-app-bar
@@ -263,6 +230,4 @@ async function handleLogout() {
     </div>
 
   </v-app-bar> -->
-
 </template>
-

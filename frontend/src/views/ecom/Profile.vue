@@ -18,14 +18,11 @@ onMounted(() => {
 </script>
 
 <template>
-
   <v-sheet elevation="3">
-
     <v-tabs
       v-model="tab"
       grow
     >
-
       <v-tab
         v-for="(t, i) in items"
         :key="i"
@@ -33,12 +30,8 @@ onMounted(() => {
         :value="t"
         :to="{ name: t.nameRoute }"
       ></v-tab>
-
     </v-tabs>
 
     <router-view></router-view>
-
   </v-sheet>
-
 </template>
-

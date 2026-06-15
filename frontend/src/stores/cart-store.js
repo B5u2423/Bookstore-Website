@@ -1,9 +1,9 @@
+import { BookService } from '@/api/book-api.js'
 import { CartService } from '@/api/cart-api'
+import Book from '@/views/admin/Book.vue'
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import { useAuthStore } from './auth-store'
-import Book from '@/views/admin/Book.vue'
-import { BookService } from '@/api/book-api.js'
 
 export const useCartStore = defineStore(
   'cart',
@@ -15,7 +15,7 @@ export const useCartStore = defineStore(
     const totalAmount = computed(() =>
       activeCart.value.reduce((total, item) => {
         return total + item.price * item.quantity
-      }, 0),
+      }, 0)
     )
 
     // actions
@@ -37,9 +37,7 @@ export const useCartStore = defineStore(
       // if FE cart is not empty
       if (activeCart.value.length > 0) {
         const removeAllRes = await CartService.removeAllItemsFromCart()
-        const res = activeCart.value.map((item) =>
-          CartService.addToCart({ bookId: item.id, quantity: item.quantity }),
-        )
+        const res = activeCart.value.map((item) => CartService.addToCart({ bookId: item.id, quantity: item.quantity }))
       }
       const response = await CartService.getUsersActiveCart()
       const { id, user, items, cartStatus } = response

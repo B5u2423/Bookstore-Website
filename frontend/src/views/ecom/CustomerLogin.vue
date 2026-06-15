@@ -1,10 +1,10 @@
 <script setup>
-import { ref } from 'vue'
-import { useAuthStore } from '@/stores/auth-store'
-import { useRouter } from 'vue-router'
 import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
 import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
+import { useAuthStore } from '@/stores/auth-store'
 import { useCartStore } from '@/stores/cart-store'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const authStore = useAuthStore()
 const cartStore = useCartStore()
@@ -58,7 +58,6 @@ async function googleAuth() {
 </script>
 
 <template>
-
   <v-sheet
     class="d-flex align-center justify-center mx-auto pa-5 mb-6"
     elevation="4"
@@ -66,19 +65,15 @@ async function googleAuth() {
     width="100%"
     rounded
   >
-
     <div>
-
       <h2 class="text-center text-h5 text-black">Đăng nhập</h2>
 
       <div class="my-2">
-
         <v-form
           ref="form"
           v-model="isValidForm"
           @submit.prevent="handleLogin"
         >
-
           <div class="text-subtitle-1 text-medium-emphasis">Email</div>
 
           <v-text-field
@@ -109,16 +104,13 @@ async function googleAuth() {
             :disabled="!isValidForm"
             :loading="isLoading"
           >
-             ĐĂNG NHẬP
+            ĐĂNG NHẬP
           </v-btn>
-
         </v-form>
-
       </div>
 
       <div class="text-center">
-
-        <p class="text-black"> Hoặc đăng nhập bằng </p>
+        <p class="text-black">Hoặc đăng nhập bằng</p>
 
         <!-- <v-btn
           color="blue"
@@ -135,32 +127,26 @@ async function googleAuth() {
           @click="googleAuth"
           width="100%"
         >
-           Google
+          Google
         </v-btn>
-
       </div>
 
       <div class="text-center">
-         Bạn chưa có tài khoản, vui lòng đăng ký
+        Bạn chưa có tài khoản, vui lòng đăng ký
         <a href="/register"> tại đây </a>
-
       </div>
 
       <p class="text-center"><a href="/reset"> Quên mật khẩu? </a></p>
-
     </div>
 
-    <SnackBarOnFailure
+    <snack-bar-on-failure
       :show="isError"
       :message="message"
     />
 
-    <SnackBarOnSuccess
+    <snack-bar-on-success
       :show="isSuccess"
       :message="message"
     />
-
   </v-sheet>
-
 </template>
-

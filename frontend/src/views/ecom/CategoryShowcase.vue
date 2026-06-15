@@ -60,36 +60,25 @@ watchEffect(() => {
 </script>
 
 <template>
-
   <v-row>
-
     <h1 class="ml-3">{{ categoryName }}</h1>
-
   </v-row>
 
   <v-row>
-
     <v-col
       cols="12"
       md="3"
       v-for="book in books"
     >
-
       <book-card-showcase :book="book" />
-
     </v-col>
-
   </v-row>
 
   <v-pagination
     :length="paginationLength.totalPages"
     v-model="currentPage"
-    @update:model-value="
-      route.params.slug === 'tat-ca'
-        ? fetchAllBooks({ page: currentPage - 1, size: currentSize })
-        : fetchBookByCategory(route.params.slug, { page: currentPage - 1, size: currentSize })
-    "
+    @update:model-value="route.params.slug === 'tat-ca'
+    ? fetchAllBooks({ page: currentPage - 1, size: currentSize })
+    : fetchBookByCategory(route.params.slug, { page: currentPage - 1, size: currentSize })"
   ></v-pagination>
-
 </template>
-

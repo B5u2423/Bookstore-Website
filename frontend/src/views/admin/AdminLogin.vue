@@ -40,22 +40,17 @@ async function handleLogin() {
 </script>
 
 <template>
-
   <v-container
     class="pa-0 ma-0 fill-height d-flex"
     fluid
   >
-
     <v-row class="fill-height">
-
       <v-col
         cols="12"
         md="6"
         class="bg-grey d-flex justify-center"
       >
-
         <v-img src="/panel.svg"></v-img>
-
       </v-col>
 
       <v-col
@@ -63,23 +58,17 @@ async function handleLogin() {
         md="6"
         class="d-flex justify-center align-center"
       >
-
         <v-card
           class="pa-5"
           max-height="600px"
           min-width="400px"
         >
-
           <v-card-title class="text-center">
-
             <span class="headline">Đăng nhập</span>
-
           </v-card-title>
 
           <v-card-text>
-
             <v-form>
-
               <!-- username/email -->
 
               <v-text-field
@@ -100,13 +89,10 @@ async function handleLogin() {
                 full-width
                 :rules="[(v) => !!v || 'Mật khẩu không được bỏ trống']"
               />
-
             </v-form>
-
           </v-card-text>
 
           <v-card-actions>
-
             <!-- login button -->
 
             <v-btn
@@ -116,28 +102,21 @@ async function handleLogin() {
               :loading="isLoading"
               @click="handleLogin"
             >
-               Đăng nhập
+              Đăng nhập
             </v-btn>
-
           </v-card-actions>
-
         </v-card>
-
       </v-col>
-
     </v-row>
 
-    <SnackBarOnFailure
+    <snack-bar-on-failure
       :show="isError"
       :message="message"
     />
 
-    <SnackBarOnSuccess
+    <snack-bar-on-success
       :show="isSuccess"
       :message="message"
     />
-
   </v-container>
-
 </template>
-

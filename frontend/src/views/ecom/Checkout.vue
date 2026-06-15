@@ -1,11 +1,11 @@
 <script setup>
-import { useCartStore } from '@/stores/cart-store'
-import { computed, onMounted, ref, watch } from 'vue'
-import { PaymentService, OrderService, AddressInfoService } from '@/api/cart-api'
-import { useUserProfileStore } from '@/stores/user-profile-store'
-import router from '@/router'
+import { AddressInfoService, OrderService, PaymentService } from '@/api/cart-api'
 import HorizontalBookCard from '@/components/books/HorizontalBookCard.vue'
+import router from '@/router'
+import { useCartStore } from '@/stores/cart-store'
+import { useUserProfileStore } from '@/stores/user-profile-store'
 import { formatPriceVNLocale } from '@/utils/utils'
+import { computed, onMounted, ref, watch } from 'vue'
 
 function bootStrapValues() {
   return {
@@ -109,11 +109,11 @@ const isPhoneValid = computed(() => {
 
 const isShippingValid = computed(() => {
   return (
-    isPhoneValid.value &&
-    !!shippingInfo.value.communeId &&
-    !!shippingInfo.value.cityId &&
-    !!shippingInfo.value.street &&
-    !!shippingInfo.value.phone
+    isPhoneValid.value
+    && !!shippingInfo.value.communeId
+    && !!shippingInfo.value.cityId
+    && !!shippingInfo.value.street
+    && !!shippingInfo.value.phone
     // TODO: look into this later for enable order condition
   )
 })
@@ -143,23 +143,17 @@ onMounted(() => {
 </script>
 
 <template>
-
   <v-container class="mb-8 bg-white">
-
     <v-row>
-
       <v-col
         cols="12"
         md="7"
       >
-
         <v-row>
-
           <v-col
             cols="12"
             md="6"
           >
-
             <p class="text-h5 text-high-emphasis">Thông tin khách hàng</p>
 
             <v-divider
@@ -190,9 +184,8 @@ onMounted(() => {
             ></v-text-field>
 
             <div class="text-subtitle-1 text-high-emphasis">
-               Số điện thoại
+              Số điện thoại
               <span class="text-red">*</span>
-
             </div>
 
             <v-text-field
@@ -202,7 +195,7 @@ onMounted(() => {
               :rules="[rules.required, rules.phone]"
             ></v-text-field>
 
-            <div class="text-subtitle-1 text-high-emphasis"> Sổ địa chỉ </div>
+            <div class="text-subtitle-1 text-high-emphasis">Sổ địa chỉ</div>
 
             <v-select
               density="compact"
@@ -213,28 +206,22 @@ onMounted(() => {
               variant="outlined"
               v-model="selectedAddrId"
             >
-
               <template v-slot:item="{ props, item }">
-
                 <v-list-item
                   v-bind="props"
                   :title="item.raw.street + ', ' + item.raw.commune + ', ' + item.raw.city"
                 >
-
                 </v-list-item>
-
               </template>
 
-              <template #selection="{ item }">
-                 {{ item.raw.street }}, {{ item.raw.commune }}, {{ item.raw.city }}
+              <template v-slot:selection="{ item }">
+                {{ item.raw.street }}, {{ item.raw.commune }}, {{ item.raw.city }}
               </template>
-
             </v-select>
 
             <div class="text-subtitle-1 text-high-emphasis">
-               Tỉnh thành
+              Tỉnh thành
               <span class="text-red">*</span>
-
             </div>
 
             <v-autocomplete
@@ -247,21 +234,16 @@ onMounted(() => {
               variant="outlined"
               @update:modelValue="fetchCommunes"
             >
-
               <template v-slot:selection="{ item }">
-
                 <template v-if="!/\d/.test(item.title)"> {{ item.title }} </template>
 
                 <template v-else> {{ shippingInfo.cityName }} </template>
-
               </template>
-
             </v-autocomplete>
 
             <div class="text-subtitle-1 text-high-emphasis">
-               Xã phường
+              Xã phường
               <span class="text-red">*</span>
-
             </div>
 
             <v-autocomplete
@@ -274,21 +256,16 @@ onMounted(() => {
               variant="outlined"
               :disabled="!shippingInfo.cityId"
             >
-
               <template v-slot:selection="{ item }">
-
                 <template v-if="!/\d/.test(item.title)"> {{ item.title }} </template>
 
                 <template v-else> {{ shippingInfo.communeName }} </template>
-
               </template>
-
             </v-autocomplete>
 
             <div class="text-subtitle-1 text-high-emphasis">
-               Địa chỉ (số nhà, đường ngõ,...)
+              Địa chỉ (số nhà, đường ngõ,...)
               <span class="text-red">*</span>
-
             </div>
 
             <v-text-field
@@ -306,14 +283,12 @@ onMounted(() => {
               density="compact"
               variant="outlined"
             ></v-textarea>
-
           </v-col>
 
           <v-col
             cols="12"
             md="6"
           >
-
             <div class="text-h5 text-high-emphasis">Vận chuyển</div>
 
             <v-divider
@@ -322,7 +297,6 @@ onMounted(() => {
             ></v-divider>
 
             <v-radio-group v-model="shipping">
-
               <v-radio
                 :disabled="!(shippingInfo.itemsTotal >= 500000)"
                 label="Miễn phí cho đơn trên 500K"
@@ -332,23 +306,18 @@ onMounted(() => {
               <template v-if="shippingInfo.cityId === ''"></template>
 
               <template v-else-if="shippingInfo.cityId === 1">
-
                 <v-radio
                   label="Nội thành Hà Nội (1-3 ngày)"
                   value="HANOI"
                 ></v-radio>
-
               </template>
 
               <template v-else>
-
                 <v-radio
                   label="Tỉnh thành khác (2-6 ngày)"
                   value="OTHERS"
                 ></v-radio>
-
               </template>
-
             </v-radio-group>
 
             <div class="text-h5 text-high-emphasis">Thanh toán</div>
@@ -359,7 +328,6 @@ onMounted(() => {
             ></v-divider>
 
             <v-radio-group v-model="shippingInfo.paymentMethod">
-
               <v-radio
                 label="Thanh toán khi giao hàng (Cash On Delivery)"
                 value="COD"
@@ -369,13 +337,9 @@ onMounted(() => {
                 label="Thanh toán qua VNPAY (QR, Banking)"
                 value="VNPAY"
               ></v-radio>
-
             </v-radio-group>
-
           </v-col>
-
         </v-row>
-
       </v-col>
 
       <!-- Third col -->
@@ -385,38 +349,25 @@ onMounted(() => {
         cols="12"
         md="5"
       >
-
         <v-row>
-
           <v-col cols="12">
-
             <v-infinite-scroll height="300">
-
               <div>
-
                 <template
                   v-for="item in cartStore.activeCart"
                   :key="item"
                 >
-
-                  <HorizontalBookCard :product="item" />
-
+                  <horizontal-book-card :product="item" />
                 </template>
-
               </div>
 
               <template v-slot:loading></template>
-
             </v-infinite-scroll>
-
           </v-col>
 
           <v-col cols="12">
-
             <v-row class="mb-3">
-
               <v-col md="8">
-
                 <v-text-field
                   variant="outlined"
                   v-model="shippingInfo.couponCode"
@@ -424,89 +375,70 @@ onMounted(() => {
                   hide-details="true"
                   label="Mã giảm giá"
                 ></v-text-field>
-
               </v-col>
 
               <v-col
                 md="4"
                 class="text-end justify-end"
               >
-
                 <v-btn
                   width="100%"
                   color="primary"
                   @click="confirmCheckout"
                 >
-                   ÁP DỤNG
+                  ÁP DỤNG
                 </v-btn>
-
               </v-col>
-
             </v-row>
 
             <v-divider></v-divider>
 
             <v-row>
-
               <v-col md="6">
-
                 <p>Tạm tính</p>
-
               </v-col>
 
               <v-col
                 md="6"
                 class="text-end"
               >
-                 {{ formatPriceVNLocale(shippingInfo.itemsTotal) }} VND
+                {{ formatPriceVNLocale(shippingInfo.itemsTotal) }} VND
               </v-col>
-
             </v-row>
 
             <v-row>
-
               <v-col md="6">
-
                 <p>Phí vận chuyển</p>
-
               </v-col>
 
               <v-col
                 md="6"
                 class="text-end"
               >
-
                 <template v-if="shippingInfo.shippingFee > 0">
-                   {{ formatPriceVNLocale(shippingInfo.value.shippingFee) }}
+                  {{ formatPriceVNLocale(shippingInfo.value.shippingFee) }}
                 </template>
 
                 <template v-else>-</template>
-
               </v-col>
-
             </v-row>
 
             <v-row>
-
               <v-col md="6">
-
                 <p>TỔNG CỘNG</p>
-
               </v-col>
 
               <v-col
                 md="6"
                 class="text-end"
               >
-                 {{ formatPriceVNLocale(tmpOrderTotal) }} VND
+                {{ formatPriceVNLocale(tmpOrderTotal) }} VND
               </v-col>
-
             </v-row>
 
             <v-divider class="py-2"></v-divider>
 
             <v-row class="mb-9 pt-3">
-
               <v-btn
                 class="mt-3"
                 variant="plain"
@@ -514,7 +446,7 @@ onMounted(() => {
                 prepend-icon="mdi-chevron-left"
                 density="compact"
               >
-                 Quay lại giỏ hàng
+                Quay lại giỏ hàng
               </v-btn>
 
               <v-spacer></v-spacer>
@@ -525,20 +457,12 @@ onMounted(() => {
                 class="mr-3"
                 :disabled="!isShippingValid"
               >
-                 Hoàn tất đơn hàng
+                Hoàn tất đơn hàng
               </v-btn>
-
             </v-row>
-
           </v-col>
-
         </v-row>
-
       </v-col>
-
     </v-row>
-
   </v-container>
-
 </template>
-

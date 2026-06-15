@@ -30,4 +30,3 @@ onMounted(() => {
 </script>
 
 <template>Redirecting</template>
-
