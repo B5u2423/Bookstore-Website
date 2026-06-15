@@ -1,0 +1,16 @@
+{
+  "incremental": true,
+  "typescript": {
+    "quoteStyle": "preferSingle",
+    "semiColons": "asi"
+  },
+  "html": {
+    "indentWidth": 2,
+    "printWidth": 100,
+    "blankLines": "never" 
+  },
+  "plugins": [
+    "https://plugins.dprint.dev/typescript-0.93.3.wasm",
+    "https://plugins.dprint.dev/html-0.6.2.wasm"
+  ]
+}
