@@ -38,7 +38,7 @@ export const useCartStore = defineStore(
       if (activeCart.value.length > 0) {
         const removeAllRes = await CartService.removeAllItemsFromCart()
         const res = activeCart.value.map((item) =>
-          CartService.addToCart(accessToken, { bookId: item.id, quantity: item.quantity }),
+          CartService.addToCart({ bookId: item.id, quantity: item.quantity }),
         )
       }
       const response = await CartService.getUsersActiveCart()

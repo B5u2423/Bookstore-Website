@@ -60,7 +60,7 @@ onMounted(() => {
           :color="computeStatusColor(item.orderStatus)"
           variant="text"
         >
-          {{ computeStatusLabel(item.orderStatus) }}
+           {{ computeStatusLabel(item.orderStatus) }}
         </v-chip>
 
       </template>

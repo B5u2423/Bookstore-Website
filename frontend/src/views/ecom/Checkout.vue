@@ -2,7 +2,6 @@
 import { useCartStore } from '@/stores/cart-store'
 import { computed, onMounted, ref, watch } from 'vue'
 import { PaymentService, OrderService, AddressInfoService } from '@/api/cart-api'
-import { useAuthStore } from '@/stores/auth-store'
 import { useUserProfileStore } from '@/stores/user-profile-store'
 import router from '@/router'
 import HorizontalBookCard from '@/components/books/HorizontalBookCard.vue'
@@ -29,7 +28,6 @@ function bootStrapValues() {
 }
 
 const cartStore = useCartStore()
-const authStore = useAuthStore()
 const userProfileStore = useUserProfileStore()
 const shipping = ref('')
 
@@ -66,10 +64,16 @@ async function confirmCheckout() {
   // change to payment page
   try {
     // mapping cityId and communeId
+    // the probelm is user don't have to select city/commune when use address book
+    // thus selected values will be null -> skip
     const selectedCity = cities.value.find((obj) => obj?.code === shippingInfo.value.cityId)
-    shippingInfo.value.cityName = selectedCity.name
+    if (selectedCity) {
+      shippingInfo.value.cityName = selectedCity.name
+    }
     const selectedCommune = communes.value.find((obj) => obj?.code === shippingInfo.value.communeId)
-    shippingInfo.value.communeName = selectedCommune.name
+    if (selectedCommune) {
+      shippingInfo.value.communeName = selectedCommune.name
+    }
     // update total order value
     shippingInfo.value.orderTotal = tmpOrderTotal
 
@@ -196,9 +200,6 @@ onMounted(() => {
               v-model="shippingInfo.phone"
               density="compact"
               :rules="[rules.required, rules.phone]"
-              :disabled="
-                userProfileStore.userInfo.phone !== '' && userProfileStore.userInfo.phone !== null
-              "
             ></v-text-field>
 
             <div class="text-subtitle-1 text-high-emphasis"> Sổ địa chỉ </div>
@@ -224,6 +225,10 @@ onMounted(() => {
 
               </template>
 
+              <template #selection="{ item }">
+                 {{ item.raw.street }}, {{ item.raw.commune }}, {{ item.raw.city }}
+              </template>
+
             </v-select>
 
             <div class="text-subtitle-1 text-high-emphasis">
@@ -237,11 +242,21 @@ onMounted(() => {
               hide-details="true"
               v-model="shippingInfo.cityId"
               :items="cities"
-              item-title="name"
               item-value="code"
+              item-title="name"
               variant="outlined"
               @update:modelValue="fetchCommunes"
-            ></v-autocomplete>
+            >
+
+              <template v-slot:selection="{ item }">
+
+                <template v-if="!/\d/.test(item.title)"> {{ item.title }} </template>
+
+                <template v-else> {{ shippingInfo.cityName }} </template>
+
+              </template>
+
+            </v-autocomplete>
 
             <div class="text-subtitle-1 text-high-emphasis">
                Xã phường
@@ -254,11 +269,21 @@ onMounted(() => {
               hide-details="true"
               v-model="shippingInfo.communeId"
               :items="communes"
-              item-title="name"
               item-value="code"
+              item-title="name"
               variant="outlined"
               :disabled="!shippingInfo.cityId"
-            ></v-autocomplete>
+            >
+
+              <template v-slot:selection="{ item }">
+
+                <template v-if="!/\d/.test(item.title)"> {{ item.title }} </template>
+
+                <template v-else> {{ shippingInfo.communeName }} </template>
+
+              </template>
+
+            </v-autocomplete>
 
             <div class="text-subtitle-1 text-high-emphasis">
                Địa chỉ (số nhà, đường ngõ,...)
