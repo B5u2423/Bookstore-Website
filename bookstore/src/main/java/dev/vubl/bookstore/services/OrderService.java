@@ -157,4 +157,13 @@ public class OrderService {
     }
     return "Status updated";
   }
+
+  public String updateOrderStatusById(Integer orderId, OrderStatus status) {
+    Optional<Order> o = orderRepo.findById(orderId);
+    if (o.isEmpty()) {
+      return "Order with ID %d does not exist".formatted(orderId);
+    }
+    o.get().setOrderStatus(status);
+    return "Status updated";
+  }
 }

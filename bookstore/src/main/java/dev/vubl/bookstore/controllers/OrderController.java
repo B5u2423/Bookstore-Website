@@ -2,6 +2,7 @@ package dev.vubl.bookstore.controllers;
 
 import dev.vubl.bookstore.dtos.CallBackDTO;
 import dev.vubl.bookstore.dtos.ShippingInfoDTO;
+import dev.vubl.bookstore.dtos.UpdateStatusRequest;
 import dev.vubl.bookstore.entities.Order;
 import dev.vubl.bookstore.services.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,15 @@ public class OrderController {
         .body(
             orderService.updateOrderStatus(
                 token, callBackDTO.vnpTxnRef(), callBackDTO.isCancelled()));
+  }
+
+  @PostMapping("/update-status-id")
+  public ResponseEntity<String> updateOrderStatusById(
+      @RequestBody UpdateStatusRequest updateStatusRequest) {
+    return ResponseEntity.ok()
+        .body(
+            orderService.updateOrderStatusById(
+                updateStatusRequest.orderId(), updateStatusRequest.status()));
   }
 
   @GetMapping
