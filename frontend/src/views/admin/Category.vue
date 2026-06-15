@@ -112,6 +112,12 @@ function remove() {
 async function save() {
   if (isEditing.value) {
     try {
+      if (Array.isArray(formModel.value.children)) {
+        formModel.value.children = formModel.value.children.map((item) => {
+          // check if the item is a valid object and has an id
+          return item && typeof item === 'object' && 'id' in item ? item.id : item
+        })
+      }
       // API call
       const res = await CategoryService.updateCategory(formModel.value)
       isSuccess.value = true
@@ -144,6 +150,7 @@ async function save() {
     }
   }
 
+  await loadItems()
   dialog.value = false
 }
 </script>
@@ -253,13 +260,41 @@ async function save() {
 
       <template v-else>
 
-        <v-chip
-          v-for="child in item.children"
-          class="ma-1"
-          color="green-darken-1"
-        >
-           {{ child.categoryName }}
-        </v-chip>
+        <v-dialog max-width="600">
+
+          <template v-slot:activator="{ props: activatorProps }">
+
+            <v-chip v-bind="activatorProps">Xem thêm</v-chip>
+
+          </template>
+
+          <template v-slot:default="{ isActive }">
+
+            <v-card title="Danh mục con">
+
+              <v-card-text>
+
+                <v-chip
+                  v-for="child in item.children"
+                  class="ma-1"
+                  color="green-darken-1"
+                >
+                   {{ child.categoryName }}
+                </v-chip>
+
+              </v-card-text>
+
+              <template v-slot:actions>
+
+                <v-btn @click="isActive.value = false">Đóng</v-btn>
+
+              </template>
+
+            </v-card>
+
+          </template>
+
+        </v-dialog>
 
       </template>
 
@@ -307,7 +342,7 @@ async function save() {
             <v-text-field
               variant="outlined"
               v-model="formModel.parentName"
-              disabled="true"
+              :disabled="true"
               density="compact"
               hide-details="true"
             ></v-text-field>
