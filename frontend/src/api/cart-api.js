@@ -40,12 +40,21 @@ export const PaymentService = {
 }
 
 export const OrderService = {
+  async updateStatusById(body) {
+    try {
+      const res = await adminApi.post('/orders/update-status-id', body)
+      return res.data
+    } catch (error) {
+      console.error('Error updating order by Id', error)
+    }
+  },
+
   async updateStatus(body) {
     try {
       const res = await customerApi.post('/orders/update-status', body)
       return res.data
     } catch (error) {
-      console.error('Error making order', error)
+      console.error('Error updating order status', error)
     }
   },
 

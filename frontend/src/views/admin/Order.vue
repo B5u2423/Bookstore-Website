@@ -2,7 +2,9 @@
 import { CartService, OrderService } from '@/api/cart-api'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
 import { formatPriceVNLocale } from '@/utils/utils'
-import { ref } from 'vue'
+import { ref, shallowRef } from 'vue'
+import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
+import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 
 const adminAuthStore = useAdminAuthStore()
 
@@ -87,6 +89,49 @@ async function loadItems({ page = 1, itemsPerPage: size = itemsPerPage.value } =
     loading.value = false
   }
 }
+
+// change order
+const currentStatus = ref(null)
+function updateToItemStatus(status) {
+  currentStatus.value = status
+}
+async function updateOrderStatus(orderId) {
+  try {
+    const res = await OrderService.updateStatusById({
+      orderId,
+      status: currentStatus.value,
+    })
+    // success snack
+    isSuccess.value = true
+    message.value = 'Cập nhật trạng thái đơn hàng thành công'
+    // reload
+    await loadItems()
+  } catch (error) {
+    // error snack
+    isError.value = true
+    message.value = 'Cập nhật trạng thái đơn hàng thất bại'
+    console.log('Error update order status by Id', error)
+  } finally {
+    setTimeout(() => {
+      isSuccess.value = false
+      isError.value = false
+    }, 2000)
+  }
+}
+
+function computeOrderColor(status) {
+  const colorMap = {
+    PENDING: 'cyan',
+    PAID: 'success',
+    CANCELLED: 'red',
+  }
+  return colorMap[String(status)]
+}
+
+// snackbars
+const isError = ref(false)
+const isSuccess = ref(false)
+const message = ref('')
 </script>
 
 <template>
@@ -151,16 +196,80 @@ async function loadItems({ page = 1, itemsPerPage: size = itemsPerPage.value } =
 
     </template>
 
+    <!-- order: user fullname -->
+
     <template v-slot:item.fullname="{ item }">
 
       <div class="d-flex ga-2 justify-start"> {{ item.name }} </div>
 
     </template>
 
+    <!-- order: user's address -->
+
     <template v-slot:item.address="{ item }">
 
       <div class="d-flex ga-2 justify-start">
          {{ item.street }}, {{ item.commune }}, {{ item.city }}
+      </div>
+
+    </template>
+
+    <!-- order: status -->
+
+    <template v-slot:item.orderStatus="{ item }">
+
+      <div class="d-flex ga-2 justify-start">
+
+        <v-dialog max-width="500">
+
+          <template v-slot:activator="{ props: activatorProps }">
+
+            <v-chip
+              v-bind="activatorProps"
+              :color="computeOrderColor(item.orderStatus)"
+              @click="updateToItemStatus(item.orderStatus)"
+            >
+               {{ item.orderStatus }}
+            </v-chip>
+
+          </template>
+
+          <template v-slot:default="{ isActive }">
+
+            <v-card title="Thay đổi trạng thái đơn">
+
+              <v-card-text>
+
+                <v-select
+                  :items="['PENDING', 'PAID', 'CANCELLED']"
+                  v-model="currentStatus"
+                ></v-select>
+
+              </v-card-text>
+
+              <template v-slot:actions>
+
+                <v-btn
+                  @click="
+                    () => {
+                      updateOrderStatus(item.id)
+                      isActive.value = false
+                    }
+                  "
+                >
+                   Lưu
+                </v-btn>
+
+                <v-btn @click="isActive.value = false">Hủy</v-btn>
+
+              </template>
+
+            </v-card>
+
+          </template>
+
+        </v-dialog>
+
       </div>
 
     </template>
@@ -465,6 +574,18 @@ async function loadItems({ page = 1, itemsPerPage: size = itemsPerPage.value } =
     </v-card>
 
   </v-dialog>
+
+  <!-- snack bars -->
+
+  <SnackBarOnFailure
+    :show="isError"
+    :message="message"
+  />
+
+  <SnackBarOnSuccess
+    :show="isSuccess"
+    :message="message"
+  />
 
 </template>
 
