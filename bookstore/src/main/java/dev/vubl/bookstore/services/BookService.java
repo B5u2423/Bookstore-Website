@@ -105,6 +105,7 @@ public class BookService {
       b.setPublishYear(bookResponseDTO.publishYear());
       b.setPageCount(bookResponseDTO.pageCount());
       b.setIsbn(bookResponseDTO.isbn());
+      b.setDescription(bookResponseDTO.description());
       b.setAuthor(bookResponseDTO.author());
       if (image != null) {
         String returnedUrl = cloudinaryService.uploadImage(image);
