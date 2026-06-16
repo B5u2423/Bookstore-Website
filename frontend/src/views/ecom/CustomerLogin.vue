@@ -317,12 +317,7 @@ async function googleAuth() {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
-.google-icon {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
-}
-
+.google-icon { width: 18px; height: 18px; flex-shrink: 0; }
 /* footer */
 .auth-footer {
   text-align: center;
