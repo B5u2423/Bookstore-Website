@@ -148,7 +148,7 @@ public class SecurityConfigs {
     return new PathPatternRequestMatcher[] {
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/customers/**"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/carts/**"),
-      PathPatternRequestMatcher.withDefaults().matcher("/api/v1/o**rders/**"),
+      PathPatternRequestMatcher.withDefaults().matcher("/api/v1/orders/**"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/payment/**"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/coupons/apply"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/orders/user"),
