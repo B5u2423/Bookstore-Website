@@ -6,7 +6,6 @@ import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
 import { computed, onMounted, ref, shallowRef, toRef } from 'vue'
 
-// TODO: v-dialog in this file is a good example
 const adminAuthStore = useAdminAuthStore()
 
 function createNewRecord() {

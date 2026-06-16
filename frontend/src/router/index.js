@@ -67,11 +67,6 @@ const routes = [
             component: () => import('@/views/ecom/ProfileUserInfo.vue'),
           },
           {
-            path: 'vouchers',
-            name: 'vouchers',
-            component: () => import('@/views/ecom/ProfileVouchers.vue'),
-          },
-          {
             path: 'order-history',
             name: 'history',
             component: () => import('@/views/ecom/ProfileOrderHistory.vue'),

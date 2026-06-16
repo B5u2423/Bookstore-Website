@@ -60,7 +60,7 @@ export const AuthService = {
     try {
       const res = await api.post('/auth/refresh', { refreshToken })
       return res.data
-    } catch {
+    } catch (error) {
       console.error('Error referesh token', error)
       throw error
     }

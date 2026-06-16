@@ -105,7 +105,6 @@ async function handleAddToCart() {
 
 <template>
   <v-container class="book-detail py-8">
-    <!-- back link, TODO: breadcrumbs -->
     <router-link to="/" class="back-link">
       <v-icon icon="mdi-arrow-left" size="18" class="mr-1" />
       Quay lại

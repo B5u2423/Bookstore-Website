@@ -114,7 +114,6 @@ const isShippingValid = computed(() => {
     && !!shippingInfo.value.cityId
     && !!shippingInfo.value.street
     && !!shippingInfo.value.phone
-    // TODO: look into this later for enable order condition
   )
 })
 
