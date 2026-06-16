@@ -24,7 +24,6 @@ defineProps({
 </template>
 
 <style scoped>
-/* ── Tokens ─────────────────────────────────────────── */
 .snack-failure {
   --ink:    #2b2420;
   --border: #e8e1d8;

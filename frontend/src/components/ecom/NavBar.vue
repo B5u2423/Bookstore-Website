@@ -398,7 +398,6 @@ async function handleLogout() {
   outline-offset: 2px;
 }
 
-/* ── Responsive ─────────────────────────────────────── */
 @media (max-width: 768px) {
   .site-nav { padding: 0 16px !important; }
   .nav-divider { margin: 0 12px; }

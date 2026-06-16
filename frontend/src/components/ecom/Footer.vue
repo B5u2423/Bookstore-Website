@@ -140,9 +140,7 @@ import { ref } from 'vue'
 </template>
 
 <style scoped>
-/* @import url('https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&display=swap'); */
 
-/* ── Tokens ──────────────────────────────────────────── */
 .site-footer {
   --accent:      #a3262c;
   --accent-soft: #c94247;      /* lighter for hover on dark bg */
@@ -158,7 +156,6 @@ import { ref } from 'vue'
   background-color: var(--ink);
 }
 
-/* ── Newsletter band ─────────────────────────────────── */
 .newsletter-band {
   background-color: var(--ink-light);
   border-bottom: 1px solid var(--border);
@@ -238,7 +235,6 @@ import { ref } from 'vue'
   font-weight: 500;
 }
 
-/* ── Footer body ─────────────────────────────────────── */
 .footer-body {
   border-bottom: 1px solid var(--border);
 }
@@ -340,7 +336,6 @@ import { ref } from 'vue'
   border-radius: 2px;
 }
 
-/* ── Bottom bar ──────────────────────────────────────── */
 .footer-bottom {
   max-width: 1100px;
   margin: 0 auto;
@@ -361,13 +356,11 @@ import { ref } from 'vue'
   white-space: nowrap;
 }
 
-/* ── Transition ──────────────────────────────────────── */
 .fade-slide-enter-active,
 .fade-slide-leave-active { transition: opacity 0.25s ease, transform 0.25s ease; }
 .fade-slide-enter-from { opacity: 0; transform: translateY(6px); }
 .fade-slide-leave-to   { opacity: 0; transform: translateY(-6px); }
 
-/* ── Responsive ──────────────────────────────────────── */
 @media (max-width: 768px) {
   .newsletter-inner {
     flex-direction: column;

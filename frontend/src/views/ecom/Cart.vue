@@ -221,7 +221,7 @@ function clampQty(item) {
   font-size: 0.9rem;
 }
 
-/* ── Page header ────────────────────────────────────── */
+/* page header */
 .cart-header {
   display: flex;
   align-items: baseline;
