@@ -35,7 +35,6 @@ onMounted(() => {
   <v-sheet>
     <v-carousel
       hide-delimiters
-      transition-duration="700"
       crossfade
       show-arrows="hover"
     >
