@@ -35,7 +35,6 @@ onMounted(fetchParentCategories)
 
 <template>
   <aside class="cat-sidebar" aria-label="Danh mục sách">
-
     <div class="cat-header">
       <v-icon icon="mdi-bookshelf" size="16" class="cat-header-icon" aria-hidden="true" />
       <span>Danh mục</span>
@@ -108,7 +107,6 @@ onMounted(fetchParentCategories)
         </Transition>
       </div>
     </nav>
-
   </aside>
 </template>
 

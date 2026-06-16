@@ -42,7 +42,6 @@ import { ref } from 'vue'
 
 <template>
   <footer class="site-footer">
-
     <!-- newsletter -->
     <div class="newsletter-band">
       <div class="newsletter-inner">
@@ -77,7 +76,6 @@ import { ref } from 'vue'
     <!-- footer body -->
     <div class="footer-body">
       <div class="footer-inner">
-
         <!-- brand column -->
         <div class="brand-col">
           <router-link to="/" class="brand-wordmark">
@@ -131,7 +129,6 @@ import { ref } from 'vue'
             </ul>
           </div>
         </nav>
-
       </div>
     </div>
 
@@ -139,7 +136,6 @@ import { ref } from 'vue'
     <div class="footer-bottom">
       <span>© {{ new Date().getFullYear() }} {{ brandName }}. All rights reserved.</span>
     </div>
-
   </footer>
 </template>
 

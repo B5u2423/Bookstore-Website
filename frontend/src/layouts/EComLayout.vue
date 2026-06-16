@@ -8,30 +8,25 @@ import SideBar from '@/components/ecom/SideBar.vue'
   <nav-bar />
 
   <div class="ecom-layout">
+    <v-main class="mt-3" style="background-color: var(--paper);">
+      <v-container min-width="1400">
+        <v-row>
+          <v-col
+            cols="12"
+            md="3"
+          >
+            <side-bar />
+          </v-col>
 
-  <v-main class="mt-3" 
-style="background-color: var(--paper);"
-  >
-    <v-container
-      min-width="1400"
-    >
-      <v-row>
-        <v-col
-          cols="12"
-          md="3"
-        >
-          <side-bar />
-        </v-col>
-
-        <v-col
-          cols="12"
-          md="9"
-        >
-          <router-view></router-view>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-main>
+          <v-col
+            cols="12"
+            md="9"
+          >
+            <router-view></router-view>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-main>
   </div>
 
   <footer-section />

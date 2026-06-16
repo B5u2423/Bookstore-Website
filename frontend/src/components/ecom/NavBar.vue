@@ -49,9 +49,15 @@ async function handleLogout() {
 
 <template>
   <v-app-bar flat class="site-nav" height="64">
-
     <!-- brand -->
-    <div class="nav-brand" @click="goToHomePage" role="link" tabindex="0" @keydown.enter="goToHomePage" aria-label="Trang chủ">
+    <div
+      class="nav-brand"
+      @click="goToHomePage"
+      role="link"
+      tabindex="0"
+      @keydown.enter="goToHomePage"
+      aria-label="Trang chủ"
+    >
       <span class="brand-icon" aria-hidden="true">📚</span>
       <span class="brand-name">{{ brandName }}</span>
     </div>
@@ -74,11 +80,11 @@ async function handleLogout() {
         @focus="searchOpen = true"
         @blur="searchOpen = false"
       >
-        <template #prepend-inner>
+        <template v-slot:prepend-inner>
           <v-icon icon="mdi-magnify" size="18" class="search-icon" />
         </template>
 
-        <template #item="{ props, item }">
+        <template v-slot:item="{ props, item }">
           <v-list-item
             v-bind="props"
             :title="item.raw.title"
@@ -86,7 +92,7 @@ async function handleLogout() {
             :to="{ name: 'book-detail', params: { id: item.raw.id, slug: item.raw.urlSlug } }"
             class="search-result-item"
           >
-            <template #prepend>
+            <template v-slot:prepend>
               <v-img
                 :src="item.raw.imageUrl"
                 width="44"
@@ -104,7 +110,6 @@ async function handleLogout() {
 
     <!-- actions -->
     <div class="nav-actions">
-
       <!-- not logged in -->
       <template v-if="!authStore.isAuthenticated">
         <router-link :to="{ name: 'register' }" class="nav-text-btn">
@@ -117,7 +122,7 @@ async function handleLogout() {
 
       <!-- logged in -->
       <v-menu v-else location="bottom end" transition="fade-transition">
-        <template #activator="{ props }">
+        <template v-slot:activator="{ props }">
           <button class="user-pill" v-bind="props" aria-haspopup="true">
             <span class="user-avatar" aria-hidden="true">
               {{ (userProfileStore.userInfo.name || 'U')[0].toUpperCase() }}
@@ -129,7 +134,7 @@ async function handleLogout() {
 
         <v-list class="user-menu" elevation="3">
           <v-list-item :to="{ name: 'user-info' }" class="user-menu-item">
-            <template #prepend>
+            <template v-slot:prepend>
               <v-icon icon="mdi-account-circle-outline" size="18" />
             </template>
             <v-list-item-title>Thông tin cá nhân</v-list-item-title>
@@ -138,7 +143,7 @@ async function handleLogout() {
           <v-divider class="my-1" />
 
           <v-list-item @click="handleLogout" class="user-menu-item user-menu-item--danger">
-            <template #prepend>
+            <template v-slot:prepend>
               <v-icon icon="mdi-logout" size="18" />
             </template>
             <v-list-item-title>Đăng xuất</v-list-item-title>
@@ -162,7 +167,6 @@ async function handleLogout() {
       <button class="icon-btn" aria-label="Thông báo">
         <v-icon icon="mdi-bell-outline" size="22" />
       </button>
-
     </div>
   </v-app-bar>
 </template>
