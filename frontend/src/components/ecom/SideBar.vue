@@ -111,8 +111,6 @@ onMounted(fetchParentCategories)
 </template>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Lora:wght@600&display=swap');
-
 /* palette */
 .cat-sidebar {
   --accent:      #a3262c;
@@ -139,7 +137,6 @@ onMounted(fetchParentCategories)
   padding: 14px 16px 12px;
   background: var(--paper);
   border-bottom: 1px solid var(--border);
-  font-family: 'Lora', serif;
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--ink);

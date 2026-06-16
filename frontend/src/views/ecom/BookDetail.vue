@@ -271,8 +271,6 @@ async function handleAddToCart() {
 </template>
 
 <style scoped>
-/* @import url('https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&display=swap'); */
-
 .book-detail {
   --accent: #a3262c;
   --accent-soft: #f7e9e8;
@@ -335,7 +333,6 @@ async function handleAddToCart() {
 }
 
 .book-title {
-  /* font-family: 'Lora', serif; */
   font-weight: 700;
   font-size: clamp(1.6rem, 2.4vw, 2.25rem);
   line-height: 1.25;
@@ -362,7 +359,6 @@ async function handleAddToCart() {
   margin-right: 6px;
 }
 .price {
-  /* font-family: 'Lora', serif; */
   font-weight: 700;
   font-size: 2rem;
   color: var(--accent);
@@ -483,7 +479,6 @@ async function handleAddToCart() {
   padding: 28px;
 }
 .section-heading {
-  /* font-family: 'Lora', serif; */
   font-size: 1.25rem;
   font-weight: 600;
   margin: 0 0 12px;

@@ -198,8 +198,6 @@ async function googleAuth() {
 </template>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Lora:wght@600;700&display=swap');
-
 .auth-page {
   --accent:      #a3262c;
   --accent-soft: #f7e9e8;
@@ -240,7 +238,6 @@ async function googleAuth() {
 }
 .auth-brand-icon { font-size: 1.5rem; line-height: 1; }
 .auth-brand-name {
-  font-family: 'Lora', serif;
   font-size: 1.2rem;
   font-weight: 700;
   color: var(--ink);
@@ -248,7 +245,6 @@ async function googleAuth() {
 
 /* headings */
 .auth-heading {
-  font-family: 'Lora', serif;
   font-size: 1.6rem;
   font-weight: 700;
   text-align: center;

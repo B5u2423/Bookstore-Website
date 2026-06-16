@@ -181,7 +181,6 @@ import { ref } from 'vue'
 }
 .newsletter-headline {
   margin: 0;
-  /* font-family: 'Lora', serif; */
   font-size: 1.1rem;
   font-weight: 600;
   color: #fff;
@@ -263,7 +262,6 @@ import { ref } from 'vue'
 }
 .brand-icon { font-size: 1.5rem; line-height: 1; }
 .brand-name {
-  /* font-family: 'Lora', serif; */
   font-size: 1.35rem;
   font-weight: 700;
   letter-spacing: -0.01em;

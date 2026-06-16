@@ -172,8 +172,6 @@ async function handleLogout() {
 </template>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Lora:wght@600;700&display=swap');
-
 /* pallete */
 .site-nav {
   --accent:      #a3262c;
@@ -209,7 +207,6 @@ async function handleLogout() {
 }
 .brand-icon { font-size: 1.4rem; line-height: 1; }
 .brand-name {
-  font-family: 'Lora', serif;
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--ink);
