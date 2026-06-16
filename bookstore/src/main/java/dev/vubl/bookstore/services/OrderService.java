@@ -135,7 +135,10 @@ public class OrderService {
     }
 
     Sort sort = order.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
-    Pageable pageable = PageRequest.of(page, size, sort);
+    // if size is -1, fetch EVERYTHING unpaged
+    Pageable pageable = (size == -1)
+            ? Pageable.unpaged(sort)
+            : PageRequest.of(page, size, sort);
     return orderRepo.findAllByEmail(u.getEmail(), pageable);
   }
 

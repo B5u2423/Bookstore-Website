@@ -58,7 +58,7 @@ public class OrderController {
   @GetMapping("/user")
   public PagedModel<Order> getOrdersByEmail(
       @RequestParam(value = "page", defaultValue = "0") int page,
-      @RequestParam(value = "size", defaultValue = "10") int size,
+      @RequestParam(value = "size", defaultValue = "-1") int size,
       @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
       @RequestParam(value = "order", defaultValue = "asc") String order,
       @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
