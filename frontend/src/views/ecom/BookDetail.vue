@@ -1,6 +1,7 @@
 <script setup>
 import { BookService } from '@/api/book-api'
 import { CartService } from '@/api/cart-api.js'
+import router from '@/router'
 import { useAuthStore } from '@/stores/auth-store.js'
 import { useCartStore } from '@/stores/cart-store'
 import { formatPriceVNLocale } from '@/utils/utils'
@@ -18,6 +19,8 @@ const snackbarText = ref('')
 const showFullDescription = ref(false)
 
 const DESCRIPTION_PREVIEW_LENGTH = 320
+const BOOK_TITLE_LENGTH = 80
+const catRoute = ref('/')
 
 const book = ref({
   author: '',
@@ -49,6 +52,8 @@ async function loadBookDetail() {
   loading.value = true
   try {
     book.value = await BookService.fetchBookById(route.params.id)
+    // bind the value of category breadcrumb
+    catRoute.value = convertToSlug(book.value.categoryName)
   } catch (error) {
     console.error('Error fetching book', error)
   } finally {
@@ -101,14 +106,49 @@ async function handleAddToCart() {
   snackbarText.value = `Đã thêm ${quantity.value} "${book.value.title}" vào giỏ hàng`
   snackbar.value = true
 }
+
+function convertToSlug(cat) {
+  if (cat == null) {
+    throw new Error('Input string must not be null')
+  }
+
+  return cat
+    .normalize('NFD') // normalize
+    .replace(/[\u0300-\u036f]+/g, '') // remove diacritics
+    .replace(/Đ/g, 'D') // remove diacritics
+    .replace(/đ/g, 'd') // remove diacritics
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-') // replace non-alphanumeric chars with hyphens
+    .replace(/^-+|-+$/g, '') // trim leading/trailing hyphens
+}
+const breadCrumbTitleIsLong = computed(
+  () => (book.value?.title?.length || 0) > BOOK_TITLE_LENGTH,
+)
+const displayedBreadCrumbTitle = computed(() => {
+  if (!breadCrumbTitleIsLong.value || 0) return book.value.title
+  return book.value.title.slice(0, BOOK_TITLE_LENGTH).trimEnd() + '…'
+})
 </script>
 
 <template>
   <v-container class="book-detail py-8">
-    <router-link to="/" class="back-link">
-      <v-icon icon="mdi-arrow-left" size="18" class="mr-1" />
-      Quay lại
-    </router-link>
+    <div class="detail-breadcrumb">
+      <router-link
+        to="/"
+        class="breadcrumb-link"
+      >
+        Trang chủ
+      </router-link>
+      <v-icon icon="mdi-chevron-right" size="18" class="breadcrumb-sep" />
+      <router-link
+        :to="{ name: 'category-page', params: { slug: catRoute } }"
+        class="breadcrumb-link"
+      >
+        {{ book.categoryName || 'Danh mục sách' }}
+      </router-link>
+      <v-icon icon="mdi-chevron-right" size="18" class="breadcrumb-sep" />
+      <span>{{ displayedBreadCrumbTitle || 'Sách' }}</span>
+    </div>
 
     <!-- loading skeleton -->
     <v-row v-if="loading" class="mt-4">
@@ -525,4 +565,20 @@ async function handleAddToCart() {
     padding: 20px;
   }
 }
+
+/* breadcrumbs */
+.detail-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 1rem;
+  color: var(--muted);
+}
+.breadcrumb-link {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.breadcrumb-link:hover { color: var(--accent); }
+.breadcrumb-sep { color: black; }
 </style>
