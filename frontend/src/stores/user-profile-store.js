@@ -1,7 +1,6 @@
 import { CustomerService } from '@/api/customer-api'
 import { defineStore } from 'pinia'
-import { computed, ref, watch } from 'vue'
-import { useAuthStore } from './auth-store'
+import { ref } from 'vue'
 
 export const useUserProfileStore = defineStore(
   'userprofile',
@@ -14,7 +13,6 @@ export const useUserProfileStore = defineStore(
     })
 
     async function getUserInfo() {
-      const authStore = useAuthStore()
       const res = await CustomerService.getCustomerAccount()
 
       userInfo.value.name = res.name
