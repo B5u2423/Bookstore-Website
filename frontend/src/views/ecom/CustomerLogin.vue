@@ -1,7 +1,7 @@
 <script setup>
+import GoogleIcon from '@/components/common/GoogleIcon.vue'
 import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
 import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
-import GoogleIcon from '@/components/common/GoogleIcon.vue'
 import { useAuthStore } from '@/stores/auth-store'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -53,7 +53,6 @@ async function googleAuth() {
 <template>
   <div class="auth-page">
     <div class="auth-card">
-
       <!-- Brand mark -->
       <div class="auth-brand">
         <span class="auth-brand-icon" aria-hidden="true">📚</span>
@@ -64,7 +63,6 @@ async function googleAuth() {
       <p class="auth-subheading">Chào mừng bạn trở lại!</p>
 
       <v-form ref="form" v-model="isValidForm" @submit.prevent="handleLogin">
-
         <div class="field-group">
           <label class="field-label" for="login-email">Email</label>
           <v-text-field
@@ -118,7 +116,6 @@ async function googleAuth() {
           />
           <span>{{ isLoading ? 'Đang đăng nhập…' : 'Đăng nhập' }}</span>
         </button>
-
       </v-form>
 
       <div class="divider-row">
@@ -136,7 +133,6 @@ async function googleAuth() {
         Chưa có tài khoản?
         <router-link to="/register" class="auth-footer-link">Đăng ký ngay</router-link>
       </p>
-
     </div>
 
     <snack-bar-on-failure :show="isError" :message="message" />
@@ -145,7 +141,6 @@ async function googleAuth() {
 </template>
 
 <style scoped>
-
 .auth-page {
   --accent:      #a3262c;
   --accent-soft: #f7e9e8;

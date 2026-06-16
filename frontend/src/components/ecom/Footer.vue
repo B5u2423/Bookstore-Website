@@ -140,7 +140,6 @@ import { ref } from 'vue'
 </template>
 
 <style scoped>
-
 .site-footer {
   --accent:      #a3262c;
   --accent-soft: #c94247;      /* lighter for hover on dark bg */

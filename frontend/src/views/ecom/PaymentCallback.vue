@@ -45,14 +45,15 @@ onMounted(updateStatus)
 <template>
   <div class="result-page">
     <div class="result-card" :class="isSuccess ? 'result-card--success' : 'result-card--failure'">
-
       <!-- Top accent bar -->
       <div class="result-bar" :class="isSuccess ? 'result-bar--success' : 'result-bar--failure'" />
 
       <div class="result-body">
-
         <!-- Icon -->
-        <div class="result-icon-wrap" :class="isSuccess ? 'result-icon-wrap--success' : 'result-icon-wrap--failure'">
+        <div
+          class="result-icon-wrap"
+          :class="isSuccess ? 'result-icon-wrap--success' : 'result-icon-wrap--failure'"
+        >
           <v-icon
             :icon="isSuccess ? 'mdi-check-circle' : 'mdi-close-circle'"
             size="48"
@@ -66,8 +67,8 @@ onMounted(updateStatus)
         <p class="result-subheading">
           {{
             isSuccess
-              ? 'Đơn hàng của bạn đã được xác nhận và đang được xử lý.'
-              : 'Đơn hàng của bạn không thể hoàn tất. Vui lòng thử lại.'
+            ? 'Đơn hàng của bạn đã được xác nhận và đang được xử lý.'
+            : 'Đơn hàng của bạn không thể hoàn tất. Vui lòng thử lại.'
           }}
         </p>
 
@@ -156,14 +157,12 @@ onMounted(updateStatus)
             Quay lại giỏ hàng
           </router-link>
         </div>
-
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-
 .result-page {
   --accent:        #a3262c;
   --accent-soft:   #f7e9e8;

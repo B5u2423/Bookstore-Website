@@ -33,7 +33,6 @@ function clampQty(item) {
 
 <template>
   <div class="cart-page">
-
     <!-- page header -->
     <div class="cart-header">
       <h1 class="cart-heading">Giỏ hàng của bạn</h1>
@@ -46,7 +45,9 @@ function clampQty(item) {
     <div v-if="cartStore.cartItemsCount === 0" class="cart-empty">
       <div class="empty-icon" aria-hidden="true">🛒</div>
       <h2 class="empty-title">Giỏ hàng trống</h2>
-      <p class="empty-body">Bạn chưa thêm sản phẩm nào. Hãy khám phá cửa hàng nhé!</p>
+      <p class="empty-body">
+        Bạn chưa thêm sản phẩm nào. Hãy khám phá cửa hàng nhé!
+      </p>
       <router-link :to="{ name: 'landing' }" class="empty-cta">
         <v-icon icon="mdi-arrow-left" size="16" class="mr-1" />
         Tiếp tục mua sắm
@@ -56,10 +57,8 @@ function clampQty(item) {
     <!-- cart content -->
     <template v-else>
       <div class="cart-layout">
-
         <!-- item table -->
         <div class="cart-items-card">
-
           <!-- header -->
           <div class="cart-table-head">
             <span class="col-product">Sản phẩm</span>
@@ -198,14 +197,12 @@ function clampQty(item) {
             Thanh toán an toàn & bảo mật
           </p>
         </aside>
-
       </div>
     </template>
   </div>
 </template>
 
 <style scoped>
-
 .cart-page {
   --accent:      #a3262c;
   --accent-soft: #f7e9e8;

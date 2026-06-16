@@ -1,6 +1,6 @@
 <script setup>
 import { useUserProfileStore } from '@/stores/user-profile-store'
-import { onMounted, computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
 const userInfoStore = useUserProfileStore()
@@ -20,10 +20,8 @@ onMounted(() => {
 
 <template>
   <div class="profile-page">
-
     <!-- Sidebar -->
     <aside class="profile-sidebar" aria-label="Điều hướng tài khoản">
-
       <!-- User identity block -->
       <div class="profile-identity">
         <div class="profile-avatar" aria-hidden="true">
@@ -51,12 +49,10 @@ onMounted(() => {
           {{ item.label }}
         </router-link>
       </nav>
-
     </aside>
 
     <!-- Main content -->
     <main class="profile-main">
-
       <!-- Breadcrumb header -->
       <div class="profile-content-header">
         <h1 class="profile-content-title">
@@ -72,9 +68,7 @@ onMounted(() => {
       <div class="profile-content-body">
         <router-view />
       </div>
-
     </main>
-
   </div>
 </template>
 

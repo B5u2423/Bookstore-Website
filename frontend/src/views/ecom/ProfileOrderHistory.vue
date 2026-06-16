@@ -24,24 +24,50 @@ function toggleExpand(id) {
 }
 
 const STATUS_CONFIG = {
-  PENDING:   { label: 'Đang xử lý',      icon: 'mdi-clock-outline',         color: '#b45309', bg: '#fef3c7', border: '#fde68a' },
-  PAID:      { label: 'Đã thanh toán',   icon: 'mdi-check-circle-outline',  color: '#2a9d5c', bg: '#f0fdf6', border: '#bbf0d4' },
-  CANCELLED: { label: 'Đã hủy',          icon: 'mdi-close-circle-outline',  color: '#a3262c', bg: '#f7e9e8', border: '#fcd4d4' },
+  PENDING: {
+    label: 'Đang xử lý',
+    icon: 'mdi-clock-outline',
+    color: '#b45309',
+    bg: '#fef3c7',
+    border: '#fde68a',
+  },
+  PAID: {
+    label: 'Đã thanh toán',
+    icon: 'mdi-check-circle-outline',
+    color: '#2a9d5c',
+    bg: '#f0fdf6',
+    border: '#bbf0d4',
+  },
+  CANCELLED: {
+    label: 'Đã hủy',
+    icon: 'mdi-close-circle-outline',
+    color: '#a3262c',
+    bg: '#f7e9e8',
+    border: '#fcd4d4',
+  },
 }
 
 function getStatus(status) {
-  return STATUS_CONFIG[String(status)] || { label: status, icon: 'mdi-help-circle-outline', color: '#8a7d72', bg: '#fbf8f4', border: '#e8e1d8' }
+  return STATUS_CONFIG[String(status)]
+    || {
+      label: status,
+      icon: 'mdi-help-circle-outline',
+      color: '#8a7d72',
+      bg: '#fbf8f4',
+      border: '#e8e1d8',
+    }
 }
 
 function formatDate(dateStr) {
   if (!dateStr) return '—'
-  return new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(dateStr))
+  return new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    .format(new Date(dateStr))
 }
 
 const PAYMENT_LABELS = {
-  COD:   'Thanh toán khi nhận hàng',
+  COD: 'Thanh toán khi nhận hàng',
   VNPAY: 'VNPay',
-  CARD:  'Thẻ ngân hàng',
+  CARD: 'Thẻ ngân hàng',
 }
 function getPaymentLabel(method) {
   return PAYMENT_LABELS[String(method)] || method
@@ -52,7 +78,6 @@ onMounted(fetchOrderHistory)
 
 <template>
   <div class="order-history">
-
     <!-- Loading skeletons -->
     <template v-if="loading">
       <div v-for="n in 3" :key="n" class="order-skeleton">
@@ -66,7 +91,9 @@ onMounted(fetchOrderHistory)
     <div v-else-if="!items.length" class="order-empty">
       <v-icon icon="mdi-receipt-text-outline" size="40" class="mb-3" />
       <p class="order-empty-title">Chưa có đơn hàng nào</p>
-      <p class="order-empty-body">Các đơn hàng của bạn sẽ xuất hiện ở đây sau khi đặt hàng.</p>
+      <p class="order-empty-body">
+        Các đơn hàng của bạn sẽ xuất hiện ở đây sau khi đặt hàng.
+      </p>
       <router-link :to="{ name: 'landing' }" class="order-empty-cta">
         <v-icon icon="mdi-storefront-outline" size="16" class="mr-1" />
         Khám phá sách
@@ -82,8 +109,15 @@ onMounted(fetchOrderHistory)
         :class="{ 'order-card--open': expandedId === order.id }"
       >
         <!-- Order summary row -->
-        <div class="order-row" @click="toggleExpand(order.id)" role="button" :aria-expanded="expandedId === order.id" tabindex="0" @keydown.enter="toggleExpand(order.id)" @keydown.space.prevent="toggleExpand(order.id)">
-
+        <div
+          class="order-row"
+          @click="toggleExpand(order.id)"
+          role="button"
+          :aria-expanded="expandedId === order.id"
+          tabindex="0"
+          @keydown.enter="toggleExpand(order.id)"
+          @keydown.space.prevent="toggleExpand(order.id)"
+        >
           <!-- Status badge -->
           <div
             class="status-badge"
@@ -120,13 +154,11 @@ onMounted(fetchOrderHistory)
               size="20"
             />
           </div>
-
         </div>
 
         <!-- Expanded detail panel -->
         <Transition name="order-expand">
           <div v-if="expandedId === order.id" class="order-detail">
-
             <!-- Delivery info -->
             <div class="detail-section">
               <h4 class="detail-section-title">
@@ -140,7 +172,9 @@ onMounted(fetchOrderHistory)
                 </div>
                 <div class="detail-row">
                   <span class="detail-label">Địa chỉ</span>
-                  <span class="detail-value">{{ [order.street, order.commune, order.city].filter(Boolean).join(', ') }}</span>
+                  <span class="detail-value">{{
+                    [order.street, order.commune, order.city].filter(Boolean).join(', ')
+                  }}</span>
                 </div>
               </div>
             </div>
@@ -158,13 +192,20 @@ onMounted(fetchOrderHistory)
                 </div>
                 <div class="detail-row">
                   <span class="detail-label">Phí vận chuyển</span>
-                  <span class="detail-value" :class="order.shippingFee === 0 ? 'detail-value--free' : ''">
-                    {{ order.shippingFee === 0 ? 'Miễn phí' : formatPriceVNLocale(order.shippingFee) + ' ₫' }}
+                  <span
+                    class="detail-value"
+                    :class="order.shippingFee === 0 ? 'detail-value--free' : ''"
+                  >
+                    {{
+                      order.shippingFee === 0 ? 'Miễn phí' : formatPriceVNLocale(order.shippingFee) + ' ₫'
+                    }}
                   </span>
                 </div>
                 <div class="detail-row detail-row--total">
                   <span class="detail-label">Tổng cộng</span>
-                  <span class="detail-value detail-value--price">{{ formatPriceVNLocale(order.orderTotal) }} ₫</span>
+                  <span class="detail-value detail-value--price">{{
+                      formatPriceVNLocale(order.orderTotal)
+                    }} ₫</span>
                 </div>
               </div>
             </div>
@@ -195,7 +236,6 @@ onMounted(fetchOrderHistory)
                 </div>
               </div>
             </div>
-
           </div>
         </Transition>
       </div>

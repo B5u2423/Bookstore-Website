@@ -1,9 +1,9 @@
 <script setup>
+import GoogleIcon from '@/components/common/GoogleIcon.vue'
 import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
 import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
-import GoogleIcon from '@/components/common/GoogleIcon.vue'
 import { useAuthStore } from '@/stores/auth-store'
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const authStore = useAuthStore()
@@ -62,7 +62,6 @@ async function googleAuth() {
 <template>
   <div class="auth-page">
     <div class="auth-card">
-
       <!-- Brand -->
       <div class="auth-brand">
         <span class="auth-brand-icon" aria-hidden="true">📚</span>
@@ -73,7 +72,6 @@ async function googleAuth() {
       <p class="auth-subheading">Tham gia cùng hàng nghìn độc giả hôm nay</p>
 
       <v-form ref="form" v-model="isValidForm" @submit.prevent="handleRegister">
-
         <div class="field-group">
           <label class="field-label" for="reg-name">Họ và tên</label>
           <v-text-field
@@ -167,7 +165,6 @@ async function googleAuth() {
           />
           <span>{{ isLoading ? 'Đang tạo tài khoản…' : 'Tạo tài khoản' }}</span>
         </button>
-
       </v-form>
 
       <div class="divider-row">
@@ -185,7 +182,6 @@ async function googleAuth() {
         Đã có tài khoản?
         <router-link to="/login" class="auth-footer-link">Đăng nhập</router-link>
       </p>
-
     </div>
 
     <snack-bar-on-failure :show="isError" :message="message" />

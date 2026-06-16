@@ -36,9 +36,13 @@ const headers = ref([
   { title: '', key: 'actions', align: 'center', sortable: false, width: '60px' },
 ])
 
-watch(currentUserProfileSnapshot, () => { isUpdated.value = true }, { deep: true })
+watch(currentUserProfileSnapshot, () => {
+  isUpdated.value = true
+}, { deep: true })
 
-function enableFieldsForUpdate() { isFieldsEnabled.value = true }
+function enableFieldsForUpdate() {
+  isFieldsEnabled.value = true
+}
 
 function discardChanges() {
   currentUserProfileSnapshot.value.name = userProfileStore.userInfo.name
@@ -49,9 +53,17 @@ function discardChanges() {
 }
 
 function notify(success, msg) {
-  if (success) { isSuccess.value = true; message.value = msg }
-  else { isError.value = true; message.value = msg }
-  setTimeout(() => { isSuccess.value = false; isError.value = false }, 2500)
+  if (success) {
+    isSuccess.value = true
+    message.value = msg
+  } else {
+    isError.value = true
+    message.value = msg
+  }
+  setTimeout(() => {
+    isSuccess.value = false
+    isError.value = false
+  }, 2500)
 }
 
 async function updateChanges() {
@@ -70,15 +82,20 @@ async function updateChanges() {
 }
 
 async function fetchCities() {
-  try { cities.value = await AddressInfoService.getCities() }
-  catch (e) { console.error('Error fetching cities', e) }
+  try {
+    cities.value = await AddressInfoService.getCities()
+  } catch (e) {
+    console.error('Error fetching cities', e)
+  }
 }
 
 async function fetchCommunes() {
   try {
     address.value.communeId = ''
     communes.value = await AddressInfoService.getCommunes(address.value.cityId)
-  } catch (e) { console.error('Error fetching communes', e) }
+  } catch (e) {
+    console.error('Error fetching communes', e)
+  }
 }
 
 async function save() {
@@ -105,7 +122,9 @@ async function save() {
 async function deleteAddress(id) {
   try {
     await CustomerService.deleteAddress(id)
-    userProfileStore.userInfo.addressList = userProfileStore.userInfo.addressList.filter(a => a.id !== id)
+    userProfileStore.userInfo.addressList = userProfileStore.userInfo.addressList.filter(a =>
+      a.id !== id
+    )
     notify(true, 'Xóa địa chỉ thành công')
   } catch (e) {
     console.error('Error deleting address', e)
@@ -123,7 +142,6 @@ onMounted(() => {
 
 <template>
   <div class="user-info-page">
-
     <section class="info-section">
       <div class="section-header">
         <div class="section-header-left">
@@ -236,11 +254,12 @@ onMounted(() => {
       </div>
 
       <div class="section-body">
-
         <!-- Empty state -->
         <div v-if="!userProfileStore.userInfo.addressList?.length" class="addr-empty">
           <v-icon icon="mdi-map-marker-off-outline" size="36" class="mb-2" />
-          <p>Bạn chưa có địa chỉ nào. Thêm địa chỉ để đặt hàng nhanh hơn.</p>
+          <p>
+            Bạn chưa có địa chỉ nào. Thêm địa chỉ để đặt hàng nhanh hơn.
+          </p>
         </div>
 
         <!-- Address list -->
@@ -261,7 +280,12 @@ onMounted(() => {
               <!-- Delete confirm inline -->
               <template v-if="deleteConfirmId === addr.id">
                 <span class="delete-confirm-text">Xóa?</span>
-                <button class="addr-action-btn addr-action-btn--confirm" @click="deleteAddress(addr.id)">Có</button>
+                <button
+                  class="addr-action-btn addr-action-btn--confirm"
+                  @click="deleteAddress(addr.id)"
+                >
+                  Có
+                </button>
                 <button class="addr-action-btn" @click="deleteConfirmId = null">Không</button>
               </template>
               <button
@@ -275,15 +299,12 @@ onMounted(() => {
             </div>
           </div>
         </div>
-
       </div>
     </section>
-
   </div>
 
   <v-dialog v-model="dialog" max-width="480" :scrim-opacity="0.4">
     <div class="addr-dialog">
-
       <div class="dialog-header">
         <div class="section-icon-wrap" aria-hidden="true">
           <v-icon icon="mdi-map-marker-plus-outline" size="20" />
@@ -361,7 +382,6 @@ onMounted(() => {
           Lưu địa chỉ
         </button>
       </div>
-
     </div>
   </v-dialog>
 
@@ -370,7 +390,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-
 .user-info-page {
   --accent:      #a3262c;
   --accent-soft: #f7e9e8;
