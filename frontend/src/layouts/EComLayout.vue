@@ -7,9 +7,12 @@ import SideBar from '@/components/ecom/SideBar.vue'
 <template>
   <nav-bar />
 
-  <v-main class="bg-light-green-lighten-5 mt-3">
+  <div class="ecom-layout">
+
+  <v-main class="mt-3" 
+style="background-color: var(--paper);"
+  >
     <v-container
-      class="mb-8 bg-transparent"
       min-width="1400"
     >
       <v-row>
@@ -29,6 +32,15 @@ import SideBar from '@/components/ecom/SideBar.vue'
       </v-row>
     </v-container>
   </v-main>
+  </div>
 
   <footer-section />
 </template>
+
+<style scoped>
+.ecom-layout {
+  --muted:       #8a7d72;
+  --border:      #e8e1d8;
+  --paper:       #fbf8f4;
+}
+</style>

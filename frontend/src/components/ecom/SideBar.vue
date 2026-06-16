@@ -115,7 +115,7 @@ onMounted(fetchParentCategories)
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Lora:wght@600&display=swap');
 
-/* ── Tokens ─────────────────────────────────────────── */
+/* palette */
 .cat-sidebar {
   --accent:      #a3262c;
   --accent-soft: #f7e9e8;
@@ -133,7 +133,7 @@ onMounted(fetchParentCategories)
   margin-bottom: 24px;
 }
 
-/* ── Header ─────────────────────────────────────────── */
+/* header */
 .cat-header {
   display: flex;
   align-items: center;
@@ -149,7 +149,7 @@ onMounted(fetchParentCategories)
 }
 .cat-header-icon { color: var(--accent); }
 
-/* ── Skeleton ───────────────────────────────────────── */
+/* loader skeleton */
 .cat-skeleton {
   padding: 10px 16px;
   border-bottom: 1px solid var(--border);
@@ -166,7 +166,7 @@ onMounted(fetchParentCategories)
   100% { background-position: -200% 0; }
 }
 
-/* ── "All books" item ───────────────────────────────── */
+/* all books */
 .cat-item--all {
   display: flex;
   align-items: center;
@@ -189,7 +189,7 @@ onMounted(fetchParentCategories)
   background: var(--border);
 }
 
-/* ── Category group ─────────────────────────────────── */
+/* category group */
 .cat-group {
   border-bottom: 1px solid var(--border);
 }
@@ -217,7 +217,7 @@ onMounted(fetchParentCategories)
 .cat-parent-label:hover { color: var(--accent); }
 .cat-parent-label.cat-item--active { color: var(--accent); font-weight: 600; }
 
-/* Toggle chevron button */
+/* toggle chevron button */
 .cat-toggle {
   flex-shrink: 0;
   display: flex;
@@ -238,7 +238,7 @@ onMounted(fetchParentCategories)
   outline-offset: 1px;
 }
 
-/* ── Children ───────────────────────────────────────── */
+/* children categories */
 .cat-children {
   background: var(--paper);
   border-top: 1px solid var(--border);
@@ -269,7 +269,7 @@ onMounted(fetchParentCategories)
 }
 .cat-child:hover .cat-child-dot { background: var(--accent); }
 
-/* ── Expand transition ──────────────────────────────── */
+/* transition */
 .cat-expand-enter-active,
 .cat-expand-leave-active {
   transition: max-height 0.25s ease, opacity 0.2s ease;
@@ -282,7 +282,7 @@ onMounted(fetchParentCategories)
   opacity: 0;
 }
 
-/* ── Focus visible global ───────────────────────────── */
+/* focus category */
 .cat-item--all:focus-visible,
 .cat-parent-label:focus-visible,
 .cat-child:focus-visible {
