@@ -1,9 +1,6 @@
-import { BookService } from '@/api/book-api.js'
 import { CartService } from '@/api/cart-api'
-import Book from '@/views/admin/Book.vue'
 import { defineStore } from 'pinia'
-import { computed, ref, watch } from 'vue'
-import { useAuthStore } from './auth-store'
+import { computed, ref } from 'vue'
 
 export const useCartStore = defineStore(
   'cart',
@@ -34,27 +31,41 @@ export const useCartStore = defineStore(
     }
 
     async function syncCartWithBackEnd() {
-      // if FE cart is not empty
       if (activeCart.value.length > 0) {
-        const removeAllRes = await CartService.removeAllItemsFromCart()
-        const res = activeCart.value.map((item) => CartService.addToCart({ bookId: item.id, quantity: item.quantity }))
-      }
-      const response = await CartService.getUsersActiveCart()
-      const { id, user, items, cartStatus } = response
-      // short circuit if the item list is empty
-      if (!items) return
-      // mapper
-      items.map((item) => {
-        addItemToLocalCart({
-          id: item.book.id,
-          title: item.book.title,
-          author: item.book.author,
-          price: item.book.price,
-          slug: item.book.urlSlug,
-          image: item.book.imageUrl,
+        // if FE cart is not empty: FE cart has higher priority
+        const cartItems = activeCart.value.map(item => ({
+          bookId: item.id,
           quantity: item.quantity,
+        }))
+        const res = await CartService.syncCartWithBackEnd(cartItems)
+        console.log(res)
+        return {
+          status: res.status ?? 0,
+          data: res.data ?? 'Lỗi không xác định',
+        }
+      } else {
+        // if FE cart is empty: fetch from API
+        const response = await CartService.getUsersActiveCart()
+        const { items } = response
+        // short circuit if the item list is empty
+        if (!items) return
+        // mapper
+        items.map((item) => {
+          addItemToLocalCart({
+            id: item.bookId,
+            title: item.bookTitle,
+            author: item.bookAuthor,
+            price: item.bookPrice,
+            slug: item.bookSlug,
+            image: item.bookImage,
+            quantity: item.quantity,
+          })
         })
-      })
+        return {
+          status: 200,
+          data: 'fetch',
+        }
+      }
     }
 
     function reset() {

@@ -18,10 +18,10 @@ export const CartService = {
       console.error('Error get user active cart')
     }
   },
-  async removeAllItemsFromCart() {
+  async syncCartWithBackEnd(body) {
     try {
-      const res = await customerApi.delete('/carts/remove-all')
-      return res.data
+      const res = await customerApi.post('/carts/sync', body)
+      return res
     } catch (error) {
       console.error('Error remove item from cart')
     }

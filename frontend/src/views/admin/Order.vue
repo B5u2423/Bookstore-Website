@@ -110,7 +110,7 @@ async function updateOrderStatus(orderId) {
     // error snack
     isError.value = true
     message.value = 'Cập nhật trạng thái đơn hàng thất bại'
-    console.log('Error update order status by Id', error)
+    console.error('Error update order status by Id', error)
   } finally {
     setTimeout(() => {
       isSuccess.value = false

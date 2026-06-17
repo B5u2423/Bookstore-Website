@@ -2,7 +2,7 @@
 import { formatPriceVNLocale } from '@/utils/utils'
 
 defineProps({
-  product: Object,
+  book: Object,
 })
 </script>
 
@@ -11,25 +11,25 @@ defineProps({
     <!-- Thumbnail -->
     <div class="order-item-thumb-wrap">
       <v-img
-        :src="product.image"
-        :alt="product.title"
+        :src="book.image"
+        :alt="book.title"
         cover
         class="order-item-thumb"
       />
-      <span class="order-item-qty-badge" aria-label="`Số lượng: ${product.quantity}`">
-        {{ product.quantity }}
+      <span class="order-item-qty-badge" aria-label="`Số lượng: ${book.quantity}`">
+        {{ book.quantity }}
       </span>
     </div>
 
     <!-- Info -->
     <div class="order-item-info">
-      <p class="order-item-title">{{ product.title }}</p>
-      <p class="order-item-unit">{{ formatPriceVNLocale(product.price) }} ₫ / cuốn</p>
+      <p class="order-item-title" :title="book.title">{{ book.title }}</p>
+      <p class="order-item-unit">{{ formatPriceVNLocale(book.price) }} ₫ / cuốn</p>
     </div>
 
     <!-- Line total -->
     <div class="order-item-total">
-      {{ formatPriceVNLocale(product.price * product.quantity) }} ₫
+      {{ formatPriceVNLocale(book.price * book.quantity) }} ₫
     </div>
   </div>
 </template>

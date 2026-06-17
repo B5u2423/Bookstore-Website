@@ -444,7 +444,7 @@ onMounted(() => {
           <horizontal-book-card
             v-for="item in cartStore.activeCart"
             :key="item.id"
-            :product="item"
+            :book="item"
           />
         </div>
 
