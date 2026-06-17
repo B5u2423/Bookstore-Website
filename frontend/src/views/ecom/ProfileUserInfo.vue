@@ -3,7 +3,6 @@ import { AddressInfoService } from '@/api/cart-api.js'
 import { CustomerService, UserService } from '@/api/customer-api'
 import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
 import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
-import { useAuthStore } from '@/stores/auth-store'
 import { useCartStore } from '@/stores/cart-store'
 import { useUserProfileStore } from '@/stores/user-profile-store'
 import { onMounted, ref, watch } from 'vue'
@@ -28,13 +27,6 @@ const currentUserProfileSnapshot = ref({
   email: userProfileStore.userInfo.email,
   phoneNumber: userProfileStore.userInfo.phone,
 })
-
-const headers = ref([
-  { title: 'Địa chỉ', key: 'street', align: 'start' },
-  { title: 'Xã / Phường', key: 'commune', align: 'start' },
-  { title: 'Tỉnh / Thành', key: 'city', align: 'start' },
-  { title: '', key: 'actions', align: 'center', sortable: false, width: '60px' },
-])
 
 watch(currentUserProfileSnapshot, () => {
   isUpdated.value = true
