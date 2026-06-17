@@ -1,6 +1,8 @@
 <script setup>
 import { AddressInfoService, OrderService, PaymentService } from '@/api/cart-api'
 import HorizontalBookCard from '@/components/books/HorizontalBookCard.vue'
+import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
+import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 import router from '@/router'
 import { useCartStore } from '@/stores/cart-store'
 import { useUserProfileStore } from '@/stores/user-profile-store'
