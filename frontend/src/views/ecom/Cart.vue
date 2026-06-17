@@ -1,18 +1,50 @@
 <script setup>
+import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
+import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 import { useAuthStore } from '@/stores/auth-store'
 import { useCartStore } from '@/stores/cart-store'
 import { formatPriceVNLocale } from '@/utils/utils'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const cartStore = useCartStore()
 const authStore = useAuthStore()
 const router = useRouter()
+const isLoading = ref(false)
+
+// snackbars
+const isError = ref(false)
+const isSuccess = ref(false)
+const message = ref('')
 
 async function checkout() {
+  isLoading.value = true
   if (!authStore.isAuthenticated) {
-    router.push({ name: 'login' })
+    notify(true, 'Đang chuyển hướng đến trang đăng nhập')
+    isLoading.value = false
+    setTimeout(
+      () => {
+        router.push({ name: 'login' })
+      },
+      300,
+    )
   } else {
-    router.push({ name: 'checkout' })
+    const { status, data } = await cartStore.syncCartWithBackEnd()
+    if (status === 200 && data == 'ok') {
+      notify(true, 'Đang chuyển hướng đến trang thanh toán')
+      isLoading.value = false
+      setTimeout(
+        () => {
+          router.push({ name: 'checkout' })
+        },
+        500,
+      )
+    } else {
+      const statusLabel = status ?? 'Mã lỗi'
+      const dataLabel = data ?? 'Thông điệp lỗi'
+      notify(false, `Lỗi đồng bộ giỏ hàng: ${statusLabel} - ${dataLabel}`)
+      isLoading.value = false
+    }
   }
 }
 
@@ -28,6 +60,21 @@ function clampQty(item) {
   let q = Number(item.quantity)
   if (!q || q < 1) item.quantity = 1
   else item.quantity = q
+}
+
+// snackbar notif
+function notify(success, msg) {
+  if (success) {
+    isSuccess.value = true
+    message.value = msg
+  } else {
+    isError.value = true
+    message.value = msg
+  }
+  setTimeout(() => {
+    isSuccess.value = false
+    isError.value = false
+  }, 2500)
 }
 </script>
 
@@ -189,7 +236,7 @@ function clampQty(item) {
             </span>
           </div>
 
-          <button class="checkout-btn" type="button" @click="checkout">
+          <button class="checkout-btn" type="button" @click="checkout" :loading="isLoading">
             <v-icon icon="mdi-lock-outline" size="16" class="mr-2" />
             Tiến hành thanh toán
           </button>
@@ -202,6 +249,9 @@ function clampQty(item) {
       </div>
     </template>
   </div>
+
+  <snack-bar-on-failure :message="message" :show="isError" />
+  <snack-bar-on-success :message="message" :show="isSuccess" />
 </template>
 
 <style scoped>

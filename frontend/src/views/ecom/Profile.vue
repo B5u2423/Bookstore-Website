@@ -1,7 +1,7 @@
 <script setup>
+import { useCartStore } from '@/stores/cart-store'
 import { useUserProfileStore } from '@/stores/user-profile-store'
 import { computed, onMounted } from 'vue'
-import { useCartStore } from '@/stores/cart-store'
 import { useRoute } from 'vue-router'
 
 const userInfoStore = useUserProfileStore()
