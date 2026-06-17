@@ -72,6 +72,11 @@ const routes = [
         component: () => import('@/views/ecom/CategoryShowcase.vue'),
       },
       {
+        path: 'collections/:slug',
+        name: 'colleciton-page',
+        component: () => import('@/views/ecom/CollectionShowcase.vue'),
+      },
+      {
         path: 'oauth/callback',
         name: 'oauth-callback',
         component: () => import('@/views/ecom/OAuthCallback.vue'),
