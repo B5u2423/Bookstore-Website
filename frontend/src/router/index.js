@@ -21,13 +21,6 @@ const routes = [
         },
       },
       {
-        path: 'shop',
-        name: 'shop',
-        components: {
-          default: () => import('@/views/ecom/Shop.vue'),
-        },
-      },
-      {
         path: 'register',
         name: 'register',
         components: {
