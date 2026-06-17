@@ -1,12 +1,14 @@
 package dev.vubl.bookstore.services;
 
 import dev.vubl.bookstore.dtos.BookResponseDTO;
+import dev.vubl.bookstore.dtos.LandingBookCollectionResponse;
 import dev.vubl.bookstore.entities.Book;
 import dev.vubl.bookstore.entities.Category;
 import dev.vubl.bookstore.entities.Collection;
 import dev.vubl.bookstore.exceptions.BookDoesNotExistException;
 import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
 import dev.vubl.bookstore.exceptions.CategoryDoesNotExistException;
+import dev.vubl.bookstore.exceptions.CollectionDoesNotExistException;
 import dev.vubl.bookstore.repos.BookRepo;
 import dev.vubl.bookstore.repos.CategoryRepo;
 import dev.vubl.bookstore.repos.CollectionRepo;
@@ -205,6 +207,26 @@ public class BookService {
     }
     List<Book> booksWithCollection = bookRepo.findAllByCollection(res.get());
     return booksWithCollection.stream().map(this::mapToBookResponseDTO).toList();
+  }
+
+  public LandingBookCollectionResponse getBooksInCollectionForLandingPage(String slug) {
+    // just get book in collection but a nice wrapper for view
+    List<BookResponseDTO> list = getAllBooksInCollection(slug);
+    var col = collectionRepo.findByCollectionSlug(slug);
+    if (col.isEmpty()) {
+      throw new CollectionDoesNotExistException(slug);
+    }
+    // return list or first 10 items of all book
+    return LandingBookCollectionResponse.builder()
+        .collectionName(col.get().getCollectionName())
+        .collectionSlug(col.get().getCollectionSlug())
+        .list(
+            !list.isEmpty()
+                ? list
+                : bookRepo.findBy(PageRequest.of(0, 15)).stream()
+                    .map(this::mapToBookResponseDTO)
+                    .toList())
+        .build();
   }
 
   private boolean isIsbnNotUnique(String isbn) {

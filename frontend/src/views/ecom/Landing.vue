@@ -11,8 +11,10 @@ const slide = ref(0)
 const fetchBooks = async () => {
   try {
     ;[bestsellers.value, newbooks.value] = await Promise.all([
-      BookService.getBooksInCollectionForLandingPage({ collection: 'best-sellers' }),
-      BookService.getBooksInCollectionForLandingPage({ collection: 'new' }),
+      BookService.getBooksInCollectionForLandingPage({ collection: 'best-sellers' }).then(resp =>
+        resp.list
+      ),
+      BookService.getBooksInCollectionForLandingPage({ collection: 'new' }).then(resp => resp.list),
     ])
   } catch (error) {
     console.error('Error fetching books:', error)
@@ -144,16 +146,16 @@ onMounted(fetchBooks)
         group-header="Bán chạy nhất"
         :books="bestsellers"
         :loading="loading"
-        route-to="category-page"
-        :route-params="{ slug: 'ban-chay' }"
+        route-to="collection-page"
+        :route-params="{ slug: 'best-sellers' }"
       />
 
       <book-slide-group
         group-header="Sách mới về"
         :books="newbooks"
         :loading="loading"
-        route-to="category-page"
-        :route-params="{ slug: 'sach-moi' }"
+        route-to="collection-page"
+        :route-params="{ slug: 'new' }"
       />
 
       <!-- call to action strip -->

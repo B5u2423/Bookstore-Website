@@ -73,7 +73,7 @@ const routes = [
       },
       {
         path: 'collections/:slug',
-        name: 'colleciton-page',
+        name: 'collection-page',
         component: () => import('@/views/ecom/CollectionShowcase.vue'),
       },
       {

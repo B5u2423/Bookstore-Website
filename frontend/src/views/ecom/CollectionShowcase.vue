@@ -1,75 +1,32 @@
 <script setup>
 import { BookService } from '@/api/book-api'
-import { CategoryService } from '@/api/category-api'
+import { CollectionService } from '@/api/collection-api'
 import VerticalBookCard from '@/components/books/VerticalBookCard.vue'
 import { ref, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const books = ref([])
-const pagination = ref({})
-const currentPage = ref(1)
 // update items/page size here if change item/grid
-const currentSize = ref(25)
-const categoryName = ref('')
+const currentSize = ref(15)
+const collectionName = ref('')
 const loading = ref(true)
 
 const bookCardWidth = ref('100%')
 
-async function fetchAllBooks({ page, size }) {
-  const res = await BookService.fetchAllBooks({ page, size })
-  pagination.value = res.page
-  books.value = res.content
-}
-
-async function fetchCategoryName(slug) {
-  const res = await CategoryService.fetchCategoryName({ slug })
-  categoryName.value = res
-}
-
-async function fetchBookByCategory(slug, { page, size }) {
-  const res = await CategoryService.fetchBookByCategory(slug, { page, size })
-  pagination.value = res.page
-  books.value = res.content
-}
-
-async function loadPage(page = 0) {
-  loading.value = true
-  try {
-    const slug = route.params.slug
-    if (slug === 'tat-ca') {
-      await fetchAllBooks({ page, size: currentSize.value })
-    } else {
-      await fetchBookByCategory(slug, { page, size: currentSize.value })
-    }
-  } catch (e) {
-    console.error(e)
-  } finally {
-    loading.value = false
-  }
-}
-
-async function onPageChange(page) {
-  currentPage.value = page
-  await loadPage(page - 1)
-  window.scrollTo({ top: 0, behavior: 'smooth' })
+async function fetchAllBooksInCollection(collection) {
+  const res = await BookService.getBooksInCollectionForLandingPage({ collection })
+  books.value = res.list
+  collectionName.value = res.collectionName
 }
 
 watchEffect(async () => {
-  const slug = route.params.slug
-  if (!slug) return
-  currentPage.value = 1
   loading.value = true
   try {
-    if (slug === 'tat-ca') {
-      categoryName.value = 'Tất cả sách'
-      await fetchAllBooks({ page: 0, size: currentSize.value })
-    } else {
-      await Promise.all([
-        fetchCategoryName(slug),
-        fetchBookByCategory(slug, { page: 0, size: currentSize.value }),
-      ])
-    }
+    const slug = route.params.slug
+    await Promise.all([
+      fetchAllBooksInCollection(slug),
+    ])
   } catch (e) {
     console.error(e)
   } finally {
@@ -85,18 +42,24 @@ watchEffect(async () => {
       <div class="category-header-left">
         <span class="category-accent-bar" aria-hidden="true" />
         <div>
-          <div class="category-eyebrow">Danh mục</div>
+          <div class="category-eyebrow">Bộ sưu tập</div>
           <h1 class="category-title">
-            <template v-if="loading && !categoryName">
+            <template v-if="loading && !collectionName">
               <span class="title-skeleton" />
             </template>
-            <template v-else>{{ categoryName }}</template>
+            <template v-else>{{ collectionName }}</template>
           </h1>
+          <!-- breadcrumbs -->
+          <div class="coll-breadcrumb">
+            <router-link
+              to="/"
+              class="breadcrumb-link"
+            >
+              <v-icon icon="mdi-arrow-left" size="18" />
+              Trang chủ
+            </router-link>
+          </div>
         </div>
-      </div>
-
-      <div v-if="pagination.totalElements" class="category-count">
-        {{ pagination.totalElements }} sách
       </div>
     </div>
 
@@ -115,13 +78,13 @@ watchEffect(async () => {
           <v-icon icon="mdi-book-off-outline" size="48" class="mb-3" />
           <p class="empty-title">Không tìm thấy sách</p>
           <p class="empty-body">
-            Danh mục này hiện chưa có sách. Vui lòng thử danh mục khác.
+            Bộ sưu tập hiện chưa có sách. Vui lòng quay lại trang chủ.
           </p>
           <router-link
-            :to="{ name: 'category-page', params: { slug: 'tat-ca' } }"
+            :to="{ name: 'landing' }"
             class="empty-cta"
           >
-            Xem tất cả sách
+            Trang chủ
           </router-link>
         </div>
       </template>
@@ -136,18 +99,6 @@ watchEffect(async () => {
           <vertical-book-card :book="book" :width="bookCardWidth" />
         </div>
       </template>
-    </div>
-
-    <!-- Pagination -->
-    <div v-if="!loading && pagination.totalPages > 1" class="pagination-wrap">
-      <v-pagination
-        v-model="currentPage"
-        :length="pagination.totalPages"
-        :total-visible="4"
-        rounded="lg"
-        class="category-pagination"
-        @update:model-value="onPageChange"
-      />
     </div>
   </div>
 </template>
@@ -219,17 +170,6 @@ watchEffect(async () => {
   animation: shimmer 1.4s infinite;
 }
 
-.category-count {
-  font-size: 0.82rem;
-  color: var(--muted);
-  background: var(--paper);
-  border: 1px solid var(--border);
-  border-radius: 99px;
-  padding: 4px 14px;
-  white-space: nowrap;
-  font-weight: 500;
-}
-
 .book-grid {
   display: grid;
   /* grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); */
@@ -279,27 +219,6 @@ watchEffect(async () => {
 }
 .empty-cta:hover { background: #8e1f24; }
 
-.pagination-wrap {
-  display: flex;
-  justify-content: center;
-  margin-top: 40px;
-}
-
-.category-pagination :deep(.v-pagination__item--is-active .v-btn) {
-  background: var(--accent) !important;
-  color: #fff !important;
-}
-
-.category-pagination :deep(.v-btn) {
-  color: var(--ink);
-  font-weight: 500;
-}
-
-.category-pagination :deep(.v-btn:hover) {
-  background: var(--accent-soft) !important;
-  color: var(--accent) !important;
-}
-
 @keyframes shimmer {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
@@ -312,4 +231,20 @@ watchEffect(async () => {
   }
   .category-header { margin-bottom: 20px; }
 }
+
+/* breadcrumbs */
+.coll-breadcrumb {
+  margin: 8px 0px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 1rem;
+  color: var(--muted);
+}
+.breadcrumb-link {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.breadcrumb-link:hover { color: var(--accent); }
 </style>

@@ -42,4 +42,6 @@ public interface BookRepo extends JpaRepository<Book, Integer> {
   void nullifyCollectionReference(@Param("collectionId") Integer collectionId);
 
   List<Book> findAllByCollection(Collection c);
+
+  List<Book> findBy(Pageable pageable);
 }

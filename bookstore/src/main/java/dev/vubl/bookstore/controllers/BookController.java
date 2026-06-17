@@ -1,6 +1,7 @@
 package dev.vubl.bookstore.controllers;
 
 import dev.vubl.bookstore.dtos.BookResponseDTO;
+import dev.vubl.bookstore.dtos.LandingBookCollectionResponse;
 import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
 import dev.vubl.bookstore.exceptions.CategoryDoesNotExistException;
 import dev.vubl.bookstore.services.BookService;
@@ -73,15 +74,9 @@ public class BookController {
   }
 
   @GetMapping("/landing")
-  public ResponseEntity<List<BookResponseDTO>> getBooksInCollectionForLanding(
+  public ResponseEntity<LandingBookCollectionResponse> getBooksInCollectionForLanding(
       @RequestParam(value = "collection") String collection) {
-    // just get book in collection but a nice wrapper for view
-    List<BookResponseDTO> list = bookService.getAllBooksInCollection(collection);
-    if (!list.isEmpty()) {
-      return ResponseEntity.ok().body(list);
-    }
-    // fetch 12 items
-    return ResponseEntity.ok().body(bookService.getAllBooks().subList(0, 12));
+    return ResponseEntity.ok().body(bookService.getBooksInCollectionForLandingPage(collection));
   }
 
   @ExceptionHandler({BookWithIsbnAlreadyExists.class})
