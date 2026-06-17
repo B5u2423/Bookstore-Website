@@ -34,7 +34,6 @@ async function handleResetPassword() {
 <template>
   <div class="auth-page">
     <div class="auth-card">
-
       <!-- Brand -->
       <div class="auth-brand">
         <span class="auth-brand-icon" aria-hidden="true">📚</span>
@@ -50,10 +49,13 @@ async function handleResetPassword() {
           <h1 class="auth-heading">Kiểm tra hộp thư!</h1>
           <p class="auth-subheading">
             Chúng tôi đã gửi hướng dẫn đặt lại mật khẩu đến
-            <strong>{{ email }}</strong>.
-            Vui lòng kiểm tra cả thư mục spam.
+            <strong>{{ email }}</strong>. Vui lòng kiểm tra cả thư mục spam.
           </p>
-          <router-link to="/login" class="submit-btn" style="text-decoration:none; display:flex; justify-content:center;">
+          <router-link
+            to="/login"
+            class="submit-btn"
+            style="text-decoration:none; display:flex; justify-content:center;"
+          >
             Quay lại đăng nhập
           </router-link>
         </div>
@@ -62,7 +64,8 @@ async function handleResetPassword() {
         <div v-else key="form">
           <h1 class="auth-heading">Khôi phục mật khẩu</h1>
           <p class="auth-subheading">
-            Nhập email đã đăng ký, chúng tôi sẽ đặt lại mật khẩu và gửi vào hòm thư của bạn.
+            Nhập email đã đăng ký, chúng tôi sẽ đặt lại mật khẩu và gửi vào
+            hòm thư của bạn.
           </p>
 
           <v-form ref="form" v-model="isValidForm" @submit.prevent="handleResetPassword">
@@ -105,7 +108,6 @@ async function handleResetPassword() {
           </p>
         </div>
       </Transition>
-
     </div>
   </div>
 </template>

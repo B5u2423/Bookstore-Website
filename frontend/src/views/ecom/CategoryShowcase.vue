@@ -92,9 +92,21 @@ watchEffect(async () => {
             </template>
             <template v-else>{{ categoryName }}</template>
           </h1>
+
+          <!-- breadcrumbs -->
+          <div class="cat-breadcrumb">
+            <router-link
+              to="/"
+              class="breadcrumb-link"
+            >
+              <v-icon icon="mdi-arrow-left" size="18" />
+              Trang chủ
+            </router-link>
+          </div>
         </div>
       </div>
 
+      <!-- book count -->
       <div v-if="pagination.totalElements" class="category-count">
         {{ pagination.totalElements }} sách
       </div>
@@ -312,4 +324,19 @@ watchEffect(async () => {
   }
   .category-header { margin-bottom: 20px; }
 }
+/* breadcrumbs */
+.cat-breadcrumb {
+  margin: 8px 0px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 1rem;
+  color: var(--muted);
+}
+.breadcrumb-link {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.breadcrumb-link:hover { color: var(--accent); }
 </style>

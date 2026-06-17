@@ -132,6 +132,7 @@ const displayedBreadCrumbTitle = computed(() => {
 
 <template>
   <v-container class="book-detail py-8">
+    <!-- breadcrumbs -->
     <div class="detail-breadcrumb">
       <router-link
         to="/"
