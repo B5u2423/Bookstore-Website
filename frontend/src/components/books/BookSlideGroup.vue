@@ -60,7 +60,7 @@ function scrollByOneItem(direction) {
     <div class="slide-track-wrap">
       <div class="slide-track" ref="track">
         <template v-if="loading">
-          <vertical-book-card v-for="n in 6" :key="n" :loading="true" />
+          <vertical-book-card v-for="n in 6" :key="n" :loading="true" :width="bookCardWidth" />
         </template>
         <template v-else>
           <vertical-book-card

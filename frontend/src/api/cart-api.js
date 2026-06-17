@@ -1,4 +1,4 @@
-import api, { adminApi, customerApi, provinceApi } from './api-config'
+import api, { adminApi, customerApi } from './api-config'
 
 export const CartService = {
   async addToCart(body) {
