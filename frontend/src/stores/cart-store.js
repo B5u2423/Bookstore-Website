@@ -56,7 +56,7 @@ export const useCartStore = defineStore(
             title: item.bookTitle,
             author: item.bookAuthor,
             price: item.bookPrice,
-            slug: item.bookSlug,
+            urlSlug: item.bookSlug,
             image: item.bookImage,
             quantity: item.quantity,
           })

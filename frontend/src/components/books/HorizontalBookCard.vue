@@ -7,7 +7,10 @@ defineProps({
 </script>
 
 <template>
-  <div class="order-item">
+  <router-link
+    class="order-item"
+    :to="{ name: 'book-detail', params: { id: book.id, slug: book.urlSlug } }"
+  >
     <!-- Thumbnail -->
     <div class="order-item-thumb-wrap">
       <v-img
@@ -31,7 +34,7 @@ defineProps({
     <div class="order-item-total">
       {{ formatPriceVNLocale(book.price * book.quantity) }} ₫
     </div>
-  </div>
+  </router-link>
 </template>
 
 <style scoped>
@@ -48,9 +51,12 @@ defineProps({
   gap: 14px;
   padding: 12px 0;
   border-bottom: 1px solid var(--border);
+  text-decoration: none;
   font-family: system-ui, -apple-system, sans-serif;
 }
 .order-item:last-child { border-bottom: none; }
+.order-item:hover .order-item-title { color: var(--accent)}
+
 
 .order-item-thumb-wrap {
   position: relative;

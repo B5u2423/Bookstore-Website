@@ -124,7 +124,7 @@ function notify(success, msg) {
             <!-- book detail -->
             <div class="col-product cart-product">
               <router-link
-                :to="{ name: 'book-detail', params: { id: item.id, slug: item.slug } }"
+                :to="{ name: 'book-detail', params: { id: item.id, slug: item.urlSlug } }"
                 class="cart-thumb-link"
                 :title="item.title"
                 :aria-label="item.title"
@@ -141,7 +141,7 @@ function notify(success, msg) {
               <div class="cart-product-info">
                 <router-link
                   :title="item.title"
-                  :to="{ name: 'book-detail', params: { id: item.id, slug: item.slug } }"
+                  :to="{ name: 'book-detail', params: { id: item.id, slug: item.urlSlug } }"
                   class="cart-product-title"
                 >
                   {{ item.title }}
