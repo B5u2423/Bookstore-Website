@@ -79,6 +79,7 @@ function clampQty(item) {
               <router-link
                 :to="{ name: 'book-detail', params: { id: item.id, slug: item.slug } }"
                 class="cart-thumb-link"
+                :title="item.title"
                 :aria-label="item.title"
               >
                 <v-img
@@ -92,6 +93,7 @@ function clampQty(item) {
               </router-link>
               <div class="cart-product-info">
                 <router-link
+                  :title="item.title"
                   :to="{ name: 'book-detail', params: { id: item.id, slug: item.slug } }"
                   class="cart-product-title"
                 >

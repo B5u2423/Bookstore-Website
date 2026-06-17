@@ -4,6 +4,7 @@ import VerticalBookCard from './VerticalBookCard.vue'
 
 defineProps({
   routeTo: String,
+  routeParams: { type: Object, default: () => ({}) },
   groupHeader: String,
   books: Array,
   loading: Boolean,
@@ -23,13 +24,12 @@ function scrollByOneItem(direction) {
 
 <template>
   <section class="slide-group">
-
     <!-- Header -->
     <div class="slide-group-header">
       <div class="slide-group-title-wrap">
         <span class="slide-group-accent-bar" aria-hidden="true" />
         <router-link
-          :to="{ name: routeTo }"
+          :to="{ name: routeTo, params: routeParams }"
           class="slide-group-title"
         >
           {{ groupHeader.toLocaleUpperCase() }}
@@ -72,7 +72,6 @@ function scrollByOneItem(direction) {
         </template>
       </div>
     </div>
-
   </section>
 </template>
 

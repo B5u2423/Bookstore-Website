@@ -20,6 +20,7 @@ defineProps({
   </div>
 
   <!-- Card -->
+  <!-- title: display title tooltip -->
   <router-link
     v-else
     :to="{ name: 'book-detail', params: { id: book.id, slug: book.urlSlug } }"
