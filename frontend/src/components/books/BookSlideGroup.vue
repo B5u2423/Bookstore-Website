@@ -10,6 +10,7 @@ const props = defineProps({
 })
 
 const track = ref(null)
+const bookCardWidth = ref('186px')
 
 function scrollByOneItem(direction) {
   const firstItem = track.value?.firstElementChild
@@ -62,6 +63,7 @@ function scrollByOneItem(direction) {
           v-for="n in 5"
           :key="n"
           :loading="true"
+          :width="bookCardWidth"
         />
       </template>
 
@@ -72,6 +74,7 @@ function scrollByOneItem(direction) {
           v-for="book in books"
           :key="book.id"
           :book="book"
+          :width="bookCardWidth"
           class="slider-item"
         />
       </template>
