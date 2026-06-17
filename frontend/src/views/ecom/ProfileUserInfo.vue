@@ -3,12 +3,10 @@ import { AddressInfoService } from '@/api/cart-api.js'
 import { CustomerService, UserService } from '@/api/customer-api'
 import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
 import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
-import { useCartStore } from '@/stores/cart-store'
 import { useUserProfileStore } from '@/stores/user-profile-store'
 import { onMounted, ref, watch } from 'vue'
 
 const userProfileStore = useUserProfileStore()
-const cartStore = useCartStore()
 
 const isFieldsEnabled = ref(false)
 const isUpdated = ref(false)
@@ -127,7 +125,6 @@ async function deleteAddress(id) {
 }
 
 onMounted(() => {
-  cartStore.syncCartWithBackEnd()
   fetchCities()
 })
 </script>

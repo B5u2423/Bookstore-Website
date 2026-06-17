@@ -1,9 +1,11 @@
 <script setup>
 import { useUserProfileStore } from '@/stores/user-profile-store'
 import { computed, onMounted } from 'vue'
+import { useCartStore } from '@/stores/cart-store'
 import { useRoute } from 'vue-router'
 
 const userInfoStore = useUserProfileStore()
+const cartStore = useCartStore()
 const route = useRoute()
 
 const items = [
@@ -15,6 +17,7 @@ const currentItem = computed(() => items.find(i => i.nameRoute === route.name))
 
 onMounted(() => {
   userInfoStore.getUserInfo()
+  cartStore.syncCartWithBackEnd()
 })
 </script>
 
