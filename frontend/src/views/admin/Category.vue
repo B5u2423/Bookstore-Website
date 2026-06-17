@@ -124,8 +124,9 @@ async function save() {
       message.value = 'Cập nhật thông tin danh mục thành công!'
     } catch (error) {
       console.error('Error editing category')
+      const errorMsg = error.response?.data || error.message || 'Lỗi không xác định'
       isError.value = true
-      message.value = 'Lỗi xảy ra khi cập nhật danh mục'
+      message.value = `Lỗi xảy ra khi cập nhật danh mục ${errorMsg}`
     } finally {
       setTimeout(() => {
         isSuccess.value = false
@@ -139,8 +140,9 @@ async function save() {
       isSuccess.value = true
       message.value = 'Cập nhật thông tin danh mục thành công!'
     } catch (error) {
+      const errorMsg = error.response?.data || error.message || 'Lỗi không xác định'
       isError.value = true
-      message.value = 'Lỗi xảy ra khi thêm danh mục'
+      message.value = `Lỗi xảy ra khi thêm danh mục: ${errorMsg}`
       console.error('Error adding new category')
     } finally {
       setTimeout(() => {

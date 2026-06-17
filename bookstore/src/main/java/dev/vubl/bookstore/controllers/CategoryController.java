@@ -4,11 +4,13 @@ import dev.vubl.bookstore.dtos.BookResponseDTO;
 import dev.vubl.bookstore.dtos.CategoryCreationRequest;
 import dev.vubl.bookstore.dtos.CategoryDTO;
 import dev.vubl.bookstore.dtos.CategoryUpdateRequest;
+import dev.vubl.bookstore.exceptions.CategoryWithSlugAlreadyExists;
 import dev.vubl.bookstore.services.BookService;
 import dev.vubl.bookstore.services.CategoryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,5 +80,10 @@ public class CategoryController {
   @GetMapping("/name")
   public String getCategoryName(@RequestParam(value = "slug") String slug) {
     return categoryService.getCategoryName(slug);
+  }
+
+  @ExceptionHandler({CategoryWithSlugAlreadyExists.class})
+  public ResponseEntity<String> handleExistingCategory(CategoryWithSlugAlreadyExists ex) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
   }
 }

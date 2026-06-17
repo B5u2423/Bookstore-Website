@@ -5,6 +5,7 @@ import dev.vubl.bookstore.dtos.CategoryDTO;
 import dev.vubl.bookstore.dtos.CategoryUpdateRequest;
 import dev.vubl.bookstore.entities.Category;
 import dev.vubl.bookstore.exceptions.CategoryDoesNotExistException;
+import dev.vubl.bookstore.exceptions.CategoryWithSlugAlreadyExists;
 import dev.vubl.bookstore.repos.CategoryRepo;
 import dev.vubl.bookstore.utils.SlugUtils;
 import jakarta.transaction.Transactional;
@@ -84,11 +85,13 @@ public class CategoryService {
   }
 
   public void addNewCategory(CategoryCreationRequest payload) {
-    Category c =
-        Category.builder()
-            .categoryName(payload.categoryName())
-            .categorySlug(SlugUtils.convertStringToSlug(payload.categoryName()))
-            .build();
+    String slug = SlugUtils.convertStringToSlug(payload.categoryName());
+    var tmpCategory = categoryRepo.findByCategorySlug(slug);
+    // if: category with slug already exists
+    if (tmpCategory.isPresent()) {
+      throw new CategoryWithSlugAlreadyExists(slug);
+    }
+    Category c = Category.builder().categoryName(payload.categoryName()).categorySlug(slug).build();
     for (Integer childID : payload.children()) {
       c.addChild(getCategoryByIdOrThrowException(childID));
     }
