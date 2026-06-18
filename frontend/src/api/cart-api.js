@@ -64,6 +64,7 @@ export const OrderService = {
       return res.data
     } catch (error) {
       console.error('Error making order', error)
+      throw error
     }
   },
 

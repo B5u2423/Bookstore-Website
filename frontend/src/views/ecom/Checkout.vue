@@ -17,6 +17,11 @@ const isError = ref(false)
 const isSuccess = ref(false)
 const message = ref('')
 
+// shipping constants
+const HANOI_SHIPPING_FEE = ref(25000)
+const OTHERS_SHIPPING_FEE = ref(50000)
+const FREE_SHIP_REQ = ref(500000)
+
 function bootStrapValues() {
   return {
     cityId: null,
@@ -25,6 +30,7 @@ function bootStrapValues() {
     communeName: '',
     street: '',
     itemsTotal: cartStore.totalAmount,
+    isFreeShip: false,
     shippingFee: 0,
     orderTotal: 0,
     couponCode: '',
@@ -68,6 +74,7 @@ async function fetchCommunes() {
 async function confirmCheckout() {
   isPlacingOrder.value = true
   try {
+    // map city name and commune name from selected ids
     const selectedCity = cities.value.find(o => o?.code === shippingInfo.value.cityId)
     if (selectedCity) shippingInfo.value.cityName = selectedCity.name
 
@@ -76,11 +83,17 @@ async function confirmCheckout() {
 
     shippingInfo.value.orderTotal = tmpOrderTotal.value
 
+    // make call to api
     if (shippingInfo.value.paymentMethod === 'COD') {
-      await OrderService.createOrder(shippingInfo.value)
-      cartStore.reset()
-      notify(true, 'Đặt đơn thành công')
-      router.push('/')
+      try {
+        await callToOrderApi()
+        setTimeout(() => {
+          cartStore.reset()
+          router.push('/')
+        }, 500)
+      } catch (e) {
+        console.error('Error COD checkout')
+      }
     } else {
       const res = await PaymentService.createPaymentPage({
         amount: cartStore.totalAmount,
@@ -88,15 +101,34 @@ async function confirmCheckout() {
       })
       const urlObj = new URL(res.paymentUrl)
       shippingInfo.value.vnpTxnRef = urlObj.searchParams.get('vnp_TxnRef')
-      await OrderService.createOrder(shippingInfo.value)
-      cartStore.reset()
-      notify(true, 'Đặt đơn thành công')
-      window.location.href = res?.paymentUrl
+      try {
+        await callToOrderApi()
+        setTimeout(() => {
+          cartStore.reset()
+          window.location.href = res?.paymentUrl
+        }, 500)
+      } catch (e) {
+        console.error('Error COD checkout')
+      }
     }
   } catch (e) {
     console.error('Error checkout', e)
+    notify(false, 'Lỗi khi đặt đơn')
   } finally {
     isPlacingOrder.value = false
+  }
+}
+
+async function callToOrderApi() {
+  try {
+    console.log('Fetching data...')
+    const res = await OrderService.createOrder(shippingInfo.value)
+    notify(true, 'Đặt đơn thành công')
+    return res
+  } catch (e) {
+    console.error('Error calling to order API')
+    notify(false, 'Lỗi gọi đến API đặt hàng')
+    throw e
   }
 }
 
@@ -108,19 +140,32 @@ const isShippingValid = computed(() =>
   && !!shippingInfo.value.cityId
   && !!shippingInfo.value.street
   && !!shippingInfo.value.phone
+  && !!selectedShipping.value
 )
 
 const tmpOrderTotal = computed(() => shippingInfo.value.shippingFee + shippingInfo.value.itemsTotal)
 
 const shippingOptions = computed(() => {
   const opts = []
-  if (shippingInfo.value.itemsTotal >= 500000) {
-    opts.push({ label: 'Miễn phí — đơn hàng trên 500.000 ₫', value: 'MORE500', fee: 0 })
+  if (shippingInfo.value.itemsTotal >= FREE_SHIP_REQ.value) {
+    opts.push({
+      label: `Miễn phí — đơn hàng trên ${formatPriceVNLocale(FREE_SHIP_REQ.value)} ₫`,
+      value: 'FREE',
+      fee: 0,
+    })
   }
   if (String(shippingInfo.value.cityId).padStart(2, '0') === '01') {
-    opts.push({ label: 'Nội thành Hà Nội · 1-3 ngày', value: 'HANOI', fee: 25000 })
+    opts.push({
+      label: 'Nội thành Hà Nội · 1-3 ngày',
+      value: 'HANOI',
+      fee: HANOI_SHIPPING_FEE.value,
+    })
   } else if (shippingInfo.value.cityId) {
-    opts.push({ label: 'Tỉnh thành khác · 2-6 ngày', value: 'OTHERS', fee: 50000 })
+    opts.push({
+      label: 'Tỉnh thành khác · 2-6 ngày',
+      value: 'OTHERS',
+      fee: OTHERS_SHIPPING_FEE.value,
+    })
   }
   return opts
 })
@@ -130,6 +175,9 @@ const selectedShipping = ref(null)
 watch(selectedShipping, (val) => {
   const opt = shippingOptions.value.find(o => o.value === val)
   shippingInfo.value.shippingFee = opt?.fee ?? 0
+  if (val === 'FREE') {
+    shippingInfo.value.isFreeShip = true
+  }
 })
 
 watch(selectedAddrId, async (id) => {
@@ -148,6 +196,8 @@ watch(
   (newValues, oldValues) => {
     if (!!selectedAddrId) {
       selectedAddrId.value = null
+      // bug: Hanoi shipping with non-Hanoi address
+      selectedShipping.value = null
     }
   },
 )
@@ -357,7 +407,10 @@ onMounted(() => {
             <div class="section-icon-wrap">
               <v-icon icon="mdi-truck-delivery-outline" size="18" />
             </div>
-            <h2 class="checkout-section-title">Phương thức vận chuyển</h2>
+            <h2 class="checkout-section-title">
+              Phương thức vận chuyển
+              <span class="required">*</span>
+            </h2>
           </div>
 
           <div v-if="!shippingInfo.cityId" class="method-hint">

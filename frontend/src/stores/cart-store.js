@@ -38,7 +38,6 @@ export const useCartStore = defineStore(
           quantity: item.quantity,
         }))
         const res = await CartService.syncCartWithBackEnd(cartItems)
-        console.log(res)
         return {
           status: res.status ?? 0,
           data: res.data ?? 'Lỗi không xác định',

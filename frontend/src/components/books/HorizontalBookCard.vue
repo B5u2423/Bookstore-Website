@@ -9,7 +9,7 @@ defineProps({
 <template>
   <router-link
     class="order-item"
-    :to="{ name: 'book-detail', params: { id: book.id, slug: book.urlSlug } }"
+    :to="{ name: 'book-detail', params: { id: book.id, slug: book.urlSlug ?? book.slug } }"
   >
     <!-- Thumbnail -->
     <div class="order-item-thumb-wrap">
