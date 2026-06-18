@@ -5,6 +5,8 @@ import dev.vubl.bookstore.entities.*;
 import dev.vubl.bookstore.exceptions.BookDoesNotExistException;
 import dev.vubl.bookstore.exceptions.EmptyCartException;
 import dev.vubl.bookstore.exceptions.OutOfStockException;
+import dev.vubl.bookstore.mappers.BookMapper;
+import dev.vubl.bookstore.mappers.OrderMapper;
 import dev.vubl.bookstore.repos.BookRepo;
 import dev.vubl.bookstore.repos.CartRepo;
 import dev.vubl.bookstore.repos.OrderRepo;
@@ -15,14 +17,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
-@Transactional
+@Transactional(rollbackOn = Exception.class)
 @RequiredArgsConstructor
 public class OrderService {
   private final OrderRepo orderRepo;
@@ -32,16 +36,24 @@ public class OrderService {
   private final CartRepo cartRepo;
   private final BookRepo bookRepo;
 
+  private static final BigDecimal HANOI_SHIPPING_FEE = BigDecimal.valueOf(25000);
+  private static final BigDecimal OTHERS_SHIPPING_FEE = BigDecimal.valueOf(50000);
+
   public Order checkout(String token, ShippingInfoDTO shippingInfo) {
     Cart cart = cartService.getActiveCartByUser(token);
     if (cart.getItems().isEmpty()) {
       throw new EmptyCartException("Cart is empty");
     }
 
-    Order order = new Order();
-    order.setItems(new ArrayList<>());
-    BigDecimal itemsTotal = BigDecimal.ZERO;
-    BigDecimal orderTotal = BigDecimal.ZERO;
+    // set order data
+    Order o = OrderMapper.INSTANCE.toOrder(shippingInfo);
+    o.setItems(new ArrayList<>());
+    o.setOrderDate(LocalDate.now());
+    o.setOrderStatus(OrderStatus.PENDING);
+
+    BigDecimal tmpItemsTotal = BigDecimal.ZERO;
+    BigDecimal tmpOrderTotal = BigDecimal.ZERO;
+    BigDecimal tmpShippingFee = getShippingFee(shippingInfo.isFreeShip(), shippingInfo.cityId());
 
     for (CartItem ci : cart.getItems()) {
       // get book to update
@@ -49,15 +61,11 @@ public class OrderService {
           bookRepo
               .findByIdForUpdate(ci.getBook().getId())
               .orElseThrow(BookDoesNotExistException::new);
-      OrderItem oi =
-          OrderItem.builder()
-              .order(order)
-              .bookId(b.getId())
-              .titleAtPurchase(b.getTitle())
-              .isbn(b.getIsbn())
-              .quantity(ci.getQuantity())
-              .priceAtPurchase(b.getPrice())
-              .build();
+
+      // set order item data
+      OrderItem oi = BookMapper.INSTANCE.toOrderItemEntity(b);
+      oi.setQuantity(ci.getQuantity());
+      oi.setOrder(o);
 
       // update in stock
       if (b.getInStock() < ci.getQuantity()) {
@@ -68,46 +76,30 @@ public class OrderService {
       b.setInStock(inStock);
       bookRepo.save(b);
 
-      // add to order
-      order.getItems().add(oi);
-      itemsTotal =
-          itemsTotal.add(oi.getPriceAtPurchase().multiply(BigDecimal.valueOf(oi.getQuantity())));
+      // calc total items value
+      o.getItems().add(oi);
+      tmpItemsTotal =
+          tmpItemsTotal.add(oi.getPriceAtPurchase().multiply(BigDecimal.valueOf(oi.getQuantity())));
     }
     // apply coupon
     // TODO: handle coupon concurrency
     if (shippingInfo.couponCode() != null && !shippingInfo.couponCode().isEmpty()) {
-      itemsTotal = couponService.applyCoupon(shippingInfo.couponCode(), itemsTotal);
+      tmpItemsTotal = couponService.applyCoupon(shippingInfo.couponCode(), tmpItemsTotal);
     }
 
-    orderTotal = itemsTotal.add(shippingInfo.shippingFee());
-    // order meta data
-    order.setPaymentMethod(shippingInfo.paymentMethod());
-    order.setOrderDate(LocalDate.now());
-    order.setNote(shippingInfo.info());
-    order.setOrderStatus(OrderStatus.PENDING);
-    order.setShippingFee(shippingInfo.shippingFee());
-    order.setVnpTxnRef(shippingInfo.vnpTxnRef());
-    if (shippingInfo.itemsTotal().compareTo(itemsTotal) != 0) {
-      throw new IllegalStateException("Item totals is not the same");
+    log.info("Validating items total...");
+    if (shippingInfo.itemsTotal().compareTo(tmpItemsTotal) != 0) {
+      throw new IllegalStateException("Mismatch Items total!");
     }
-    order.setItemsTotal(itemsTotal);
-    if (shippingInfo.orderTotal().compareTo(orderTotal) != 0) {
-      throw new IllegalStateException("Order total is not the same !!!!");
-    }
-    order.setOrderTotal(orderTotal);
 
-    // set address
-    order.setCity(shippingInfo.cityName());
-    order.setCommune(shippingInfo.communeName());
-    order.setStreet(shippingInfo.street());
-    // set user
-    order.setName(shippingInfo.name());
-    order.setEmail(shippingInfo.email());
-    order.setPhoneNumber(shippingInfo.phone());
+    tmpOrderTotal = tmpOrderTotal.add(tmpItemsTotal).add(tmpShippingFee);
+    log.info("Validating order total...");
+    if (shippingInfo.orderTotal().compareTo(tmpOrderTotal) != 0) {
+      throw new IllegalStateException("Mismatch Order total!!!!");
+    }
 
     // save order
-    Order savedOrder = orderRepo.save(order);
-
+    Order savedOrder = orderRepo.save(o);
     // change cart status
     cart.setCartStatus(CartStatus.CHECKED_OUT);
     cartRepo.save(cart);
@@ -166,5 +158,14 @@ public class OrderService {
     }
     o.get().setOrderStatus(status);
     return "Status updated";
+  }
+
+  // NOTE: This should have better eval but this is good for now
+  // Shipping fee is based on city.
+  // cityId == 1 >> Hanoi. cityId != 1 >> Others
+  private BigDecimal getShippingFee(boolean isFreeShip, Integer cityId) {
+    return isFreeShip
+        ? BigDecimal.ZERO
+        : cityId.equals(1) ? HANOI_SHIPPING_FEE : OTHERS_SHIPPING_FEE;
   }
 }
