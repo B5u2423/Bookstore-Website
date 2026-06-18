@@ -40,6 +40,15 @@ export const PaymentService = {
 }
 
 export const OrderService = {
+  async getShippingFeeInfo() {
+    try {
+      const res = await customerApi.get('/orders/fee')
+      return res.data
+    } catch (e) {
+      console.error(`Error fetching shipping fee info ${e.message}`)
+      throw e
+    }
+  },
   async updateStatusById(body) {
     try {
       const res = await adminApi.post('/orders/update-status-id', body)

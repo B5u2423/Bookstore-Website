@@ -13,12 +13,16 @@ export const useUserProfileStore = defineStore(
     })
 
     async function getUserInfo() {
-      const res = await CustomerService.getCustomerAccount()
+      try {
+        const payload = await CustomerService.getCustomerAccount()
 
-      userInfo.value.name = res.name
-      userInfo.value.email = res.email
-      userInfo.value.phone = res.phoneNumber
-      userInfo.value.addressList = res.addressList
+        userInfo.value.name = payload.name
+        userInfo.value.email = payload.email
+        userInfo.value.phone = payload.phoneNumber
+        userInfo.value.addressList = payload.addressList
+      } catch (e) {
+        console.error(`UserProfile Store error fetching user info ${e.message}`)
+      }
     }
 
     function updateUserInfo({ name, phone, email }) {

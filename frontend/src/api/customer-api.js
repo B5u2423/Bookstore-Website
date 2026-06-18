@@ -29,7 +29,10 @@ export const CustomerService = {
     try {
       const res = await customerApi.get('/customers/account')
       return res.data
-    } catch (error) {}
+    } catch (e) {
+      console.error('Error fetching customer account')
+      throw e
+    }
   },
 
   async deleteAddress(id) {

@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,7 @@ public class OrderService {
 
   private static final BigDecimal HANOI_SHIPPING_FEE = BigDecimal.valueOf(25000);
   private static final BigDecimal OTHERS_SHIPPING_FEE = BigDecimal.valueOf(50000);
+  private static final BigDecimal FREE_SHIP_REQ = BigDecimal.valueOf(500000);
 
   public Order checkout(String token, ShippingInfoDTO shippingInfo) {
     Cart cart = cartService.getActiveCartByUser(token);
@@ -158,6 +160,18 @@ public class OrderService {
     }
     o.get().setOrderStatus(status);
     return "Status updated";
+  }
+
+  public Map<String, BigDecimal> getShippingFeeInfo() {
+    return Map.of(
+        "HANOI",
+        HANOI_SHIPPING_FEE,
+        "OTHERS",
+        OTHERS_SHIPPING_FEE,
+        "FREE",
+        BigDecimal.ZERO,
+        "FREE_SHIP_REQ",
+        FREE_SHIP_REQ);
   }
 
   // NOTE: This should have better eval but this is good for now

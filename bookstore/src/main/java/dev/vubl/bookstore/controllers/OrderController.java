@@ -5,6 +5,8 @@ import dev.vubl.bookstore.dtos.ShippingInfoDTO;
 import dev.vubl.bookstore.dtos.UpdateStatusRequest;
 import dev.vubl.bookstore.entities.Order;
 import dev.vubl.bookstore.services.OrderService;
+import java.math.BigDecimal;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpHeaders;
@@ -63,5 +65,10 @@ public class OrderController {
       @RequestParam(value = "order", defaultValue = "asc") String order,
       @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
     return new PagedModel<>(orderService.getOrdersByEmail(page, size, sortBy, order, token));
+  }
+
+  @GetMapping("/fee")
+  public Map<String, BigDecimal> getShippingFeeInfo() {
+    return orderService.getShippingFeeInfo();
   }
 }

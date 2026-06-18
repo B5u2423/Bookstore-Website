@@ -18,9 +18,9 @@ const isSuccess = ref(false)
 const message = ref('')
 
 // shipping constants
-const HANOI_SHIPPING_FEE = ref(25000)
-const OTHERS_SHIPPING_FEE = ref(50000)
-const FREE_SHIP_REQ = ref(500000)
+const HANOI_SHIPPING_FEE = ref(0)
+const OTHERS_SHIPPING_FEE = ref(0)
+const FREE_SHIP_REQ = ref(0)
 
 function bootStrapValues() {
   return {
@@ -54,11 +54,33 @@ const rules = {
   phone: (v) => /^\d+$/.test(v) || 'Số điện thoại không hợp lệ',
 }
 
+async function getAllData() {
+  await Promise.all(
+    [
+      fetchCities(),
+      userProfileStore.getUserInfo(),
+      fetchShippingFeeInfo(),
+    ],
+  )
+}
+
+async function fetchShippingFeeInfo() {
+  try {
+    const payload = await OrderService.getShippingFeeInfo()
+    // TODO: may need revisit
+    FREE_SHIP_REQ.value = payload['FREE_SHIP_REQ'] ?? 500000
+    HANOI_SHIPPING_FEE.value = payload['HANOI'] ?? 25000
+    OTHERS_SHIPPING_FEE.value = payload['OTHERS'] ?? 50000
+  } catch (e) {
+    console.error(`Checkout Error: Cannot fetch shipping fee. ${e.message}`)
+  }
+}
+
 async function fetchCities() {
   try {
     cities.value = await AddressInfoService.getCities()
   } catch (e) {
-    console.error('Error fetching cities', e)
+    console.error('Checkout Error: Cannot fetch cities', e)
   }
 }
 
@@ -218,8 +240,7 @@ function notify(success, msg) {
 }
 
 onMounted(() => {
-  fetchCities()
-  userProfileStore.getUserInfo()
+  getAllData()
 })
 </script>
 
