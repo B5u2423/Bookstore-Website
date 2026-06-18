@@ -9,6 +9,7 @@ import dev.vubl.bookstore.exceptions.BookDoesNotExistException;
 import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
 import dev.vubl.bookstore.exceptions.CategoryDoesNotExistException;
 import dev.vubl.bookstore.exceptions.CollectionDoesNotExistException;
+import dev.vubl.bookstore.mappers.BookMapper;
 import dev.vubl.bookstore.repos.BookRepo;
 import dev.vubl.bookstore.repos.CategoryRepo;
 import dev.vubl.bookstore.repos.CollectionRepo;
@@ -44,11 +45,10 @@ public class BookService {
   private final CollectionRepo collectionRepo;
 
   public List<BookDTO> getAllBooks() {
-    return bookRepo.findAll().stream().map(this::mapToBookResponseDTO).toList();
+    return bookRepo.findAll().stream().map(this::toDtoWrapper).toList();
   }
 
-  public Page<BookDTO> getAllBooksPaginated(
-      int page, int size, String sortBy, String order) {
+  public Page<BookDTO> getAllBooksPaginated(int page, int size, String sortBy, String order) {
     List<String> allowed = List.of("id");
     if (!allowed.contains(sortBy)) {
       throw new IllegalArgumentException("Invalid sort field: %s".formatted(sortBy));
@@ -57,22 +57,21 @@ public class BookService {
     Sort sort = order.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
     Pageable pageable = PageRequest.of(page, size, sort);
     Page<Book> books = bookRepo.findAll(pageable);
-    return books.map(this::mapToBookResponseDTO);
+    return books.map(this::toDtoWrapper);
   }
 
   public BookDTO getBookById(Integer id) {
     Book b = bookRepo.findById(id).orElseThrow(BookDoesNotExistException::new);
-    return mapToBookResponseDTO(b);
+    return toDtoWrapper(b);
   }
 
-  public BookDTO addNewBook(BookDTO bookDTO, MultipartFile image)
-      throws IOException {
+  public BookDTO addNewBook(BookDTO bookDTO, MultipartFile image) throws IOException {
     String isbn = bookDTO.isbn();
     if (isIsbnNotUnique(isbn)) {
       throw new BookWithIsbnAlreadyExists("Book with isbn :: %s already exists!".formatted(isbn));
     }
 
-    Book b = mapToBookEntity(bookDTO);
+    Book b = toBookWrapper(bookDTO);
     try {
       if (image != null) {
         log.info("[{}] Uploading image...", this.getClass().getName());
@@ -80,7 +79,7 @@ public class BookService {
         b.setImageUrl(returnedUrl);
       }
       log.info("[{}] Adding new book", this.getClass().getName());
-      return mapToBookResponseDTO(bookRepo.save(b));
+      return toDtoWrapper(bookRepo.save(b));
     } catch (DataIntegrityViolationException e) {
       throw new DataIntegrityViolationException("Error adding or updating new book!", e);
     } catch (IOException e) {
@@ -89,8 +88,7 @@ public class BookService {
     }
   }
 
-  public BookDTO updateBookById(
-          BookDTO bookDTO, MultipartFile image, Integer id) {
+  public BookDTO updateBookById(BookDTO bookDTO, MultipartFile image, Integer id) {
     try {
       Book b =
           bookRepo
@@ -135,7 +133,7 @@ public class BookService {
       }
 
       Book savedBook = bookRepo.save(b);
-      return mapToBookResponseDTO(savedBook);
+      return toDtoWrapper(savedBook);
 
     } catch (DataIntegrityViolationException e) {
       throw new DataIntegrityViolationException("Error adding or updating new book!", e);
@@ -167,7 +165,7 @@ public class BookService {
     Sort sort = order.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
     Pageable pageable = PageRequest.of(page, size, sort);
     Page<Book> bookPage = bookRepo.findAllByCategoryIn(categories, pageable);
-    return bookPage.map(this::mapToBookResponseDTO);
+    return bookPage.map(this::toDtoWrapper);
   }
 
   @Deprecated
@@ -192,11 +190,11 @@ public class BookService {
     for (int i = 0; i < tokens.length; i++) {
       query.setParameter("t" + i, "%" + tokens[i] + "%");
     }
-    return query.getResultList().stream().map(this::mapToBookResponseDTO).toList();
+    return query.getResultList().stream().map(this::toDtoWrapper).toList();
   }
 
   public List<BookDTO> searchBookV3(String keyword) {
-    return bookRepo.searchBookV3(keyword).stream().map(this::mapToBookResponseDTO).toList();
+    return bookRepo.searchBookV3(keyword).stream().map(this::toDtoWrapper).toList();
   }
 
   public List<BookDTO> getAllBooksInCollection(String collectionSlug) {
@@ -206,7 +204,7 @@ public class BookService {
       throw new RuntimeException("Collection slug does not exist");
     }
     List<Book> booksWithCollection = bookRepo.findAllByCollection(res.get());
-    return booksWithCollection.stream().map(this::mapToBookResponseDTO).toList();
+    return booksWithCollection.stream().map(this::toDtoWrapper).toList();
   }
 
   public LandingBookCollectionResponse getBooksInCollectionForLandingPage(String slug) {
@@ -223,9 +221,7 @@ public class BookService {
         .list(
             !list.isEmpty()
                 ? list
-                : bookRepo.findBy(PageRequest.of(0, 15)).stream()
-                    .map(this::mapToBookResponseDTO)
-                    .toList())
+                : bookRepo.findBy(PageRequest.of(0, 15)).stream().map(this::toDtoWrapper).toList())
         .build();
   }
 
@@ -236,57 +232,28 @@ public class BookService {
     return false;
   }
 
-  private BookDTO mapToBookResponseDTO(Book book) {
-    return BookDTO.builder()
-        .id(book.getId())
-        .isbn(book.getIsbn())
-        .title(book.getTitle())
-        .description(book.getDescription())
-        .price(book.getPrice())
-        .inStock(book.getInStock())
-        .publisher(book.getPublisher())
-        .publishYear(book.getPublishYear())
-        .pageCount(book.getPageCount())
-        .imageUrl(book.getImageUrl())
-        .urlSlug(book.getUrlSlug())
-        .author(book.getAuthor())
-        .categoryId(book.getCategory() == null ? null : book.getCategory().getId())
-        .categoryName(book.getCategory() == null ? null : book.getCategory().getCategoryName())
-        .collectionId(book.getCollection() == null ? null : book.getCollection().getId())
-        .collectionName(
-            book.getCollection() == null ? null : book.getCollection().getCollectionName())
-        .build();
+  private BookDTO toDtoWrapper(Book book) {
+    return BookMapper.INSTANCE.toDto(book);
   }
 
-  private Book mapToBookEntity(BookDTO bookDTO) {
-    return Book.builder()
-        .title(bookDTO.title())
-        .author(bookDTO.author())
-        .publishYear(bookDTO.publishYear())
-        .imageUrl(bookDTO.imageUrl())
-        .pageCount(bookDTO.pageCount())
-        .urlSlug(SlugUtils.convertStringToSlug(bookDTO.title()))
-        .publisher(bookDTO.publisher())
-        .price(bookDTO.price())
-        .description(bookDTO.description())
-        .isbn(bookDTO.isbn())
-        .inStock(bookDTO.inStock())
-        .category(
-            bookDTO.categoryId() == null
-                ? null
-                : categoryRepo
-                    .findById(bookDTO.categoryId())
-                    .orElseThrow(CategoryDoesNotExistException::new))
-        .collection(
-            bookDTO.collectionId() == null
-                ? null
-                : collectionRepo
-                    .findById(bookDTO.collectionId())
-                    .orElseThrow(
-                        () ->
-                            new IllegalArgumentException(
-                                "Collection ID %d does not exist"
-                                    .formatted(bookDTO.collectionId()))))
-        .build();
+  private Book toBookWrapper(BookDTO bookDTO) {
+    Book b = BookMapper.INSTANCE.toBook(bookDTO);
+    b.setUrlSlug(SlugUtils.convertStringToSlug(bookDTO.title()));
+    b.setCategory(
+        bookDTO.categoryId() == null
+            ? null
+            : categoryRepo
+                .findById(bookDTO.categoryId())
+                .orElseThrow(CategoryDoesNotExistException::new));
+    b.setCollection(
+        bookDTO.collectionId() == null
+            ? null
+            : collectionRepo
+                .findById(bookDTO.collectionId())
+                .orElseThrow(
+                    () ->
+                        new IllegalArgumentException(
+                            "Collection ID %d does not exist".formatted(bookDTO.collectionId()))));
+    return b;
   }
 }
