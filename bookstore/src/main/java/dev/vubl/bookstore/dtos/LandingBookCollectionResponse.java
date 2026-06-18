@@ -5,4 +5,4 @@ import lombok.Builder;
 
 @Builder
 public record LandingBookCollectionResponse(
-    String collectionName, String collectionSlug, List<BookResponseDTO> list) {}
+    String collectionName, String collectionSlug, List<BookDTO> list) {}

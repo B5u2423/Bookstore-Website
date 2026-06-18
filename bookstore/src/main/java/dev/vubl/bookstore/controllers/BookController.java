@@ -1,6 +1,6 @@
 package dev.vubl.bookstore.controllers;
 
-import dev.vubl.bookstore.dtos.BookResponseDTO;
+import dev.vubl.bookstore.dtos.BookDTO;
 import dev.vubl.bookstore.dtos.LandingBookCollectionResponse;
 import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
 import dev.vubl.bookstore.exceptions.CategoryDoesNotExistException;
@@ -26,7 +26,7 @@ public class BookController {
   private final BookService bookService;
 
   @GetMapping
-  public PagedModel<BookResponseDTO> getAllBooks(
+  public PagedModel<BookDTO> getAllBooks(
       @RequestParam(value = "page", defaultValue = "0") int page,
       @RequestParam(value = "size", defaultValue = "5") int size,
       @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
@@ -35,27 +35,27 @@ public class BookController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<BookResponseDTO> getBookById(@PathVariable Integer id) {
+  public ResponseEntity<BookDTO> getBookById(@PathVariable Integer id) {
     return ResponseEntity.ok().body(bookService.getBookById(id));
   }
 
   @GetMapping("/search")
-  public List<BookResponseDTO> searchBook(@RequestParam String keyword) {
+  public List<BookDTO> searchBook(@RequestParam String keyword) {
     return bookService.searchBookV3(keyword);
   }
 
   // ADMIN
   @PostMapping(path = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<BookResponseDTO> addNewBook(
-      @Valid @RequestPart("book") BookResponseDTO payload,
+  public ResponseEntity<BookDTO> addNewBook(
+      @Valid @RequestPart("book") BookDTO payload,
       @RequestPart(value = "image", required = false) MultipartFile image)
       throws IOException {
     return ResponseEntity.status(HttpStatus.OK).body(bookService.addNewBook(payload, image));
   }
 
   @PutMapping(path = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<BookResponseDTO> updateBookById(
-      @RequestPart("book") BookResponseDTO payload,
+  public ResponseEntity<BookDTO> updateBookById(
+      @RequestPart("book") BookDTO payload,
       @RequestPart(value = "image", required = false) MultipartFile image,
       @RequestParam(value = "id") Integer id) {
     return ResponseEntity.ok().body(bookService.updateBookById(payload, image, id));
@@ -68,7 +68,7 @@ public class BookController {
   }
 
   @GetMapping("/get-books")
-  public ResponseEntity<List<BookResponseDTO>> getAllBookInCollection(
+  public ResponseEntity<List<BookDTO>> getAllBookInCollection(
       @RequestParam(value = "collection") String collection) {
     return ResponseEntity.ok().body(bookService.getAllBooksInCollection(collection));
   }

@@ -1,6 +1,6 @@
 package dev.vubl.bookstore.controllers;
 
-import dev.vubl.bookstore.dtos.BookResponseDTO;
+import dev.vubl.bookstore.dtos.BookDTO;
 import dev.vubl.bookstore.dtos.CategoryCreationRequest;
 import dev.vubl.bookstore.dtos.CategoryDTO;
 import dev.vubl.bookstore.dtos.CategoryUpdateRequest;
@@ -68,7 +68,7 @@ public class CategoryController {
   }
 
   @GetMapping("/{category}")
-  public PagedModel<BookResponseDTO> getAllBooksWithCategory(
+  public PagedModel<BookDTO> getAllBooksWithCategory(
       @PathVariable(name = "category") String category,
       @RequestParam(value = "page", defaultValue = "0") int page,
       @RequestParam(value = "size", defaultValue = "24") int size,
