@@ -22,7 +22,7 @@ public class CollectionController {
   }
 
   @GetMapping
-  public PagedModel<Collection> getAllCoupons(
+  public PagedModel<Collection> getAllCollectionPaginated(
       @RequestParam(value = "page", defaultValue = "0") int page,
       @RequestParam(value = "size", defaultValue = "5") int size,
       @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
@@ -32,17 +32,17 @@ public class CollectionController {
   }
 
   @PostMapping("/add")
-  public ResponseEntity<Collection> addNewCoupon(@Valid @RequestBody CollectionDTO payload) {
+  public ResponseEntity<Collection> addNewCollection(@Valid @RequestBody CollectionDTO payload) {
     return ResponseEntity.ok().body(collectionService.addNewCollection(payload));
   }
 
   @PutMapping("/update")
-  public ResponseEntity<Collection> updateCoupon(@Valid @RequestBody CollectionDTO payload) {
+  public ResponseEntity<Collection> updateCollection(@Valid @RequestBody CollectionDTO payload) {
     return ResponseEntity.ok().body(collectionService.updateCollection(payload));
   }
 
   @DeleteMapping("/delete")
-  public ResponseEntity<String> deleteCoupon(@RequestParam(value = "id") Integer id) {
+  public ResponseEntity<String> deleteCollection(@RequestParam(value = "id") Integer id) {
     collectionService.deleteCollectionById(id);
     return ResponseEntity.ok().body("Ok");
   }

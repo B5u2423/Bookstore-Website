@@ -1,9 +1,6 @@
 import { CartService } from '@/api/cart-api'
 import { defineStore } from 'pinia'
-import { computed, ref, watch } from 'vue'
-import { useAuthStore } from './auth-store'
-import Book from '@/views/admin/Book.vue'
-import { BookService } from '@/api/book-api.js'
+import { computed, ref } from 'vue'
 
 export const useCartStore = defineStore(
   'cart',
@@ -15,7 +12,7 @@ export const useCartStore = defineStore(
     const totalAmount = computed(() =>
       activeCart.value.reduce((total, item) => {
         return total + item.price * item.quantity
-      }, 0),
+      }, 0)
     )
 
     // actions
@@ -33,30 +30,41 @@ export const useCartStore = defineStore(
       }
     }
 
-    async function syncCartWithBackEnd({ token: accessToken }) {
-      // if FE cart is not empty
+    async function syncCartWithBackEnd() {
       if (activeCart.value.length > 0) {
-        const removeAllRes = await CartService.removeAllItemsFromCart(accessToken)
-        const res = activeCart.value.map((item) =>
-          CartService.addToCart(accessToken, { bookId: item.id, quantity: item.quantity }),
-        )
-      }
-      const response = await CartService.getUsersActiveCart(accessToken)
-      const { id, user, items, cartStatus } = response
-      // short circuit if the item list is empty
-      if (!items) return
-      // mapper
-      items.map((item) => {
-        addItemToLocalCart({
-          id: item.book.id,
-          title: item.book.title,
-          author: item.book.author,
-          price: item.book.price,
-          slug: item.book.urlSlug,
-          image: item.book.imageUrl,
+        // if FE cart is not empty: FE cart has higher priority
+        const cartItems = activeCart.value.map(item => ({
+          bookId: item.id,
           quantity: item.quantity,
+        }))
+        const res = await CartService.syncCartWithBackEnd(cartItems)
+        return {
+          status: res.status ?? 0,
+          data: res.data ?? 'Lỗi không xác định',
+        }
+      } else {
+        // if FE cart is empty: fetch from API
+        const response = await CartService.getUsersActiveCart()
+        const { items } = response
+        // short circuit if the item list is empty
+        if (!items) return
+        // mapper
+        items.map((item) => {
+          addItemToLocalCart({
+            id: item.bookId,
+            title: item.bookTitle,
+            author: item.bookAuthor,
+            price: item.bookPrice,
+            urlSlug: item.bookSlug,
+            image: item.bookImage,
+            quantity: item.quantity,
+          })
         })
-      })
+        return {
+          status: 200,
+          data: 'fetch',
+        }
+      }
     }
 
     function reset() {

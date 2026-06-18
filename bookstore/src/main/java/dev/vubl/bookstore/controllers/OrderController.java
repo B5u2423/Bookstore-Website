@@ -2,8 +2,11 @@ package dev.vubl.bookstore.controllers;
 
 import dev.vubl.bookstore.dtos.CallBackDTO;
 import dev.vubl.bookstore.dtos.ShippingInfoDTO;
+import dev.vubl.bookstore.dtos.UpdateStatusRequest;
 import dev.vubl.bookstore.entities.Order;
 import dev.vubl.bookstore.services.OrderService;
+import java.math.BigDecimal;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpHeaders;
@@ -36,6 +39,15 @@ public class OrderController {
                 token, callBackDTO.vnpTxnRef(), callBackDTO.isCancelled()));
   }
 
+  @PostMapping("/update-status-id")
+  public ResponseEntity<String> updateOrderStatusById(
+      @RequestBody UpdateStatusRequest updateStatusRequest) {
+    return ResponseEntity.ok()
+        .body(
+            orderService.updateOrderStatusById(
+                updateStatusRequest.orderId(), updateStatusRequest.status()));
+  }
+
   @GetMapping
   public PagedModel<Order> getAllOrdersPaginated(
       @RequestParam(value = "page", defaultValue = "0") int page,
@@ -48,10 +60,15 @@ public class OrderController {
   @GetMapping("/user")
   public PagedModel<Order> getOrdersByEmail(
       @RequestParam(value = "page", defaultValue = "0") int page,
-      @RequestParam(value = "size", defaultValue = "10") int size,
+      @RequestParam(value = "size", defaultValue = "-1") int size,
       @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
       @RequestParam(value = "order", defaultValue = "asc") String order,
       @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
     return new PagedModel<>(orderService.getOrdersByEmail(page, size, sortBy, order, token));
+  }
+
+  @GetMapping("/fee")
+  public Map<String, BigDecimal> getShippingFeeInfo() {
+    return orderService.getShippingFeeInfo();
   }
 }

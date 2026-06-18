@@ -1,9 +1,9 @@
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue'
 import { AdminService } from '@/api/admin-api'
+import BarChart from '@/components/charts/BarChart.vue'
 import DoughnutChart from '@/components/charts/DoughnutChart.vue'
 import LineChart from '@/components/charts/LineChart.vue'
-import BarChart from '@/components/charts/BarChart.vue'
+import { computed, onMounted, ref, watch } from 'vue'
 
 const analytics = ref(null)
 const loading = ref(false)
@@ -316,9 +316,7 @@ async function refreshAnalytics() {
 </script>
 
 <template>
-
   <v-container fluid>
-
     <v-progress-linear
       v-if="loading"
       indeterminate
@@ -326,24 +324,20 @@ async function refreshAnalytics() {
     />
 
     <template v-if="analytics">
-
       <div>
-
         <!-- Period selector -->
 
         <div class="d-flex align-center justify-space-between flex-wrap ga-2 mb-4">
-
           <span class="text-caption text-medium-emphasis"></span>
 
           <div>
-
             <v-btn
               size="small"
               variant="outlined"
               class="mr-2"
               @click="refreshAnalytics"
             >
-               Làm mới dữ liệu
+              Làm mới dữ liệu
             </v-btn>
 
             <v-menu
@@ -351,32 +345,28 @@ async function refreshAnalytics() {
               :close-on-content-click="false"
               location="bottom start"
             >
-
-              <template #activator="{ props }">
-
+              <template v-slot:activator="{ props }">
                 <v-btn
                   v-bind="props"
                   variant="outlined"
                   size="small"
                   append-icon="mdi-chevron-down"
                 >
-                   {{ selectedLabel }}
+                  {{ selectedLabel }}
                 </v-btn>
-
               </template>
 
               <v-list
                 density="compact"
                 min-width="220"
               >
-
                 <v-list-item
                   v-for="opt in periodOptions.filter((p) => p.value !== 'custom')"
                   :key="opt.value"
                   :active="selectedPeriod === opt.value"
                   @click="selectPeriod(opt.value)"
                 >
-                   {{ opt.label }}
+                  {{ opt.label }}
                 </v-list-item>
 
                 <v-divider />
@@ -387,13 +377,11 @@ async function refreshAnalytics() {
                   :active="selectedPeriod === 'custom'"
                   @click="selectedPeriod = 'custom'"
                 >
-                   Tùy chọn ngày
+                  Tùy chọn ngày
                 </v-list-item>
 
                 <template v-if="selectedPeriod === 'custom'">
-
                   <div class="pa-3 d-flex flex-column ga-2">
-
                     <v-text-field
                       v-model="customStart"
                       label="Từ ngày"
@@ -416,25 +404,18 @@ async function refreshAnalytics() {
                       block
                       @click="applyCustomRange"
                     >
-                       Áp dụng
+                      Áp dụng
                     </v-btn>
-
                   </div>
-
                 </template>
-
               </v-list>
-
             </v-menu>
-
           </div>
-
         </div>
 
         <!-- KPI cards -->
 
         <v-row dense>
-
           <v-col
             v-for="kpi in currentCards"
             :key="kpi.key"
@@ -442,105 +423,86 @@ async function refreshAnalytics() {
             sm="6"
             md="3"
           >
-
             <v-card
               flat
               rounded="lg"
               variant="outlined"
               class="pa-4"
             >
-
               <div class="text-caption text-medium-emphasis font-weight-medium text-uppercase mb-2">
-                 {{ kpi.label }}
+                {{ kpi.label }}
               </div>
 
-              <div class="text-h5 font-weight-medium text-high-emphasis"> {{ kpi.value }} </div>
+              <div class="text-h5 font-weight-medium text-high-emphasis">{{ kpi.value }}</div>
 
               <div
                 class="d-flex align-center ga-1 mt-2 text-caption font-weight-medium"
                 :class="deltaClass(kpi)"
               >
-
                 <v-icon size="14">{{ deltaIcon(kpi) }}</v-icon>
-                 {{ Math.abs(deltaPercent(kpi)) }}%
+                {{ Math.abs(deltaPercent(kpi)) }}%
               </div>
 
-              <div class="text-caption text-disabled mt-1"> {{ compareLabel }} </div>
-
+              <div class="text-caption text-disabled mt-1">{{ compareLabel }}</div>
             </v-card>
-
           </v-col>
-
         </v-row>
 
         <!-- Line Revenue -->
 
         <v-row>
-
           <v-col
             cols="12"
             md="12"
           >
-
             <v-card flat>
-
               <v-card-title class="text-subtitle-1 font-weight-medium pt-4 px-4">
-                 Biểu đồ Doanh thu - Đơn hàng
+                Biểu đồ Doanh thu - Đơn hàng
               </v-card-title>
 
-              <v-card-subtitle class="px-4"> Phân phối trong khoảng thời gian </v-card-subtitle>
+              <v-card-subtitle class="px-4">
+                Phân phối trong khoảng thời gian
+              </v-card-subtitle>
 
               <div
-                style="
-                  height: 400px;
+                style="height: 400px;
                   position: relative;
                   display: flex;
                   align-items: center;
-                  justify-content: center;
-                "
+                  justify-content: center;"
               >
-
                 <line-chart
                   :data="revenueLineData"
                   :option="revenueLineOptions"
                 />
-
               </div>
-
             </v-card>
-
           </v-col>
-
         </v-row>
 
         <!-- Doughnut Order Status and Bar Categories Trend -->
 
         <v-row>
-
           <v-col
             cols="12"
             md="6"
             sm="12"
           >
-
             <v-card flat>
-
               <v-card-title class="text-subtitle-1 font-weight-medium pt-4 px-4">
-                 Biểu đồ Trạng thái
+                Biểu đồ Trạng thái
               </v-card-title>
 
-              <v-card-subtitle class="px-4">Phân phối các đơn theo trạng thái</v-card-subtitle>
+              <v-card-subtitle class="px-4"
+              >Phân phối các đơn theo trạng thái</v-card-subtitle>
 
               <div
-                style="
-                  height: 400px;
+                style="height: 400px;
                   position: relative;
                   display: flex;
                   align-items: center;
-                  justify-content: center;
-                "
+                  justify-content: center;"
               >
-
                 <doughnut-chart
                   :data="orderDoughData"
                   :option="orderDoughOptions"
@@ -549,13 +511,10 @@ async function refreshAnalytics() {
                 <!-- total orders (in the ring of the donut) -->
 
                 <div style="position: absolute; text-align: center; pointer-events: none">
-
                   <div class="text-h6 font-weight-medium">{{ ordersTotalCount }}</div>
 
                   <div class="text-caption text-medium-emphasis">total orders</div>
-
                 </div>
-
               </div>
 
               <!-- status stats -->
@@ -564,34 +523,26 @@ async function refreshAnalytics() {
                 dense
                 class="mt-2"
               >
-
                 <v-col
                   v-for="item in orderLegend"
                   :key="item.label"
                   cols="4"
                 >
-
                   <div class="text-center pa-2 rounded border-md">
-
                     <div
                       class="text-subtitle-1 font-weight-medium"
                       :style="{ color: item.color }"
                     >
-                       {{ item.pct }}%
+                      {{ item.pct }}%
                     </div>
 
                     <div class="text-caption text-medium-emphasis">
-                       {{ item.label.toLowerCase() }}
+                      {{ item.label.toLowerCase() }}
                     </div>
-
                   </div>
-
                 </v-col>
-
               </v-row>
-
             </v-card>
-
           </v-col>
 
           <v-col
@@ -599,42 +550,28 @@ async function refreshAnalytics() {
             md="6"
             sm="12"
           >
-
             <v-card
               rounded="lg"
               flat
             >
-
               <v-card-title class="text-subtitle-1 font-weight-medium pt-4 px-4">
-                 Biểu đồ Danh mục Nổi bật
+                Biểu đồ Danh mục Nổi bật
               </v-card-title>
 
               <v-card-subtitle class="px-4">Số sách bán theo danh mục</v-card-subtitle>
 
               <v-card-text>
-
                 <div style="height: 400px">
-
                   <bar-chart
                     :data="cateBarData"
                     :options="cateBarOptions"
                   />
-
                 </div>
-
               </v-card-text>
-
             </v-card>
-
           </v-col>
-
         </v-row>
-
       </div>
-
     </template>
-
   </v-container>
-
 </template>
-

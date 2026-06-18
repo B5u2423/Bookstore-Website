@@ -1,7 +1,10 @@
 <script setup>
+import { BookService } from '@/api/book-api'
 import { CollectionService } from '@/api/collection-api'
+import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
+import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
-import { ref, computed, onMounted, toRef, shallowRef } from 'vue'
+import { computed, onMounted, ref, shallowRef, toRef } from 'vue'
 
 const adminAuthStore = useAdminAuthStore()
 
@@ -17,6 +20,7 @@ function createNewRecord() {
 const headers = ref([
   { title: 'ID', key: 'id', align: 'start' },
   { title: 'Tên bộ sưu tập', key: 'collectionName', align: 'start' },
+  { title: 'Sách trong BST', key: 'books', align: 'start' },
   { title: 'Thao tác', key: 'actions', align: 'start' },
 ])
 const itemsPerPage = ref(10)
@@ -30,18 +34,25 @@ const dialog = shallowRef(false)
 const isEditing = toRef(() => !!formModel.value.id)
 
 // confirmation dialog
-// TODO: add snackbar to collection and coupon
 const confirmationDialog = shallowRef(false)
 const itemId = ref('')
 const isDelLoading = ref(false)
 
-async function loadItems({ page, itemsPerPage }) {
+// snackbars
+const isError = ref(false)
+const isSuccess = ref(false)
+const message = ref('')
+
+// books dialog
+const books = ref([])
+
+async function loadItems({ page = 1, itemsPerPage: size = itemsPerPage.value } = {}) {
   loading.value = true
   try {
     // page on BE start with index 0
-    const payload = await CollectionService.getAllCollectionsPaginated(adminAuthStore.accessToken, {
+    const payload = await CollectionService.getAllCollectionsPaginated({
       page: page - 1,
-      size: itemsPerPage,
+      size,
     })
     serverItems.value = payload.content
     totalItems.value = payload.page.totalElements
@@ -78,32 +89,47 @@ async function save() {
   if (isEditing.value) {
     try {
       // API call
-      const res = await CollectionService.updateCollection(
-        formModel.value.id,
-        formModel.value,
-        adminAuthStore.accessToken,
-      )
+      const res = await CollectionService.updateCollection(formModel.value.id, formModel.value)
       // edit immediate view
       const index = serverItems.value.findIndex(
         (collection) => collection.id === formModel.value.id,
       )
       serverItems.value[index] = formModel.value
+      // success snack
+      isSuccess.value = true
+      message.value = 'Cập nhật thành công'
     } catch (error) {
       console.error('Error editing collection')
+      // error snack
+      isError.value = true
+      message.value = 'Lỗi xảy ra khi cập nhật thông tin'
     } finally {
       dialog.value = false
+      setTimeout(() => {
+        isSuccess.value = false
+        isError.value = false
+      }, 2000)
     }
   } else {
     try {
       // API call
-      const res = await CollectionService.addNewCollection(
-        formModel.value,
-        adminAuthStore.accessToken,
-      )
+      const res = await CollectionService.addNewCollection(formModel.value)
+      // reload items
+      await loadItems()
+      // success snack
+      isSuccess.value = true
+      message.value = 'Thêm bộ sưu tập thành công'
     } catch (error) {
       console.error('Error adding new collection')
+      // error snack
+      isError.value = true
+      message.value = 'Lỗi xảy ra khi thêm bộ sưu tập'
     } finally {
       dialog.value = false
+      setTimeout(() => {
+        isSuccess.value = false
+        isError.value = false
+      }, 2000)
     }
   }
 }
@@ -111,16 +137,26 @@ async function save() {
 async function remove() {
   isDelLoading.value = true
   try {
-    const res = await CollectionService.deleteCollection(itemId.value, adminAuthStore.accessToken)
+    const res = await CollectionService.deleteCollection(itemId.value)
     // update on frontend, just for immediate view
     const index = serverItems.value.findIndex((book) => book.id === itemId.value)
     serverItems.value.splice(index, 1)
     totalItems.value--
+    // success snackbar
+    isSuccess.value = true
+    message.value = 'Xóa bộ sưu tập thành công'
   } catch (error) {
     console.error(`Error deleting collection with id ${id}`, error)
+    // error snack bar
+    isError.value = true
+    message.value = 'Lỗi xảy ra khi xóa bộ sưu tập'
   } finally {
     isDelLoading.value = false
     confirmationDialog.value = false
+    setTimeout(() => {
+      isSuccess.value = false
+      isError.value = false
+    }, 2000)
   }
 }
 
@@ -140,13 +176,19 @@ const collectionNameCaps = computed({
     formModel.value.collectionName = capitalizeVietnamese(val || '')
   },
 })
+
+// books dialog stuff
+async function getBooksInCollection(slug) {
+  const resp = await BookService.getBooksInCollectionBySlug({ collection: slug })
+  books.value = resp ?? []
+}
+
 onMounted(() => {
   loadItems()
 })
 </script>
 
 <template>
-
   <v-data-table-server
     v-model:items-per-page="itemsPerPage"
     :headers="headers"
@@ -157,20 +199,16 @@ onMounted(() => {
     items-per-page-text="Số bộ sưu tập hiển thị"
     @update:options="loadItems"
   >
-
     <template v-slot:top>
-
       <v-toolbar flat>
-
         <v-toolbar-title>
-
           <v-icon
             color="medium-emphasis"
             icon="mdi-ticket-percent"
             size="x-small"
             start
           ></v-icon>
-           Thông tin bộ sưu tập
+          Thông tin bộ sưu tập
         </v-toolbar-title>
 
         <v-btn
@@ -181,45 +219,88 @@ onMounted(() => {
           variant="outlined"
           @click="add"
         ></v-btn>
-
       </v-toolbar>
-
     </template>
 
     <!-- style the header -->
 
     <template v-slot:headers="{ columns }">
-
       <tr>
-
         <template
           v-for="column in columns"
           :key="column.key"
         >
-
           <th>
-
             <div class="d-flex align-center">
-
               <span
                 class="me-2 cursor-pointer font-weight-bold"
                 v-text="column.title"
               ></span>
-
             </div>
-
           </th>
+        </template>
+      </tr>
+    </template>
 
+    <!-- books in collection -->
+
+    <template v-slot:item.books="{ item }">
+      <v-dialog max-width="500">
+        <template v-slot:activator="{ props: activatorProps }">
+          <v-btn
+            v-bind="activatorProps"
+            variant="outlined"
+            size="small"
+            @click="getBooksInCollection(item.collectionSlug)"
+          >
+            Xem thông tin
+          </v-btn>
         </template>
 
-      </tr>
+        <template v-slot:default="{ isActive }">
+          <v-card title="Sách trong BST">
+            <v-card-text>
+              <v-table
+                height="300px"
+                striped="even"
+                fixed-header
+              >
+                <thead>
+                  <tr>
+                    <th class="text-left font-weight-bold">ID</th>
 
+                    <th class="text-left font-weight-bold">ISBN</th>
+
+                    <th class="text-left font-weight-bold">Tên sách</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr
+                    v-for="(book, i) in books"
+                    :key="i"
+                  >
+                    <td>{{ book.id }}</td>
+
+                    <td>{{ book.isbn }}</td>
+
+                    <td>{{ book.title }}</td>
+                  </tr>
+                </tbody>
+              </v-table>
+            </v-card-text>
+
+            <v-card-actions>
+              <v-btn @click="isActive.value = false">Đóng</v-btn>
+            </v-card-actions>
+          </v-card>
+        </template>
+      </v-dialog>
     </template>
 
     <!-- action buttons -->
 
     <template v-slot:item.actions="{ item }">
-
       <v-icon
         color="medium-emphasis"
         icon="mdi-pencil"
@@ -233,34 +314,28 @@ onMounted(() => {
         size="small"
         @click="confirm(item.id)"
       ></v-icon>
-
     </template>
-
   </v-data-table-server>
+
+  <!-- edit/add dialog -->
 
   <v-dialog
     v-model="dialog"
     max-width="500"
   >
-
     <v-card
       :title="`${isEditing ? 'Thay đổi thông tin' : 'Tạo bản ghi mới'}`"
       :subtitle="`${isEditing ? 'Cập nhật' : 'Thêm'} bộ sưu tập`"
     >
-
       <template v-slot:text>
-
         <v-row class="px-3">
-
           <v-col
             cols="12"
             md="12"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">
-               Tên bộ sưu tập
+              Tên bộ sưu tập
               <span class="text-red">(*)</span>
-
             </div>
 
             <v-text-field
@@ -269,41 +344,32 @@ onMounted(() => {
               density="compact"
               hide-details="true"
             ></v-text-field>
-
           </v-col>
-
         </v-row>
-
       </template>
 
       <v-divider></v-divider>
 
       <v-card-actions class="bg-surface-light">
-
         <v-btn
           color="green-darken-1"
           @click="save"
           variant="elevated"
         >
-           Lưu
+          Lưu
         </v-btn>
 
         <v-btn
           color="red-lighten-1"
-          @click="
-            () => {
-              dialog = false
-            }
-          "
+          @click="() => {
+            dialog = false
+          }"
           variant="elevated"
         >
-           Hủy
+          Hủy
         </v-btn>
-
       </v-card-actions>
-
     </v-card>
-
   </v-dialog>
 
   <!-- confirmation dialog -->
@@ -312,20 +378,17 @@ onMounted(() => {
     v-model="confirmationDialog"
     max-width="500"
   >
-
     <v-card title="Xác nhận">
-
       <v-card-text>Bạn có chắc chắn muốn xóa bộ sưu tập?</v-card-text>
 
       <v-card-actions>
-
         <v-btn
           variant="elevated"
           color="green-darken-1"
           :loading="isDelLoading"
           @click="remove()"
         >
-           Đồng ý
+          Đồng ý
         </v-btn>
 
         <v-btn
@@ -333,14 +396,21 @@ onMounted(() => {
           color="red-lighten-1"
           @click="confirmationDialog = !confirmationDialog"
         >
-           Hủy
+          Hủy
         </v-btn>
-
       </v-card-actions>
-
     </v-card>
-
   </v-dialog>
 
-</template>
+  <!-- snackbars -->
 
+  <snack-bar-on-failure
+    :show="isError"
+    :message="message"
+  />
+
+  <snack-bar-on-success
+    :show="isSuccess"
+    :message="message"
+  />
+</template>

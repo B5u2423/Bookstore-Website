@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import lombok.Builder;
 
 @Builder
-public record BookResponseDTO(
+public record BookDTO(
     Integer id,
     String isbn,
     @NotBlank(message = "Tên sản phẩm không được bỏ trống") String title,

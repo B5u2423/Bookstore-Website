@@ -10,7 +10,7 @@ export const CollectionService = {
       throw error
     }
   },
-  async getAllCollectionsPaginated(token, params = {}) {
+  async getAllCollectionsPaginated(params = {}) {
     try {
       const res = await adminApi.get('/collections', {
         params: params,
@@ -21,7 +21,7 @@ export const CollectionService = {
       throw error
     }
   },
-  async updateCollection(id, body, token) {
+  async updateCollection(id, body) {
     try {
       const res = await adminApi.put('/collections/update', body, {
         params: { id },
@@ -33,7 +33,7 @@ export const CollectionService = {
     }
   },
 
-  async addNewCollection(body, token) {
+  async addNewCollection(body) {
     try {
       const res = await adminApi.post('/collections/add', body)
       return res.data
@@ -43,7 +43,7 @@ export const CollectionService = {
     }
   },
 
-  async deleteCollection(id, token) {
+  async deleteCollection(id) {
     try {
       const res = adminApi.delete('/collections/delete', {
         params: { id },

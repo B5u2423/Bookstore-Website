@@ -1,9 +1,9 @@
 <script setup>
 import { CategoryService } from '@/api/category-api'
-import { useAdminAuthStore } from '@/stores/admin-auth-store'
-import { toRef, shallowRef, ref } from 'vue'
 import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
 import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
+import { useAdminAuthStore } from '@/stores/admin-auth-store'
+import { ref, shallowRef, toRef } from 'vue'
 
 const adminAuthStore = useAdminAuthStore()
 // table
@@ -43,13 +43,13 @@ const confirmationDialog = shallowRef(false)
 const itemId = ref('')
 const isDelLoading = ref(false)
 
-async function loadItems({ page, itemsPerPage }) {
+async function loadItems({ page = 1, itemsPerPage: size = itemsPerPage.value } = {}) {
   loading.value = true
   try {
     // page on BE start with index 0
     const payload = await CategoryService.fetchAllCategoriesPaginated({
       page: page - 1,
-      size: itemsPerPage,
+      size,
     })
     serverItems.value = payload.content
     totalItems.value = payload.page.totalElements
@@ -96,7 +96,7 @@ function confirm(id) {
 
 function remove() {
   try {
-    const res = CategoryService.deleteCategoryById(itemId.value, adminAuthStore.accessToken)
+    const res = CategoryService.deleteCategoryById(itemId.value)
     isSuccess.value = true
     message.value = 'Xóa danh mục thành công!'
   } catch (error) {
@@ -112,34 +112,52 @@ function remove() {
 async function save() {
   if (isEditing.value) {
     try {
+      if (Array.isArray(formModel.value.children)) {
+        formModel.value.children = formModel.value.children.map((item) => {
+          // check if the item is a valid object and has an id
+          return item && typeof item === 'object' && 'id' in item ? item.id : item
+        })
+      }
       // API call
-      const res = await CategoryService.updateCategory(formModel.value, adminAuthStore.accessToken)
+      const res = await CategoryService.updateCategory(formModel.value)
       isSuccess.value = true
       message.value = 'Cập nhật thông tin danh mục thành công!'
     } catch (error) {
       console.error('Error editing category')
+      const errorMsg = error.response?.data || error.message || 'Lỗi không xác định'
       isError.value = true
-      message.value = 'Lỗi xảy ra khi cập nhật danh mục'
+      message.value = `Lỗi xảy ra khi cập nhật danh mục ${errorMsg}`
+    } finally {
+      setTimeout(() => {
+        isSuccess.value = false
+        isError.value = false
+      }, 2000)
     }
   } else {
     try {
       // API call
-      const res = await CategoryService.addCategory(formModel.value, adminAuthStore.accessToken)
+      const res = await CategoryService.addCategory(formModel.value)
       isSuccess.value = true
       message.value = 'Cập nhật thông tin danh mục thành công!'
     } catch (error) {
+      const errorMsg = error.response?.data || error.message || 'Lỗi không xác định'
       isError.value = true
-      message.value = 'Lỗi xảy ra khi thêm danh mục'
+      message.value = `Lỗi xảy ra khi thêm danh mục: ${errorMsg}`
       console.error('Error adding new category')
+    } finally {
+      setTimeout(() => {
+        isSuccess.value = false
+        isError.value = false
+      }, 2000)
     }
   }
 
+  await loadItems()
   dialog.value = false
 }
 </script>
 
 <template>
-
   <v-data-table-server
     v-model:items-per-page="itemsPerPage"
     :headers="headers"
@@ -150,20 +168,16 @@ async function save() {
     items-per-page-text="Số danh mục hiển thị"
     @update:options="loadItems"
   >
-
     <template v-slot:top>
-
       <v-toolbar flat>
-
         <v-toolbar-title>
-
           <v-icon
             color="medium-emphasis"
             icon="mdi-book-multiple"
             size="x-small"
             start
           ></v-icon>
-           Thông tin danh mục
+          Thông tin danh mục
         </v-toolbar-title>
 
         <v-btn
@@ -174,17 +188,13 @@ async function save() {
           variant="outlined"
           @click="add"
         ></v-btn>
-
       </v-toolbar>
-
     </template>
 
     <!-- action buttons -->
 
     <template v-slot:item.actions="{ item }">
-
       <div class="d-flex ga-2 justify-end">
-
         <v-icon
           color="medium-emphasis"
           icon="mdi-pencil"
@@ -198,84 +208,80 @@ async function save() {
           size="small"
           @click="confirm(item.id)"
         ></v-icon>
-
       </div>
-
     </template>
 
     <!-- parent category -->
 
     <template v-slot:item.parentName="{ item }">
-
       <template v-if="item.parentName == null">
-
         <v-chip
           color="red-lighten-1"
           variant="outlined"
         >
-           Không có
+          Không có
         </v-chip>
-
       </template>
 
       <template v-else>
-
         <v-chip>{{ item.parentName }}</v-chip>
-
       </template>
-
     </template>
 
     <!-- children categories -->
 
     <template v-slot:item.children="{ item }">
-
       <template v-if="!item.children.length">
-
         <v-chip
           color="red-lighten-1"
           variant="outlined"
         >
-           Không có
+          Không có
         </v-chip>
-
       </template>
 
       <template v-else>
+        <v-dialog max-width="600">
+          <template v-slot:activator="{ props: activatorProps }">
+            <v-chip v-bind="activatorProps">Xem thêm</v-chip>
+          </template>
 
-        <v-chip
-          v-for="child in item.children"
-          class="ma-1"
-          color="green-darken-1"
-        >
-           {{ child.categoryName }}
-        </v-chip>
+          <template v-slot:default="{ isActive }">
+            <v-card title="Danh mục con">
+              <v-card-text>
+                <v-chip
+                  v-for="child in item.children"
+                  class="ma-1"
+                  color="green-darken-1"
+                >
+                  {{ child.categoryName }}
+                </v-chip>
+              </v-card-text>
 
+              <template v-slot:actions>
+                <v-btn @click="isActive.value = false">Đóng</v-btn>
+              </template>
+            </v-card>
+          </template>
+        </v-dialog>
       </template>
-
     </template>
-
   </v-data-table-server>
 
   <v-dialog
     v-model="dialog"
     max-width="800"
   >
-
     <v-card
       :title="`${isEditing ? 'Thay đổi thông tin' : 'Tạo bản ghi mới'}`"
       :subtitle="`${isEditing ? 'Cập nhật' : 'Thêm'} danh mục`"
     >
-
       <v-card-text>
-
         <v-row>
-
           <v-col
             cols="12"
             md="6"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">Tên danh mục</div>
 
             <v-text-field
@@ -284,28 +290,24 @@ async function save() {
               density="compact"
               hide-details="true"
             ></v-text-field>
-
           </v-col>
 
           <v-col
             cols="12"
             md="6"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">Danh mục cha</div>
 
             <v-text-field
               variant="outlined"
               v-model="formModel.parentName"
-              disabled="true"
+              :disabled="true"
               density="compact"
               hide-details="true"
             ></v-text-field>
-
           </v-col>
 
           <v-col cols="12">
-
             <div class="text-subtitle-1 text-high-emphasis">Các danh mục con</div>
 
             <v-autocomplete
@@ -320,21 +322,17 @@ async function save() {
               chips
               closable-chips
             ></v-autocomplete>
-
           </v-col>
-
         </v-row>
-
       </v-card-text>
 
       <v-card-actions>
-
         <v-btn
           color="green-darken-1"
           variant="elevated"
           @click="save"
         >
-           Lưu
+          Lưu
         </v-btn>
 
         <v-btn
@@ -342,13 +340,10 @@ async function save() {
           variant="elevated"
           @click="dialog = !dialog"
         >
-           Hủy
+          Hủy
         </v-btn>
-
       </v-card-actions>
-
     </v-card>
-
   </v-dialog>
 
   <!-- confirmation dialog -->
@@ -357,20 +352,17 @@ async function save() {
     v-model="confirmationDialog"
     max-width="500"
   >
-
     <v-card title="Xác nhận">
-
       <v-card-text>Bạn có chắc chắn muốn xóa danh mục?</v-card-text>
 
       <v-card-actions>
-
         <v-btn
           variant="elevated"
           color="green-darken-1"
           :loading="isDelLoading"
           @click="remove"
         >
-           Đồng ý
+          Đồng ý
         </v-btn>
 
         <v-btn
@@ -378,14 +370,21 @@ async function save() {
           color="red-lighten-1"
           @click="confirmationDialog = !confirmationDialog"
         >
-           Hủy
+          Hủy
         </v-btn>
-
       </v-card-actions>
-
     </v-card>
-
   </v-dialog>
 
-</template>
+  <!-- snack bars -->
 
+  <snack-bar-on-failure
+    :show="isError"
+    :message="message"
+  />
+
+  <snack-bar-on-success
+    :show="isSuccess"
+    :message="message"
+  />
+</template>

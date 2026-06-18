@@ -1,7 +1,7 @@
-import api, { adminApi, customerApi, provinceApi } from './api-config'
+import api, { adminApi, customerApi } from './api-config'
 
 export const CartService = {
-  async addToCart(token, body) {
+  async addToCart(body) {
     try {
       const res = await customerApi.post('/carts/add', body)
       return res.data
@@ -10,7 +10,7 @@ export const CartService = {
     }
   },
 
-  async getUsersActiveCart(token) {
+  async getUsersActiveCart() {
     try {
       const res = await customerApi.get('/carts')
       return res.data
@@ -18,10 +18,10 @@ export const CartService = {
       console.error('Error get user active cart')
     }
   },
-  async removeAllItemsFromCart(token) {
+  async syncCartWithBackEnd(body) {
     try {
-      const res = await customerApi.delete('/carts/remove-all')
-      return res.data
+      const res = await customerApi.post('/carts/sync', body)
+      return res
     } catch (error) {
       console.error('Error remove item from cart')
     }
@@ -29,7 +29,7 @@ export const CartService = {
 }
 
 export const PaymentService = {
-  async createPaymentPage(body, token) {
+  async createPaymentPage(body) {
     try {
       const res = await customerApi.post('/payment/create-payment', body)
       return res.data
@@ -40,25 +40,44 @@ export const PaymentService = {
 }
 
 export const OrderService = {
-  async updateStatus(body, token) {
+  async getShippingFeeInfo() {
+    try {
+      const res = await customerApi.get('/orders/fee')
+      return res.data
+    } catch (e) {
+      console.error(`Error fetching shipping fee info ${e.message}`)
+      throw e
+    }
+  },
+  async updateStatusById(body) {
+    try {
+      const res = await adminApi.post('/orders/update-status-id', body)
+      return res.data
+    } catch (error) {
+      console.error('Error updating order by Id', error)
+    }
+  },
+
+  async updateStatus(body) {
     try {
       const res = await customerApi.post('/orders/update-status', body)
       return res.data
     } catch (error) {
-      console.error('Error making order', error)
+      console.error('Error updating order status', error)
     }
   },
 
-  async createOrder(body, token) {
+  async createOrder(body) {
     try {
       const res = await customerApi.post('/orders/create-order', body)
       return res.data
     } catch (error) {
       console.error('Error making order', error)
+      throw error
     }
   },
 
-  async getAllOrdersPaginated(token, params = {}) {
+  async getAllOrdersPaginated(params = {}) {
     try {
       const res = await adminApi.get('/orders', {
         params: params,

@@ -1,12 +1,11 @@
-import StandardLayout from '@/layouts/StandardLayout.vue'
-import EComLayout from '@/layouts/EComLayout.vue'
-import EComNoSidebar from '@/layouts/EComNoSidebar.vue'
 import SideBar from '@/components/ecom/SideBar.vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
-import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '@/stores/auth-store'
+import EComLayout from '@/layouts/EComLayout.vue'
+import EComNoSidebar from '@/layouts/EComNoSidebar.vue'
+import StandardLayout from '@/layouts/StandardLayout.vue'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
-import { compile } from 'vue'
+import { useAuthStore } from '@/stores/auth-store'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
   {
@@ -19,13 +18,6 @@ const routes = [
         components: {
           sidebar: SideBar,
           default: () => import('@/views/ecom/Landing.vue'),
-        },
-      },
-      {
-        path: 'shop',
-        name: 'shop',
-        components: {
-          default: () => import('@/views/ecom/Shop.vue'),
         },
       },
       {
@@ -68,11 +60,6 @@ const routes = [
             component: () => import('@/views/ecom/ProfileUserInfo.vue'),
           },
           {
-            path: 'vouchers',
-            name: 'vouchers',
-            component: () => import('@/views/ecom/ProfileVouchers.vue'),
-          },
-          {
             path: 'order-history',
             name: 'history',
             component: () => import('@/views/ecom/ProfileOrderHistory.vue'),
@@ -83,6 +70,11 @@ const routes = [
         path: 'categories/:slug',
         name: 'category-page',
         component: () => import('@/views/ecom/CategoryShowcase.vue'),
+      },
+      {
+        path: 'collections/:slug',
+        name: 'collection-page',
+        component: () => import('@/views/ecom/CollectionShowcase.vue'),
       },
       {
         path: 'oauth/callback',
@@ -201,6 +193,9 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
+  if (!to.meta.requiresAuth && !to.meta.requiresAdminAuth && !to.meta.entrypoint) {
+    return true
+  }
   const auth = useAuthStore()
   const adminAuth = useAdminAuthStore()
 

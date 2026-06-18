@@ -1,6 +1,6 @@
+import * as bookApi from '@/api/book-api'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import * as bookApi from '@/api/book-api'
 
 export const useBookStore = defineStore('bookstore', () => {
   const isLoading = ref(false)

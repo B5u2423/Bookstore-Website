@@ -1,6 +1,6 @@
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
-import api, { adminApi, customerApi } from './api-config'
 import { useAuthStore } from '@/stores/auth-store'
+import api, { adminApi, customerApi } from './api-config'
 
 export function loginUser(loginData) {
   return api.post('/auth/login', {
@@ -21,7 +21,8 @@ export function registerUser(registrationData) {
   if (registrationData.userType === 'ADMIN') {
     return Promise.reject({
       response: {
-        data: 'Tài khoản ADMIN không thể đăng ký qua trang này. Vui lòng sử dụng trang đăng nhập dành cho quản trị viên.',
+        data:
+          'Tài khoản ADMIN không thể đăng ký qua trang này. Vui lòng sử dụng trang đăng nhập dành cho quản trị viên.',
       },
     })
   }
@@ -59,14 +60,13 @@ export const AuthService = {
     try {
       const res = await api.post('/auth/refresh', { refreshToken })
       return res.data
-    } catch {
+    } catch (error) {
       console.error('Error referesh token', error)
       throw error
     }
   },
 }
 
-// TODO: remove token param from funcs
 // admin req interceptors
 adminApi.interceptors.request.use(
   (config) => {

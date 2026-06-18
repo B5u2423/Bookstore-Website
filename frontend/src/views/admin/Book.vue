@@ -1,13 +1,13 @@
 <script setup>
 import { BookService } from '@/api/book-api'
-import { useAdminAuthStore } from '@/stores/admin-auth-store'
-import { formatPriceVNLocale } from '@/utils/utils'
-import { computed, onMounted, toRef, ref, shallowRef } from 'vue'
-import { VFileUpload } from 'vuetify/labs/VFileUpload'
-import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
-import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 import { CategoryService } from '@/api/category-api'
 import { CollectionService } from '@/api/collection-api'
+import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
+import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
+import { useAdminAuthStore } from '@/stores/admin-auth-store'
+import { formatPriceVNLocale } from '@/utils/utils'
+import { computed, onMounted, ref, shallowRef, toRef } from 'vue'
+import { VFileUpload } from 'vuetify/labs/VFileUpload'
 
 const adminAuthStore = useAdminAuthStore()
 
@@ -66,11 +66,11 @@ const isError = ref(false)
 const isSuccess = ref(false)
 const message = ref('')
 
-async function loadItems({ page, itemsPerPage }) {
+async function loadItems({ page = 1, itemsPerPage: size = itemsPerPage.value } = {}) {
   loading.value = true
   try {
     // page on BE start with index 0
-    const payload = await BookService.fetchAllBooks({ page: page - 1, size: itemsPerPage })
+    const payload = await BookService.fetchAllBooks({ page: page - 1, size: size })
     serverItems.value = payload.content
     totalItems.value = payload.page.totalElements
   } catch (error) {
@@ -118,7 +118,7 @@ function confirm(id) {
 async function remove() {
   isDelLoading.value = true
   try {
-    const res = await BookService.deleteBookById(itemId.value, adminAuthStore.accessToken)
+    const res = await BookService.deleteBookById(itemId.value)
     // update on frontend, just for immediate view
     const index = serverItems.value.findIndex((book) => book.id === itemId.value)
     serverItems.value.splice(index, 1)
@@ -142,11 +142,7 @@ async function save() {
       )
       formData.append('image', imageFile.value)
       // API call
-      const res = await BookService.updateBookById(
-        formData,
-        formModel.value.id,
-        adminAuthStore.accessToken,
-      )
+      const res = await BookService.updateBookById(formData, formModel.value.id)
       // success snack bar
       isSuccess.value = true
       message.value = 'Cập nhật sản phẩm thành công'
@@ -158,6 +154,13 @@ async function save() {
       isError.value = true
       message.value = `Lỗi cập nhật sản phẩm ${error.message}`
       console.error('Error editing book')
+    } finally {
+      // reload
+      await loadItems()
+      setTimeout(() => {
+        isSuccess.value = false
+        isError.value = false
+      }, 2000)
     }
   } else {
     try {
@@ -169,7 +172,7 @@ async function save() {
       )
       formData.append('image', imageFile.value)
       // API call
-      const res = await BookService.addNewBook(formData, adminAuthStore.accessToken)
+      const res = await BookService.addNewBook(formData)
       isSuccess.value = true
       message.value = 'Thêm sản phẩm thành công'
     } catch (error) {
@@ -178,13 +181,20 @@ async function save() {
       const errorField = errorData.title
         ? 'title'
         : errorData.author
-          ? 'author'
-          : Object.keys(errorData)[0] // fallback to the first key if neither
+        ? 'author'
+        : Object.keys(errorData)[0] // fallback to the first key if neither
 
       message.value = errorField
         ? `Lỗi thêm mới sản phẩm: ${errorData[errorField]}`
         : 'Lỗi thêm mới sản phẩm: Đã xảy ra lỗi không xác định'
       console.error('Error adding new book')
+    } finally {
+      // reload
+      await loadItems()
+      setTimeout(() => {
+        isSuccess.value = false
+        isError.value = false
+      }, 2000)
     }
   }
 
@@ -248,7 +258,6 @@ onMounted(() => {
 </script>
 
 <template>
-
   <v-data-table-server
     v-model:items-per-page="itemsPerPage"
     :headers="headers"
@@ -259,20 +268,16 @@ onMounted(() => {
     items-per-page-text="Số sản phẩm hiển thị"
     @update:options="loadItems"
   >
-
     <template v-slot:top>
-
       <v-toolbar flat>
-
         <v-toolbar-title>
-
           <v-icon
             color="medium-emphasis"
             icon="mdi-book-multiple"
             size="x-small"
             start
           ></v-icon>
-           Thông tin sách
+          Thông tin sách
         </v-toolbar-title>
 
         <v-btn
@@ -283,68 +288,48 @@ onMounted(() => {
           variant="outlined"
           @click="add"
         ></v-btn>
-
       </v-toolbar>
-
     </template>
 
     <!-- style the header -->
 
     <template v-slot:headers="{ columns }">
-
       <tr>
-
         <template
           v-for="column in columns"
           :key="column.key"
         >
-
           <th>
-
             <div class="d-flex align-center">
-
               <span
                 class="me-2 cursor-pointer font-weight-bold"
                 v-text="column.title"
               ></span>
-
             </div>
-
           </th>
-
         </template>
-
       </tr>
-
     </template>
 
     <!-- stylized book title as chips -->
 
     <template v-slot:item.title="{ value }">
-
       <v-chip
         :text="value"
         class="border-thin"
         prepend-icon="mdi-book"
         label
       >
-
         <template v-slot:prepend>
-
           <v-icon color="medium-emphasis"></v-icon>
-
         </template>
-
       </v-chip>
-
     </template>
 
     <!-- action buttons -->
 
     <template v-slot:item.actions="{ item }">
-
       <div class="d-flex ga-2 justify-end">
-
         <v-icon
           color="medium-emphasis"
           icon="mdi-pencil"
@@ -358,40 +343,31 @@ onMounted(() => {
           size="small"
           @click="confirm(item.id)"
         ></v-icon>
-
       </div>
-
     </template>
 
     <!-- format price-->
 
     <template v-slot:item.price="{ value }"> {{ formatPriceVNLocale(value) }} </template>
-
   </v-data-table-server>
 
   <v-dialog
     v-model="dialog"
     max-width="800"
   >
-
     <v-card
       :title="`${isEditing ? 'Thay đổi thông tin' : 'Tạo bản ghi mới'}`"
       :subtitle="`${isEditing ? 'Cập nhật' : 'Thêm'} sách`"
     >
-
       <template v-slot:text>
-
         <v-row class="px-3">
-
           <v-col
             cols="12"
             md="6"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">
-               Tên sách
+              Tên sách
               <span class="text-red">(*)</span>
-
             </div>
 
             <v-text-field
@@ -400,18 +376,15 @@ onMounted(() => {
               density="compact"
               hide-details="true"
             ></v-text-field>
-
           </v-col>
 
           <v-col
             cols="12"
             md="6"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">
-               Tác giả
+              Tác giả
               <span class="text-red">(*)</span>
-
             </div>
 
             <v-text-field
@@ -420,14 +393,12 @@ onMounted(() => {
               density="compact"
               hide-details="true"
             ></v-text-field>
-
           </v-col>
 
           <v-col
             cols="12"
             md="4"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">Mã ISBN</div>
 
             <v-text-field
@@ -436,14 +407,12 @@ onMounted(() => {
               density="compact"
               hide-details="true"
             ></v-text-field>
-
           </v-col>
 
           <v-col
             cols="12"
             md="2"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">Số trang</div>
 
             <v-number-input
@@ -455,14 +424,12 @@ onMounted(() => {
               hide-details="true"
               control-variant="stacked"
             ></v-number-input>
-
           </v-col>
 
           <v-col
             cols="12"
             md="3"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">Nhà xuất bản</div>
 
             <v-text-field
@@ -471,14 +438,12 @@ onMounted(() => {
               density="compact"
               hide-details="true"
             ></v-text-field>
-
           </v-col>
 
           <v-col
             cols="12"
             md="3"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">Năm xuất bản</div>
 
             <v-text-field
@@ -487,14 +452,12 @@ onMounted(() => {
               density="compact"
               hide-details="true"
             ></v-text-field>
-
           </v-col>
 
           <v-col
             cols="12"
             md="4"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">Mã sản phẩm</div>
 
             <v-text-field
@@ -503,14 +466,12 @@ onMounted(() => {
               density="compact"
               hide-details="true"
             ></v-text-field>
-
           </v-col>
 
           <v-col
             cols="12"
             md="2"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">Số lượng</div>
 
             <v-number-input
@@ -522,14 +483,12 @@ onMounted(() => {
               hide-details="true"
               control-variant="stacked"
             ></v-number-input>
-
           </v-col>
 
           <v-col
             cols="12"
             md="6"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">Giá tiền (VND)</div>
 
             <v-text-field
@@ -538,18 +497,15 @@ onMounted(() => {
               density="compact"
               hide-details="true"
             ></v-text-field>
-
           </v-col>
 
           <v-col
             cols="12"
             md="6"
           >
-
             <div class="text-subtitle-1 text-high-emphasis">
-               Thể loại
+              Thể loại
               <span class="text-red">(*)</span>
-
             </div>
 
             <v-autocomplete
@@ -561,15 +517,13 @@ onMounted(() => {
               hide-details
               :items="candidates"
             ></v-autocomplete>
-
           </v-col>
 
           <v-col
             cols="12"
             md="6"
           >
-
-            <div class="text-subtitle-1 text-high-emphasis"> Bộ sưu tập </div>
+            <div class="text-subtitle-1 text-high-emphasis">Bộ sưu tập</div>
 
             <v-autocomplete
               v-model="formModel.collectionId"
@@ -580,11 +534,9 @@ onMounted(() => {
               hide-details
               :items="collections"
             ></v-autocomplete>
-
           </v-col>
 
           <v-col cols="12">
-
             <div class="text-subtitle-1 text-high-emphasis">Mô tả thông tin sách</div>
 
             <v-textarea
@@ -593,11 +545,9 @@ onMounted(() => {
               density="compact"
               hide-details="true"
             ></v-textarea>
-
           </v-col>
 
           <v-col cols="12">
-
             <div class="text-subtitle-1 text-high-emphasis">Hình ảnh</div>
 
             <v-file-upload
@@ -606,13 +556,9 @@ onMounted(() => {
               density="compact"
               variant="compact"
             >
-
               <template v-slot:title>
-
                 <span class="text-h5"> Kéo thả hoặc tải lên hình ảnh </span>
-
               </template>
-
             </v-file-upload>
 
             <v-text-field
@@ -625,42 +571,33 @@ onMounted(() => {
               append-icon="mdi-pencil"
               @click:append="imageUrlToggleEdit = !imageUrlToggleEdit"
             ></v-text-field>
-
           </v-col>
-
         </v-row>
-
       </template>
 
       <v-divider></v-divider>
 
       <v-card-actions class="bg-surface-light">
-
         <v-btn
           color="green-darken-1"
           @click="save"
           variant="elevated"
         >
-           Lưu
+          Lưu
         </v-btn>
 
         <v-btn
           color="red-lighten-1"
-          @click="
-            () => {
-              dialog = false
-              imageFile.value = null
-            }
-          "
+          @click="() => {
+            dialog = false
+            imageFile.value = null
+          }"
           variant="elevated"
         >
-           Hủy
+          Hủy
         </v-btn>
-
       </v-card-actions>
-
     </v-card>
-
   </v-dialog>
 
   <!-- confirmation dialog -->
@@ -669,20 +606,17 @@ onMounted(() => {
     v-model="confirmationDialog"
     max-width="500"
   >
-
     <v-card title="Xác nhận">
-
       <v-card-text>Bạn có chắc chắn muốn xóa sản phẩm?</v-card-text>
 
       <v-card-actions>
-
         <v-btn
           variant="elevated"
           color="green-darken-1"
           :loading="isDelLoading"
           @click="remove()"
         >
-           Đồng ý
+          Đồng ý
         </v-btn>
 
         <v-btn
@@ -690,24 +624,19 @@ onMounted(() => {
           color="red-lighten-1"
           @click="confirmationDialog = !confirmationDialog"
         >
-           Hủy
+          Hủy
         </v-btn>
-
       </v-card-actions>
-
     </v-card>
-
   </v-dialog>
 
-  <SnackBarOnFailure
+  <snack-bar-on-failure
     :show="isError"
     :message="message"
   />
 
-  <SnackBarOnSuccess
+  <snack-bar-on-success
     :show="isSuccess"
     :message="message"
   />
-
 </template>
-

@@ -21,11 +21,9 @@ async function handleLogout() {
 </script>
 
 <template>
-
-  <AdminNavDrawer />
+  <admin-nav-drawer />
 
   <v-app-bar>
-
     <v-app-bar-title class="ml-10">{{ formattedDate }}</v-app-bar-title>
 
     <v-btn
@@ -34,16 +32,11 @@ async function handleLogout() {
       color="primary"
       @click="handleLogout"
     >
-       Đăng xuất
+      Đăng xuất
     </v-btn>
-
   </v-app-bar>
 
   <v-main>
-
     <router-view></router-view>
-
   </v-main>
-
 </template>
-

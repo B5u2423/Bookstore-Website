@@ -1,180 +1,587 @@
 <script setup>
-import { OrderService, PaymentService } from '@/api/cart-api'
+import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
+import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 import { useAuthStore } from '@/stores/auth-store'
 import { useCartStore } from '@/stores/cart-store'
 import { formatPriceVNLocale } from '@/utils/utils'
-import { shallowRef, ref } from 'vue'
-import { useRouter } from 'vuetify/lib/composables/router'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const cartStore = useCartStore()
 const authStore = useAuthStore()
 const router = useRouter()
+const isLoading = ref(false)
 
-const shippingInfo = ref({
-  city: '',
-  commune: '',
-  street: '',
-  amount: cartStore.totalAmount,
-})
-const dialog = shallowRef(false)
+// snackbars
+const isError = ref(false)
+const isSuccess = ref(false)
+const message = ref('')
 
 async function checkout() {
-  // if not logged in
+  isLoading.value = true
   if (!authStore.isAuthenticated) {
-    router.push({ name: 'login' })
+    notify(true, 'Đang chuyển hướng đến trang đăng nhập')
+    isLoading.value = false
+    setTimeout(
+      () => {
+        router.push({ name: 'login' })
+      },
+      300,
+    )
   } else {
-    router.push({ name: 'checkout' })
+    const { status, data } = await cartStore.syncCartWithBackEnd()
+    if (status === 200 && data == 'ok') {
+      notify(true, 'Đang chuyển hướng đến trang thanh toán')
+      isLoading.value = false
+      setTimeout(
+        () => {
+          router.push({ name: 'checkout' })
+        },
+        500,
+      )
+    } else {
+      const statusLabel = status ?? 'Mã lỗi'
+      const dataLabel = data ?? 'Thông điệp lỗi'
+      notify(false, `Lỗi đồng bộ giỏ hàng: ${statusLabel} - ${dataLabel}`)
+      isLoading.value = false
+    }
   }
+}
+
+function decreaseQty(item) {
+  if (item.quantity > 1) item.quantity--
+}
+
+function increaseQty(item) {
+  item.quantity++
+}
+
+function clampQty(item) {
+  let q = Number(item.quantity)
+  if (!q || q < 1) item.quantity = 1
+  else item.quantity = q
+}
+
+// snackbar notif
+function notify(success, msg) {
+  if (success) {
+    isSuccess.value = true
+    message.value = msg
+  } else {
+    isError.value = true
+    message.value = msg
+  }
+  setTimeout(() => {
+    isSuccess.value = false
+    isError.value = false
+  }, 2500)
 }
 </script>
 
 <template>
+  <div class="cart-page">
+    <!-- page header -->
+    <div class="cart-header">
+      <h1 class="cart-heading">Giỏ hàng của bạn</h1>
+      <span v-if="cartStore.cartItemsCount > 0" class="cart-count">
+        {{ cartStore.cartItemsCount }} sản phẩm
+      </span>
+    </div>
 
-  <v-container class="mb-8">
+    <!-- empty state -->
+    <div v-if="cartStore.cartItemsCount === 0" class="cart-empty">
+      <div class="empty-icon" aria-hidden="true">🛒</div>
+      <h2 class="empty-title">Giỏ hàng trống</h2>
+      <p class="empty-body">
+        Bạn chưa thêm sản phẩm nào. Hãy khám phá cửa hàng nhé!
+      </p>
+      <router-link :to="{ name: 'landing' }" class="empty-cta">
+        <v-icon icon="mdi-arrow-left" size="16" class="mr-1" />
+        Tiếp tục mua sắm
+      </router-link>
+    </div>
 
-    <v-row>
+    <!-- cart content -->
+    <template v-else>
+      <div class="cart-layout">
+        <!-- item table -->
+        <div class="cart-items-card">
+          <!-- header -->
+          <div class="cart-table-head">
+            <span class="col-product">Sản phẩm</span>
+            <span class="col-price">Đơn giá</span>
+            <span class="col-qty">Số lượng</span>
+            <span class="col-total">Thành tiền</span>
+            <span class="col-remove" aria-hidden="true" />
+          </div>
 
-      <h2 class="font-weight-medium">Giỏ hàng của bạn</h2>
+          <!-- items -->
+          <div
+            v-for="item in cartStore.activeCart"
+            :key="item.id"
+            class="cart-row"
+          >
+            <!-- book detail -->
+            <div class="col-product cart-product">
+              <router-link
+                :to="{ name: 'book-detail', params: { id: item.id, slug: item.urlSlug ?? item.slug } }"
+                class="cart-thumb-link"
+                :title="item.title"
+                :aria-label="item.title"
+              >
+                <v-img
+                  :src="item.image"
+                  :alt="item.title"
+                  width="64"
+                  height="86"
+                  cover
+                  class="cart-thumb"
+                />
+              </router-link>
+              <div class="cart-product-info">
+                <router-link
+                  :title="item.title"
+                  :to="{ name: 'book-detail', params: { id: item.id, slug: item.urlSlug ?? item.slug } }"
+                  class="cart-product-title"
+                >
+                  {{ item.title }}
+                </router-link>
+                <span v-if="item.author" class="cart-product-author">{{ item.author }}</span>
+              </div>
+            </div>
 
-    </v-row>
+            <!-- unit price -->
+            <div class="col-price cart-price">
+              {{ formatPriceVNLocale(item.price) }}₫
+            </div>
 
-    <v-container class="bg-white border mt-8">
-
-      <div
-        v-if="cartStore.cartItemsCount === 0"
-        class="text-center pa-4"
-      >
-         Không có sản phẩm nào trong giỏ hàng. Quay lại cửa hàng để tiếp tục mua sắm.
-      </div>
-
-      <template v-else>
-
-        <v-table>
-
-          <thead>
-
-            <tr>
-
-              <th class="text-left font-weight-bold"></th>
-
-              <th class="text-left font-weight-bold">Sản phẩm</th>
-
-              <th class="text-left font-weight-bold">Giá</th>
-
-              <th class="text-left font-weight-bold">Số lượng</th>
-
-              <th class="text-left font-weight-bold">Thành tiền</th>
-
-            </tr>
-
-          </thead>
-
-          <tbody>
-
-            <tr
-              v-for="item in cartStore.activeCart"
-              :key="item.id"
-            >
-
-              <td width="5">
-
-                <v-btn
-                  class="mx-3"
-                  icon="mdi-close"
-                  size="small"
-                  @click="cartStore.removeItemFromCart({ itemId: item.id })"
-                  variant="flat"
-                ></v-btn>
-
-              </td>
-
-              <td>
-
-                <div class="d-flex align-center">
-
-                  <v-img
-                    :src="item.image"
-                    max-width="100"
-                    class="ma-2"
-                  ></v-img>
-
-                  <span class="ml-3">{{ item.title }}</span>
-
-                </div>
-
-              </td>
-
-              <td>{{ formatPriceVNLocale(item.price) }}₫</td>
-
-              <td>
-
-                <v-text-field
+            <!-- quantity stepper -->
+            <div class="col-qty">
+              <div class="qty-stepper">
+                <button
+                  class="qty-btn"
+                  type="button"
+                  :disabled="item.quantity <= 1"
+                  aria-label="Giảm số lượng"
+                  @click="decreaseQty(item)"
+                >
+                  <v-icon icon="mdi-minus" size="14" />
+                </button>
+                <input
                   v-model.number="item.quantity"
                   type="number"
-                  density="compact"
-                  hide-details
-                  style="max-width: 100px"
+                  class="qty-input"
                   min="1"
-                ></v-text-field>
+                  aria-label="Số lượng"
+                  @change="clampQty(item)"
+                />
+                <button
+                  class="qty-btn"
+                  type="button"
+                  aria-label="Tăng số lượng"
+                  @click="increaseQty(item)"
+                >
+                  <v-icon icon="mdi-plus" size="14" />
+                </button>
+              </div>
+            </div>
 
-              </td>
+            <!-- item total -->
+            <div class="col-total cart-line-total">
+              {{ formatPriceVNLocale(item.price * item.quantity) }}₫
+            </div>
 
-              <td>{{ formatPriceVNLocale(item.price * item.quantity) }}₫</td>
+            <!-- remove -->
+            <div class="col-remove">
+              <button
+                class="remove-btn"
+                type="button"
+                :aria-label="`Xoá ${item.title}`"
+                @click="cartStore.removeItemFromCart({ itemId: item.id })"
+              >
+                <v-icon icon="mdi-close" size="16" />
+              </button>
+            </div>
+          </div>
 
-            </tr>
+          <!-- continue shopping -->
+          <div class="cart-footer-link">
+            <router-link :to="{ name: 'landing' }" class="continue-link">
+              <v-icon icon="mdi-arrow-left" size="15" class="mr-1" />
+              Tiếp tục mua sắm
+            </router-link>
+          </div>
+        </div>
 
-          </tbody>
+        <!-- order summary -->
+        <aside class="cart-summary" aria-label="Tóm tắt đơn hàng">
+          <h2 class="summary-heading">Tóm tắt đơn hàng</h2>
 
-        </v-table>
+          <div class="summary-line">
+            <span>Tạm tính ({{ cartStore.cartItemsCount }} sản phẩm)</span>
+            <span>{{ formatPriceVNLocale(cartStore.totalAmount) }}₫</span>
+          </div>
 
-        <v-row class="mt-6">
+          <div class="summary-line">
+            <span>Phí vận chuyển</span>
+            <span class="summary-free">Miễn phí</span>
+          </div>
 
-          <v-col
-            cols="12"
-            class="d-flex justify-end align-center"
-          >
+          <div class="summary-divider" />
 
-            <span class="text-h6 mr-4">Tổng số thành tiền:</span>
-
-            <span class="text-h6 text-primary">
-               {{ formatPriceVNLocale(cartStore.totalAmount) }}₫
+          <div class="summary-total">
+            <span>Tổng cộng</span>
+            <span class="summary-total-price">
+              {{ formatPriceVNLocale(cartStore.totalAmount) }}₫
             </span>
+          </div>
 
-          </v-col>
+          <button class="checkout-btn" type="button" @click="checkout" :loading="isLoading">
+            <v-icon icon="mdi-lock-outline" size="16" class="mr-2" />
+            Tiến hành thanh toán
+          </button>
 
-        </v-row>
+          <p class="summary-note">
+            <v-icon icon="mdi-shield-check-outline" size="14" class="mr-1" />
+            Thanh toán an toàn & bảo mật
+          </p>
+        </aside>
+      </div>
+    </template>
+  </div>
 
-        <v-row>
-
-          <v-col
-            cols="12"
-            class="d-flex justify-end"
-          >
-
-            <v-btn
-              color="grey-lighten-1"
-              class="mr-4"
-              :to="{ name: 'landing' }"
-            >
-               Tiếp tục mua hàng
-            </v-btn>
-
-            <v-btn
-              color="primary"
-              @click="checkout"
-            >
-               Tiến hành thanh toán
-            </v-btn>
-
-          </v-col>
-
-        </v-row>
-
-      </template>
-
-    </v-container>
-
-  </v-container>
-
+  <snack-bar-on-failure :message="message" :show="isError" />
+  <snack-bar-on-success :message="message" :show="isSuccess" />
 </template>
 
+<style scoped>
+.cart-page {
+  --accent:      #a3262c;
+  --accent-soft: #f7e9e8;
+  --ink:         #2b2420;
+  --muted:       #8a7d72;
+  --border:      #e8e1d8;
+  --paper:       #fbf8f4;
+
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+  color: var(--ink);
+  font-size: 0.9rem;
+}
+
+/* page header */
+.cart-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.cart-heading {
+  font-size: clamp(1.4rem, 2vw, 1.85rem);
+  font-weight: 700;
+  margin: 0;
+}
+.cart-count {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+/* empty state */
+.cart-empty {
+  text-align: center;
+  padding: 72px 24px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.empty-icon { font-size: 3rem; margin-bottom: 16px; }
+.empty-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+.empty-body {
+  color: var(--muted);
+  margin: 0 0 24px;
+}
+.empty-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 22px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: background 0.2s;
+}
+.empty-cta:hover { background: #8e1f24; }
+
+/* layout */
+.cart-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* horizontal book card */
+.cart-items-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* table head */
+.cart-table-head {
+  display: grid;
+  grid-template-columns: 1fr 110px 130px 110px 40px;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* item row */
+.cart-row {
+  display: grid;
+  grid-template-columns: 1fr 110px 130px 110px 40px;
+  gap: 8px;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.cart-row:last-of-type { border-bottom: none; }
+.cart-row:hover { background: var(--paper); }
+
+/* column helper */
+.col-price, .col-total { text-align: right; }
+.col-qty { display: flex; justify-content: center; }
+.col-remove { display: flex; justify-content: center; }
+
+/* product cell */
+.cart-product {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+.cart-thumb-link { flex-shrink: 0; }
+.cart-thumb {
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+.cart-product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.cart-product-title {
+  text-decoration: none;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 0.9rem;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.15s;
+}
+.cart-product-title:hover { color: var(--accent); }
+.cart-product-author {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* price */
+.cart-price { color: var(--ink); }
+.cart-line-total { font-weight: 700; color: var(--accent); }
+
+/* quantity setter */
+.qty-stepper {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+}
+.qty-btn {
+  width: 30px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--ink);
+  transition: background 0.15s;
+}
+.qty-btn:hover:not(:disabled) { background: var(--accent-soft); }
+.qty-btn:disabled { color: var(--border); cursor: not-allowed; }
+.qty-input {
+  width: 38px;
+  height: 32px;
+  text-align: center;
+  border: none;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink);
+  background: transparent;
+}
+.qty-input:focus { outline: 2px solid var(--accent); outline-offset: -2px; }
+.qty-input::-webkit-inner-spin-button,
+.qty-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.qty-input[type='number'] { -moz-appearance: textfield; }
+
+/* remove btn */
+.remove-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--muted);
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.remove-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.remove-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* continue link */
+.cart-footer-link {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  background: var(--paper);
+}
+.continue-link {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.continue-link:hover { color: var(--accent); }
+
+/* order summary */
+.cart-summary {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  position: sticky;
+  top: 80px;
+}
+.summary-heading {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0 0 20px;
+}
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.summary-free {
+  color: #2a9d5c;
+  font-weight: 600;
+}
+.summary-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 16px 0;
+}
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+.summary-total-price {
+  font-size: 1.35rem;
+  color: var(--accent);
+}
+.checkout-btn {
+  width: 100%;
+  height: 48px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.checkout-btn:hover { background: #8e1f24; }
+.checkout-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.summary-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 12px 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+/* responsive */
+@media (max-width: 860px) {
+  .cart-layout {
+    grid-template-columns: 1fr;
+  }
+  .cart-summary {
+    position: static;
+  }
+  .cart-table-head {
+    display: none; /* show labels inline on mobile */
+  }
+  .cart-row {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "product product"
+      "price   qty"
+      "total   remove";
+    gap: 12px;
+    padding: 16px;
+  }
+  .col-product  { grid-area: product; }
+  .col-price    { grid-area: price; text-align: left; }
+  .col-qty      { grid-area: qty; justify-content: flex-end; }
+  .col-total    { grid-area: total; text-align: left; font-size: 1rem; }
+  .col-remove   { grid-area: remove; justify-content: flex-end; }
+}
+
+@media (max-width: 480px) {
+  .cart-page { padding: 20px 16px 48px; }
+}
+</style>

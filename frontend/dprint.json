@@ -1,0 +1,18 @@
+{
+  "incremental": true,
+  "typescript": {
+    "quoteStyle": "preferSingle",
+    "semiColons": "asi"
+  },
+  "markup": {
+    "indentWidth": 2,
+    "printWidth": 100,
+    "vSlotStyle": "long",
+    "vOnStyle": "short",
+    "vueComponentCase": "kebabCase"
+  },
+  "plugins": [
+    "https://plugins.dprint.dev/g-plane/markup_fmt-v0.27.3.wasm",
+    "https://plugins.dprint.dev/typescript-0.96.1.wasm"
+  ]
+}

@@ -1,11 +1,15 @@
 package dev.vubl.bookstore.services;
 
-import dev.vubl.bookstore.dtos.BookResponseDTO;
+import dev.vubl.bookstore.dtos.BookDTO;
+import dev.vubl.bookstore.dtos.LandingBookCollectionResponse;
 import dev.vubl.bookstore.entities.Book;
 import dev.vubl.bookstore.entities.Category;
+import dev.vubl.bookstore.entities.Collection;
 import dev.vubl.bookstore.exceptions.BookDoesNotExistException;
 import dev.vubl.bookstore.exceptions.BookWithIsbnAlreadyExists;
 import dev.vubl.bookstore.exceptions.CategoryDoesNotExistException;
+import dev.vubl.bookstore.exceptions.CollectionDoesNotExistException;
+import dev.vubl.bookstore.mappers.BookMapper;
 import dev.vubl.bookstore.repos.BookRepo;
 import dev.vubl.bookstore.repos.CategoryRepo;
 import dev.vubl.bookstore.repos.CollectionRepo;
@@ -18,6 +22,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -39,12 +44,11 @@ public class BookService {
   private final CloudinaryService cloudinaryService;
   private final CollectionRepo collectionRepo;
 
-  public List<BookResponseDTO> getAllBooks() {
-    return bookRepo.findAll().stream().map(this::mapToBookResponseDTO).toList();
+  public List<BookDTO> getAllBooks() {
+    return bookRepo.findAll().stream().map(this::toDtoWrapper).toList();
   }
 
-  public Page<BookResponseDTO> getAllBooksPaginated(
-      int page, int size, String sortBy, String order) {
+  public Page<BookDTO> getAllBooksPaginated(int page, int size, String sortBy, String order) {
     List<String> allowed = List.of("id");
     if (!allowed.contains(sortBy)) {
       throw new IllegalArgumentException("Invalid sort field: %s".formatted(sortBy));
@@ -53,22 +57,21 @@ public class BookService {
     Sort sort = order.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
     Pageable pageable = PageRequest.of(page, size, sort);
     Page<Book> books = bookRepo.findAll(pageable);
-    return books.map(this::mapToBookResponseDTO);
+    return books.map(this::toDtoWrapper);
   }
 
-  public BookResponseDTO getBookById(Integer id) {
+  public BookDTO getBookById(Integer id) {
     Book b = bookRepo.findById(id).orElseThrow(BookDoesNotExistException::new);
-    return mapToBookResponseDTO(b);
+    return toDtoWrapper(b);
   }
 
-  public BookResponseDTO addNewBook(BookResponseDTO bookResponseDTO, MultipartFile image)
-      throws IOException {
-    String isbn = bookResponseDTO.isbn();
+  public BookDTO addNewBook(BookDTO bookDTO, MultipartFile image) throws IOException {
+    String isbn = bookDTO.isbn();
     if (isIsbnNotUnique(isbn)) {
       throw new BookWithIsbnAlreadyExists("Book with isbn :: %s already exists!".formatted(isbn));
     }
 
-    Book b = mapToBookEntity(bookResponseDTO);
+    Book b = toBookWrapper(bookDTO);
     try {
       if (image != null) {
         log.info("[{}] Uploading image...", this.getClass().getName());
@@ -76,7 +79,7 @@ public class BookService {
         b.setImageUrl(returnedUrl);
       }
       log.info("[{}] Adding new book", this.getClass().getName());
-      return mapToBookResponseDTO(bookRepo.save(b));
+      return toDtoWrapper(bookRepo.save(b));
     } catch (DataIntegrityViolationException e) {
       throw new DataIntegrityViolationException("Error adding or updating new book!", e);
     } catch (IOException e) {
@@ -85,8 +88,7 @@ public class BookService {
     }
   }
 
-  public BookResponseDTO updateBookById(
-      BookResponseDTO bookResponseDTO, MultipartFile image, Integer id) {
+  public BookDTO updateBookById(BookDTO bookDTO, MultipartFile image, Integer id) {
     try {
       Book b =
           bookRepo
@@ -97,40 +99,41 @@ public class BookService {
                           "Book with id %d does not exist".formatted(id)));
 
       // update
-      b.setTitle(bookResponseDTO.title());
-      b.setAuthor(bookResponseDTO.author());
-      b.setPublisher(bookResponseDTO.publisher());
-      b.setPublishYear(bookResponseDTO.publishYear());
-      b.setPageCount(bookResponseDTO.pageCount());
-      b.setIsbn(bookResponseDTO.isbn());
-      b.setAuthor(bookResponseDTO.author());
+      b.setTitle(bookDTO.title());
+      b.setAuthor(bookDTO.author());
+      b.setPublisher(bookDTO.publisher());
+      b.setPublishYear(bookDTO.publishYear());
+      b.setPageCount(bookDTO.pageCount());
+      b.setIsbn(bookDTO.isbn());
+      b.setDescription(bookDTO.description());
+      b.setAuthor(bookDTO.author());
       if (image != null) {
         String returnedUrl = cloudinaryService.uploadImage(image);
         b.setImageUrl(returnedUrl);
-      } else if (!b.getImageUrl().equals(bookResponseDTO.imageUrl())) {
-        b.setImageUrl(bookResponseDTO.imageUrl());
+      } else if (!b.getImageUrl().equals(bookDTO.imageUrl())) {
+        b.setImageUrl(bookDTO.imageUrl());
       }
-      b.setInStock(bookResponseDTO.inStock());
-      b.setUrlSlug(SlugUtils.convertStringToSlug(bookResponseDTO.title()));
-      b.setPrice(bookResponseDTO.price());
+      b.setInStock(bookDTO.inStock());
+      b.setUrlSlug(SlugUtils.convertStringToSlug(bookDTO.title()));
+      b.setPrice(bookDTO.price());
       b.setUpdateTimeStamp(Instant.now());
-      if (bookResponseDTO.categoryId() != null) {
+      if (bookDTO.categoryId() != null) {
 
         b.setCategory(
             categoryRepo
-                .findById(bookResponseDTO.categoryId())
+                .findById(bookDTO.categoryId())
                 .orElseThrow(CategoryDoesNotExistException::new));
       }
-      if (bookResponseDTO.collectionId() != null) {
+      if (bookDTO.collectionId() != null) {
 
         b.setCollection(
             collectionRepo
-                .findById(bookResponseDTO.collectionId())
+                .findById(bookDTO.collectionId())
                 .orElseThrow(() -> new IllegalArgumentException("Collection ID does not exist!")));
       }
 
       Book savedBook = bookRepo.save(b);
-      return mapToBookResponseDTO(savedBook);
+      return toDtoWrapper(savedBook);
 
     } catch (DataIntegrityViolationException e) {
       throw new DataIntegrityViolationException("Error adding or updating new book!", e);
@@ -144,7 +147,7 @@ public class BookService {
     log.info("[{}] Book with id {} deleted", this.getClass().getName(), id);
   }
 
-  public Page<BookResponseDTO> getBookByCategory(
+  public Page<BookDTO> getBookByCategory(
       String slug, int page, int size, String sortBy, String order) {
     List<String> allowed = List.of("id");
     if (!allowed.contains(sortBy)) {
@@ -162,11 +165,11 @@ public class BookService {
     Sort sort = order.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
     Pageable pageable = PageRequest.of(page, size, sort);
     Page<Book> bookPage = bookRepo.findAllByCategoryIn(categories, pageable);
-    return bookPage.map(this::mapToBookResponseDTO);
+    return bookPage.map(this::toDtoWrapper);
   }
 
   @Deprecated
-  public List<BookResponseDTO> searchBookV2(String keyword) {
+  public List<BookDTO> searchBookV2(String keyword) {
     String[] tokens = keyword.toLowerCase().split("\\s+");
 
     StringBuilder jpql = new StringBuilder("SELECT b FROM Book b WHERE 1=1");
@@ -187,11 +190,39 @@ public class BookService {
     for (int i = 0; i < tokens.length; i++) {
       query.setParameter("t" + i, "%" + tokens[i] + "%");
     }
-    return query.getResultList().stream().map(this::mapToBookResponseDTO).toList();
+    return query.getResultList().stream().map(this::toDtoWrapper).toList();
   }
 
-  public List<BookResponseDTO> searchBookV3(String keyword) {
-    return bookRepo.searchBookV3(keyword).stream().map(this::mapToBookResponseDTO).toList();
+  public List<BookDTO> searchBookV3(String keyword) {
+    return bookRepo.searchBookV3(keyword).stream().map(this::toDtoWrapper).toList();
+  }
+
+  public List<BookDTO> getAllBooksInCollection(String collectionSlug) {
+    Optional<Collection> res = collectionRepo.findByCollectionSlug(collectionSlug);
+    if (res.isEmpty()) {
+      log.error("Collection with slug {} does not exist", collectionSlug);
+      throw new RuntimeException("Collection slug does not exist");
+    }
+    List<Book> booksWithCollection = bookRepo.findAllByCollection(res.get());
+    return booksWithCollection.stream().map(this::toDtoWrapper).toList();
+  }
+
+  public LandingBookCollectionResponse getBooksInCollectionForLandingPage(String slug) {
+    // just get book in collection but a nice wrapper for view
+    List<BookDTO> list = getAllBooksInCollection(slug);
+    var col = collectionRepo.findByCollectionSlug(slug);
+    if (col.isEmpty()) {
+      throw new CollectionDoesNotExistException(slug);
+    }
+    // return list or first 10 items of all book
+    return LandingBookCollectionResponse.builder()
+        .collectionName(col.get().getCollectionName())
+        .collectionSlug(col.get().getCollectionSlug())
+        .list(
+            !list.isEmpty()
+                ? list
+                : bookRepo.findBy(PageRequest.of(0, 15)).stream().map(this::toDtoWrapper).toList())
+        .build();
   }
 
   private boolean isIsbnNotUnique(String isbn) {
@@ -201,57 +232,28 @@ public class BookService {
     return false;
   }
 
-  private BookResponseDTO mapToBookResponseDTO(Book book) {
-    return BookResponseDTO.builder()
-        .id(book.getId())
-        .isbn(book.getIsbn())
-        .title(book.getTitle())
-        .description(book.getDescription())
-        .price(book.getPrice())
-        .inStock(book.getInStock())
-        .publisher(book.getPublisher())
-        .publishYear(book.getPublishYear())
-        .pageCount(book.getPageCount())
-        .imageUrl(book.getImageUrl())
-        .urlSlug(book.getUrlSlug())
-        .author(book.getAuthor())
-        .categoryId(book.getCategory() == null ? null : book.getCategory().getId())
-        .categoryName(book.getCategory() == null ? null : book.getCategory().getCategoryName())
-        .collectionId(book.getCollection() == null ? null : book.getCollection().getId())
-        .collectionName(
-            book.getCollection() == null ? null : book.getCollection().getCollectionName())
-        .build();
+  private BookDTO toDtoWrapper(Book book) {
+    return BookMapper.INSTANCE.toDto(book);
   }
 
-  private Book mapToBookEntity(BookResponseDTO bookResponseDTO) {
-    return Book.builder()
-        .title(bookResponseDTO.title())
-        .author(bookResponseDTO.author())
-        .publishYear(bookResponseDTO.publishYear())
-        .imageUrl(bookResponseDTO.imageUrl())
-        .pageCount(bookResponseDTO.pageCount())
-        .urlSlug(SlugUtils.convertStringToSlug(bookResponseDTO.title()))
-        .publisher(bookResponseDTO.publisher())
-        .price(bookResponseDTO.price())
-        .description(bookResponseDTO.description())
-        .isbn(bookResponseDTO.isbn())
-        .inStock(bookResponseDTO.inStock())
-        .category(
-            bookResponseDTO.categoryId() == null
-                ? null
-                : categoryRepo
-                    .findById(bookResponseDTO.categoryId())
-                    .orElseThrow(CategoryDoesNotExistException::new))
-        .collection(
-            bookResponseDTO.collectionId() == null
-                ? null
-                : collectionRepo
-                    .findById(bookResponseDTO.collectionId())
-                    .orElseThrow(
-                        () ->
-                            new IllegalArgumentException(
-                                "Collection ID %d does not exist"
-                                    .formatted(bookResponseDTO.collectionId()))))
-        .build();
+  private Book toBookWrapper(BookDTO bookDTO) {
+    Book b = BookMapper.INSTANCE.toBook(bookDTO);
+    b.setUrlSlug(SlugUtils.convertStringToSlug(bookDTO.title()));
+    b.setCategory(
+        bookDTO.categoryId() == null
+            ? null
+            : categoryRepo
+                .findById(bookDTO.categoryId())
+                .orElseThrow(CategoryDoesNotExistException::new));
+    b.setCollection(
+        bookDTO.collectionId() == null
+            ? null
+            : collectionRepo
+                .findById(bookDTO.collectionId())
+                .orElseThrow(
+                    () ->
+                        new IllegalArgumentException(
+                            "Collection ID %d does not exist".formatted(bookDTO.collectionId()))));
+    return b;
   }
 }

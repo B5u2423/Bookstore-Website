@@ -1,39 +1,22 @@
 import api, { adminApi } from './api-config'
 
 const API_ENDPOINTS = {
-  NEW_ARRIVAL: '/books/new',
-  BEST_SELLERS: '/books/best-sellers',
   ADD_NEW_BOOK: '/books/add',
   UPDATE_BOOK: '/books/update',
 }
 
 export const BookService = {
   /**
-   * Fetch best seller books from API
-   * @returns {Promise<Book[]>} A promise resolves to an array of best seller books
+   * Fetch books in a collection for landing page from API
+   * @returns {Promise<Book[]>} A promise resolves to an array of books in a collection
    * @throws {Error} if API call fails
    */
-  async fetchBestSellersBooks() {
+  async getBooksInCollectionForLandingPage(params = {}) {
     try {
-      const res = await api.get(API_ENDPOINTS.BEST_SELLERS)
+      const res = await api.get('/books/landing', { params })
       return res.data
     } catch (error) {
       console.error('Error fetching best sellers: ', error)
-      throw error
-    }
-  },
-
-  /**
-   * Fetch new arrival books from API
-   * @returns {Promise<Book[]>} A promise resolves to an array of new arrival books
-   * @throws {Error} if API call fails
-   */
-  async fetchNewArrivalBooks() {
-    try {
-      const res = await api.get(API_ENDPOINTS.NEW_ARRIVAL)
-      return res.data
-    } catch (error) {
-      console.error('Error fetching new arrival books: ', error)
       throw error
     }
   },
@@ -73,11 +56,10 @@ export const BookService = {
   /**
    * Delete a book by its ID
    * @param {String} id - The ID of the book to delete
-   * @param {String} token - Authorization token for the request
    * @returns {Promise<Object>} A promise resolves to the API response data
    * @throws {Error} if API call fails
    */
-  async deleteBookById(id, token) {
+  async deleteBookById(id) {
     try {
       const res = await adminApi.delete('/books/delete', {
         params: { id },
@@ -93,11 +75,10 @@ export const BookService = {
    * Update a book by its ID
    * @param {Object} body - The book data to update
    * @param {String} id - The ID of the book to update
-   * @param {String} token - Authorization token for the request
    * @returns {Promise<Object>} A promise resolves to the API response data
    * @throws {Error} if API call fails
    */
-  async updateBookById(body, id, token) {
+  async updateBookById(body, id) {
     try {
       const res = await adminApi.put(API_ENDPOINTS.UPDATE_BOOK, body, {
         params: { id },
@@ -115,11 +96,10 @@ export const BookService = {
   /**
    * Add a new book to the system
    * @param {Object} body - The book data to create
-   * @param {String} token - Authorization token for the request
    * @returns {Promise<Object>} A promise resolves to the created book data
    * @throws {Error} if API call fails
    */
-  async addNewBook(body, token) {
+  async addNewBook(body) {
     try {
       const res = await adminApi.post(API_ENDPOINTS.ADD_NEW_BOOK, body, {
         headers: {
@@ -139,6 +119,16 @@ export const BookService = {
       return res.data
     } catch (error) {
       console.error('Error searching book', error)
+      throw error
+    }
+  },
+
+  async getBooksInCollectionBySlug(params = {}) {
+    try {
+      const res = await api.get('/books/get-books', { params })
+      return res.data
+    } catch (error) {
+      console.error('Error get books in collection', error)
       throw error
     }
   },
