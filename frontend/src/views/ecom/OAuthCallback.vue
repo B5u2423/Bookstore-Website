@@ -1,31 +1,26 @@
 <script setup>
-import router from '@/router'
 import { useAuthStore } from '@/stores/auth-store'
 import { onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 const authStore = useAuthStore()
-function getCookie(name) {
-  return document.cookie
-    .split('; ')
-    .find((c) => c.startsWith(name + '='))
-    ?.split('=')[1]
-}
+const router = useRouter()
+const route = useRoute()
 
-function extract() {
-  const access = getCookie('access_token')
-  const refresh = getCookie('refresh_token')
-
-  authStore.accessToken = access
-  authStore.refreshToken = refresh
-
-  document.cookie = 'access_token=; Path=/; Max-Age=0'
-  document.cookie = 'refresh_token=; Path=/; Max-Age=0'
-
-  router.push('/profile')
+function loadProfile() {
+  const token = route.query.token
+  const refresh = route.query.ref
+  if (token && refresh) {
+    authStore.handleOauthCallback(token, refresh)
+    router.push({ name: 'profile' })
+  }
+  {
+    router.push({ name: 'oauth-failed' })
+  }
 }
 
 onMounted(() => {
-  extract()
+  loadProfile()
 })
 </script>
 

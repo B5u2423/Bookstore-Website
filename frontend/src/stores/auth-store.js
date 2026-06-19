@@ -68,6 +68,14 @@ export const useAuthStore = defineStore(
       }
     }
 
+    function handleOauthCallback(token, refresh) {
+      accessToken.value = token
+      refreshToken.value = refresh
+      // set localStorage
+      // localStorage.setItem('access', token)
+      // localStorage.setItem('refresh', refresh)
+    }
+
     return {
       accessToken,
       refreshToken,
@@ -77,6 +85,7 @@ export const useAuthStore = defineStore(
       login,
       register,
       logout,
+      handleOauthCallback,
     }
   },
   {

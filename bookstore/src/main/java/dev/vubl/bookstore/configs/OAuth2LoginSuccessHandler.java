@@ -7,50 +7,39 @@ import dev.vubl.bookstore.dtos.RegistrationRequest;
 import dev.vubl.bookstore.entities.UserType;
 import dev.vubl.bookstore.services.ApplicationUserService;
 import dev.vubl.bookstore.services.AuthService;
-import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
+public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
   private final AuthService authService;
   private final ApplicationUserService userService;
 
-  @Override
-  public void onAuthenticationSuccess(
-      HttpServletRequest request,
-      HttpServletResponse response,
-      FilterChain chain,
-      Authentication authentication)
-      throws IOException, ServletException {
-    AuthenticationSuccessHandler.super.onAuthenticationSuccess(
-        request, response, chain, authentication);
-  }
+  @Value("${app.frontend-url}")
+  private String frontEndUrl;
 
   @Override
   public void onAuthenticationSuccess(
       HttpServletRequest request, HttpServletResponse response, Authentication authentication)
       throws IOException, ServletException {
     OAuth2User user = (OAuth2User) authentication.getPrincipal();
-    OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) authentication;
+    OAuth2AuthenticationToken oAuth2AuthenticationToken =
+        (OAuth2AuthenticationToken) authentication;
 
     // get provider: google or facebook
-    String registrationId = token.getAuthorizedClientRegistrationId();
-
-    String email = "";
-    String name = "";
-    String id = "";
+    String registrationId = oAuth2AuthenticationToken.getAuthorizedClientRegistrationId();
+    String email, name, id;
 
     switch (registrationId) {
       case IDP_GOOGLE -> {
@@ -80,16 +69,9 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     // login
     LoginResponse res = authService.logInOAuth(email);
 
-    Cookie access = new Cookie("access_token", res.token());
-    Cookie refresh = new Cookie("refresh_token", res.refresh());
-    access.setHttpOnly(false); // required for JS access
-    access.setPath("/");
-    refresh.setHttpOnly(false);
-    refresh.setPath("/");
-
     // redirect
-    response.addCookie(access);
-    response.addCookie(refresh);
-    response.sendRedirect("http://localhost:5173/oauth/callback");
+    String redirectUrl =
+        "%s/oauth2/callback?token=%s&ref=%s".formatted(frontEndUrl, res.token(), res.refresh());
+    getRedirectStrategy().sendRedirect(request, response, redirectUrl);
   }
 }
