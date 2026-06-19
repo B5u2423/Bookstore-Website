@@ -101,11 +101,13 @@ public class OrderService {
     }
 
     // save order
+    log.info("Saving order...");
     Order savedOrder = orderRepo.save(o);
+
     // change cart status
+    log.info("Updating cart status...");
     cart.setCartStatus(CartStatus.CHECKED_OUT);
     cartRepo.save(cart);
-
     return savedOrder;
   }
 
