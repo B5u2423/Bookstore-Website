@@ -26,6 +26,16 @@ public class AuthenticationController {
   private final AuthService authService;
   private final TokenService tokenService;
 
+  @PostMapping("/exchange")
+  public ResponseEntity<LoginResponse> exchangeCode(@RequestBody ExchangeCodeRequest body) {
+    return ResponseEntity.status(HttpStatus.OK).body(authService.exchangeCodeForTokens(body));
+  }
+
+  @DeleteMapping("/remove-ex")
+  public ResponseEntity<String> exchangeCode(@RequestParam String exchangeCode) {
+    return ResponseEntity.status(HttpStatus.OK).body(authService.deleteExchangeCode(exchangeCode));
+  }
+
   @PostMapping("/login")
   public ResponseEntity<LoginResponse> userLogin(
       @RequestBody LoginRequest body, HttpServletResponse response, HttpServletRequest request) {

@@ -1,4 +1,4 @@
-import { getCurrentUser, loginUser, logoutUser, registerUser } from '@/api/auth-api'
+import { AuthService, getCurrentUser, loginUser, logoutUser, registerUser } from '@/api/auth-api'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
@@ -68,12 +68,18 @@ export const useAuthStore = defineStore(
       }
     }
 
-    function handleOauthCallback(token, refresh) {
-      accessToken.value = token
-      refreshToken.value = refresh
-      // set localStorage
-      // localStorage.setItem('access', token)
-      // localStorage.setItem('refresh', refresh)
+    async function handleOauthCallback(exchangeCode) {
+      try {
+        const res = await AuthService.exchangeCodeForTokens({ exchangeCode: exchangeCode })
+        const { token, refresh } = res.data
+
+        accessToken.value = token
+        refreshToken.value = refresh
+
+        await AuthService.removeExchangeCode({ exchangeCode })
+      } catch (e) {
+        console.error('Error exchanging code for tokens in OAuth2.0 flow')
+      }
     }
 
     return {

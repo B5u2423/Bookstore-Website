@@ -48,6 +48,14 @@ export function getCurrentUser() {
 }
 
 export const AuthService = {
+  async removeExchangeCode(params = {}) {
+    return await api.delete('/auth/remove-ex', { params: params })
+  },
+
+  async exchangeCodeForTokens(body) {
+    return await api.post('/auth/exchange', body)
+  },
+
   async resetPassword(body) {
     try {
       const res = await api.post('/auth/reset-password', body)

@@ -151,13 +151,14 @@ public class SecurityConfigs {
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/auth/logout"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/auth/admin/login"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/auth/register"),
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, "/api/v1/auth/exchange"),
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.DELETE, "/api/v1/auth/remove-ex"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/auth/refresh"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/auth/reset-password"),
       PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/v1/books/**"),
       PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/v1/categories/**"),
       PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/v1/proxy/**"),
       PathPatternRequestMatcher.withDefaults().matcher("/login/oauth2/**"),
-      PathPatternRequestMatcher.withDefaults().matcher("/oauth2/**"),
     };
   }
 
