@@ -1,20 +1,29 @@
 package dev.vubl.bookstore.services;
 
-import static dev.vubl.bookstore.utils.Constants.IDP_FACEBOOK;
-import static dev.vubl.bookstore.utils.Constants.IDP_GOOGLE;
+import static dev.vubl.bookstore.utils.Constants.*;
+import static dev.vubl.bookstore.utils.Constants.ATTR_EMAIL;
+import static dev.vubl.bookstore.utils.Constants.ATTR_FACEBOOK_ID;
+import static dev.vubl.bookstore.utils.Constants.ATTR_GOOGLE_ID;
+import static dev.vubl.bookstore.utils.Constants.ATTR_USERNAME;
 
 import dev.vubl.bookstore.dtos.*;
 import dev.vubl.bookstore.entities.ApplicationUser;
+import dev.vubl.bookstore.entities.OAuth2Exchange;
+import dev.vubl.bookstore.entities.UserType;
+import dev.vubl.bookstore.exceptions.ExchangeCodeDoesNotExistException;
 import dev.vubl.bookstore.exceptions.InvalidCredentialException;
+import dev.vubl.bookstore.repos.OAuth2ExchangeRepo;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -26,6 +35,7 @@ public class AuthService {
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
   private final TokenService tokenService;
+  private final OAuth2ExchangeRepo oAuth2ExchangeRepo;
 
   public RegistrationResponse registerUser(
       RegistrationRequest request, String oauthProvider, String id) {
@@ -69,16 +79,52 @@ public class AuthService {
     tokenService.deleteRefreshTokenByUser(user);
   }
 
-  public LoginResponse logInOAuth(String email) {
+  public String logInOAuth(OAuth2User user, String registrationId) {
     try {
-      ApplicationUser user = userService.readUserByEmail(email);
-      // generate access token
-      String jwtToken = tokenService.generateJwt(user);
-      // generate refresh token
-      String refreshToken = tokenService.generateRefreshToken(user).getRefreshToken();
+      String email, name, id;
 
-      return LoginResponse.builder().token(jwtToken).refresh(refreshToken).build();
+      // get provider: google or facebook
+      email = user.getAttribute(ATTR_EMAIL);
+      name = user.getAttribute(ATTR_USERNAME);
+      switch (registrationId) {
+        case IDP_GOOGLE -> {
+          id = user.getAttribute(ATTR_GOOGLE_ID);
+        }
+        case IDP_FACEBOOK -> {
+          id = user.getAttribute(ATTR_FACEBOOK_ID);
+        }
+        default -> throw new IllegalStateException("Invalid provider!");
+      }
+
+      // registration if user does not exist
+      if (!userService.isUserExistByEmail(email)) {
+        registerUser(
+            RegistrationRequest.builder()
+                .userType(UserType.CUSTOMER)
+                .email(email)
+                .name(name)
+                .password(UUID.randomUUID().toString())
+                .build(),
+            registrationId,
+            id);
+      }
+      ApplicationUser au = userService.readUserByEmail(email);
+      // generate access token
+      String accessToken = tokenService.generateJwt(au);
+      // generate refresh token
+      String refreshToken = tokenService.generateRefreshToken(au).getRefreshToken();
+      String exchangeCode = UUID.randomUUID().toString();
+
+      oAuth2ExchangeRepo.save(
+          OAuth2Exchange.builder()
+              .refreshToken(refreshToken)
+              .accessToken(accessToken)
+              .exchangeCode(exchangeCode)
+              .build());
+
+      return exchangeCode;
     } catch (Exception e) {
+      log.error("Error log in/register via OAuth2.0");
       throw new IllegalArgumentException("Some thing is wrong with OAuth y'know...");
     }
   }
@@ -86,5 +132,26 @@ public class AuthService {
   public ApplicationUser readUserFromToken(String token) {
     String email = tokenService.extractUserEmailFromToken(token);
     return userService.readUserByEmail(email);
+  }
+
+  public LoginResponse exchangeCodeForTokens(ExchangeCodeRequest body) {
+    OAuth2Exchange oe =
+        oAuth2ExchangeRepo
+            .findByExchangeCode(body.exchangeCode())
+            .orElseThrow(ExchangeCodeDoesNotExistException::new);
+
+    return LoginResponse.builder().token(oe.getAccessToken()).refresh(oe.getRefreshToken()).build();
+  }
+
+  public String deleteExchangeCode(String exchangeCode) {
+    try {
+      log.info("Start deleting exchange code");
+      oAuth2ExchangeRepo.deleteByExchangeCode(exchangeCode);
+      log.info("Deleted exchange code");
+      return "Success";
+    } catch (Exception e) {
+      log.error("Error deleting exchange code!!");
+      throw e;
+    }
   }
 }

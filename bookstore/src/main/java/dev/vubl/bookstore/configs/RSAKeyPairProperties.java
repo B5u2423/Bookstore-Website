@@ -8,6 +8,13 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
+/**
+ * For testing purpose only. Generating RSA key pairs.
+ *
+ * <p>If deploy on prod then the private-public pair will reset on app restart every time, thus
+ * invalidate all currently existing JWT in DB. Every user in session will have to re-login after
+ * the restart phase.
+ */
 @Component
 @Getter
 @Setter

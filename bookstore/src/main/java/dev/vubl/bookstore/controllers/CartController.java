@@ -36,4 +36,11 @@ public class CartController {
     cartService.syncCart(token, payload);
     return ResponseEntity.ok("ok");
   }
+
+  @DeleteMapping("/remove")
+  public ResponseEntity<String> removeItemFromCart(
+      @RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestParam Integer bookId) {
+    cartService.removeItemFromCart(token, bookId);
+    return ResponseEntity.ok("ok");
+  }
 }

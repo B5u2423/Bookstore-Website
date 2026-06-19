@@ -77,8 +77,8 @@ const routes = [
         component: () => import('@/views/ecom/CollectionShowcase.vue'),
       },
       {
-        path: 'oauth/callback',
-        name: 'oauth-callback',
+        path: 'oauth2/callback',
+        name: 'oauth2-callback',
         component: () => import('@/views/ecom/OAuthCallback.vue'),
       },
     ],
@@ -179,6 +179,13 @@ const routes = [
         component: () => import('@/views/ecom/PaymentCallback.vue'),
       },
       { path: 'checkout', name: 'checkout', component: () => import('@/views/ecom/Checkout.vue') },
+    ],
+  },
+  {
+    path: '/oauth-failed',
+    component: EComNoSidebar,
+    children: [
+      { path: '', name: 'oauth-failed', component: () => import('@/views/ecom/OAuthFailed.vue') },
     ],
   },
   {

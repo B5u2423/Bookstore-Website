@@ -1,6 +1,9 @@
 import api, { adminApi, customerApi } from './api-config'
 
 export const CartService = {
+  async removeItemFromCart(params = {}) {
+    return await customerApi.delete('/carts/remove', { params })
+  },
   async addToCart(body) {
     try {
       const res = await customerApi.post('/carts/add', body)

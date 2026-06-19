@@ -56,6 +56,14 @@ public class CartService {
     log.info("[{}] Sync cart items successfully", this.getClass().getName());
   }
 
+  public void removeItemFromCart(String token, Integer bookId) {
+    // user's cart
+    Cart c = getActiveCartByUser(token);
+    // book
+    Book b = bookRepo.findById(bookId).orElseThrow(BookDoesNotExistException::new);
+    cartItemRepo.deleteByCartAndBook(c, b);
+  }
+
   private void addItemToUserCartHelper(Cart c, AddToCartRequest r) {
     Book book = bookRepo.findById(r.bookId()).orElseThrow(BookDoesNotExistException::new);
     Optional<CartItem> ci = cartItemRepo.findByBookAndCart(book, c);

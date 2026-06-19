@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,7 +20,6 @@ public class OrderController {
   private final OrderService orderService;
 
   @PostMapping("/create-order")
-  @PreAuthorize("hasRole('ROLE_CUSTOMER')")
   public ResponseEntity<Order> placeOrder(
       @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
       @RequestBody ShippingInfoDTO shippingInfo) {
@@ -29,7 +27,6 @@ public class OrderController {
   }
 
   @PostMapping("/update-status")
-  @PreAuthorize("hasRole('ROLE_CUSTOMER')")
   public ResponseEntity<String> updateOrderStatus(
       @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
       @RequestBody CallBackDTO callBackDTO) {
