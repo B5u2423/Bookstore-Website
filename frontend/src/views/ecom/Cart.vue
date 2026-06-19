@@ -1,4 +1,5 @@
 <script setup>
+import { CartService } from '@/api/cart-api'
 import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
 import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 import { useAuthStore } from '@/stores/auth-store'
@@ -75,6 +76,18 @@ function notify(success, msg) {
     isSuccess.value = false
     isError.value = false
   }, 2500)
+}
+
+async function handleRemoveItemFromCart(id) {
+  try {
+    // remove item in saved cart
+    await CartService.removeItemFromCart({ bookId: id })
+
+    // remove from immediate fe view
+    cartStore.removeItemFromCart({ itemId: id })
+  } catch (e) {
+    console.error(`Error removing item from cart ${e.message}`)
+  }
 }
 </script>
 
@@ -197,7 +210,7 @@ function notify(success, msg) {
                 class="remove-btn"
                 type="button"
                 :aria-label="`Xoá ${item.title}`"
-                @click="cartStore.removeItemFromCart({ itemId: item.id })"
+                @click="handleRemoveItemFromCart(item.id)"
               >
                 <v-icon icon="mdi-close" size="16" />
               </button>
@@ -222,10 +235,10 @@ function notify(success, msg) {
             <span>{{ formatPriceVNLocale(cartStore.totalAmount) }}₫</span>
           </div>
 
-          <div class="summary-line">
+          <!-- <div class="summary-line">
             <span>Phí vận chuyển</span>
             <span class="summary-free">Miễn phí</span>
-          </div>
+          </div> -->
 
           <div class="summary-divider" />
 
