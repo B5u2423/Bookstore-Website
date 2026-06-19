@@ -7,14 +7,19 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import dev.vubl.bookstore.entities.UserType;
+import jakarta.servlet.http.HttpServletResponse;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -41,7 +46,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfigs {
-  private final RSAKeyPairProperties rsaKeyPairProperties;
+  @Value("${spring.security.oauth2.resourceserver.jwt.private-key-location}")
+  private RSAPrivateKey privateKey;
+
+  @Value("${spring.security.oauth2.resourceserver.jwt.public-key-location}")
+  private RSAPublicKey publicKey;
+
+  @Value("#{'${app.cors-allowed-origins:}'.split(',')}")
+  private List<String> allowedOrigins;
 
   @Bean
   public PasswordEncoder bCryptPasswordEncoder() {
@@ -50,15 +62,12 @@ public class SecurityConfigs {
 
   @Bean
   public JwtDecoder jwtDecoder() {
-    return NimbusJwtDecoder.withPublicKey(rsaKeyPairProperties.getRsaPublicKey()).build();
+    return NimbusJwtDecoder.withPublicKey(publicKey).build();
   }
 
   @Bean
   public JwtEncoder jwtEncoder() {
-    JWK jwk =
-        new RSAKey.Builder(rsaKeyPairProperties.getRsaPublicKey())
-            .privateKey(rsaKeyPairProperties.getRsaPrivateKey())
-            .build();
+    JWK jwk = new RSAKey.Builder(publicKey).privateKey(privateKey).build();
     JWKSource<SecurityContext> jwkSource = new ImmutableJWKSet<>(new JWKSet(jwk));
     return new NimbusJwtEncoder(jwkSource);
   }
@@ -72,8 +81,7 @@ public class SecurityConfigs {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration corsConfiguration = new CorsConfiguration();
     corsConfiguration.setAllowCredentials(true);
-    // TODO: use env var
-    corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5174"));
+    corsConfiguration.setAllowedOrigins(allowedOrigins);
     corsConfiguration.setAllowedMethods(List.of("*"));
     corsConfiguration.setAllowedHeaders(List.of("*"));
 
@@ -92,7 +100,10 @@ public class SecurityConfigs {
   }
 
   @Bean
+  @Deprecated
   public JwtAuthenticationConverter jwtAuthenticationConverter() {
+    // for role-based jwt. config for @Pre and @Post Authorize annotations.
+    // config for oAuth2ResourceServer - oauth2.jwt(converter) in SecFilterChain.
     JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter =
         new JwtGrantedAuthoritiesConverter();
     jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
@@ -119,9 +130,12 @@ public class SecurityConfigs {
               auth.anyRequest().authenticated();
             })
         .oauth2Login(oauth -> oauth.successHandler(oAuth2SuccessHandler))
-        .oauth2ResourceServer(
-            oauth2 ->
-                oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
+        .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+        .exceptionHandling(
+            exception ->
+                exception.authenticationEntryPoint(
+                    (request, response, authException) ->
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")))
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
     return http.build();
