@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +22,15 @@ public class TokenService {
   private final JwtDecoder jwtDecoder;
   private final RefreshTokenRepo refreshTokenRepo;
 
-  // TODO: make expiration for tokens as ENV VAR
+  @Value("${app.jwt-token-expiration-seconds}")
+  private long tokenExpirationSeconds;
+
+  @Value("${app.jwt-refresh-expiration-seconds}")
+  private long refreshExpirationSeconds;
+
   public String generateJwt(ApplicationUser user) {
     Instant now = Instant.now();
-    Instant expiration = now.plusSeconds(60 * 15);
+    Instant expiration = now.plusSeconds(tokenExpirationSeconds);
     String scope = user.getUserType().toString();
     JwtClaimsSet jwtClaimsSet =
         JwtClaimsSet.builder()
@@ -47,7 +53,7 @@ public class TokenService {
     RefreshToken refreshToken =
         RefreshToken.builder()
             .refreshToken(UUID.randomUUID().toString())
-            .expiration(Instant.now().plusSeconds(60 * 24 * 60))
+            .expiration(Instant.now().plusSeconds(refreshExpirationSeconds))
             .user(user)
             .build();
     return refreshTokenRepo.save(refreshToken);
