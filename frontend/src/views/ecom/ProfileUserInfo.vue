@@ -610,6 +610,13 @@ onMounted(() => {
 .addr-action-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .addr-dialog {
+  /* workaround: dialog does not inherit color */
+  --accent:      #a3262c;
+  --accent-soft: #f7e9e8;
+  --ink:         #2b2420;
+  --muted:       #8a7d72;
+  --border:      #e8e1d8;
+  --paper:       #fbf8f4;
   background: #fff;
   border-radius: 14px;
   overflow: hidden;
