@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const api = axios.create({
-  baseURL: 'http://localhost:8080/api/v1',
+  baseURL: '/api/v1',
   timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
@@ -9,7 +9,7 @@ export const api = axios.create({
 })
 
 export const customerApi = axios.create({
-  baseURL: 'http://localhost:8080/api/v1',
+  baseURL: '/api/v1',
   timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
@@ -17,7 +17,7 @@ export const customerApi = axios.create({
 })
 
 export const adminApi = axios.create({
-  baseURL: 'http://localhost:8080/api/v1',
+  baseURL: '/api/v1',
   timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
