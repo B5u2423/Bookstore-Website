@@ -1,11 +1,13 @@
 package dev.vubl.bookstore.services;
 
+import dev.vubl.bookstore.dtos.CouponAppliedDTO;
 import dev.vubl.bookstore.dtos.CouponDTO;
 import dev.vubl.bookstore.entities.Coupon;
 import dev.vubl.bookstore.entities.DiscountType;
 import dev.vubl.bookstore.repos.CouponRepo;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,7 +26,7 @@ import org.springframework.stereotype.Service;
 public class CouponService {
   private final CouponRepo couponRepo;
 
-  public BigDecimal applyCoupon(String code, BigDecimal orderAmount) {
+  public CouponAppliedDTO applyCoupon(String code, BigDecimal orderAmount) {
     Coupon coupon =
         couponRepo
             .findByCodeAndIsActiveTrue(code)
@@ -37,9 +39,13 @@ public class CouponService {
     coupon.setUsedCount(coupon.getUsedCount() + 1);
     couponRepo.save(coupon);
 
-    return orderAmount.subtract(discount).compareTo(BigDecimal.ZERO) < 0
-        ? BigDecimal.ZERO
-        : orderAmount.subtract((discount));
+    BigDecimal appliedTotal = orderAmount.subtract(discount);
+
+    return CouponAppliedDTO.builder()
+        .appliedItemsTotal(
+            appliedTotal.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO : appliedTotal)
+        .discountValue(discount)
+        .build();
   }
 
   public Page<Coupon> getAllCoupons(int page, int size, String sortBy, String order) {
@@ -111,7 +117,9 @@ public class CouponService {
 
   private BigDecimal calculateDiscount(Coupon coupon, BigDecimal orderAmount) {
     if (coupon.getDiscountType() == DiscountType.PERCENT) {
-      return orderAmount.multiply(coupon.getDiscountValue()).divide(BigDecimal.valueOf(100));
+      return orderAmount
+          .multiply(coupon.getDiscountValue())
+          .divide(BigDecimal.valueOf(100), 0, RoundingMode.HALF_DOWN);
     }
     return coupon.getDiscountValue();
   }

@@ -14,6 +14,7 @@ public record ShippingInfoDTO(
     BigDecimal shippingFee,
     boolean isFreeShip,
     BigDecimal orderTotal,
+    BigDecimal discountValue,
     String cityName,
     Integer cityId,
     Integer communeId,

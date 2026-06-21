@@ -1,5 +1,6 @@
 package dev.vubl.bookstore.services;
 
+import dev.vubl.bookstore.dtos.CouponAppliedDTO;
 import dev.vubl.bookstore.dtos.ShippingInfoDTO;
 import dev.vubl.bookstore.entities.*;
 import dev.vubl.bookstore.exceptions.BookDoesNotExistException;
@@ -85,8 +86,11 @@ public class OrderService {
     }
     // apply coupon
     // TODO: handle coupon concurrency
+    // TODO: add discountValue column to orders table
     if (shippingInfo.couponCode() != null && !shippingInfo.couponCode().isEmpty()) {
-      tmpItemsTotal = couponService.applyCoupon(shippingInfo.couponCode(), tmpItemsTotal);
+      CouponAppliedDTO applied =
+          couponService.applyCoupon(shippingInfo.couponCode(), tmpItemsTotal);
+      tmpItemsTotal = applied.appliedItemsTotal();
     }
 
     log.info("Validating items total...");

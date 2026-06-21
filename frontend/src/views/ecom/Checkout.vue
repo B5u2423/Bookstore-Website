@@ -32,6 +32,7 @@ function bootStrapValues() {
     itemsTotal: cartStore.totalAmount,
     isFreeShip: false,
     shippingFee: 0,
+    discountValue: 0,
     orderTotal: 0,
     couponCode: '',
     email: userProfileStore.userInfo.email,
