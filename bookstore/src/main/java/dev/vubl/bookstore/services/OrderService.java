@@ -10,6 +10,7 @@ import dev.vubl.bookstore.mappers.BookMapper;
 import dev.vubl.bookstore.mappers.OrderMapper;
 import dev.vubl.bookstore.repos.BookRepo;
 import dev.vubl.bookstore.repos.CartRepo;
+import dev.vubl.bookstore.repos.CouponRepo;
 import dev.vubl.bookstore.repos.OrderRepo;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OrderService {
   private final OrderRepo orderRepo;
+  private final CouponRepo couponRepo;
   private final CartService cartService;
   private final AuthService authService;
   private final CouponService couponService;
@@ -56,6 +58,8 @@ public class OrderService {
 
     BigDecimal tmpItemsTotal = BigDecimal.ZERO;
     BigDecimal tmpOrderTotal = BigDecimal.ZERO;
+    BigDecimal tmpDiscountValue = BigDecimal.ZERO;
+    BigDecimal tmpAppliedItemsTotal = BigDecimal.ZERO; // after discount
     BigDecimal tmpShippingFee = getShippingFee(shippingInfo.isFreeShip(), shippingInfo.cityId());
 
     for (CartItem ci : cart.getItems()) {
@@ -86,11 +90,11 @@ public class OrderService {
     }
     // apply coupon
     // TODO: handle coupon concurrency
-    // TODO: add discountValue column to orders table
     if (shippingInfo.couponCode() != null && !shippingInfo.couponCode().isEmpty()) {
       CouponAppliedDTO applied =
           couponService.applyCoupon(shippingInfo.couponCode(), tmpItemsTotal);
-      tmpItemsTotal = applied.appliedItemsTotal();
+      tmpAppliedItemsTotal = applied.appliedItemsTotal();
+      tmpDiscountValue = applied.discountValue();
     }
 
     log.info("Validating items total...");
@@ -98,7 +102,17 @@ public class OrderService {
       throw new IllegalStateException("Mismatch Items total!");
     }
 
-    tmpOrderTotal = tmpOrderTotal.add(tmpItemsTotal).add(tmpShippingFee);
+    log.info("Validating items total after discount...");
+    if (shippingInfo
+            .itemsTotal()
+            .subtract(shippingInfo.discountValue())
+            .compareTo(tmpAppliedItemsTotal)
+        != 0) {
+      throw new IllegalStateException("Mismatch Discounted Items total!");
+    }
+
+    // order_total = items_total - discount_value + shipping_fee
+    tmpOrderTotal = tmpOrderTotal.add(tmpItemsTotal).subtract(tmpDiscountValue).add(tmpShippingFee);
     log.info("Validating order total...");
     if (shippingInfo.orderTotal().compareTo(tmpOrderTotal) != 0) {
       throw new IllegalStateException("Mismatch Order total!!!!");
@@ -107,6 +121,11 @@ public class OrderService {
     // save order
     log.info("Saving order...");
     Order savedOrder = orderRepo.save(o);
+
+    // increment coupon usage
+    Coupon c = couponRepo.findByCodeAndIsActiveTrue(shippingInfo.couponCode()).orElseThrow();
+    c.setUsedCount(c.getUsedCount() + 1);
+    couponRepo.save(c);
 
     // change cart status
     log.info("Updating cart status...");

@@ -1,12 +1,13 @@
 <script setup>
 import { CouponService } from '@/api/coupon-api'
+import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
+import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
 import { useAdminAuthStore } from '@/stores/admin-auth-store'
 import { onMounted, ref, shallowRef, toRef } from 'vue'
 import { VDateInput } from 'vuetify/labs/VDateInput'
 
 const adminAuthStore = useAdminAuthStore()
 
-// TODO: add snackbar
 function createNewRecord() {
   return {
     id: null,
@@ -115,15 +116,25 @@ async function save() {
       // edit immediate view
       const index = serverItems.value.findIndex((coupon) => coupon.id === formModel.value.id)
       serverItems.value[index] = formModel.value
+      notify(true, 'Cập nhật mã thành công')
+      await loadItems()
     } catch (error) {
-      console.error('Error editing coupon')
+      notify(false, `Lỗi xảy ra khi cập nhật mã: ${error.message}`)
+      console.error(`Error editing coupon ${error.message}`)
+    } finally {
+      dialog.value = false
     }
   } else {
+    // API call
     try {
-      // API call
       const res = await CouponService.addNewCoupon(formModel.value)
+      notify(true, 'Thêm mã thành công')
+      await loadItems()
     } catch (error) {
-      console.error('Error adding new coupon')
+      notify(false, `Lỗi xảy ra khi thêm mã: ${error.message}`)
+      console.error(`Error adding new coupon ${error.message}`)
+    } finally {
+      dialog.value = false
     }
   }
 }
@@ -136,11 +147,29 @@ async function remove() {
     const index = serverItems.value.findIndex((coupon) => coupon.id === itemId.value)
     serverItems.value.splice(index, 1)
     totalItems.value--
+    notify(true, 'Xóa mã thành công')
+    await loadItems()
   } catch (error) {
-    console.error(`Error deleting coupon with id ${id}`, error)
+    notify(false, `Lỗi xảy ra khi xóa mã ${error.message}`)
+    console.error(`Error deleting coupon with id ${id} :: ${error.message}`)
   } finally {
     isDelLoading.value = false
     confirmationDialog.value = false
+  }
+}
+
+// snackbars
+const isSuccess = ref(false)
+const isError = ref(false)
+const message = ref('')
+
+function notify(state, msg) {
+  if (state) {
+    isSuccess.value = true
+    message.value = msg
+  } else {
+    isError.value = true
+    message.value = msg
   }
 }
 
@@ -409,4 +438,7 @@ onMounted(() => {
       </v-card-actions>
     </v-card>
   </v-dialog>
+
+  <snack-bar-on-failure :show="isError" :message="message"></snack-bar-on-failure>
+  <snack-bar-on-failure :show="isSuccess" :message="message"></snack-bar-on-failure>
 </template>

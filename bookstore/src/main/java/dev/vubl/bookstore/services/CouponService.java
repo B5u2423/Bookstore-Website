@@ -36,8 +36,7 @@ public class CouponService {
 
     BigDecimal discount = calculateDiscount(coupon, orderAmount);
 
-    coupon.setUsedCount(coupon.getUsedCount() + 1);
-    couponRepo.save(coupon);
+    // increment count applied at checkout flow
 
     BigDecimal appliedTotal = orderAmount.subtract(discount);
 

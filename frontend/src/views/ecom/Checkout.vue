@@ -1,5 +1,6 @@
 <script setup>
 import { AddressInfoService, OrderService, PaymentService } from '@/api/cart-api'
+import { CouponService } from '@/api/coupon-api'
 import HorizontalBookCard from '@/components/books/HorizontalBookCard.vue'
 import SnackBarOnFailure from '@/components/common/SnackBarOnFailure.vue'
 import SnackBarOnSuccess from '@/components/common/SnackBarOnSuccess.vue'
@@ -166,7 +167,9 @@ const isShippingValid = computed(() =>
   && !!selectedShipping.value
 )
 
-const tmpOrderTotal = computed(() => shippingInfo.value.shippingFee + shippingInfo.value.itemsTotal)
+const tmpOrderTotal = computed(() =>
+  shippingInfo.value.itemsTotal - shippingInfo.value.discountValue + shippingInfo.value.shippingFee
+)
 
 const shippingOptions = computed(() => {
   const opts = []
@@ -220,6 +223,7 @@ watch(
     if (!!selectedAddrId) {
       selectedAddrId.value = null
       // bug: Hanoi shipping with non-Hanoi address
+      // if not clear the selectedShipping value
       selectedShipping.value = null
     }
   },
@@ -238,6 +242,23 @@ function notify(success, msg) {
     isSuccess.value = false
     isError.value = false
   }, 2500)
+}
+
+async function applyCoupon() {
+  try {
+    const res = await CouponService.applyCoupon(
+      {
+        couponCode: shippingInfo.value.couponCode,
+        itemsTotal: shippingInfo.value.itemsTotal,
+      },
+    )
+    const { appliedItemsTotal, discountValue } = res.data
+    shippingInfo.value.discountValue = discountValue
+    notify(true, `Áp dụng mã ${shippingInfo.value.couponCode} thành công`)
+  } catch (e) {
+    notify(false, `Lỗi khi áp mã ${shippingInfo.value.couponCode}`)
+    console.log(`Error applying coupon ${e.message}`)
+  }
 }
 
 onMounted(() => {
@@ -536,7 +557,7 @@ onMounted(() => {
             prepend-inner-icon="mdi-ticket-percent-outline"
             class="checkout-field coupon-input"
           />
-          <button class="coupon-btn" type="button">Áp dụng</button>
+          <button class="coupon-btn" type="button" @click="applyCoupon">Áp dụng</button>
         </div>
 
         <!-- Price breakdown -->
@@ -544,6 +565,10 @@ onMounted(() => {
           <div class="summary-line">
             <span>Tạm tính</span>
             <span>{{ formatPriceVNLocale(shippingInfo.itemsTotal) }} ₫</span>
+          </div>
+          <div class="summary-line">
+            <span>Giảm giá</span>
+            <span>-{{ formatPriceVNLocale(shippingInfo.discountValue) }} ₫</span>
           </div>
           <div class="summary-line">
             <span>Phí vận chuyển</span>

@@ -45,7 +45,6 @@ public class CouponController {
   @PostMapping("/apply")
   public ResponseEntity<CouponAppliedDTO> applyCoupon(@RequestBody ApplyCouponRequest request) {
 
-    return ResponseEntity.ok(
-        couponService.applyCoupon(request.couponCode(), request.orderAmount()));
+    return ResponseEntity.ok(couponService.applyCoupon(request.couponCode(), request.itemsTotal()));
   }
 }

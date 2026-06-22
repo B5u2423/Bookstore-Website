@@ -1,4 +1,4 @@
-import api, { adminApi } from './api-config'
+import { adminApi, customerApi } from './api-config'
 
 export const CouponService = {
   async getAllCouponsPaginated(params = {}) {
@@ -12,37 +12,24 @@ export const CouponService = {
       throw error
     }
   },
+
   async updateCoupon(id, body) {
-    try {
-      const res = await adminApi.put('/coupons/update', body, {
-        params: { id },
-      })
-      return res.data
-    } catch (error) {
-      console.error('Error updating coupon')
-      throw error
-    }
+    return await adminApi.put('/coupons/update', body, {
+      params: { id },
+    })
   },
 
   async addNewCoupon(body) {
-    try {
-      const res = await adminApi.post('/coupons/add', body)
-      return res.data
-    } catch (error) {
-      console.error('Error add coupon')
-      throw error
-    }
+    return await adminApi.post('/coupons/add', body)
   },
 
   async deleteCoupon(id) {
-    try {
-      const res = adminApi.delete('/coupons/delete', {
-        params: { id },
-      })
-      return res.data
-    } catch (error) {
-      console.error('Error delete coupon')
-      throw error
-    }
+    return adminApi.delete('/coupons/delete', {
+      params: { id },
+    })
+  },
+
+  async applyCoupon(body) {
+    return await customerApi.post('/coupons/apply', body)
   },
 }
