@@ -15,6 +15,7 @@ public record CouponDTO(
     @NotNull(message = "Mức giảm không được bỏ trống") BigDecimal discountValue,
     @NotNull(message = "Giá trị đơn hàng tói thiểu không được bỏ trống") BigDecimal minOrderAmount,
     @NotNull(message = "Số lần dùng không được bỏ trống") Integer maxUses,
+    Integer usedCount,
     @NotNull(message = "Ngày áp dụng không được bỏ trống") LocalDateTime validFrom,
     @NotNull(message = "Hạn sử dụng không được bỏ trống") LocalDateTime validUntil,
     Boolean isActive) {}

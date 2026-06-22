@@ -6,6 +6,8 @@ import dev.vubl.bookstore.dtos.CouponDTO;
 import dev.vubl.bookstore.entities.Coupon;
 import dev.vubl.bookstore.services.CouponService;
 import jakarta.validation.Valid;
+import java.math.BigDecimal;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
@@ -46,5 +48,12 @@ public class CouponController {
   public ResponseEntity<CouponAppliedDTO> applyCoupon(@RequestBody ApplyCouponRequest request) {
 
     return ResponseEntity.ok(couponService.applyCoupon(request.couponCode(), request.itemsTotal()));
+  }
+
+  @GetMapping("/available")
+  public ResponseEntity<List<CouponDTO>> getApplicableCouponsForOrder(
+      @RequestParam BigDecimal itemsTotal) {
+
+    return ResponseEntity.ok(couponService.getApplicableCoupons(itemsTotal));
   }
 }

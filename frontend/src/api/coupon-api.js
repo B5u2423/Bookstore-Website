@@ -32,4 +32,8 @@ export const CouponService = {
   async applyCoupon(body) {
     return await customerApi.post('/coupons/apply', body)
   },
+
+  async getAvailableCoupons(params = {}) {
+    return await customerApi.get('/coupons/available', { params: params })
+  },
 }
