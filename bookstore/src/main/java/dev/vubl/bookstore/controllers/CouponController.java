@@ -1,12 +1,13 @@
 package dev.vubl.bookstore.controllers;
 
 import dev.vubl.bookstore.dtos.ApplyCouponRequest;
+import dev.vubl.bookstore.dtos.CouponAppliedDTO;
 import dev.vubl.bookstore.dtos.CouponDTO;
 import dev.vubl.bookstore.entities.Coupon;
 import dev.vubl.bookstore.services.CouponService;
 import jakarta.validation.Valid;
 import java.math.BigDecimal;
-import java.util.Map;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
@@ -44,9 +45,15 @@ public class CouponController {
   }
 
   @PostMapping("/apply")
-  public ResponseEntity<?> applyCoupon(@RequestBody ApplyCouponRequest request) {
-    BigDecimal finalAmount = couponService.applyCoupon(request.couponCode(), request.orderAmount());
+  public ResponseEntity<CouponAppliedDTO> applyCoupon(@RequestBody ApplyCouponRequest request) {
 
-    return ResponseEntity.ok(Map.of("finalAmount", finalAmount));
+    return ResponseEntity.ok(couponService.applyCoupon(request.couponCode(), request.itemsTotal()));
+  }
+
+  @GetMapping("/available")
+  public ResponseEntity<List<CouponDTO>> getApplicableCouponsForOrder(
+      @RequestParam BigDecimal itemsTotal) {
+
+    return ResponseEntity.ok(couponService.getApplicableCoupons(itemsTotal));
   }
 }

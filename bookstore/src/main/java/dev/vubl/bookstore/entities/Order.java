@@ -64,4 +64,7 @@ public class Order extends BaseEntity {
 
   @Column(name = "vnp_txnref")
   private String vnpTxnRef;
+
+  @Column(name = "discount_value")
+  private BigDecimal discountValue;
 }

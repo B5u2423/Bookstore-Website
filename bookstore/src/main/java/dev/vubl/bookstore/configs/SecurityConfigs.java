@@ -166,9 +166,10 @@ public class SecurityConfigs {
     return new PathPatternRequestMatcher[] {
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/customers/**"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/carts/**"),
-      PathPatternRequestMatcher.withDefaults().matcher("/api/v1/orders/**"),
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/v1/orders/**"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/payment/**"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/coupons/apply"),
+      PathPatternRequestMatcher.withDefaults().matcher("/api/v1/coupons/available"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/orders/user"),
     };
   }
@@ -184,8 +185,10 @@ public class SecurityConfigs {
       PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.PUT, "/api/v1/categories/**"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/images/upload"),
       PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/v1/orders"),
-      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/v1/coupons/**"),
-      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, "/api/v1/coupons/**"),
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/v1/coupons"),
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, "/api/v1/coupons/add"),
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.PUT, "/api/v1/coupons/**"),
+      PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.DELETE, "/api/v1/coupons/**"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/collections/**"),
       PathPatternRequestMatcher.withDefaults().matcher("/api/v1/orders/update-status-id"),
     };

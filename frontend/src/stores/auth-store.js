@@ -2,7 +2,6 @@ import { AuthService, getCurrentUser, loginUser, logoutUser, registerUser } from
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
-// TODO: rewrite the refresh flow
 export const useAuthStore = defineStore(
   'auth',
   () => {
