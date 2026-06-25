@@ -346,7 +346,7 @@ const displayedBreadCrumbTitle = computed(() => {
           :key="n"
         ></vertical-book-card>
       </v-col>
-      <v-col cols="6" md="3" v-for="b in recBooks">
+      <v-col v-else cols="6" md="3" v-for="b in recBooks">
         <vertical-book-card
           :book="b"
           :key="b.id"
