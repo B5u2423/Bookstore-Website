@@ -225,6 +225,12 @@ public class BookService {
         .build();
   }
 
+  public List<BookDTO> get4RandomBooks(Integer bookId) {
+    Book b = bookRepo.findById(bookId).orElseThrow(BookDoesNotExistException::new);
+    List<Book> l = bookRepo.findFourRandomBooks(b.getCategory().getId());
+    return l.stream().map(this::toDtoWrapper).toList();
+  }
+
   private boolean isIsbnNotUnique(String isbn) {
     if (isbn != null) {
       return bookRepo.findByIsbn(isbn).isPresent();

@@ -132,4 +132,8 @@ export const BookService = {
       throw error
     }
   },
+
+  async getRecBooks(params = {}) {
+    return api.get('/books/get-rec', { params })
+  },
 }

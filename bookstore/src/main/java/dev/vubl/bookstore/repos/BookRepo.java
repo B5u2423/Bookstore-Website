@@ -24,11 +24,11 @@ public interface BookRepo extends JpaRepository<Book, Integer> {
   @Query(
       value =
           """
-    SELECT *,
-           ts_rank(search_vector, plainto_tsquery('simple', :keyword)) AS rank
-    FROM books
-    WHERE search_vector @@ plainto_tsquery('simple', :keyword)
-    ORDER BY rank DESC
+  SELECT *,
+         ts_rank(search_vector, plainto_tsquery('simple', :keyword)) AS rank
+  FROM books
+  WHERE search_vector @@ plainto_tsquery('simple', :keyword)
+  ORDER BY rank DESC
   """,
       nativeQuery = true)
   List<Book> searchBookV3(String keyword);
@@ -44,4 +44,15 @@ public interface BookRepo extends JpaRepository<Book, Integer> {
   List<Book> findAllByCollection(Collection c);
 
   List<Book> findBy(Pageable pageable);
+
+  @Query(
+      value =
+          """
+  SELECT *
+  FROM books
+  WHERE category_id = :categoryId
+  ORDER BY RANDOM() LIMIT 4
+ """,
+      nativeQuery = true)
+  List<Book> findFourRandomBooks(@Param("categoryId") Integer categoryId);
 }

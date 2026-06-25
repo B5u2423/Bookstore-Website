@@ -1,11 +1,11 @@
 <script setup>
 import { BookService } from '@/api/book-api'
 import { CartService } from '@/api/cart-api.js'
-import router from '@/router'
+import VerticalBookCard from '@/components/books/VerticalBookCard.vue'
 import { useAuthStore } from '@/stores/auth-store.js'
 import { useCartStore } from '@/stores/cart-store'
 import { formatPriceVNLocale } from '@/utils/utils'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 const cartStore = useCartStore()
@@ -22,10 +22,12 @@ const DESCRIPTION_PREVIEW_LENGTH = 320
 const BOOK_TITLE_LENGTH = 80
 const catRoute = ref('/')
 
+const recBooks = ref([])
+
 const book = ref({
   author: '',
   description: '',
-  id: '',
+  id: 0,
   imageUrl: '',
   inStock: 0,
   isbn: '',
@@ -34,7 +36,7 @@ const book = ref({
   publishYear: '',
   publisher: '',
   title: '',
-  urlSlug: '',
+  urlSlug: 'placeholder',
 })
 
 const isOutOfStock = computed(() => book.value.inStock < 1)
@@ -61,8 +63,29 @@ async function loadBookDetail() {
   }
 }
 
-onMounted(() => {
-  loadBookDetail()
+async function getRecBooks(bookId) {
+  try {
+    const res = await BookService.getRecBooks({
+      bookId: bookId,
+    })
+    recBooks.value = res.data
+  } catch (e) {
+    console.error(`Error fetching rec books ${e.message}`)
+  }
+}
+
+watch(
+  () => route.params.id,
+  async (newId) => {
+    if (!newId) return
+    await loadBookDetail()
+    await getRecBooks(book.value.id)
+  },
+)
+
+onMounted(async () => {
+  await loadBookDetail()
+  await getRecBooks(book.value.id)
 })
 
 function decreaseQuantity() {
@@ -297,6 +320,37 @@ const displayedBreadCrumbTitle = computed(() => {
             />
           </button>
         </v-card>
+      </v-col>
+    </v-row>
+
+    <!-- book recs -->
+    <!-- Header -->
+    <div class="rec-header">
+      <div class="rec-header-left">
+        <span class="rec-accent-bar" aria-hidden="true" />
+        <div>
+          <p class="rec-eyebrow">Gợi ý cho bạn</p>
+          <h2 class="rec-title">CÓ THỂ BẠN QUAN TÂM</h2>
+        </div>
+      </div>
+    </div>
+    <v-row>
+      <v-col
+        v-if="loading"
+        cols="6"
+        md="3"
+        v-for="n in 4"
+      >
+        <vertical-book-card
+          :loading="true"
+          :key="n"
+        ></vertical-book-card>
+      </v-col>
+      <v-col cols="6" md="3" v-for="b in recBooks">
+        <vertical-book-card
+          :book="b"
+          :key="b.id"
+        ></vertical-book-card>
       </v-col>
     </v-row>
 
@@ -582,4 +636,37 @@ const displayedBreadCrumbTitle = computed(() => {
 }
 .breadcrumb-link:hover { color: var(--accent); }
 .breadcrumb-sep { color: black; }
+
+.rec-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  margin-top: 30px;
+}
+.rec-header-left { display: flex; align-items: center; gap: 12px; }
+.rec-accent-bar {
+  display: inline-block;
+  width: 4px;
+  height: 24px;
+  border-radius: 0;
+  background: #a3262c;
+  flex-shrink: 0;
+}
+.rec-eyebrow {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-weight: 600;
+  color: var(--muted);
+  margin: 0 0 3px;
+}
+.rec-title {
+  text-transform: uppercase;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0;
+}
 </style>
