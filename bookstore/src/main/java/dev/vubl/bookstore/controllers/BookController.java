@@ -79,6 +79,11 @@ public class BookController {
     return ResponseEntity.ok().body(bookService.getBooksInCollectionForLandingPage(collection));
   }
 
+  @GetMapping("/get-rec")
+  public ResponseEntity<List<BookDTO>> getFourRecBooks(@RequestParam Integer bookId) {
+    return ResponseEntity.ok().body(bookService.get4RandomBooks(bookId));
+  }
+
   @ExceptionHandler({BookWithIsbnAlreadyExists.class})
   public ResponseEntity<String> handleBookWithExistingIsbn(BookWithIsbnAlreadyExists ex) {
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
