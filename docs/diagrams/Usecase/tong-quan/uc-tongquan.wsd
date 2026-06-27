@@ -5,11 +5,9 @@ skinparam packageStyle rectangle
 actor "Khách Hàng Vãng Lai" as KHVL
 actor "Khách Hàng" as KH 
 actor "Người Dùng" as ND
-actor "Nhân Viên" as NV
 actor Admin as AD
 
 ND <|-- AD
-ND <|-- NV
 ND <|-- KH
 
 rectangle "Hệ Thống" {
@@ -27,16 +25,13 @@ rectangle "Hệ Thống" {
   KH --> (Thanh toán)
 
   (Thanh toán) ..> (Đặt hàng) : <<includes>>
-  (Đăng nhập) <.. (Đánh giá) : <<includes>>
 
-  AD --> (Quản lý đơn hàng - Staff)
+  AD --> (Quản lý đơn hàng - Admin)
   AD --> (Quản lý người dùng)
   AD --> (Thống kê bán hàng)
   AD --> (Quản lý sách)
   AD --> (Quản lý mã giảm giá)
   AD --> (Quản lý danh mục sách)
-
-  NV --> (Quản lý đơn hàng - Staff)
 }
 
 @enduml

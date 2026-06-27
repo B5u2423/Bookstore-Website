@@ -5,59 +5,30 @@ left to right direction
 "Admin" as AD
 
 AD --> (Quản lý khách hàng)
-(Quản lý khách hàng) ..> (Tạo khách hàng) : <<includes>>
-(Quản lý khách hàng) ..> (Tìm kiếm khách hàng) : <<includes>>
 (Quản lý khách hàng) ..> (Xem danh sách khách hàng) : <<includes>>
-(Xem danh sách khách hàng) <.. (Xóa khách hàng) : <<extends>>
-(Xem danh sách khách hàng) <.. (Đặt lại mật khẩu cho khách hàng) : <<extends>>
-(Xem danh sách khách hàng) <.. (Xem chi tiết khách hàng) : <<extends>>
-(Tìm kiếm khách hàng) <.. (Xem chi tiết khách hàng) : <<extends>>
-(Xem chi tiết khách hàng) <.. (Cập nhật thông tin khách hàng) : <<extends>>
 
 AD --> (Quản lý sách)
-(Quản lý sách) ..> (Tạo sách) : <<includes>>
-(Quản lý sách) ..> (Tìm kiếm sách) : <<includes>>
-(Quản lý sách) ..> (Xem danh sách sách) : <<includes>>
-(Xem danh sách sách) <.. (Xóa sách) : <<extends>>
-(Xem danh sách sách) <.. (Xem chi tiết sách) : <<extends>>
-(Tìm kiếm sách) <.. (Xem chi tiết sách) : <<extends>>
-(Xem chi tiết sách) <.. (Cập nhật thông tin sách) : <<extends>>
-
-AD --> (Quản lý nhân viên)
-(Quản lý nhân viên) ..> (Tạo nhân viên) : <<includes>>
-(Quản lý nhân viên) ..> (Tìm kiếm nhân viên) : <<includes>>
-(Quản lý nhân viên) ..> (Xem danh sách nhân viên) : <<includes>>
-(Xem danh sách nhân viên) <.. (Xóa nhân viên) : <<extends>>
-(Xem danh sách nhân viên) <.. (Đặt lại mật khẩu cho nhân viên) : <<extends>>
-(Xem danh sách nhân viên) <.. (Xem chi tiết nhân viên) : <<extends>>
-(Tìm kiếm nhân viên) <.. (Xem chi tiết nhân viên) : <<extends>>
-(Xem chi tiết nhân viên) <.. (Cập nhật thông tin nhân viên) : <<extends>>
+(Quản lý sách) ..> (Thêm mới sách) : <<includes>>
+(Quản lý sách) ..> (Xóa sách) : <<includes>>
+(Quản lý sách) ..> (Chỉnh sửa thông tin sách) : <<includes>>
 
 AD --> (Quản lý mã giảm giá)
-(Quản lý mã giảm giá) ..> (Tạo mã giảm giá) : <<includes>>
-(Quản lý mã giảm giá) ..> (Tìm kiếm mã giảm giá) : <<includes>>
-(Quản lý mã giảm giá) ..> (Xem danh sách mã giảm giá) : <<includes>>
-(Xem danh sách mã giảm giá) <.. (Xóa mã giảm giá) : <<extends>>
-(Xem danh sách mã giảm giá) <.. (Xem chi tiết mã giảm giá) : <<extends>>
-(Tìm kiếm mã giảm giá) <.. (Xem chi tiết mã giảm giá) : <<extends>>
-(Xem chi tiết mã giảm giá) <.. (Cập nhật thông tin mã giảm giá) : <<extends>>
+(Quản lý mã giảm giá) ..> (Thêm mới mã giảm giá) : <<includes>>
+(Quản lý mã giảm giá) ..> (Xóa mã giảm giá) : <<includes>>
+(Quản lý mã giảm giá) ..> (Chỉnh sửa mã giảm giá) : <<includes>>
 
 AD --> (Quản lý danh mục sách)
-(Quản lý danh mục sách) ..> (Tạo danh mục sách) : <<includes>>
-(Quản lý danh mục sách) ..> (Tìm kiếm danh mục sách) : <<includes>>
-(Quản lý danh mục sách) ..> (Xem danh sách danh mục sách) : <<includes>>
-(Xem danh sách danh mục sách) <.. (Xóa danh mục sách) : <<extends>>
-(Xem danh sách danh mục sách) <.. (Xem chi tiết danh mục sách) : <<extends>>
-(Tìm kiếm danh mục sách) <.. (Xem chi tiết danh mục sách) : <<extends>>
-(Xem chi tiết danh mục sách) <.. (Cập nhật thông tin danh mục sách) : <<extends>>
+(Quản lý danh mục sách) ..> (Thêm mới danh mục sách) : <<includes>>
+(Quản lý danh mục sách) ..> (Xóa danh mục sách) : <<includes>>
+(Quản lý danh mục sách) ..> (Chỉnh sửa danh mục sách) : <<includes>>
+
+AD --> (Quản lý bộ sưu tập)
+(Quản lý bộ sưu tập) ..> (Thêm mới bộ sưu tập) : <<includes>>
+(Quản lý bộ sưu tập) ..> (Xóa bộ sưu tập) : <<includes>>
+(Quản lý bộ sưu tập) ..> (Chỉnh sửa bộ sưu tập) : <<includes>>
 
 AD --> (Quản lý đơn hàng)
-(Quản lý đơn hàng) ..> (Tạo đơn hàng) : <<includes>>
-(Quản lý đơn hàng) ..> (Tìm kiếm đơn hàng) : <<includes>>
+(Quản lý đơn hàng) ..> (Cập nhật trạng thái đơn) : <<includes>>
 (Quản lý đơn hàng) ..> (Xem danh sách đơn hàng) : <<includes>>
-(Xem danh sách đơn hàng) <.. (Xóa đơn hàng) : <<extends>>
-(Xem danh sách đơn hàng) <.. (Xem chi tiết đơn hàng) : <<extends>>
-(Tìm kiếm đơn hàng) <.. (Xem chi tiết đơn hàng) : <<extends>>
-(Xem chi tiết đơn hàng) <.. (Cập nhật thông tin đơn hàng) : <<extends>>
 
 @enduml

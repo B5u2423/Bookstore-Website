@@ -20,10 +20,6 @@ KH --> (Quản lý sổ địa chỉ)
 
 KH --> (Quản lý đơn hàng)
 (Quản lý đơn hàng) <.. (Xem đơn hàng) : <<extends>>
-(Quản lý đơn hàng) <.. (Hủy đơn hàng) : <<extends>>
-
-KH --> (Quản lý mã giảm giá cá nhân)
-(Quản lý mã giảm giá cá nhân) <.. (Xem mã giám giá) : <<extends>>
 
 KH --> (Đặt hàng)
 KH --> (Thanh toán)
