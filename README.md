@@ -1,13 +1,10 @@
-# datn2025_1
+# Book Ecommerce Website
 
-## Set Up Local Subdomain
+- Frontend: Vue.JS 3
+- Backend: Java Spring Boot
+- Database: PostgreSQL
 
-On Windows, open `C:\Windows\System32\drivers\etc\host` file, add the following lines to register the domains:
-
-```
-127.0.0.1 localhost
-127.0.0.1 admin.localhost
-```
+Implemented: Book, Order, Cart, Categories, Collections. Online payment with VNPAY sandbox. Upload image with Cloudinary. Integration with Google OAuth 2.0. Email sender with Spring mail. Analytics Dashboard with Postgres Materialized View.
 
 ## References
 
