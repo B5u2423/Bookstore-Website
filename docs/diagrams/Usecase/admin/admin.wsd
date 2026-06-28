@@ -31,4 +31,6 @@ AD --> (Quản lý đơn hàng)
 (Quản lý đơn hàng) ..> (Cập nhật trạng thái đơn) : <<includes>>
 (Quản lý đơn hàng) ..> (Xem danh sách đơn hàng) : <<includes>>
 
+AD --> (Xem biểu đồ thống kê)
+
 @enduml
