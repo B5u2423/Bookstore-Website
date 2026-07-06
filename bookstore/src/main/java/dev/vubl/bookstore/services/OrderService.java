@@ -61,6 +61,8 @@ public class OrderService {
     BigDecimal tmpDiscountValue = BigDecimal.ZERO;
     BigDecimal tmpAppliedItemsTotal = BigDecimal.ZERO; // after discount
     BigDecimal tmpShippingFee = getShippingFee(shippingInfo.isFreeShip(), shippingInfo.cityId());
+    boolean isCouponUsed =
+        shippingInfo.couponCode() != null && !shippingInfo.couponCode().isEmpty();
 
     for (CartItem ci : cart.getItems()) {
       // get book to update
@@ -87,10 +89,11 @@ public class OrderService {
       o.getItems().add(oi);
       tmpItemsTotal =
           tmpItemsTotal.add(oi.getPriceAtPurchase().multiply(BigDecimal.valueOf(oi.getQuantity())));
+      tmpAppliedItemsTotal = tmpItemsTotal;
     }
     // apply coupon
     // TODO: handle coupon concurrency
-    if (shippingInfo.couponCode() != null && !shippingInfo.couponCode().isEmpty()) {
+    if (isCouponUsed) {
       CouponAppliedDTO applied =
           couponService.applyCoupon(shippingInfo.couponCode(), tmpItemsTotal);
       tmpAppliedItemsTotal = applied.appliedItemsTotal();
@@ -123,9 +126,11 @@ public class OrderService {
     Order savedOrder = orderRepo.save(o);
 
     // increment coupon usage
-    Coupon c = couponRepo.findByCodeAndIsActiveTrue(shippingInfo.couponCode()).orElseThrow();
-    c.setUsedCount(c.getUsedCount() + 1);
-    couponRepo.save(c);
+    if (isCouponUsed) {
+      Coupon c = couponRepo.findByCodeAndIsActiveTrue(shippingInfo.couponCode()).orElseThrow();
+      c.setUsedCount(c.getUsedCount() + 1);
+      couponRepo.save(c);
+    }
 
     // change cart status
     log.info("Updating cart status...");
