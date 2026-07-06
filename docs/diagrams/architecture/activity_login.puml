@@ -1,0 +1,73 @@
+@startuml act_login
+skinparam ArrowColor #4a4a4a
+skinparam ActivityBorderColor #4a4a4a
+skinparam ActivityBackgroundColor #f9f9f9
+skinparam ActivityDiamondBackgroundColor #fff8e1
+skinparam ActivityDiamondBorderColor #4a4a4a
+skinparam shadowing false
+skinparam defaultFontSize 13
+
+title Luồng Đăng Nhập (Tài khoản/Mật khẩu với JWT)
+
+|Người dùng / Frontend|
+start
+:Nhập email và mật khẩu;
+:Kiểm tra hợp lệ biểu mẫu;
+
+if (Biểu mẫu hợp lệ?) then (Không)
+  :Hiển thị lỗi kiểm tra\nở màn hình đăng nhập;
+  stop
+else (Có)
+endif
+
+:POST /api/auth/login;
+
+|AuthService / UserRepository|
+:authenticate(email, password);
+:loadUserByEmail(email)\n(truy vấn PostgreSQL);
+
+|PostgreSQL|
+:Trả user + hash + roles;
+
+|AuthService / UserRepository|
+:Nhận UserDetails;
+:Xác thực mật khẩu\n(so sánh hash);
+
+if (Thông tin đăng nhập hợp lệ?) then (Không)
+  :throw BadCredentials;
+
+  |Người dùng / Frontend|
+  :Nhận 401 Không được phép;
+  :Hiển thị thông báo lỗi\nở màn hình đăng nhập;
+  stop
+else (Có)
+endif
+
+|TokenService (JWT / Refresh)|
+:generateAccessToken(user);
+:generateRefreshToken(user);
+:Lưu refresh token vào PostgreSQL;
+
+|PostgreSQL|
+:Xác nhận lưu refresh token;
+
+|TokenService (JWT / Refresh)|
+:Trả về accessToken + refreshToken;
+
+|AuthService / UserRepository|
+:Tạo AuthResponse\n(tokens + profile);
+:Trả 200 OK + token + hồ sơ;
+
+|Người dùng / Frontend|
+:Lưu token và hồ sơ\nvào bộ nhớ cục bộ;
+:Thiết lập header Authorization\n(Bearer token);
+:Điều hướng đến "/dashboard";
+
+note
+  Endpoint /api/auth/login cho phép truy cập ẩn danh.
+  Bộ lọc JWT chỉ áp dụng cho các endpoint được bảo vệ.
+end note
+
+stop
+
+@enduml
