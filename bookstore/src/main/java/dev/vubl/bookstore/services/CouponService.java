@@ -48,7 +48,7 @@ public class CouponService {
         .build();
   }
 
-  public Page<Coupon> getAllCoupons(int page, int size, String sortBy, String order) {
+  public Page<CouponDTO> getAllCouponsPaginated(int page, int size, String sortBy, String order) {
     List<String> allowed = List.of("id");
     if (!allowed.contains(sortBy)) {
       throw new IllegalArgumentException("Invalid sort field: %s".formatted(sortBy));
@@ -56,7 +56,7 @@ public class CouponService {
 
     Sort sort = order.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
     Pageable pageable = PageRequest.of(page, size, sort);
-    return couponRepo.findAll(pageable);
+    return couponRepo.findAll(pageable).map(CouponMapper.INSTANCE::toDto);
   }
 
   public Coupon updateCoupon(CouponDTO payload) {
@@ -65,7 +65,7 @@ public class CouponService {
             .findById(payload.id())
             .orElseThrow(
                 () -> new IllegalArgumentException("Update OP: Coupon ID must not be null"));
-    c.setActive(payload.isActive());
+    c.setIsActive(payload.isActive());
     c.setCode(payload.code());
     c.setDiscountType(payload.discountType());
     c.setDiscountValue(payload.discountValue());
@@ -92,7 +92,7 @@ public class CouponService {
   }
 
   public List<CouponDTO> getApplicableCoupons(BigDecimal itemsTotal) {
-    return couponRepo.findAllByIsActiveTrueAndMinOrderAmountLessThanEqual(itemsTotal).stream()
+    return couponRepo.findValidCoupons(itemsTotal, LocalDateTime.now()).stream()
         .map(CouponMapper.INSTANCE::toDto)
         .toList();
   }

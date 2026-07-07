@@ -39,5 +39,5 @@ public class Coupon extends BaseEntity {
   private LocalDateTime validUntil;
 
   @Column(name = "is_active")
-  private boolean isActive;
+  private Boolean isActive;
 }

@@ -440,5 +440,5 @@ onMounted(() => {
   </v-dialog>
 
   <snack-bar-on-failure :show="isError" :message="message"></snack-bar-on-failure>
-  <snack-bar-on-failure :show="isSuccess" :message="message"></snack-bar-on-failure>
+  <snack-bar-on-success :show="isSuccess" :message="message"></snack-bar-on-success>
 </template>

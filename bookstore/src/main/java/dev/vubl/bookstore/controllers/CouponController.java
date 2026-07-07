@@ -20,12 +20,12 @@ public class CouponController {
   private final CouponService couponService;
 
   @GetMapping
-  public PagedModel<Coupon> getAllCoupons(
+  public PagedModel<CouponDTO> getAllCoupons(
       @RequestParam(value = "page", defaultValue = "0") int page,
       @RequestParam(value = "size", defaultValue = "5") int size,
       @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
       @RequestParam(value = "order", defaultValue = "asc") String order) {
-    return new PagedModel<>(couponService.getAllCoupons(page, size, sortBy, order));
+    return new PagedModel<>(couponService.getAllCouponsPaginated(page, size, sortBy, order));
   }
 
   @PostMapping("/add")
