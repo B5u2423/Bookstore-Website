@@ -350,10 +350,28 @@ onMounted(() => {
               hide-details="true"
             ></v-text-field>
           </v-col>
-
           <v-col
             cols="12"
             md="4"
+          >
+            <div class="text-subtitle-1 text-high-emphasis">
+              Trạng thái kích hoạt
+              <span class="text-red">(*)</span>
+            </div>
+            <v-autocomplete
+              v-model="formModel.isActive"
+              variant="outlined"
+              density="compact"
+              item-value="id"
+              item-title="name"
+              hide-details
+              :items="[true, false]"
+            ></v-autocomplete>
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="6"
           >
             <div class="text-subtitle-1 text-high-emphasis">
               Ngày bắt đầu
@@ -369,7 +387,7 @@ onMounted(() => {
 
           <v-col
             cols="12"
-            md="4"
+            md="6"
           >
             <div class="text-subtitle-1 text-high-emphasis">
               Ngày kết thúc

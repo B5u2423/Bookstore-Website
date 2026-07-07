@@ -16,7 +16,8 @@ public interface CouponRepo extends JpaRepository<Coupon, Integer> {
 
   List<Coupon> findAllByIsActiveTrueAndMinOrderAmountLessThanEqual(BigDecimal amount);
 
-  @Query("""
+  @Query(
+      """
   SELECT c FROM Coupon c
   WHERE c.isActive = true
    AND c.minOrderAmount <= :itemsTotal
