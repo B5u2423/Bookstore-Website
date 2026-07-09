@@ -77,7 +77,7 @@ const routes = [
         component: () => import('@/views/ecom/CollectionShowcase.vue'),
       },
       {
-        path: 'oauth2/callback',
+        path: 'oa2/callback',
         name: 'oauth2-callback',
         component: () => import('@/views/ecom/OAuthCallback.vue'),
       },
@@ -197,6 +197,13 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return {top: 0, behavior: 'smooth'}
+    }
+  }
 })
 
 router.beforeEach((to) => {
