@@ -38,7 +38,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     // login
     String exchangeToken = authService.logInOAuth(user, registrationId);
     // redirect
-    String redirectUrl = "%s/oauth2/callback?ex=%s".formatted(frontEndUrl, exchangeToken);
+    String redirectUrl = "%s/oa2/callback?ex=%s".formatted(frontEndUrl, exchangeToken);
     getRedirectStrategy().sendRedirect(request, response, redirectUrl);
   }
 }
