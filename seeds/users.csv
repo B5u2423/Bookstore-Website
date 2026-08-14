@@ -1,4 +1,0 @@
-name,email,password,user_type
-admin1,admin1@company.com,$2a$10$hf8t9CoXS5lALVDBB/.44.gZTIOFFdFiqoDduW2.8jQJpSwB8LsYS,ADMIN
-admin2,admin2@company.com,$2a$10$KrGRL5FYyNV7GKhRR25hc.8g1jEvmD/U2JurEK677q5Q3QAs/7RiO,ADMIN
-admin3,admin3@company.com,$2a$10$YQLzmNr3vzHRn/3D2S0D9Or.0yvUTbGIIMDcmzDzZu418hsYBbwUS,ADMIN
