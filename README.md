@@ -10,6 +10,32 @@ Implemented: Book, Order, Cart, Categories, Collections. Online payment with VNP
 
 AI Usage: Only for frontend beautifying, all those lengthy CSS snippets are from Claude. Every other logic flows are handwritten, so it might be unexpectedly brittle (lmao).
 
+## Screenshots
+
+![ui_landing](./screenshots/ui_landing.png)
+
+*Landing Page*
+
+![ui_categories](./screenshots/ui_categories.png)
+
+*Book Grid View By Categories*
+
+![ui_book_details](./screenshots/ui_book_details.png)
+
+*Book Details View*
+
+![ui_profile](./screenshots/ui_profile.png)
+
+*User Profile View*
+
+![ui_cart](./screenshots/ui_cart.png)
+
+*Cart View*
+
+![ui_admin_dashboard](./screenshots/ui_admin_dashboard.png)
+
+*Admin Dashboard View*
+
 ## Project Local Setup
 
 Pre-requisites: **JDK 21; Node 20; Docker (or Podman)**
